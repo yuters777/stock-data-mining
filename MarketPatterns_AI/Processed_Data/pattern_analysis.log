@@ -1,0 +1,1033 @@
+2025-03-17 19:11:28,516 - PatternAnalysisPipeline - INFO - Using default configuration
+2025-03-17 19:11:28,517 - PatternAnalysisPipeline - INFO - Using configuration: {'min_pattern_occurrences': 3, 'price_impact_threshold': 0.2, 'significance_threshold': 0.05, 'volume_impact_threshold': 1.5, 'time_window': 5, 'time_shift_tolerance': 15, 'timezone': 'Asia/Jerusalem', 'session_times': None, 'parallel_processing': True, 'max_workers': None, 'cache_results': True, 'spatial_index_type': 'ball_tree', 'leaf_size': 30}
+2025-03-17 19:11:28,519 - PatternAnalysisPipeline - INFO - Loading data from D:\Work\Google Drive\i_Projects\2025\Market Pattern Analysis AI Agent\MarketPatterns_AI\CleaningNormalization_Data\cleaned_normalized_data.csv
+2025-03-17 19:11:28,522 - PatternAnalysisPipeline - ERROR - Error loading data: [Errno 2] No such file or directory: 'D:\\Work\\Google Drive\\i_Projects\\2025\\Market Pattern Analysis AI Agent\\MarketPatterns_AI\\CleaningNormalization_Data\\cleaned_normalized_data.csv'
+2025-03-17 19:11:28,541 - PatternAnalysisPipeline - ERROR - Traceback (most recent call last):
+  File "D:\Google Drive\!_Projects\2025\Market Pattern Analysis AI Agent\MarketPatterns_AI\Processed_Data\Market_Pattern_Analysis.py", line 1829, in main_with_robust_error_handling
+    data = pd.read_csv(args.input)
+  File "C:\Users\Yuters\AppData\Local\Programs\Python\Python313\Lib\site-packages\pandas\io\parsers\readers.py", line 1026, in read_csv
+    return _read(filepath_or_buffer, kwds)
+  File "C:\Users\Yuters\AppData\Local\Programs\Python\Python313\Lib\site-packages\pandas\io\parsers\readers.py", line 620, in _read
+    parser = TextFileReader(filepath_or_buffer, **kwds)
+  File "C:\Users\Yuters\AppData\Local\Programs\Python\Python313\Lib\site-packages\pandas\io\parsers\readers.py", line 1620, in __init__
+    self._engine = self._make_engine(f, self.engine)
+                   ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Users\Yuters\AppData\Local\Programs\Python\Python313\Lib\site-packages\pandas\io\parsers\readers.py", line 1880, in _make_engine
+    self.handles = get_handle(
+                   ~~~~~~~~~~^
+        f,
+        ^^
+    ...<6 lines>...
+        storage_options=self.options.get("storage_options", None),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Yuters\AppData\Local\Programs\Python\Python313\Lib\site-packages\pandas\io\common.py", line 873, in get_handle
+    handle = open(
+        handle,
+    ...<3 lines>...
+        newline="",
+    )
+FileNotFoundError: [Errno 2] No such file or directory: 'D:\\Work\\Google Drive\\i_Projects\\2025\\Market Pattern Analysis AI Agent\\MarketPatterns_AI\\CleaningNormalization_Data\\cleaned_normalized_data.csv'
+
+2025-03-17 19:13:51,299 - PatternAnalysisPipeline - INFO - Using default configuration
+2025-03-17 19:13:51,299 - PatternAnalysisPipeline - INFO - Using configuration: {'min_pattern_occurrences': 3, 'price_impact_threshold': 0.2, 'significance_threshold': 0.05, 'volume_impact_threshold': 1.5, 'time_window': 5, 'time_shift_tolerance': 15, 'timezone': 'Asia/Jerusalem', 'session_times': None, 'parallel_processing': True, 'max_workers': None, 'cache_results': True, 'spatial_index_type': 'ball_tree', 'leaf_size': 30}
+2025-03-17 19:13:51,300 - PatternAnalysisPipeline - INFO - Loading data from ..\CleaningNormalization_Data\cleaned_normalized_data.csv
+2025-03-17 19:13:51,405 - PatternAnalysisPipeline - INFO - Loaded 31610 rows, 7 tickers
+2025-03-17 19:13:51,406 - PatternAnalysisPipeline - INFO - Preprocessing data with vectorized operations
+2025-03-17 19:13:51,516 - PatternAnalysisPipeline - INFO - Processing 7 tickers: ['AAPL', 'AMZN', 'GOOGL', 'META', 'MSFT', 'NVDA', 'TSLA']
+2025-03-17 19:13:51,522 - PatternAnalysisPipeline - INFO - Using cache key: 4f90fa54...
+2025-03-17 19:13:51,963 - Pattern_Detection_Module - INFO - Using default standard (winter) session times
+2025-03-17 19:13:51,964 - PatternAnalysisPipeline - INFO - Using parallel processing with 4 workers
+2025-03-17 19:13:51,965 - PatternAnalysisPipeline - INFO - Processing batch 1/1 (7 tickers)
+2025-03-17 19:13:59,592 - PatternAnalysisPipeline - INFO - Processing ticker: AAPL with 4608 data points
+2025-03-17 19:13:59,622 - PatternAnalysisPipeline - INFO - Processing ticker: AMZN with 4608 data points
+2025-03-17 19:13:59,732 - PatternAnalysisPipeline - INFO - Processing ticker: GOOGL with 4608 data points
+2025-03-17 19:13:59,803 - PatternAnalysisPipeline - INFO - Processing ticker: META with 4186 data points
+2025-03-17 19:17:59,395 - PatternAnalysisPipeline - INFO - Processing ticker: MSFT with 4608 data points
+2025-03-17 19:17:59,403 - PatternAnalysisPipeline - WARNING - Error writing JSON to .cache\4f90fa548790150248627b18f7cf1281b3ae630430134e5abe1bc1289817b156_META.json: Object of type date is not JSON serializable
+2025-03-17 19:17:59,474 - PatternAnalysisPipeline - WARNING - Error caching results for META
+2025-03-17 19:17:59,519 - PatternAnalysisPipeline - INFO - Progress: 1/7 (14.3%) - ETA: 24.8 minutes
+2025-03-17 19:18:43,072 - PatternAnalysisPipeline - WARNING - Error writing JSON to .cache\4f90fa548790150248627b18f7cf1281b3ae630430134e5abe1bc1289817b156_AMZN.json: Object of type date is not JSON serializable
+2025-03-17 19:18:43,072 - PatternAnalysisPipeline - WARNING - Error caching results for AMZN
+2025-03-17 19:18:43,073 - PatternAnalysisPipeline - INFO - Progress: 2/7 (28.6%) - ETA: 12.2 minutes
+2025-03-17 19:18:43,079 - PatternAnalysisPipeline - INFO - Processing ticker: NVDA with 4384 data points
+2025-03-17 19:18:43,778 - PatternAnalysisPipeline - INFO - Processing ticker: TSLA with 4608 data points
+2025-03-17 19:18:43,802 - PatternAnalysisPipeline - WARNING - Error writing JSON to .cache\4f90fa548790150248627b18f7cf1281b3ae630430134e5abe1bc1289817b156_AAPL.json: Object of type date is not JSON serializable
+2025-03-17 19:18:43,824 - PatternAnalysisPipeline - WARNING - Error caching results for AAPL
+2025-03-17 19:18:43,859 - PatternAnalysisPipeline - INFO - Progress: 3/7 (42.9%) - ETA: 6.5 minutes
+2025-03-17 19:18:43,898 - PatternAnalysisPipeline - WARNING - Error writing JSON to .cache\4f90fa548790150248627b18f7cf1281b3ae630430134e5abe1bc1289817b156_GOOGL.json: Object of type date is not JSON serializable
+2025-03-17 19:18:43,911 - PatternAnalysisPipeline - WARNING - Error caching results for GOOGL
+2025-03-17 19:18:43,935 - PatternAnalysisPipeline - INFO - Progress: 4/7 (57.1%) - ETA: 3.7 minutes
+2025-03-17 19:18:44,074 - PatternAnalysisPipeline - ERROR - Error detecting recurring patterns for TSLA: Can only use .dt accessor with datetimelike values
+2025-03-17 19:21:08,915 - PatternAnalysisPipeline - WARNING - Error writing JSON to .cache\4f90fa548790150248627b18f7cf1281b3ae630430134e5abe1bc1289817b156_MSFT.json: Object of type date is not JSON serializable
+2025-03-17 19:21:08,915 - PatternAnalysisPipeline - WARNING - Error caching results for MSFT
+2025-03-17 19:21:08,916 - PatternAnalysisPipeline - INFO - Progress: 5/7 (71.4%) - ETA: 2.9 minutes
+2025-03-17 19:21:17,364 - PatternAnalysisPipeline - WARNING - Error writing JSON to .cache\4f90fa548790150248627b18f7cf1281b3ae630430134e5abe1bc1289817b156_NVDA.json: Object of type date is not JSON serializable
+2025-03-17 19:21:17,365 - PatternAnalysisPipeline - WARNING - Error caching results for NVDA
+2025-03-17 19:21:17,366 - PatternAnalysisPipeline - INFO - Progress: 6/7 (85.7%) - ETA: 1.2 minutes
+2025-03-17 19:21:34,087 - PatternAnalysisPipeline - WARNING - Error writing JSON to .cache\4f90fa548790150248627b18f7cf1281b3ae630430134e5abe1bc1289817b156_TSLA.json: Object of type date is not JSON serializable
+2025-03-17 19:21:34,088 - PatternAnalysisPipeline - WARNING - Error caching results for TSLA
+2025-03-17 19:21:34,088 - PatternAnalysisPipeline - INFO - Progress: 7/7 (100.0%) - ETA: 0.0 minutes
+2025-03-17 19:21:34,972 - PatternAnalysisPipeline - INFO - Generating pattern summary
+2025-03-17 19:21:34,973 - PatternAnalysisPipeline - INFO - Saving results to pattern_analysis_results
+2025-03-17 19:21:34,974 - PatternAnalysisPipeline - INFO - Results schema validation passed.
+2025-03-17 19:21:34,975 - PatternAnalysisPipeline - INFO - Saved recurring_patterns to pattern_analysis_results\recurring_patterns.json
+2025-03-17 19:21:34,977 - PatternAnalysisPipeline - WARNING - Error writing JSON to pattern_analysis_results\temporal_clusters.json: Object of type date is not JSON serializable
+2025-03-17 19:21:34,977 - PatternAnalysisPipeline - ERROR - Failed to save temporal_clusters to pattern_analysis_results\temporal_clusters.json
+2025-03-17 19:21:34,978 - PatternAnalysisPipeline - INFO - Saved trend_reversals to pattern_analysis_results\trend_reversals.json
+2025-03-17 19:21:34,983 - PatternAnalysisPipeline - INFO - Saved time_correlations to pattern_analysis_results\time_correlations.json
+2025-03-17 19:21:34,984 - PatternAnalysisPipeline - INFO - Saved time_shifts to pattern_analysis_results\time_shifts.json
+2025-03-17 19:21:34,985 - PatternAnalysisPipeline - INFO - Saved pattern_summary to pattern_analysis_results\pattern_summary.json
+2025-03-17 19:21:34,987 - PatternAnalysisPipeline - INFO - Saved processing_stats to pattern_analysis_results\processing_stats.json
+2025-03-17 19:21:34,989 - PatternAnalysisPipeline - INFO - Error report written to pattern_analysis_results\error_report_20250317_192134.txt
+2025-03-17 19:21:34,989 - PatternAnalysisPipeline - INFO - Generating visualizations...
+2025-03-17 19:21:35,993 - PatternAnalysisPipeline - INFO - Generating HTML report
+2025-03-17 19:21:36,067 - PatternAnalysisPipeline - INFO - Generated HTML report at pattern_analysis_results\pattern_analysis_report.html
+2025-03-17 19:21:36,319 - PatternAnalysisPipeline - INFO - Error summary visualization saved to pattern_analysis_results\error_summary.png
+2025-03-17 19:21:36,320 - PatternAnalysisPipeline - INFO - Pattern analysis pipeline completed in 7.75 minutes
+2025-03-17 19:21:36,320 - PatternAnalysisPipeline - INFO - Results: 0 successful, 7 partial, 0 failed out of 7 tickers
+2025-03-17 19:21:36,321 - PatternAnalysisPipeline - INFO - View the report at: pattern_analysis_results\pattern_analysis_report.html
+2025-03-17 23:23:24,851 - PatternAnalysisPipeline - INFO - Using default configuration
+2025-03-17 23:23:24,854 - PatternAnalysisPipeline - INFO - Using configuration: {'min_pattern_occurrences': 3, 'price_impact_threshold': 0.2, 'significance_threshold': 0.05, 'volume_impact_threshold': 1.5, 'time_window': 5, 'time_shift_tolerance': 15, 'timezone': 'Asia/Jerusalem', 'session_times': None, 'parallel_processing': True, 'max_workers': None, 'cache_results': True, 'spatial_index_type': 'ball_tree', 'leaf_size': 30}
+2025-03-17 23:23:24,856 - PatternAnalysisPipeline - INFO - Loading data from ..\CleaningNormalization_Data\cleaned_normalized_data.csv
+2025-03-17 23:23:24,959 - PatternAnalysisPipeline - INFO - Loaded 31610 rows, 7 tickers
+2025-03-17 23:23:24,960 - PatternAnalysisPipeline - INFO - Preprocessing data with vectorized operations
+2025-03-17 23:23:25,062 - PatternAnalysisPipeline - INFO - Processing 7 tickers: ['AAPL', 'AMZN', 'GOOGL', 'META', 'MSFT', 'NVDA', 'TSLA']
+2025-03-17 23:23:25,068 - PatternAnalysisPipeline - INFO - Using cache key: 4f90fa54...
+2025-03-17 23:23:25,198 - Pattern_Detection_Module - INFO - Using default standard (winter) session times
+2025-03-17 23:23:25,199 - PatternAnalysisPipeline - INFO - Using parallel processing with 4 workers
+2025-03-17 23:23:25,200 - PatternAnalysisPipeline - INFO - Processing batch 1/1 (7 tickers)
+2025-03-17 23:23:25,210 - PatternAnalysisPipeline - WARNING - Error parsing cache for AAPL: Expecting value: line 1 column 1 (char 0)
+2025-03-17 23:23:25,227 - PatternAnalysisPipeline - WARNING - Error parsing cache for AMZN: Expecting value: line 1 column 1 (char 0)
+2025-03-17 23:23:25,240 - PatternAnalysisPipeline - WARNING - Error parsing cache for GOOGL: Expecting value: line 1 column 1 (char 0)
+2025-03-17 23:23:25,253 - PatternAnalysisPipeline - WARNING - Error parsing cache for META: Expecting value: line 1 column 1 (char 0)
+2025-03-17 23:23:25,264 - PatternAnalysisPipeline - WARNING - Error parsing cache for MSFT: Expecting value: line 1 column 1 (char 0)
+2025-03-17 23:23:25,271 - PatternAnalysisPipeline - WARNING - Error parsing cache for NVDA: Expecting value: line 1 column 1 (char 0)
+2025-03-17 23:23:25,278 - PatternAnalysisPipeline - WARNING - Error parsing cache for TSLA: Expecting value: line 1 column 1 (char 0)
+2025-03-17 23:23:30,778 - PatternAnalysisPipeline - INFO - Processing ticker: AAPL with 4608 data points
+2025-03-17 23:23:30,784 - PatternAnalysisPipeline - INFO - Processing ticker: AMZN with 4608 data points
+2025-03-17 23:23:30,850 - PatternAnalysisPipeline - INFO - Processing ticker: GOOGL with 4608 data points
+2025-03-17 23:23:31,018 - PatternAnalysisPipeline - INFO - Processing ticker: META with 4186 data points
+2025-03-17 23:25:50,430 - PatternAnalysisPipeline - INFO - Processing ticker: MSFT with 4608 data points
+2025-03-17 23:25:50,443 - PatternAnalysisPipeline - WARNING - Error writing JSON to .cache\4f90fa548790150248627b18f7cf1281b3ae630430134e5abe1bc1289817b156_META.json: Object of type date is not JSON serializable
+2025-03-17 23:25:50,446 - PatternAnalysisPipeline - WARNING - Error caching results for META
+2025-03-17 23:25:50,471 - PatternAnalysisPipeline - INFO - Progress: 1/7 (14.3%) - ETA: 14.6 minutes
+2025-03-17 23:26:13,079 - PatternAnalysisPipeline - INFO - Processing ticker: NVDA with 4384 data points
+2025-03-17 23:26:13,081 - PatternAnalysisPipeline - WARNING - Error writing JSON to .cache\4f90fa548790150248627b18f7cf1281b3ae630430134e5abe1bc1289817b156_GOOGL.json: Object of type date is not JSON serializable
+2025-03-17 23:26:13,082 - PatternAnalysisPipeline - WARNING - Error caching results for GOOGL
+2025-03-17 23:26:13,089 - PatternAnalysisPipeline - INFO - Progress: 2/7 (28.6%) - ETA: 7.0 minutes
+2025-03-17 23:26:13,320 - PatternAnalysisPipeline - INFO - Processing ticker: TSLA with 4608 data points
+2025-03-17 23:26:13,326 - PatternAnalysisPipeline - WARNING - Error writing JSON to .cache\4f90fa548790150248627b18f7cf1281b3ae630430134e5abe1bc1289817b156_AMZN.json: Object of type date is not JSON serializable
+2025-03-17 23:26:13,327 - PatternAnalysisPipeline - WARNING - Error caching results for AMZN
+2025-03-17 23:26:13,343 - PatternAnalysisPipeline - INFO - Progress: 3/7 (42.9%) - ETA: 3.7 minutes
+2025-03-17 23:26:13,551 - PatternAnalysisPipeline - ERROR - Error detecting recurring patterns for TSLA: Can only use .dt accessor with datetimelike values
+2025-03-17 23:26:14,859 - PatternAnalysisPipeline - WARNING - Error writing JSON to .cache\4f90fa548790150248627b18f7cf1281b3ae630430134e5abe1bc1289817b156_AAPL.json: Object of type date is not JSON serializable
+2025-03-17 23:26:14,859 - PatternAnalysisPipeline - WARNING - Error caching results for AAPL
+2025-03-17 23:26:14,862 - PatternAnalysisPipeline - INFO - Progress: 4/7 (57.1%) - ETA: 2.1 minutes
+2025-03-17 23:28:07,599 - PatternAnalysisPipeline - WARNING - Error writing JSON to .cache\4f90fa548790150248627b18f7cf1281b3ae630430134e5abe1bc1289817b156_NVDA.json: Object of type date is not JSON serializable
+2025-03-17 23:28:07,600 - PatternAnalysisPipeline - WARNING - Error caching results for NVDA
+2025-03-17 23:28:07,602 - PatternAnalysisPipeline - INFO - Progress: 5/7 (71.4%) - ETA: 1.9 minutes
+2025-03-17 23:28:08,383 - PatternAnalysisPipeline - WARNING - Error writing JSON to .cache\4f90fa548790150248627b18f7cf1281b3ae630430134e5abe1bc1289817b156_MSFT.json: Object of type date is not JSON serializable
+2025-03-17 23:28:08,384 - PatternAnalysisPipeline - WARNING - Error caching results for MSFT
+2025-03-17 23:28:08,386 - PatternAnalysisPipeline - INFO - Progress: 6/7 (85.7%) - ETA: 0.8 minutes
+2025-03-17 23:28:16,800 - PatternAnalysisPipeline - WARNING - Error writing JSON to .cache\4f90fa548790150248627b18f7cf1281b3ae630430134e5abe1bc1289817b156_TSLA.json: Object of type date is not JSON serializable
+2025-03-17 23:28:16,801 - PatternAnalysisPipeline - WARNING - Error caching results for TSLA
+2025-03-17 23:28:16,803 - PatternAnalysisPipeline - INFO - Progress: 7/7 (100.0%) - ETA: 0.0 minutes
+2025-03-17 23:28:17,682 - PatternAnalysisPipeline - INFO - Generating pattern summary
+2025-03-17 23:28:17,682 - PatternAnalysisPipeline - INFO - Saving results to pattern_analysis_results
+2025-03-17 23:28:17,686 - PatternAnalysisPipeline - INFO - Results schema validation passed.
+2025-03-17 23:28:17,692 - PatternAnalysisPipeline - INFO - Saved recurring_patterns to pattern_analysis_results\recurring_patterns.json
+2025-03-17 23:28:17,694 - PatternAnalysisPipeline - WARNING - Error writing JSON to pattern_analysis_results\temporal_clusters.json: Object of type date is not JSON serializable
+2025-03-17 23:28:17,695 - PatternAnalysisPipeline - ERROR - Failed to save temporal_clusters to pattern_analysis_results\temporal_clusters.json
+2025-03-17 23:28:17,703 - PatternAnalysisPipeline - INFO - Saved trend_reversals to pattern_analysis_results\trend_reversals.json
+2025-03-17 23:28:17,709 - PatternAnalysisPipeline - INFO - Saved time_correlations to pattern_analysis_results\time_correlations.json
+2025-03-17 23:28:17,710 - PatternAnalysisPipeline - INFO - Saved time_shifts to pattern_analysis_results\time_shifts.json
+2025-03-17 23:28:17,713 - PatternAnalysisPipeline - INFO - Saved pattern_summary to pattern_analysis_results\pattern_summary.json
+2025-03-17 23:28:17,717 - PatternAnalysisPipeline - INFO - Saved processing_stats to pattern_analysis_results\processing_stats.json
+2025-03-17 23:28:17,725 - PatternAnalysisPipeline - INFO - Error report written to pattern_analysis_results\error_report_20250317_232817.txt
+2025-03-17 23:28:17,726 - PatternAnalysisPipeline - INFO - Generating visualizations...
+2025-03-17 23:28:18,303 - PatternAnalysisPipeline - INFO - Generating HTML report
+2025-03-17 23:28:18,410 - PatternAnalysisPipeline - INFO - Generated HTML report at pattern_analysis_results\pattern_analysis_report.html
+2025-03-17 23:28:18,684 - PatternAnalysisPipeline - INFO - Error summary visualization saved to pattern_analysis_results\error_summary.png
+2025-03-17 23:28:18,685 - PatternAnalysisPipeline - INFO - Pattern analysis pipeline completed in 4.90 minutes
+2025-03-17 23:28:18,687 - PatternAnalysisPipeline - INFO - Results: 0 successful, 7 partial, 0 failed out of 7 tickers
+2025-03-17 23:28:18,694 - PatternAnalysisPipeline - INFO - View the report at: pattern_analysis_results\pattern_analysis_report.html
+2025-03-18 00:27:53,459 - PatternAnalysisPipeline - INFO - Using default configuration
+2025-03-18 00:27:53,461 - PatternAnalysisPipeline - INFO - Using configuration: {'min_pattern_occurrences': 3, 'price_impact_threshold': 0.2, 'significance_threshold': 0.05, 'volume_impact_threshold': 1.5, 'time_window': 5, 'time_shift_tolerance': 15, 'timezone': 'Asia/Jerusalem', 'session_times': None, 'parallel_processing': True, 'max_workers': None, 'cache_results': True, 'spatial_index_type': 'ball_tree', 'leaf_size': 30}
+2025-03-18 00:27:53,463 - PatternAnalysisPipeline - INFO - Loading data from ..\CleaningNormalization_Data\cleaned_normalized_data.csv
+2025-03-18 00:27:53,569 - PatternAnalysisPipeline - INFO - Loaded 31610 rows, 7 tickers
+2025-03-18 00:27:53,569 - PatternAnalysisPipeline - INFO - Preprocessing data with vectorized operations
+2025-03-18 00:27:53,835 - PatternAnalysisPipeline - INFO - Processing 7 tickers: ['AAPL', 'AMZN', 'GOOGL', 'META', 'MSFT', 'NVDA', 'TSLA']
+2025-03-18 00:27:53,848 - PatternAnalysisPipeline - INFO - Using cache key: 4f90fa54...
+2025-03-18 00:27:54,228 - Pattern_Detection_Module - INFO - Using default standard (winter) session times
+2025-03-18 00:27:54,230 - PatternAnalysisPipeline - INFO - Using parallel processing with 4 workers
+2025-03-18 00:27:54,240 - PatternAnalysisPipeline - INFO - Processing batch 1/1 (7 tickers)
+2025-03-18 00:27:54,244 - PatternAnalysisPipeline - WARNING - Error parsing cache for AAPL: Expecting value: line 1 column 1 (char 0)
+2025-03-18 00:27:54,297 - PatternAnalysisPipeline - WARNING - Error parsing cache for AMZN: Expecting value: line 1 column 1 (char 0)
+2025-03-18 00:27:54,338 - PatternAnalysisPipeline - WARNING - Error parsing cache for GOOGL: Expecting value: line 1 column 1 (char 0)
+2025-03-18 00:27:54,358 - PatternAnalysisPipeline - WARNING - Error parsing cache for META: Expecting value: line 1 column 1 (char 0)
+2025-03-18 00:27:54,666 - PatternAnalysisPipeline - WARNING - Error parsing cache for MSFT: Expecting value: line 1 column 1 (char 0)
+2025-03-18 00:27:54,675 - PatternAnalysisPipeline - WARNING - Error parsing cache for NVDA: Expecting value: line 1 column 1 (char 0)
+2025-03-18 00:27:54,685 - PatternAnalysisPipeline - WARNING - Error parsing cache for TSLA: Expecting value: line 1 column 1 (char 0)
+2025-03-18 00:28:06,641 - PatternAnalysisPipeline - INFO - Processing ticker: AAPL with 4608 data points
+2025-03-18 00:28:06,767 - PatternAnalysisPipeline - INFO - Processing ticker: AMZN with 4608 data points
+2025-03-18 00:28:06,802 - PatternAnalysisPipeline - INFO - Processing ticker: GOOGL with 4608 data points
+2025-03-18 00:28:06,920 - PatternAnalysisPipeline - INFO - Processing ticker: META with 4186 data points
+2025-03-18 00:32:27,440 - PatternAnalysisPipeline - INFO - Processing ticker: MSFT with 4608 data points
+2025-03-18 00:32:27,453 - PatternAnalysisPipeline - WARNING - Error writing JSON to .cache\4f90fa548790150248627b18f7cf1281b3ae630430134e5abe1bc1289817b156_META.json: Object of type date is not JSON serializable
+2025-03-18 00:32:27,453 - PatternAnalysisPipeline - WARNING - Error caching results for META
+2025-03-18 00:32:27,455 - PatternAnalysisPipeline - INFO - Progress: 1/7 (14.3%) - ETA: 27.4 minutes
+2025-03-18 00:33:15,033 - PatternAnalysisPipeline - INFO - Processing ticker: NVDA with 4384 data points
+2025-03-18 00:33:15,050 - PatternAnalysisPipeline - WARNING - Error writing JSON to .cache\4f90fa548790150248627b18f7cf1281b3ae630430134e5abe1bc1289817b156_AAPL.json: Object of type date is not JSON serializable
+2025-03-18 00:33:15,051 - PatternAnalysisPipeline - WARNING - Error caching results for AAPL
+2025-03-18 00:33:15,058 - PatternAnalysisPipeline - INFO - Progress: 2/7 (28.6%) - ETA: 13.4 minutes
+2025-03-18 00:33:18,302 - PatternAnalysisPipeline - WARNING - Error writing JSON to .cache\4f90fa548790150248627b18f7cf1281b3ae630430134e5abe1bc1289817b156_GOOGL.json: Object of type date is not JSON serializable
+2025-03-18 00:33:18,301 - PatternAnalysisPipeline - INFO - Processing ticker: TSLA with 4608 data points
+2025-03-18 00:33:18,302 - PatternAnalysisPipeline - WARNING - Error caching results for GOOGL
+2025-03-18 00:33:18,383 - PatternAnalysisPipeline - INFO - Progress: 3/7 (42.9%) - ETA: 7.2 minutes
+2025-03-18 00:33:18,920 - PatternAnalysisPipeline - ERROR - Error detecting recurring patterns for TSLA: Can only use .dt accessor with datetimelike values
+2025-03-18 00:33:19,490 - PatternAnalysisPipeline - WARNING - Error writing JSON to .cache\4f90fa548790150248627b18f7cf1281b3ae630430134e5abe1bc1289817b156_AMZN.json: Object of type date is not JSON serializable
+2025-03-18 00:33:19,491 - PatternAnalysisPipeline - WARNING - Error caching results for AMZN
+2025-03-18 00:33:19,494 - PatternAnalysisPipeline - INFO - Progress: 4/7 (57.1%) - ETA: 4.1 minutes
+2025-03-18 00:37:07,408 - PatternAnalysisPipeline - WARNING - Error writing JSON to .cache\4f90fa548790150248627b18f7cf1281b3ae630430134e5abe1bc1289817b156_MSFT.json: Object of type date is not JSON serializable
+2025-03-18 00:37:07,408 - PatternAnalysisPipeline - WARNING - Error caching results for MSFT
+2025-03-18 00:37:07,413 - PatternAnalysisPipeline - INFO - Progress: 5/7 (71.4%) - ETA: 3.7 minutes
+2025-03-18 00:37:24,016 - PatternAnalysisPipeline - WARNING - Error writing JSON to .cache\4f90fa548790150248627b18f7cf1281b3ae630430134e5abe1bc1289817b156_NVDA.json: Object of type date is not JSON serializable
+2025-03-18 00:37:24,017 - PatternAnalysisPipeline - WARNING - Error caching results for NVDA
+2025-03-18 00:37:24,022 - PatternAnalysisPipeline - INFO - Progress: 6/7 (85.7%) - ETA: 1.6 minutes
+2025-03-18 00:37:43,254 - PatternAnalysisPipeline - WARNING - Error writing JSON to .cache\4f90fa548790150248627b18f7cf1281b3ae630430134e5abe1bc1289817b156_TSLA.json: Object of type date is not JSON serializable
+2025-03-18 00:37:43,254 - PatternAnalysisPipeline - WARNING - Error caching results for TSLA
+2025-03-18 00:37:43,257 - PatternAnalysisPipeline - INFO - Progress: 7/7 (100.0%) - ETA: 0.0 minutes
+2025-03-18 00:37:44,015 - PatternAnalysisPipeline - INFO - Generating pattern summary
+2025-03-18 00:37:44,016 - PatternAnalysisPipeline - INFO - Saving results to pattern_analysis_results
+2025-03-18 00:37:44,021 - PatternAnalysisPipeline - INFO - Results schema validation passed.
+2025-03-18 00:37:44,026 - PatternAnalysisPipeline - INFO - Saved recurring_patterns to pattern_analysis_results\recurring_patterns.json
+2025-03-18 00:37:44,028 - PatternAnalysisPipeline - WARNING - Error writing JSON to pattern_analysis_results\temporal_clusters.json: Object of type date is not JSON serializable
+2025-03-18 00:37:44,029 - PatternAnalysisPipeline - ERROR - Failed to save temporal_clusters to pattern_analysis_results\temporal_clusters.json
+2025-03-18 00:37:44,037 - PatternAnalysisPipeline - INFO - Saved trend_reversals to pattern_analysis_results\trend_reversals.json
+2025-03-18 00:37:44,043 - PatternAnalysisPipeline - INFO - Saved time_correlations to pattern_analysis_results\time_correlations.json
+2025-03-18 00:37:44,045 - PatternAnalysisPipeline - INFO - Saved time_shifts to pattern_analysis_results\time_shifts.json
+2025-03-18 00:37:44,048 - PatternAnalysisPipeline - INFO - Saved pattern_summary to pattern_analysis_results\pattern_summary.json
+2025-03-18 00:37:44,051 - PatternAnalysisPipeline - INFO - Saved processing_stats to pattern_analysis_results\processing_stats.json
+2025-03-18 00:37:44,053 - PatternAnalysisPipeline - INFO - Error report written to pattern_analysis_results\error_report_20250318_003744.txt
+2025-03-18 00:37:44,059 - PatternAnalysisPipeline - INFO - Generating visualizations...
+2025-03-18 00:37:45,093 - PatternAnalysisPipeline - INFO - Generating HTML report
+2025-03-18 00:37:45,259 - PatternAnalysisPipeline - INFO - Generated HTML report at pattern_analysis_results\pattern_analysis_report.html
+2025-03-18 00:37:45,606 - PatternAnalysisPipeline - INFO - Error summary visualization saved to pattern_analysis_results\error_summary.png
+2025-03-18 00:37:45,607 - PatternAnalysisPipeline - INFO - Pattern analysis pipeline completed in 9.87 minutes
+2025-03-18 00:37:45,610 - PatternAnalysisPipeline - INFO - Results: 0 successful, 7 partial, 0 failed out of 7 tickers
+2025-03-18 00:37:45,616 - PatternAnalysisPipeline - INFO - View the report at: pattern_analysis_results\pattern_analysis_report.html
+2025-03-18 16:38:49,969 - PatternAnalysisPipeline - ERROR - Error loading config file: [Errno 2] No such file or directory: 'config.json'
+2025-03-18 16:38:49,976 - PatternAnalysisPipeline - ERROR - Traceback (most recent call last):
+  File "D:\Google Drive\!_Projects\2025\Market Pattern Analysis AI Agent\MarketPatterns_AI\Processed_Data\Market_Pattern_Analysis.py", line 617, in load_config
+    with open(config_path, 'r') as f:
+         ~~~~^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'config.json'
+
+2025-03-18 16:38:49,976 - PatternAnalysisPipeline - INFO - Using default configuration
+2025-03-18 16:38:49,978 - PatternAnalysisPipeline - INFO - Using configuration: {'min_pattern_occurrences': 3, 'price_impact_threshold': 0.2, 'significance_threshold': 0.05, 'volume_impact_threshold': 1.5, 'time_window': 5, 'time_shift_tolerance': 15, 'timezone': 'Asia/Jerusalem', 'session_times': None, 'parallel_processing': True, 'max_workers': None, 'cache_results': True, 'spatial_index_type': 'ball_tree', 'leaf_size': 30}
+2025-03-18 16:38:49,979 - PatternAnalysisPipeline - INFO - Loading data from Processed_Data/cleaned_normalized_data.csv
+2025-03-18 16:38:49,981 - PatternAnalysisPipeline - ERROR - Error loading data: [Errno 2] No such file or directory: 'Processed_Data/cleaned_normalized_data.csv'
+2025-03-18 16:38:49,993 - PatternAnalysisPipeline - ERROR - Traceback (most recent call last):
+  File "D:\Google Drive\!_Projects\2025\Market Pattern Analysis AI Agent\MarketPatterns_AI\Processed_Data\Market_Pattern_Analysis.py", line 1829, in main_with_robust_error_handling
+    data = pd.read_csv(args.input)
+  File "C:\Users\Yuters\AppData\Local\Programs\Python\Python313\Lib\site-packages\pandas\io\parsers\readers.py", line 1026, in read_csv
+    return _read(filepath_or_buffer, kwds)
+  File "C:\Users\Yuters\AppData\Local\Programs\Python\Python313\Lib\site-packages\pandas\io\parsers\readers.py", line 620, in _read
+    parser = TextFileReader(filepath_or_buffer, **kwds)
+  File "C:\Users\Yuters\AppData\Local\Programs\Python\Python313\Lib\site-packages\pandas\io\parsers\readers.py", line 1620, in __init__
+    self._engine = self._make_engine(f, self.engine)
+                   ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Users\Yuters\AppData\Local\Programs\Python\Python313\Lib\site-packages\pandas\io\parsers\readers.py", line 1880, in _make_engine
+    self.handles = get_handle(
+                   ~~~~~~~~~~^
+        f,
+        ^^
+    ...<6 lines>...
+        storage_options=self.options.get("storage_options", None),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Yuters\AppData\Local\Programs\Python\Python313\Lib\site-packages\pandas\io\common.py", line 873, in get_handle
+    handle = open(
+        handle,
+    ...<3 lines>...
+        newline="",
+    )
+FileNotFoundError: [Errno 2] No such file or directory: 'Processed_Data/cleaned_normalized_data.csv'
+
+2025-03-18 16:43:43,691 - PatternAnalysisPipeline - INFO - Loaded configuration from ../config.json
+2025-03-18 16:43:43,699 - PatternAnalysisPipeline - ERROR - Error loading config file: 3 validation errors for PatternConfig
+session_times.pre_market
+  Field required [type=missing, input_value={'dst': {'main_session': ...30', 'start': '10:00'}}}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.10/v/missing
+session_times.main_session
+  Field required [type=missing, input_value={'dst': {'main_session': ...30', 'start': '10:00'}}}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.10/v/missing
+session_times.post_market
+  Field required [type=missing, input_value={'dst': {'main_session': ...30', 'start': '10:00'}}}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.10/v/missing
+2025-03-18 16:43:43,707 - PatternAnalysisPipeline - ERROR - Traceback (most recent call last):
+  File "D:\Google Drive\!_Projects\2025\Market Pattern Analysis AI Agent\MarketPatterns_AI\Processed_Data\Market_Pattern_Analysis.py", line 622, in load_config
+    return PatternConfig.model_validate(config_data)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Yuters\AppData\Local\Programs\Python\Python313\Lib\site-packages\pydantic\main.py", line 627, in model_validate
+    return cls.__pydantic_validator__.validate_python(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        obj, strict=strict, from_attributes=from_attributes, context=context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+pydantic_core._pydantic_core.ValidationError: 3 validation errors for PatternConfig
+session_times.pre_market
+  Field required [type=missing, input_value={'dst': {'main_session': ...30', 'start': '10:00'}}}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.10/v/missing
+session_times.main_session
+  Field required [type=missing, input_value={'dst': {'main_session': ...30', 'start': '10:00'}}}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.10/v/missing
+session_times.post_market
+  Field required [type=missing, input_value={'dst': {'main_session': ...30', 'start': '10:00'}}}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.10/v/missing
+
+2025-03-18 16:43:43,709 - PatternAnalysisPipeline - INFO - Using default configuration
+2025-03-18 16:43:43,710 - PatternAnalysisPipeline - INFO - Using configuration: {'min_pattern_occurrences': 3, 'price_impact_threshold': 0.2, 'significance_threshold': 0.05, 'volume_impact_threshold': 1.5, 'time_window': 5, 'time_shift_tolerance': 15, 'timezone': 'Asia/Jerusalem', 'session_times': None, 'parallel_processing': True, 'max_workers': None, 'cache_results': True, 'spatial_index_type': 'ball_tree', 'leaf_size': 30}
+2025-03-18 16:43:43,711 - PatternAnalysisPipeline - INFO - Loading data from cleaned_normalized_data.csv
+2025-03-18 16:43:43,810 - PatternAnalysisPipeline - INFO - Loaded 33510 rows, 7 tickers
+2025-03-18 16:43:43,810 - PatternAnalysisPipeline - INFO - Preprocessing data with vectorized operations
+2025-03-18 16:43:43,936 - PatternAnalysisPipeline - INFO - Processing 7 tickers: ['AAPL', 'AMZN', 'GOOGL', 'META', 'MSFT', 'NVDA', 'TSLA']
+2025-03-18 16:43:43,943 - PatternAnalysisPipeline - INFO - Using cache key: df4cecc3...
+2025-03-18 16:43:44,351 - Pattern_Detection_Module - INFO - Using default standard (winter) session times
+2025-03-18 16:43:44,352 - PatternAnalysisPipeline - INFO - Using parallel processing with 4 workers
+2025-03-18 16:43:44,354 - PatternAnalysisPipeline - INFO - Processing batch 1/1 (7 tickers)
+2025-03-18 16:43:52,945 - PatternAnalysisPipeline - INFO - Processing ticker: AAPL with 4800 data points
+2025-03-18 16:43:52,949 - PatternAnalysisPipeline - INFO - Processing ticker: AMZN with 4800 data points
+2025-03-18 16:43:53,079 - PatternAnalysisPipeline - INFO - Processing ticker: GOOGL with 4800 data points
+2025-03-18 16:43:53,416 - PatternAnalysisPipeline - INFO - Processing ticker: META with 4800 data points
+2025-03-18 16:43:53,988 - PatternAnalysisPipeline - ERROR - Error detecting recurring patterns for AMZN: Can only use .dt accessor with datetimelike values
+2025-03-18 16:43:54,300 - PatternAnalysisPipeline - ERROR - Error detecting recurring patterns for GOOGL: Can only use .dt accessor with datetimelike values
+2025-03-18 16:43:54,367 - PatternAnalysisPipeline - ERROR - Error detecting recurring patterns for AAPL: Can only use .dt accessor with datetimelike values
+2025-03-18 16:43:54,423 - PatternAnalysisPipeline - ERROR - Error detecting recurring patterns for META: Can only use .dt accessor with datetimelike values
+2025-03-18 16:45:43,028 - PatternAnalysisPipeline - ERROR - Error processing ticker AAPL: A process in the process pool was terminated abruptly while the future was running or pending.
+2025-03-18 16:49:10,412 - PatternAnalysisPipeline - INFO - Loaded configuration from ..\config.json
+2025-03-18 16:49:10,413 - PatternAnalysisPipeline - ERROR - Error loading config file: 3 validation errors for PatternConfig
+session_times.pre_market
+  Field required [type=missing, input_value={'dst': {'main_session': ...30', 'start': '10:00'}}}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.10/v/missing
+session_times.main_session
+  Field required [type=missing, input_value={'dst': {'main_session': ...30', 'start': '10:00'}}}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.10/v/missing
+session_times.post_market
+  Field required [type=missing, input_value={'dst': {'main_session': ...30', 'start': '10:00'}}}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.10/v/missing
+2025-03-18 16:49:10,421 - PatternAnalysisPipeline - ERROR - Traceback (most recent call last):
+  File "D:\Google Drive\!_Projects\2025\Market Pattern Analysis AI Agent\MarketPatterns_AI\Processed_Data\Market_Pattern_Analysis.py", line 622, in load_config
+    return PatternConfig.model_validate(config_data)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Yuters\AppData\Local\Programs\Python\Python313\Lib\site-packages\pydantic\main.py", line 627, in model_validate
+    return cls.__pydantic_validator__.validate_python(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        obj, strict=strict, from_attributes=from_attributes, context=context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+pydantic_core._pydantic_core.ValidationError: 3 validation errors for PatternConfig
+session_times.pre_market
+  Field required [type=missing, input_value={'dst': {'main_session': ...30', 'start': '10:00'}}}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.10/v/missing
+session_times.main_session
+  Field required [type=missing, input_value={'dst': {'main_session': ...30', 'start': '10:00'}}}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.10/v/missing
+session_times.post_market
+  Field required [type=missing, input_value={'dst': {'main_session': ...30', 'start': '10:00'}}}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.10/v/missing
+
+2025-03-18 16:49:10,421 - PatternAnalysisPipeline - INFO - Using default configuration
+2025-03-18 16:49:10,421 - PatternAnalysisPipeline - INFO - Using configuration: {'min_pattern_occurrences': 3, 'price_impact_threshold': 0.2, 'significance_threshold': 0.05, 'volume_impact_threshold': 1.5, 'time_window': 5, 'time_shift_tolerance': 15, 'timezone': 'Asia/Jerusalem', 'session_times': None, 'parallel_processing': True, 'max_workers': None, 'cache_results': True, 'spatial_index_type': 'ball_tree', 'leaf_size': 30}
+2025-03-18 16:49:10,422 - PatternAnalysisPipeline - INFO - Loading data from cleaned_normalized_data.csv
+2025-03-18 16:49:10,515 - PatternAnalysisPipeline - INFO - Loaded 33510 rows, 7 tickers
+2025-03-18 16:49:10,515 - PatternAnalysisPipeline - INFO - Preprocessing data with vectorized operations
+2025-03-18 16:49:10,606 - PatternAnalysisPipeline - INFO - Processing 7 tickers: ['AAPL', 'AMZN', 'GOOGL', 'META', 'MSFT', 'NVDA', 'TSLA']
+2025-03-18 16:49:10,610 - PatternAnalysisPipeline - INFO - Using cache key: df4cecc3...
+2025-03-18 16:49:10,824 - Pattern_Detection_Module - INFO - Using default standard (winter) session times
+2025-03-18 16:49:10,824 - PatternAnalysisPipeline - INFO - Using parallel processing with 4 workers
+2025-03-18 16:49:10,825 - PatternAnalysisPipeline - INFO - Processing batch 1/1 (7 tickers)
+2025-03-18 16:49:19,998 - PatternAnalysisPipeline - INFO - Processing ticker: AAPL with 4800 data points
+2025-03-18 16:49:20,146 - PatternAnalysisPipeline - INFO - Processing ticker: AMZN with 4800 data points
+2025-03-18 16:49:20,321 - PatternAnalysisPipeline - INFO - Processing ticker: GOOGL with 4800 data points
+2025-03-18 16:49:20,836 - PatternAnalysisPipeline - ERROR - Error detecting recurring patterns for AMZN: Can only use .dt accessor with datetimelike values
+2025-03-18 16:49:20,923 - PatternAnalysisPipeline - ERROR - Error detecting recurring patterns for AAPL: Can only use .dt accessor with datetimelike values
+2025-03-18 16:49:20,970 - PatternAnalysisPipeline - INFO - Processing ticker: META with 4800 data points
+2025-03-18 16:49:21,115 - PatternAnalysisPipeline - ERROR - Error detecting recurring patterns for GOOGL: Can only use .dt accessor with datetimelike values
+2025-03-18 16:49:21,604 - PatternAnalysisPipeline - ERROR - Error detecting recurring patterns for META: Can only use .dt accessor with datetimelike values
+2025-03-18 16:50:15,084 - PatternAnalysisPipeline - INFO - Processing ticker: MSFT with 4755 data points
+2025-03-18 16:50:15,120 - PatternAnalysisPipeline - INFO - Processing ticker: NVDA with 4800 data points
+2025-03-18 16:50:15,130 - PatternAnalysisPipeline - INFO - Processing ticker: TSLA with 4755 data points
+2025-03-18 16:50:15,796 - PatternAnalysisPipeline - ERROR - Error detecting recurring patterns for MSFT: Can only use .dt accessor with datetimelike values
+2025-03-18 16:50:15,822 - PatternAnalysisPipeline - ERROR - Error detecting recurring patterns for TSLA: Can only use .dt accessor with datetimelike values
+2025-03-18 16:50:16,141 - PatternAnalysisPipeline - ERROR - Error detecting recurring patterns for NVDA: Can only use .dt accessor with datetimelike values
+2025-03-18 16:51:46,172 - PatternAnalysisPipeline - INFO - Pattern analysis interrupted by user
+2025-03-18 17:05:08,510 - PatternAnalysisPipeline - INFO - Loaded configuration from ..\config.json
+2025-03-18 17:05:08,513 - PatternAnalysisPipeline - INFO - Using configuration: {'min_pattern_occurrences': 2, 'price_impact_threshold': 0.1, 'significance_threshold': 0.1, 'volume_impact_threshold': 1.2, 'time_window': 5, 'time_shift_tolerance': 15, 'timezone': 'Asia/Jerusalem', 'session_times': {'pre_market': {'start': '10:00', 'end': '15:30'}, 'main_session': {'start': '15:30', 'end': '22:00'}, 'post_market': {'start': '22:00', 'end': '01:59'}}, 'parallel_processing': True, 'max_workers': None, 'cache_results': True, 'spatial_index_type': 'ball_tree', 'leaf_size': 30}
+2025-03-18 17:05:08,513 - PatternAnalysisPipeline - INFO - Loading data from cleaned_normalized_data.csv
+2025-03-18 17:05:08,614 - PatternAnalysisPipeline - INFO - Loaded 33510 rows, 7 tickers
+2025-03-18 17:05:08,614 - PatternAnalysisPipeline - INFO - Preprocessing data with vectorized operations
+2025-03-18 17:05:08,654 - PatternAnalysisPipeline - INFO - Added time_minutes column with range: 0-1435
+2025-03-18 17:05:08,687 - PatternAnalysisPipeline - INFO - Added Date and Time columns from Datetime
+2025-03-18 17:05:08,690 - PatternAnalysisPipeline - INFO - Processing 7 tickers: ['AAPL', 'AMZN', 'GOOGL', 'META', 'MSFT', 'NVDA', 'TSLA']
+2025-03-18 17:05:08,694 - PatternAnalysisPipeline - INFO - Using cache key: 115a81b5...
+2025-03-18 17:05:08,874 - Pattern_Detection_Module - INFO - Using default standard (winter) session times
+2025-03-18 17:05:08,876 - PatternAnalysisPipeline - INFO - Using parallel processing with 4 workers
+2025-03-18 17:05:08,876 - PatternAnalysisPipeline - INFO - Processing batch 1/1 (7 tickers)
+2025-03-18 17:05:21,291 - PatternAnalysisPipeline - INFO - Processing ticker: AAPL with 4800 data points
+2025-03-18 17:05:21,334 - PatternAnalysisPipeline - INFO - Processing ticker: AMZN with 4800 data points
+2025-03-18 17:05:21,401 - PatternAnalysisPipeline - INFO - Processing ticker: GOOGL with 4800 data points
+2025-03-18 17:05:21,423 - PatternAnalysisPipeline - INFO - Processing ticker: META with 4800 data points
+2025-03-18 17:05:21,782 - PatternAnalysisPipeline - ERROR - Error preprocessing data for AAPL: 'Hour'
+2025-03-18 17:05:21,813 - PatternAnalysisPipeline - ERROR - Error detecting recurring patterns for AAPL: 'PriceChange'
+2025-03-18 17:05:21,970 - PatternAnalysisPipeline - ERROR - Error preprocessing data for AMZN: 'Hour'
+2025-03-18 17:05:22,042 - PatternAnalysisPipeline - ERROR - Error detecting temporal clusters for AAPL: 'SignificantEvent'
+2025-03-18 17:05:22,732 - PatternAnalysisPipeline - ERROR - Error preprocessing data for GOOGL: 'Hour'
+2025-03-18 17:05:22,775 - PatternAnalysisPipeline - ERROR - Error detecting recurring patterns for AMZN: 'PriceChange'
+2025-03-18 17:05:22,787 - PatternAnalysisPipeline - ERROR - Error detecting recurring patterns for GOOGL: 'PriceChange'
+2025-03-18 17:05:22,798 - PatternAnalysisPipeline - ERROR - Error analyzing time correlations for AAPL: 'PriceChange'
+2025-03-18 17:05:22,812 - PatternAnalysisPipeline - ERROR - Error detecting temporal clusters for AMZN: 'SignificantEvent'
+2025-03-18 17:05:23,181 - PatternAnalysisPipeline - ERROR - Error preprocessing data for META: 'Hour'
+2025-03-18 17:05:23,261 - PatternAnalysisPipeline - ERROR - Error analyzing time correlations for AMZN: 'PriceChange'
+2025-03-18 17:05:23,511 - PatternAnalysisPipeline - ERROR - Error detecting temporal clusters for GOOGL: 'SignificantEvent'
+2025-03-18 17:05:23,520 - PatternAnalysisPipeline - ERROR - Error detecting recurring patterns for META: 'PriceChange'
+2025-03-18 17:05:23,675 - PatternAnalysisPipeline - ERROR - Error analyzing time correlations for GOOGL: 'PriceChange'
+2025-03-18 17:05:23,730 - PatternAnalysisPipeline - ERROR - Error detecting temporal clusters for META: 'SignificantEvent'
+2025-03-18 17:05:23,853 - PatternAnalysisPipeline - ERROR - Error analyzing time correlations for META: 'PriceChange'
+2025-03-18 17:05:59,833 - PatternAnalysisPipeline - INFO - Processing ticker: MSFT with 4755 data points
+2025-03-18 17:05:59,855 - PatternAnalysisPipeline - INFO - Processing ticker: NVDA with 4800 data points
+2025-03-18 17:05:59,875 - PatternAnalysisPipeline - INFO - Processing ticker: TSLA with 4755 data points
+2025-03-18 17:06:00,156 - PatternAnalysisPipeline - ERROR - Error preprocessing data for TSLA: 'Hour'
+2025-03-18 17:06:00,166 - PatternAnalysisPipeline - ERROR - Error preprocessing data for MSFT: 'Hour'
+2025-03-18 17:06:00,174 - PatternAnalysisPipeline - ERROR - Error preprocessing data for NVDA: 'Hour'
+2025-03-18 17:06:00,192 - PatternAnalysisPipeline - ERROR - Error detecting recurring patterns for TSLA: 'PriceChange'
+2025-03-18 17:06:00,198 - PatternAnalysisPipeline - ERROR - Error detecting recurring patterns for NVDA: 'PriceChange'
+2025-03-18 17:06:00,204 - PatternAnalysisPipeline - ERROR - Error detecting temporal clusters for TSLA: 'SignificantEvent'
+2025-03-18 17:06:00,209 - PatternAnalysisPipeline - ERROR - Error detecting temporal clusters for NVDA: 'SignificantEvent'
+2025-03-18 17:06:00,216 - PatternAnalysisPipeline - ERROR - Error detecting recurring patterns for MSFT: 'PriceChange'
+2025-03-18 17:06:00,232 - PatternAnalysisPipeline - ERROR - Error detecting temporal clusters for MSFT: 'SignificantEvent'
+2025-03-18 17:06:00,243 - PatternAnalysisPipeline - ERROR - Error analyzing time correlations for NVDA: 'PriceChange'
+2025-03-18 17:06:00,247 - PatternAnalysisPipeline - ERROR - Error analyzing time correlations for TSLA: 'PriceChange'
+2025-03-18 17:06:00,284 - PatternAnalysisPipeline - ERROR - Error analyzing time correlations for MSFT: 'PriceChange'
+2025-03-18 17:08:08,941 - PatternAnalysisPipeline - INFO - Pattern analysis interrupted by user
+2025-03-18 17:08:21,950 - PatternAnalysisPipeline - INFO - Loaded configuration from ..\config.json
+2025-03-18 17:08:21,951 - PatternAnalysisPipeline - INFO - Using configuration: {'min_pattern_occurrences': 2, 'price_impact_threshold': 0.1, 'significance_threshold': 0.1, 'volume_impact_threshold': 1.2, 'time_window': 5, 'time_shift_tolerance': 15, 'timezone': 'Asia/Jerusalem', 'session_times': {'pre_market': {'start': '10:00', 'end': '15:30'}, 'main_session': {'start': '15:30', 'end': '22:00'}, 'post_market': {'start': '22:00', 'end': '01:59'}}, 'parallel_processing': True, 'max_workers': None, 'cache_results': True, 'spatial_index_type': 'ball_tree', 'leaf_size': 30}
+2025-03-18 17:08:21,952 - PatternAnalysisPipeline - INFO - Loading data from cleaned_normalized_data.csv
+2025-03-18 17:08:22,059 - PatternAnalysisPipeline - INFO - Loaded 33510 rows, 7 tickers
+2025-03-18 17:08:22,060 - PatternAnalysisPipeline - INFO - Preprocessing data with vectorized operations
+2025-03-18 17:08:22,109 - PatternAnalysisPipeline - INFO - Added time_minutes column with range: 0-1435
+2025-03-18 17:08:22,146 - PatternAnalysisPipeline - INFO - Added Date and Time columns from Datetime
+2025-03-18 17:08:22,150 - PatternAnalysisPipeline - INFO - Processing 7 tickers: ['AAPL', 'AMZN', 'GOOGL', 'META', 'MSFT', 'NVDA', 'TSLA']
+2025-03-18 17:08:22,157 - PatternAnalysisPipeline - INFO - Using cache key: 115a81b5...
+2025-03-18 17:08:22,307 - Pattern_Detection_Module - INFO - Using default standard (winter) session times
+2025-03-18 17:08:22,308 - PatternAnalysisPipeline - INFO - Using parallel processing with 4 workers
+2025-03-18 17:08:22,308 - PatternAnalysisPipeline - INFO - Processing batch 1/1 (7 tickers)
+2025-03-18 17:08:31,718 - PatternAnalysisPipeline - INFO - Processing ticker: AAPL with 4800 data points
+2025-03-18 17:08:31,735 - PatternAnalysisPipeline - INFO - Processing ticker: AMZN with 4800 data points
+2025-03-18 17:08:31,849 - PatternAnalysisPipeline - INFO - Processing ticker: GOOGL with 4800 data points
+2025-03-18 17:08:32,396 - PatternAnalysisPipeline - ERROR - Error detecting recurring patterns for AMZN: Can only use .dt accessor with datetimelike values
+2025-03-18 17:08:32,404 - PatternAnalysisPipeline - ERROR - Error detecting recurring patterns for AAPL: Can only use .dt accessor with datetimelike values
+2025-03-18 17:08:32,480 - PatternAnalysisPipeline - INFO - Processing ticker: META with 4800 data points
+2025-03-18 17:08:32,805 - PatternAnalysisPipeline - ERROR - Error detecting recurring patterns for GOOGL: Can only use .dt accessor with datetimelike values
+2025-03-18 17:08:33,404 - PatternAnalysisPipeline - ERROR - Error detecting recurring patterns for META: Can only use .dt accessor with datetimelike values
+2025-03-18 17:08:48,456 - PatternAnalysisPipeline - INFO - Processing ticker: MSFT with 4755 data points
+2025-03-18 17:08:48,482 - PatternAnalysisPipeline - INFO - Processing ticker: NVDA with 4800 data points
+2025-03-18 17:08:48,501 - PatternAnalysisPipeline - INFO - Processing ticker: TSLA with 4755 data points
+2025-03-18 17:08:48,807 - PatternAnalysisPipeline - ERROR - Error detecting recurring patterns for MSFT: Can only use .dt accessor with datetimelike values
+2025-03-18 17:08:48,927 - PatternAnalysisPipeline - ERROR - Error detecting recurring patterns for TSLA: Can only use .dt accessor with datetimelike values
+2025-03-18 17:08:49,073 - PatternAnalysisPipeline - ERROR - Error detecting recurring patterns for NVDA: Can only use .dt accessor with datetimelike values
+2025-03-18 17:11:45,030 - PatternAnalysisPipeline - INFO - Pattern analysis interrupted by user
+2025-03-18 17:23:06,247 - PatternAnalysisPipeline - INFO - Loaded configuration from ..\config.json
+2025-03-18 17:23:06,248 - PatternAnalysisPipeline - INFO - Using configuration: {'min_pattern_occurrences': 2, 'price_impact_threshold': 0.1, 'significance_threshold': 0.1, 'volume_impact_threshold': 1.2, 'time_window': 5, 'time_shift_tolerance': 15, 'timezone': 'Asia/Jerusalem', 'session_times': {'pre_market': {'start': '10:00', 'end': '15:30'}, 'main_session': {'start': '15:30', 'end': '22:00'}, 'post_market': {'start': '22:00', 'end': '01:59'}}, 'parallel_processing': True, 'max_workers': None, 'cache_results': True, 'spatial_index_type': 'ball_tree', 'leaf_size': 30}
+2025-03-18 17:23:06,249 - PatternAnalysisPipeline - INFO - Loading data from cleaned_normalized_data.csv
+2025-03-18 17:23:06,344 - PatternAnalysisPipeline - INFO - Loaded 33510 rows, 7 tickers
+2025-03-18 17:23:06,344 - PatternAnalysisPipeline - INFO - Preprocessing data with vectorized operations
+2025-03-18 17:23:06,383 - PatternAnalysisPipeline - INFO - Added time_minutes column with range: 0-1435
+2025-03-18 17:23:06,416 - PatternAnalysisPipeline - INFO - Added Date and Time columns from Datetime
+2025-03-18 17:23:06,419 - PatternAnalysisPipeline - INFO - Processing 7 tickers: ['AAPL', 'AMZN', 'GOOGL', 'META', 'MSFT', 'NVDA', 'TSLA']
+2025-03-18 17:23:06,423 - PatternAnalysisPipeline - INFO - Using cache key: 115a81b5...
+2025-03-18 17:23:06,557 - Pattern_Detection_Module - INFO - Using default standard (winter) session times
+2025-03-18 17:23:06,557 - PatternAnalysisPipeline - INFO - Using parallel processing with 4 workers
+2025-03-18 17:23:06,558 - PatternAnalysisPipeline - INFO - Processing batch 1/1 (7 tickers)
+2025-03-18 17:23:13,798 - PatternAnalysisPipeline - INFO - Processing ticker: AAPL with 4800 data points
+2025-03-18 17:23:13,841 - PatternAnalysisPipeline - INFO - Processing ticker: AMZN with 4800 data points
+2025-03-18 17:23:14,090 - PatternAnalysisPipeline - INFO - Processing ticker: GOOGL with 4800 data points
+2025-03-18 17:23:14,108 - PatternAnalysisPipeline - INFO - Processing ticker: META with 4800 data points
+2025-03-18 17:23:14,572 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 01:00: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:14,611 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 01:35: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:14,633 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 01:40: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:14,709 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 11:15: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:14,718 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 11:30: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:14,799 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 13:20: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:14,802 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 13:25: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:14,809 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 13:25: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:14,813 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 13:30: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:14,826 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 00:05: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:14,837 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 00:20: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:14,842 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 14:15: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:14,861 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 14:45: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:14,863 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 01:00: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:14,866 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 01:05: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:14,881 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 15:20: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:14,896 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 15:00: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:14,900 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 15:05: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:14,910 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 02:25: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:14,938 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 11:10: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:14,940 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 16:10: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:14,949 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 16:45: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:14,950 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 11:25: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:14,957 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 17:00: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:14,965 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 11:55: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:14,980 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 17:25: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:14,988 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 11:45: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:14,991 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 11:50: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:15,008 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 12:15: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:15,028 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 13:15: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:15,064 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 13:20: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:15,072 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 13:00: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:15,114 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 19:25: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:15,120 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 19:30: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:15,121 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 13:45: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:15,132 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 19:50: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:15,138 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 20:35: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:15,146 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 20:45: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:15,148 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 15:00: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:15,152 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 20:55: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:15,154 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 21:00: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:15,158 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 15:20: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:15,163 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 15:25: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:15,167 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 14:55: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:15,170 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 20:55: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:15,179 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 15:20: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:15,179 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 21:10: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:15,184 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 15:30: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:15,210 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 16:55: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:15,222 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 16:25: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:15,235 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 22:20: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:15,243 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 17:25: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:15,246 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 22:35: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:15,261 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 22:45: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:15,304 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 16:50: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:15,306 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 16:55: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:15,325 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 18:45: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:15,379 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 19:20: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:15,385 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 19:30: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:15,446 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 19:30: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:15,455 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 20:50: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:15,459 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 20:55: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:15,475 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 21:10: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:15,536 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 20:55: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:15,550 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 21:15: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:15,565 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 22:35: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:15,593 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 22:45: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:15,606 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 23:10: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:15,621 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 23:05: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:15,655 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 23:30: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,164 - PatternAnalysisPipeline - INFO - Processing ticker: MSFT with 4755 data points
+2025-03-18 17:23:26,182 - PatternAnalysisPipeline - INFO - Processing ticker: NVDA with 4800 data points
+2025-03-18 17:23:26,202 - PatternAnalysisPipeline - INFO - Processing ticker: TSLA with 4755 data points
+2025-03-18 17:23:26,366 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 00:30: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,398 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 01:20: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,420 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 01:45: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,426 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 01:35: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,482 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 11:20: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,501 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 11:55: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,510 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 11:45: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,519 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 12:30: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,529 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 12:50: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,534 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 13:00: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,567 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 14:10: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,575 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 14:25: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,586 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 14:45: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,591 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 14:50: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,596 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 15:00: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,597 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 15:00: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,603 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 15:10: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,610 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 15:00: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,631 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 15:30: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,642 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 16:10: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,650 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 16:25: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,666 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 16:50: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,669 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 16:55: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,688 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 16:50: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,694 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 16:55: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,710 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 17:25: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,719 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 17:55: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,722 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 18:15: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,726 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 17:55: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,728 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 18:25: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,728 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 18:10: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,739 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 18:30: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,755 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 18:55: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,757 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 19:25: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,759 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 19:30: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,765 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 19:40: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,781 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 19:55: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,786 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 19:55: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,800 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 20:30: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,804 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 20:55: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,809 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 21:00: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,815 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 20:25: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,818 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 21:10: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,825 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 20:35: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,829 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 21:20: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,834 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 20:45: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,845 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 20:55: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,848 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 21:00: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,849 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 20:55: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,850 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 21:35: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,853 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 21:40: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,854 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 21:10: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,862 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 21:50: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,870 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 22:00: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,883 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 21:55: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,895 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 22:35: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,896 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 22:15: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,908 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 22:35: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,911 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 22:35: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,914 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 22:45: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,916 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 22:45: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:23:26,921 - Pattern_Detection_Module - WARNING - Error extracting dates for pattern at 23:00: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 17:26:09,940 - PatternAnalysisPipeline - INFO - Pattern analysis interrupted by user
+2025-03-18 22:04:13,104 - PatternAnalysisPipeline - INFO - Loaded configuration from ..\config.json
+2025-03-18 22:04:13,105 - PatternAnalysisPipeline - INFO - Using configuration: {'min_pattern_occurrences': 2, 'price_impact_threshold': 0.1, 'significance_threshold': 0.1, 'volume_impact_threshold': 1.2, 'time_window': 5, 'time_shift_tolerance': 15, 'timezone': 'Asia/Jerusalem', 'session_times': {'pre_market': {'start': '10:00', 'end': '15:30'}, 'main_session': {'start': '15:30', 'end': '22:00'}, 'post_market': {'start': '22:00', 'end': '01:59'}}, 'parallel_processing': True, 'max_workers': None, 'cache_results': True, 'spatial_index_type': 'ball_tree', 'leaf_size': 30}
+2025-03-18 22:04:13,106 - PatternAnalysisPipeline - INFO - Loading data from cleaned_normalized_data.csv
+2025-03-18 22:04:13,288 - PatternAnalysisPipeline - INFO - Loaded 33510 rows, 7 tickers
+2025-03-18 22:04:13,289 - PatternAnalysisPipeline - INFO - Preprocessing data with vectorized operations
+2025-03-18 22:04:13,349 - PatternAnalysisPipeline - INFO - Added time_minutes column with range: 0-1435
+2025-03-18 22:04:13,413 - PatternAnalysisPipeline - INFO - Added Date and Time columns from Datetime
+2025-03-18 22:04:13,418 - PatternAnalysisPipeline - INFO - Processing 7 tickers: ['AAPL', 'AMZN', 'GOOGL', 'META', 'MSFT', 'NVDA', 'TSLA']
+2025-03-18 22:04:13,426 - PatternAnalysisPipeline - INFO - Using cache key: 115a81b5...
+2025-03-18 22:04:13,581 - Pattern_Detection_Module - INFO - Using default standard (winter) session times
+2025-03-18 22:04:13,581 - PatternAnalysisPipeline - INFO - Using parallel processing with 4 workers
+2025-03-18 22:04:13,582 - PatternAnalysisPipeline - INFO - Processing batch 1/1 (7 tickers)
+2025-03-18 22:04:21,409 - PatternAnalysisPipeline - INFO - Processing ticker: AAPL with 4800 data points
+2025-03-18 22:04:21,458 - PatternAnalysisPipeline - INFO - Processing ticker: AMZN with 4800 data points
+2025-03-18 22:04:21,587 - PatternAnalysisPipeline - INFO - Processing ticker: GOOGL with 4800 data points
+2025-03-18 22:04:21,825 - PatternAnalysisPipeline - INFO - Processing ticker: META with 4800 data points
+2025-03-18 22:04:28,952 - PatternAnalysisPipeline - INFO - Processing ticker: MSFT with 4755 data points
+2025-03-18 22:04:28,977 - PatternAnalysisPipeline - INFO - Processing ticker: NVDA with 4800 data points
+2025-03-18 22:04:28,995 - PatternAnalysisPipeline - INFO - Processing ticker: TSLA with 4755 data points
+2025-03-18 22:58:15,076 - PatternAnalysisPipeline - INFO - Loaded configuration from ..\config.json
+2025-03-18 22:58:15,077 - PatternAnalysisPipeline - INFO - Using configuration: {'min_pattern_occurrences': 2, 'price_impact_threshold': 0.1, 'significance_threshold': 0.1, 'volume_impact_threshold': 1.2, 'time_window': 5, 'time_shift_tolerance': 15, 'timezone': 'Asia/Jerusalem', 'session_times': {'pre_market': {'start': '10:00', 'end': '15:30'}, 'main_session': {'start': '15:30', 'end': '22:00'}, 'post_market': {'start': '22:00', 'end': '01:59'}}, 'parallel_processing': True, 'max_workers': None, 'cache_results': True, 'spatial_index_type': 'ball_tree', 'leaf_size': 30}
+2025-03-18 22:58:15,077 - PatternAnalysisPipeline - INFO - Loading data from cleaned_normalized_data.csv
+2025-03-18 22:58:15,165 - PatternAnalysisPipeline - INFO - Loaded 33510 rows, 7 tickers
+2025-03-18 22:58:15,165 - PatternAnalysisPipeline - INFO - Preprocessing data with vectorized operations
+2025-03-18 22:58:15,202 - PatternAnalysisPipeline - INFO - Added time_minutes column with range: 0-1435
+2025-03-18 22:58:15,236 - PatternAnalysisPipeline - INFO - Added Date and Time columns from Datetime
+2025-03-18 22:58:15,240 - PatternAnalysisPipeline - INFO - Processing 7 tickers: ['AAPL', 'AMZN', 'GOOGL', 'META', 'MSFT', 'NVDA', 'TSLA']
+2025-03-18 22:58:15,244 - PatternAnalysisPipeline - INFO - Using cache key: 115a81b5...
+2025-03-18 22:58:15,384 - Pattern_Detection_Module - INFO - Using default standard (winter) session times
+2025-03-18 22:58:15,385 - PatternAnalysisPipeline - INFO - Using parallel processing with 4 workers
+2025-03-18 22:58:15,385 - PatternAnalysisPipeline - INFO - Processing batch 1/1 (7 tickers)
+2025-03-18 22:58:22,110 - PatternAnalysisPipeline - INFO - Processing ticker: AAPL with 4800 data points
+2025-03-18 22:58:22,220 - PatternAnalysisPipeline - INFO - Processing ticker: AMZN with 4800 data points
+2025-03-18 22:58:22,308 - PatternAnalysisPipeline - INFO - Processing ticker: GOOGL with 4800 data points
+2025-03-18 22:58:22,386 - PatternAnalysisPipeline - INFO - Processing ticker: META with 4800 data points
+2025-03-18 22:59:53,425 - PatternAnalysisPipeline - INFO - Processing ticker: MSFT with 4755 data points
+2025-03-18 22:59:53,456 - PatternAnalysisPipeline - WARNING - Error writing JSON to .cache\115a81b5feb0f6ebd5545705923ab0198c08ab98829293106ce004d0d9da2e97_GOOGL.json: Object of type date is not JSON serializable
+2025-03-18 22:59:53,457 - PatternAnalysisPipeline - WARNING - Error caching results for GOOGL
+2025-03-18 22:59:53,457 - PatternAnalysisPipeline - INFO - Progress: 1/7 (14.3%) - ETA: 9.8 minutes
+2025-03-18 22:59:53,939 - PatternAnalysisPipeline - INFO - Processing ticker: NVDA with 4800 data points
+2025-03-18 22:59:53,965 - PatternAnalysisPipeline - WARNING - Error writing JSON to .cache\115a81b5feb0f6ebd5545705923ab0198c08ab98829293106ce004d0d9da2e97_META.json: Object of type date is not JSON serializable
+2025-03-18 22:59:53,965 - PatternAnalysisPipeline - WARNING - Error caching results for META
+2025-03-18 22:59:53,965 - PatternAnalysisPipeline - INFO - Progress: 2/7 (28.6%) - ETA: 4.1 minutes
+2025-03-18 22:59:55,300 - PatternAnalysisPipeline - INFO - Processing ticker: TSLA with 4755 data points
+2025-03-18 22:59:55,310 - PatternAnalysisPipeline - WARNING - Error writing JSON to .cache\115a81b5feb0f6ebd5545705923ab0198c08ab98829293106ce004d0d9da2e97_AMZN.json: Object of type date is not JSON serializable
+2025-03-18 22:59:55,311 - PatternAnalysisPipeline - WARNING - Error caching results for AMZN
+2025-03-18 22:59:55,311 - PatternAnalysisPipeline - INFO - Progress: 3/7 (42.9%) - ETA: 2.2 minutes
+2025-03-18 22:59:58,426 - PatternAnalysisPipeline - WARNING - Error writing JSON to .cache\115a81b5feb0f6ebd5545705923ab0198c08ab98829293106ce004d0d9da2e97_AAPL.json: Object of type date is not JSON serializable
+2025-03-18 22:59:58,426 - PatternAnalysisPipeline - WARNING - Error caching results for AAPL
+2025-03-18 22:59:58,427 - PatternAnalysisPipeline - INFO - Progress: 4/7 (57.1%) - ETA: 1.3 minutes
+2025-03-18 23:01:04,956 - PatternAnalysisPipeline - WARNING - Error writing JSON to .cache\115a81b5feb0f6ebd5545705923ab0198c08ab98829293106ce004d0d9da2e97_MSFT.json: Object of type date is not JSON serializable
+2025-03-18 23:01:04,957 - PatternAnalysisPipeline - WARNING - Error caching results for MSFT
+2025-03-18 23:01:04,957 - PatternAnalysisPipeline - INFO - Progress: 5/7 (71.4%) - ETA: 1.1 minutes
+2025-03-18 23:01:08,707 - PatternAnalysisPipeline - WARNING - Error writing JSON to .cache\115a81b5feb0f6ebd5545705923ab0198c08ab98829293106ce004d0d9da2e97_NVDA.json: Object of type date is not JSON serializable
+2025-03-18 23:01:08,707 - PatternAnalysisPipeline - WARNING - Error caching results for NVDA
+2025-03-18 23:01:08,708 - PatternAnalysisPipeline - INFO - Progress: 6/7 (85.7%) - ETA: 0.5 minutes
+2025-03-18 23:01:10,202 - PatternAnalysisPipeline - WARNING - Error writing JSON to .cache\115a81b5feb0f6ebd5545705923ab0198c08ab98829293106ce004d0d9da2e97_TSLA.json: Object of type date is not JSON serializable
+2025-03-18 23:01:10,202 - PatternAnalysisPipeline - WARNING - Error caching results for TSLA
+2025-03-18 23:01:10,202 - PatternAnalysisPipeline - INFO - Progress: 7/7 (100.0%) - ETA: 0.0 minutes
+2025-03-18 23:01:11,196 - PatternAnalysisPipeline - INFO - Generating pattern summary
+2025-03-18 23:01:11,196 - PatternAnalysisPipeline - INFO - Saving results to pattern_dashboard\pattern_analysis_results
+2025-03-18 23:01:11,198 - PatternAnalysisPipeline - INFO - Results schema validation passed.
+2025-03-18 23:01:11,204 - PatternAnalysisPipeline - INFO - Saved recurring_patterns to pattern_dashboard\pattern_analysis_results\recurring_patterns.json
+2025-03-18 23:01:11,205 - PatternAnalysisPipeline - WARNING - Error writing JSON to pattern_dashboard\pattern_analysis_results\temporal_clusters.json: Object of type date is not JSON serializable
+2025-03-18 23:01:11,205 - PatternAnalysisPipeline - ERROR - Failed to save temporal_clusters to pattern_dashboard\pattern_analysis_results\temporal_clusters.json
+2025-03-18 23:01:11,206 - PatternAnalysisPipeline - INFO - Saved trend_reversals to pattern_dashboard\pattern_analysis_results\trend_reversals.json
+2025-03-18 23:01:11,352 - PatternAnalysisPipeline - INFO - Saved time_correlations to pattern_dashboard\pattern_analysis_results\time_correlations.json
+2025-03-18 23:01:11,353 - PatternAnalysisPipeline - INFO - Saved time_shifts to pattern_dashboard\pattern_analysis_results\time_shifts.json
+2025-03-18 23:01:11,354 - PatternAnalysisPipeline - INFO - Saved pattern_summary to pattern_dashboard\pattern_analysis_results\pattern_summary.json
+2025-03-18 23:01:11,355 - PatternAnalysisPipeline - INFO - Saved processing_stats to pattern_dashboard\pattern_analysis_results\processing_stats.json
+2025-03-18 23:01:11,356 - PatternAnalysisPipeline - INFO - Error report written to pattern_dashboard\pattern_analysis_results\error_report_20250318_230111.txt
+2025-03-18 23:01:11,356 - PatternAnalysisPipeline - INFO - Generating visualizations...
+2025-03-18 23:01:11,667 - PatternAnalysisPipeline - INFO - Generating HTML report
+2025-03-18 23:01:11,778 - PatternAnalysisPipeline - INFO - Generated HTML report at pattern_dashboard\pattern_analysis_results\pattern_analysis_report.html
+2025-03-18 23:01:12,006 - PatternAnalysisPipeline - INFO - Error summary visualization saved to pattern_dashboard\pattern_analysis_results\error_summary.png
+2025-03-18 23:01:12,006 - PatternAnalysisPipeline - INFO - Pattern analysis pipeline completed in 2.95 minutes
+2025-03-18 23:01:12,006 - PatternAnalysisPipeline - INFO - Results: 0 successful, 7 partial, 0 failed out of 7 tickers
+2025-03-18 23:01:12,006 - PatternAnalysisPipeline - INFO - View the report at: pattern_dashboard\pattern_analysis_results\pattern_analysis_report.html
+2025-03-18 23:20:41,293 - PatternAnalysisPipeline - INFO - Loaded configuration from ..\config.json
+2025-03-18 23:20:41,294 - PatternAnalysisPipeline - INFO - Using configuration: {'min_pattern_occurrences': 2, 'price_impact_threshold': 0.1, 'significance_threshold': 0.1, 'volume_impact_threshold': 1.2, 'time_window': 5, 'time_shift_tolerance': 15, 'timezone': 'Asia/Jerusalem', 'session_times': {'pre_market': {'start': '10:00', 'end': '15:30'}, 'main_session': {'start': '15:30', 'end': '22:00'}, 'post_market': {'start': '22:00', 'end': '01:59'}}, 'parallel_processing': True, 'max_workers': None, 'cache_results': True, 'spatial_index_type': 'ball_tree', 'leaf_size': 30}
+2025-03-18 23:20:41,294 - PatternAnalysisPipeline - INFO - Loading data from cleaned_normalized_data.csv
+2025-03-18 23:20:41,377 - PatternAnalysisPipeline - INFO - Loaded 33510 rows, 7 tickers
+2025-03-18 23:20:41,377 - PatternAnalysisPipeline - INFO - Preprocessing data with vectorized operations
+2025-03-18 23:20:41,410 - PatternAnalysisPipeline - INFO - Added time_minutes column with range: 0-1435
+2025-03-18 23:20:41,443 - PatternAnalysisPipeline - INFO - Added Date and Time columns from Datetime
+2025-03-18 23:20:41,450 - PatternAnalysisPipeline - INFO - Processing 7 tickers: ['AAPL', 'AMZN', 'GOOGL', 'META', 'MSFT', 'NVDA', 'TSLA']
+2025-03-18 23:20:41,455 - PatternAnalysisPipeline - INFO - Using cache key: 115a81b5...
+2025-03-18 23:20:41,584 - Pattern_Detection_Module - INFO - Using default standard (winter) session times
+2025-03-18 23:20:41,585 - PatternAnalysisPipeline - INFO - Using parallel processing with 4 workers
+2025-03-18 23:20:41,585 - PatternAnalysisPipeline - INFO - Processing batch 1/1 (7 tickers)
+2025-03-18 23:20:41,586 - PatternAnalysisPipeline - WARNING - Error parsing cache for AAPL: Expecting value: line 1 column 1 (char 0)
+2025-03-18 23:20:41,597 - PatternAnalysisPipeline - WARNING - Error parsing cache for AMZN: Expecting value: line 1 column 1 (char 0)
+2025-03-18 23:20:41,619 - PatternAnalysisPipeline - WARNING - Error parsing cache for GOOGL: Expecting value: line 1 column 1 (char 0)
+2025-03-18 23:20:41,629 - PatternAnalysisPipeline - WARNING - Error parsing cache for META: Expecting value: line 1 column 1 (char 0)
+2025-03-18 23:20:41,640 - PatternAnalysisPipeline - WARNING - Error parsing cache for MSFT: Expecting value: line 1 column 1 (char 0)
+2025-03-18 23:20:41,649 - PatternAnalysisPipeline - WARNING - Error parsing cache for NVDA: Expecting value: line 1 column 1 (char 0)
+2025-03-18 23:20:41,654 - PatternAnalysisPipeline - WARNING - Error parsing cache for TSLA: Expecting value: line 1 column 1 (char 0)
+2025-03-18 23:20:48,100 - PatternAnalysisPipeline - INFO - Processing ticker: AAPL with 4800 data points
+2025-03-18 23:20:48,110 - PatternAnalysisPipeline - INFO - Processing ticker: AMZN with 4800 data points
+2025-03-18 23:20:48,129 - PatternAnalysisPipeline - INFO - Processing ticker: GOOGL with 4800 data points
+2025-03-18 23:20:48,234 - PatternAnalysisPipeline - INFO - Processing ticker: META with 4800 data points
+2025-03-18 23:21:56,575 - PatternAnalysisPipeline - INFO - Processing ticker: MSFT with 4755 data points
+2025-03-18 23:21:56,597 - PatternAnalysisPipeline - WARNING - Error writing JSON to .cache\115a81b5feb0f6ebd5545705923ab0198c08ab98829293106ce004d0d9da2e97_GOOGL.json: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 23:21:56,598 - PatternAnalysisPipeline - WARNING - Error caching results for GOOGL
+2025-03-18 23:21:56,598 - PatternAnalysisPipeline - INFO - Progress: 1/7 (14.3%) - ETA: 7.5 minutes
+2025-03-18 23:21:57,576 - PatternAnalysisPipeline - INFO - Processing ticker: NVDA with 4800 data points
+2025-03-18 23:21:57,602 - PatternAnalysisPipeline - WARNING - Error writing JSON to .cache\115a81b5feb0f6ebd5545705923ab0198c08ab98829293106ce004d0d9da2e97_META.json: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 23:21:57,602 - PatternAnalysisPipeline - WARNING - Error caching results for META
+2025-03-18 23:21:57,603 - PatternAnalysisPipeline - INFO - Progress: 2/7 (28.6%) - ETA: 3.2 minutes
+2025-03-18 23:21:59,607 - PatternAnalysisPipeline - INFO - Processing ticker: TSLA with 4755 data points
+2025-03-18 23:21:59,615 - PatternAnalysisPipeline - WARNING - Error writing JSON to .cache\115a81b5feb0f6ebd5545705923ab0198c08ab98829293106ce004d0d9da2e97_AMZN.json: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 23:21:59,616 - PatternAnalysisPipeline - WARNING - Error caching results for AMZN
+2025-03-18 23:21:59,616 - PatternAnalysisPipeline - INFO - Progress: 3/7 (42.9%) - ETA: 1.7 minutes
+2025-03-18 23:22:01,710 - PatternAnalysisPipeline - WARNING - Error writing JSON to .cache\115a81b5feb0f6ebd5545705923ab0198c08ab98829293106ce004d0d9da2e97_AAPL.json: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 23:22:01,710 - PatternAnalysisPipeline - WARNING - Error caching results for AAPL
+2025-03-18 23:22:01,710 - PatternAnalysisPipeline - INFO - Progress: 4/7 (57.1%) - ETA: 1.0 minutes
+2025-03-18 23:22:51,451 - PatternAnalysisPipeline - WARNING - Error writing JSON to .cache\115a81b5feb0f6ebd5545705923ab0198c08ab98829293106ce004d0d9da2e97_MSFT.json: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 23:22:51,451 - PatternAnalysisPipeline - WARNING - Error caching results for MSFT
+2025-03-18 23:22:51,452 - PatternAnalysisPipeline - INFO - Progress: 5/7 (71.4%) - ETA: 0.9 minutes
+2025-03-18 23:22:55,495 - PatternAnalysisPipeline - WARNING - Error writing JSON to .cache\115a81b5feb0f6ebd5545705923ab0198c08ab98829293106ce004d0d9da2e97_NVDA.json: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 23:22:55,495 - PatternAnalysisPipeline - WARNING - Error caching results for NVDA
+2025-03-18 23:22:55,495 - PatternAnalysisPipeline - INFO - Progress: 6/7 (85.7%) - ETA: 0.4 minutes
+2025-03-18 23:22:56,709 - PatternAnalysisPipeline - WARNING - Error writing JSON to .cache\115a81b5feb0f6ebd5545705923ab0198c08ab98829293106ce004d0d9da2e97_TSLA.json: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 23:22:56,710 - PatternAnalysisPipeline - WARNING - Error caching results for TSLA
+2025-03-18 23:22:56,710 - PatternAnalysisPipeline - INFO - Progress: 7/7 (100.0%) - ETA: 0.0 minutes
+2025-03-18 23:22:57,382 - PatternAnalysisPipeline - INFO - Generating pattern summary
+2025-03-18 23:22:57,382 - PatternAnalysisPipeline - INFO - Saving results to pattern_dashboard\pattern_analysis_results
+2025-03-18 23:22:57,382 - PatternAnalysisPipeline - INFO - Results schema validation passed.
+2025-03-18 23:22:57,388 - PatternAnalysisPipeline - INFO - Saved recurring_patterns to pattern_dashboard\pattern_analysis_results\recurring_patterns.json
+2025-03-18 23:22:57,388 - PatternAnalysisPipeline - WARNING - Error writing JSON to pattern_dashboard\pattern_analysis_results\temporal_clusters.json: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-18 23:22:57,389 - PatternAnalysisPipeline - ERROR - Failed to save temporal_clusters to pattern_dashboard\pattern_analysis_results\temporal_clusters.json
+2025-03-18 23:22:57,389 - PatternAnalysisPipeline - INFO - Saved trend_reversals to pattern_dashboard\pattern_analysis_results\trend_reversals.json
+2025-03-18 23:22:57,474 - PatternAnalysisPipeline - INFO - Saved time_correlations to pattern_dashboard\pattern_analysis_results\time_correlations.json
+2025-03-18 23:22:57,475 - PatternAnalysisPipeline - INFO - Saved time_shifts to pattern_dashboard\pattern_analysis_results\time_shifts.json
+2025-03-18 23:22:57,476 - PatternAnalysisPipeline - INFO - Saved pattern_summary to pattern_dashboard\pattern_analysis_results\pattern_summary.json
+2025-03-18 23:22:57,476 - PatternAnalysisPipeline - INFO - Saved processing_stats to pattern_dashboard\pattern_analysis_results\processing_stats.json
+2025-03-18 23:22:57,477 - PatternAnalysisPipeline - INFO - Error report written to pattern_dashboard\pattern_analysis_results\error_report_20250318_232257.txt
+2025-03-18 23:22:57,478 - PatternAnalysisPipeline - INFO - Generating visualizations...
+2025-03-18 23:22:57,917 - PatternAnalysisPipeline - INFO - Generating HTML report
+2025-03-18 23:22:57,970 - PatternAnalysisPipeline - INFO - Generated HTML report at pattern_dashboard\pattern_analysis_results\pattern_analysis_report.html
+2025-03-18 23:22:58,165 - PatternAnalysisPipeline - INFO - Error summary visualization saved to pattern_dashboard\pattern_analysis_results\error_summary.png
+2025-03-18 23:22:58,166 - PatternAnalysisPipeline - INFO - Pattern analysis pipeline completed in 2.28 minutes
+2025-03-18 23:22:58,166 - PatternAnalysisPipeline - INFO - Results: 0 successful, 7 partial, 0 failed out of 7 tickers
+2025-03-18 23:22:58,166 - PatternAnalysisPipeline - INFO - View the report at: pattern_dashboard\pattern_analysis_results\pattern_analysis_report.html
+2025-03-19 06:14:43,318 - PatternAnalysisPipeline - INFO - Loaded configuration from ..\config.json
+2025-03-19 06:14:43,318 - PatternAnalysisPipeline - INFO - Using configuration: {'min_pattern_occurrences': 2, 'price_impact_threshold': 0.1, 'significance_threshold': 0.1, 'volume_impact_threshold': 1.2, 'time_window': 5, 'time_shift_tolerance': 15, 'timezone': 'Asia/Jerusalem', 'session_times': {'pre_market': {'start': '10:00', 'end': '15:30'}, 'main_session': {'start': '15:30', 'end': '22:00'}, 'post_market': {'start': '22:00', 'end': '01:59'}}, 'parallel_processing': True, 'max_workers': None, 'cache_results': True, 'spatial_index_type': 'ball_tree', 'leaf_size': 30}
+2025-03-19 06:14:43,319 - PatternAnalysisPipeline - INFO - Loading data from cleaned_normalized_data.csv
+2025-03-19 06:14:43,405 - PatternAnalysisPipeline - INFO - Loaded 33510 rows, 7 tickers
+2025-03-19 06:14:43,405 - PatternAnalysisPipeline - INFO - Preprocessing data with vectorized operations
+2025-03-19 06:14:43,440 - PatternAnalysisPipeline - INFO - Added time_minutes column with range: 0-1435
+2025-03-19 06:14:43,474 - PatternAnalysisPipeline - INFO - Added Date and Time columns from Datetime
+2025-03-19 06:14:43,477 - PatternAnalysisPipeline - INFO - Processing 7 tickers: ['AAPL', 'AMZN', 'GOOGL', 'META', 'MSFT', 'NVDA', 'TSLA']
+2025-03-19 06:14:43,482 - PatternAnalysisPipeline - INFO - Using cache key: 115a81b5...
+2025-03-19 06:14:43,608 - Pattern_Detection_Module - INFO - Using default standard (winter) session times
+2025-03-19 06:14:43,609 - PatternAnalysisPipeline - INFO - Using parallel processing with 4 workers
+2025-03-19 06:14:43,609 - PatternAnalysisPipeline - INFO - Processing batch 1/1 (7 tickers)
+2025-03-19 06:14:43,611 - PatternAnalysisPipeline - WARNING - Error parsing cache for AAPL: Expecting value: line 1 column 1 (char 0)
+2025-03-19 06:14:43,627 - PatternAnalysisPipeline - WARNING - Error parsing cache for AMZN: Expecting value: line 1 column 1 (char 0)
+2025-03-19 06:14:43,651 - PatternAnalysisPipeline - WARNING - Error parsing cache for GOOGL: Expecting value: line 1 column 1 (char 0)
+2025-03-19 06:14:43,662 - PatternAnalysisPipeline - WARNING - Error parsing cache for META: Expecting value: line 1 column 1 (char 0)
+2025-03-19 06:14:43,682 - PatternAnalysisPipeline - WARNING - Error parsing cache for MSFT: Expecting value: line 1 column 1 (char 0)
+2025-03-19 06:14:43,688 - PatternAnalysisPipeline - WARNING - Error parsing cache for NVDA: Expecting value: line 1 column 1 (char 0)
+2025-03-19 06:14:43,694 - PatternAnalysisPipeline - WARNING - Error parsing cache for TSLA: Expecting value: line 1 column 1 (char 0)
+2025-03-19 06:14:49,340 - PatternAnalysisPipeline - INFO - Processing ticker: AAPL with 4800 data points
+2025-03-19 06:14:49,358 - PatternAnalysisPipeline - INFO - Processing ticker: AMZN with 4800 data points
+2025-03-19 06:14:49,394 - PatternAnalysisPipeline - INFO - Processing ticker: GOOGL with 4800 data points
+2025-03-19 06:14:49,527 - PatternAnalysisPipeline - INFO - Processing ticker: META with 4800 data points
+2025-03-19 06:15:57,860 - PatternAnalysisPipeline - INFO - Processing ticker: MSFT with 4755 data points
+2025-03-19 06:15:57,894 - PatternAnalysisPipeline - WARNING - Error writing JSON to .cache\115a81b5feb0f6ebd5545705923ab0198c08ab98829293106ce004d0d9da2e97_GOOGL.json: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-19 06:15:57,894 - PatternAnalysisPipeline - WARNING - Error caching results for GOOGL
+2025-03-19 06:15:57,894 - PatternAnalysisPipeline - INFO - Progress: 1/7 (14.3%) - ETA: 7.5 minutes
+2025-03-19 06:15:59,789 - PatternAnalysisPipeline - INFO - Processing ticker: NVDA with 4800 data points
+2025-03-19 06:15:59,824 - PatternAnalysisPipeline - WARNING - Error writing JSON to .cache\115a81b5feb0f6ebd5545705923ab0198c08ab98829293106ce004d0d9da2e97_META.json: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-19 06:15:59,824 - PatternAnalysisPipeline - WARNING - Error caching results for META
+2025-03-19 06:15:59,825 - PatternAnalysisPipeline - INFO - Progress: 2/7 (28.6%) - ETA: 3.2 minutes
+2025-03-19 06:16:00,956 - PatternAnalysisPipeline - WARNING - Error writing JSON to .cache\115a81b5feb0f6ebd5545705923ab0198c08ab98829293106ce004d0d9da2e97_AMZN.json: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-19 06:16:00,956 - PatternAnalysisPipeline - WARNING - Error caching results for AMZN
+2025-03-19 06:16:00,956 - PatternAnalysisPipeline - INFO - Progress: 3/7 (42.9%) - ETA: 1.7 minutes
+2025-03-19 06:16:00,956 - PatternAnalysisPipeline - INFO - Processing ticker: TSLA with 4755 data points
+2025-03-19 06:16:03,810 - PatternAnalysisPipeline - WARNING - Error writing JSON to .cache\115a81b5feb0f6ebd5545705923ab0198c08ab98829293106ce004d0d9da2e97_AAPL.json: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-19 06:16:03,810 - PatternAnalysisPipeline - WARNING - Error caching results for AAPL
+2025-03-19 06:16:03,810 - PatternAnalysisPipeline - INFO - Progress: 4/7 (57.1%) - ETA: 1.0 minutes
+2025-03-19 06:17:18,847 - PatternAnalysisPipeline - WARNING - Error writing JSON to .cache\115a81b5feb0f6ebd5545705923ab0198c08ab98829293106ce004d0d9da2e97_MSFT.json: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-19 06:17:18,848 - PatternAnalysisPipeline - WARNING - Error caching results for MSFT
+2025-03-19 06:17:18,848 - PatternAnalysisPipeline - INFO - Progress: 5/7 (71.4%) - ETA: 1.0 minutes
+2025-03-19 06:17:28,903 - PatternAnalysisPipeline - WARNING - Error writing JSON to .cache\115a81b5feb0f6ebd5545705923ab0198c08ab98829293106ce004d0d9da2e97_NVDA.json: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-19 06:17:28,903 - PatternAnalysisPipeline - WARNING - Error caching results for NVDA
+2025-03-19 06:17:28,904 - PatternAnalysisPipeline - INFO - Progress: 6/7 (85.7%) - ETA: 0.5 minutes
+2025-03-19 06:17:31,543 - PatternAnalysisPipeline - WARNING - Error writing JSON to .cache\115a81b5feb0f6ebd5545705923ab0198c08ab98829293106ce004d0d9da2e97_TSLA.json: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-19 06:17:31,543 - PatternAnalysisPipeline - WARNING - Error caching results for TSLA
+2025-03-19 06:17:31,544 - PatternAnalysisPipeline - INFO - Progress: 7/7 (100.0%) - ETA: 0.0 minutes
+2025-03-19 06:17:32,467 - PatternAnalysisPipeline - INFO - Generating pattern summary
+2025-03-19 06:17:32,468 - PatternAnalysisPipeline - INFO - Saving results to pattern_dashboard\pattern_analysis_results
+2025-03-19 06:17:32,469 - PatternAnalysisPipeline - INFO - Results schema validation passed.
+2025-03-19 06:17:32,475 - PatternAnalysisPipeline - INFO - Saved recurring_patterns to pattern_dashboard\pattern_analysis_results\recurring_patterns.json
+2025-03-19 06:17:32,476 - PatternAnalysisPipeline - WARNING - Error writing JSON to pattern_dashboard\pattern_analysis_results\temporal_clusters.json: isinstance() arg 2 must be a type, a tuple of types, or a union
+2025-03-19 06:17:32,476 - PatternAnalysisPipeline - ERROR - Failed to save temporal_clusters to pattern_dashboard\pattern_analysis_results\temporal_clusters.json
+2025-03-19 06:17:32,477 - PatternAnalysisPipeline - INFO - Saved trend_reversals to pattern_dashboard\pattern_analysis_results\trend_reversals.json
+2025-03-19 06:17:32,640 - PatternAnalysisPipeline - INFO - Saved time_correlations to pattern_dashboard\pattern_analysis_results\time_correlations.json
+2025-03-19 06:17:32,642 - PatternAnalysisPipeline - INFO - Saved time_shifts to pattern_dashboard\pattern_analysis_results\time_shifts.json
+2025-03-19 06:17:32,643 - PatternAnalysisPipeline - INFO - Saved pattern_summary to pattern_dashboard\pattern_analysis_results\pattern_summary.json
+2025-03-19 06:17:32,644 - PatternAnalysisPipeline - INFO - Saved processing_stats to pattern_dashboard\pattern_analysis_results\processing_stats.json
+2025-03-19 06:17:32,646 - PatternAnalysisPipeline - INFO - Error report written to pattern_dashboard\pattern_analysis_results\error_report_20250319_061732.txt
+2025-03-19 06:17:32,646 - PatternAnalysisPipeline - INFO - Generating visualizations...
+2025-03-19 06:17:33,652 - PatternAnalysisPipeline - INFO - Generating HTML report
+2025-03-19 06:17:34,188 - PatternAnalysisPipeline - INFO - Generated HTML report at pattern_dashboard\pattern_analysis_results\pattern_analysis_report.html
+2025-03-19 06:17:34,900 - PatternAnalysisPipeline - INFO - Error summary visualization saved to pattern_dashboard\pattern_analysis_results\error_summary.png
+2025-03-19 06:17:34,900 - PatternAnalysisPipeline - INFO - Pattern analysis pipeline completed in 2.86 minutes
+2025-03-19 06:17:34,901 - PatternAnalysisPipeline - INFO - Results: 0 successful, 7 partial, 0 failed out of 7 tickers
+2025-03-19 06:17:34,901 - PatternAnalysisPipeline - INFO - View the report at: pattern_dashboard\pattern_analysis_results\pattern_analysis_report.html
+2025-03-19 11:27:00,427 - PatternAnalysisPipeline - INFO - Loaded configuration from ..\config.json
+2025-03-19 11:27:00,428 - PatternAnalysisPipeline - INFO - Using configuration: {'min_pattern_occurrences': 2, 'price_impact_threshold': 0.1, 'significance_threshold': 0.1, 'volume_impact_threshold': 1.2, 'time_window': 5, 'time_shift_tolerance': 15, 'timezone': 'Asia/Jerusalem', 'session_times': {'pre_market': {'start': '10:00', 'end': '15:30'}, 'main_session': {'start': '15:30', 'end': '22:00'}, 'post_market': {'start': '22:00', 'end': '01:59'}}, 'parallel_processing': True, 'max_workers': None, 'cache_results': True, 'spatial_index_type': 'ball_tree', 'leaf_size': 30}
+2025-03-19 11:27:00,429 - PatternAnalysisPipeline - INFO - Loading data from cleaned_normalized_data.csv
+2025-03-19 11:27:00,550 - PatternAnalysisPipeline - INFO - Loaded 33510 rows, 7 tickers
+2025-03-19 11:27:00,550 - PatternAnalysisPipeline - INFO - Preprocessing data with vectorized operations
+2025-03-19 11:27:00,587 - PatternAnalysisPipeline - INFO - Added time_minutes column with range: 0-1435
+2025-03-19 11:27:00,632 - PatternAnalysisPipeline - INFO - Added Date and Time columns from Datetime
+2025-03-19 11:27:00,635 - PatternAnalysisPipeline - INFO - Processing 7 tickers: ['AAPL', 'AMZN', 'GOOGL', 'META', 'MSFT', 'NVDA', 'TSLA']
+2025-03-19 11:27:00,644 - PatternAnalysisPipeline - INFO - Using cache key: 115a81b5...
+2025-03-19 11:27:01,052 - Pattern_Detection_Module - INFO - Using default standard (winter) session times
+2025-03-19 11:27:01,053 - PatternAnalysisPipeline - INFO - Using parallel processing with 4 workers
+2025-03-19 11:27:01,053 - PatternAnalysisPipeline - INFO - Processing batch 1/1 (7 tickers)
+2025-03-19 11:27:01,054 - PatternAnalysisPipeline - WARNING - Error parsing cache for AAPL: Expecting value: line 1 column 1 (char 0)
+2025-03-19 11:27:01,068 - PatternAnalysisPipeline - WARNING - Error parsing cache for AMZN: Expecting value: line 1 column 1 (char 0)
+2025-03-19 11:27:01,096 - PatternAnalysisPipeline - WARNING - Error parsing cache for GOOGL: Expecting value: line 1 column 1 (char 0)
+2025-03-19 11:27:01,106 - PatternAnalysisPipeline - WARNING - Error parsing cache for META: Expecting value: line 1 column 1 (char 0)
+2025-03-19 11:27:01,122 - PatternAnalysisPipeline - WARNING - Error parsing cache for MSFT: Expecting value: line 1 column 1 (char 0)
+2025-03-19 11:27:01,129 - PatternAnalysisPipeline - WARNING - Error parsing cache for NVDA: Expecting value: line 1 column 1 (char 0)
+2025-03-19 11:27:01,135 - PatternAnalysisPipeline - WARNING - Error parsing cache for TSLA: Expecting value: line 1 column 1 (char 0)
+2025-03-19 11:27:07,247 - PatternAnalysisPipeline - INFO - Processing ticker: AAPL with 4800 data points
+2025-03-19 11:27:07,284 - PatternAnalysisPipeline - INFO - Processing ticker: AMZN with 4800 data points
+2025-03-19 11:27:07,307 - PatternAnalysisPipeline - INFO - Processing ticker: GOOGL with 4800 data points
+2025-03-19 11:27:07,570 - PatternAnalysisPipeline - INFO - Processing ticker: META with 4800 data points
+2025-03-19 11:28:13,981 - PatternAnalysisPipeline - INFO - Processing ticker: MSFT with 4755 data points
+2025-03-19 11:28:14,438 - PatternAnalysisPipeline - INFO - Progress: 1/7 (14.3%) - ETA: 7.4 minutes
+2025-03-19 11:28:14,549 - PatternAnalysisPipeline - INFO - Processing ticker: NVDA with 4800 data points
+2025-03-19 11:28:15,016 - PatternAnalysisPipeline - INFO - Progress: 2/7 (28.6%) - ETA: 3.1 minutes
+2025-03-19 11:28:16,823 - PatternAnalysisPipeline - INFO - Processing ticker: TSLA with 4755 data points
+2025-03-19 11:28:17,325 - PatternAnalysisPipeline - INFO - Progress: 3/7 (42.9%) - ETA: 1.7 minutes
+2025-03-19 11:28:20,145 - PatternAnalysisPipeline - INFO - Progress: 4/7 (57.1%) - ETA: 1.0 minutes
+2025-03-19 11:29:22,218 - PatternAnalysisPipeline - INFO - Progress: 5/7 (71.4%) - ETA: 0.9 minutes
+2025-03-19 11:29:26,724 - PatternAnalysisPipeline - INFO - Progress: 6/7 (85.7%) - ETA: 0.4 minutes
+2025-03-19 11:29:34,065 - PatternAnalysisPipeline - INFO - Progress: 7/7 (100.0%) - ETA: 0.0 minutes
+2025-03-19 11:29:35,467 - PatternAnalysisPipeline - INFO - Generating pattern summary
+2025-03-19 11:29:35,468 - PatternAnalysisPipeline - INFO - Saving results to pattern_dashboard\pattern_analysis_results
+2025-03-19 11:29:35,470 - PatternAnalysisPipeline - INFO - Results schema validation passed.
+2025-03-19 11:29:35,500 - PatternAnalysisPipeline - INFO - Saved recurring_patterns to pattern_dashboard\pattern_analysis_results\recurring_patterns.json
+2025-03-19 11:29:39,691 - PatternAnalysisPipeline - INFO - Saved temporal_clusters to pattern_dashboard\pattern_analysis_results\temporal_clusters.json
+2025-03-19 11:29:39,845 - PatternAnalysisPipeline - INFO - Saved trend_reversals to pattern_dashboard\pattern_analysis_results\trend_reversals.json
+2025-03-19 11:29:41,944 - PatternAnalysisPipeline - INFO - Saved time_correlations to pattern_dashboard\pattern_analysis_results\time_correlations.json
+2025-03-19 11:29:41,956 - PatternAnalysisPipeline - INFO - Saved time_shifts to pattern_dashboard\pattern_analysis_results\time_shifts.json
+2025-03-19 11:29:41,958 - PatternAnalysisPipeline - INFO - Saved pattern_summary to pattern_dashboard\pattern_analysis_results\pattern_summary.json
+2025-03-19 11:29:41,959 - PatternAnalysisPipeline - INFO - Saved processing_stats to pattern_dashboard\pattern_analysis_results\processing_stats.json
+2025-03-19 11:29:41,966 - PatternAnalysisPipeline - INFO - Error report written to pattern_dashboard\pattern_analysis_results\error_report_20250319_112941.txt
+2025-03-19 11:29:41,967 - PatternAnalysisPipeline - INFO - Generating visualizations...
+2025-03-19 11:29:42,858 - PatternAnalysisPipeline - INFO - Generating HTML report
+2025-03-19 11:29:42,952 - PatternAnalysisPipeline - INFO - Generated HTML report at pattern_dashboard\pattern_analysis_results\pattern_analysis_report.html
+2025-03-19 11:29:43,467 - PatternAnalysisPipeline - INFO - Error summary visualization saved to pattern_dashboard\pattern_analysis_results\error_summary.png
+2025-03-19 11:29:43,495 - PatternAnalysisPipeline - INFO - Pattern analysis pipeline completed in 2.72 minutes
+2025-03-19 11:29:43,496 - PatternAnalysisPipeline - INFO - Results: 0 successful, 7 partial, 0 failed out of 7 tickers
+2025-03-19 11:29:43,496 - PatternAnalysisPipeline - INFO - View the report at: pattern_dashboard\pattern_analysis_results\pattern_analysis_report.html
+2025-03-19 11:33:40,573 - PatternAnalysisPipeline - INFO - Loaded configuration from ..\config.json
+2025-03-19 11:33:40,574 - PatternAnalysisPipeline - INFO - Using configuration: {'min_pattern_occurrences': 2, 'price_impact_threshold': 0.1, 'significance_threshold': 0.1, 'volume_impact_threshold': 1.2, 'time_window': 5, 'time_shift_tolerance': 15, 'timezone': 'Asia/Jerusalem', 'session_times': {'pre_market': {'start': '10:00', 'end': '15:30'}, 'main_session': {'start': '15:30', 'end': '22:00'}, 'post_market': {'start': '22:00', 'end': '01:59'}}, 'parallel_processing': True, 'max_workers': None, 'cache_results': True, 'spatial_index_type': 'ball_tree', 'leaf_size': 30}
+2025-03-19 11:33:40,574 - PatternAnalysisPipeline - INFO - Loading data from cleaned_normalized_data.csv
+2025-03-19 11:33:40,662 - PatternAnalysisPipeline - INFO - Loaded 33510 rows, 7 tickers
+2025-03-19 11:33:40,663 - PatternAnalysisPipeline - INFO - Preprocessing data with vectorized operations
+2025-03-19 11:33:40,694 - PatternAnalysisPipeline - INFO - Added time_minutes column with range: 0-1435
+2025-03-19 11:33:40,725 - PatternAnalysisPipeline - INFO - Added Date and Time columns from Datetime
+2025-03-19 11:33:40,728 - PatternAnalysisPipeline - INFO - Processing 7 tickers: ['AAPL', 'AMZN', 'GOOGL', 'META', 'MSFT', 'NVDA', 'TSLA']
+2025-03-19 11:33:40,733 - PatternAnalysisPipeline - INFO - Using cache key: 115a81b5...
+2025-03-19 11:33:40,864 - Pattern_Detection_Module - INFO - Using default standard (winter) session times
+2025-03-19 11:33:40,864 - PatternAnalysisPipeline - INFO - Using parallel processing with 4 workers
+2025-03-19 11:33:40,864 - PatternAnalysisPipeline - INFO - Processing batch 1/1 (7 tickers)
+2025-03-19 11:33:40,894 - PatternAnalysisPipeline - INFO - Using cached results for AAPL
+2025-03-19 11:33:40,894 - PatternAnalysisPipeline - INFO - Progress: 1/7 (14.3%) - ETA: 0.0 minutes
+2025-03-19 11:33:40,919 - PatternAnalysisPipeline - INFO - Using cached results for AMZN
+2025-03-19 11:33:40,920 - PatternAnalysisPipeline - INFO - Progress: 2/7 (28.6%) - ETA: 0.0 minutes
+2025-03-19 11:33:40,941 - PatternAnalysisPipeline - INFO - Using cached results for GOOGL
+2025-03-19 11:33:40,942 - PatternAnalysisPipeline - INFO - Progress: 3/7 (42.9%) - ETA: 0.0 minutes
+2025-03-19 11:33:40,965 - PatternAnalysisPipeline - INFO - Using cached results for META
+2025-03-19 11:33:40,965 - PatternAnalysisPipeline - INFO - Progress: 4/7 (57.1%) - ETA: 0.0 minutes
+2025-03-19 11:33:40,986 - PatternAnalysisPipeline - INFO - Using cached results for MSFT
+2025-03-19 11:33:40,986 - PatternAnalysisPipeline - INFO - Progress: 5/7 (71.4%) - ETA: 0.0 minutes
+2025-03-19 11:33:41,017 - PatternAnalysisPipeline - INFO - Using cached results for NVDA
+2025-03-19 11:33:41,017 - PatternAnalysisPipeline - INFO - Progress: 6/7 (85.7%) - ETA: 0.0 minutes
+2025-03-19 11:33:41,051 - PatternAnalysisPipeline - INFO - Using cached results for TSLA
+2025-03-19 11:33:41,052 - PatternAnalysisPipeline - INFO - Progress: 7/7 (100.0%) - ETA: 0.0 minutes
+2025-03-19 11:33:41,052 - PatternAnalysisPipeline - INFO - Generating pattern summary
+2025-03-19 11:33:41,052 - PatternAnalysisPipeline - INFO - Saving results to pattern_dashboard\pattern_analysis_results
+2025-03-19 11:33:41,052 - PatternAnalysisPipeline - INFO - Results schema validation passed.
+2025-03-19 11:33:41,062 - PatternAnalysisPipeline - INFO - Saved recurring_patterns to pattern_dashboard\pattern_analysis_results\recurring_patterns.json
+2025-03-19 11:33:41,950 - PatternAnalysisPipeline - INFO - Saved temporal_clusters to pattern_dashboard\pattern_analysis_results\temporal_clusters.json
+2025-03-19 11:33:41,951 - PatternAnalysisPipeline - INFO - Saved trend_reversals to pattern_dashboard\pattern_analysis_results\trend_reversals.json
+2025-03-19 11:33:42,330 - PatternAnalysisPipeline - INFO - Saved time_correlations to pattern_dashboard\pattern_analysis_results\time_correlations.json
+2025-03-19 11:33:42,331 - PatternAnalysisPipeline - INFO - Saved time_shifts to pattern_dashboard\pattern_analysis_results\time_shifts.json
+2025-03-19 11:33:42,332 - PatternAnalysisPipeline - INFO - Saved pattern_summary to pattern_dashboard\pattern_analysis_results\pattern_summary.json
+2025-03-19 11:33:42,332 - PatternAnalysisPipeline - INFO - Saved processing_stats to pattern_dashboard\pattern_analysis_results\processing_stats.json
+2025-03-19 11:33:42,333 - PatternAnalysisPipeline - INFO - Error report written to pattern_dashboard\pattern_analysis_results\error_report_20250319_113342.txt
+2025-03-19 11:33:42,334 - PatternAnalysisPipeline - INFO - Generating visualizations...
+2025-03-19 11:33:42,625 - PatternAnalysisPipeline - INFO - Generating HTML report
+2025-03-19 11:33:42,680 - PatternAnalysisPipeline - INFO - Generated HTML report at pattern_dashboard\pattern_analysis_results\pattern_analysis_report.html
+2025-03-19 11:33:42,884 - PatternAnalysisPipeline - INFO - Error summary visualization saved to pattern_dashboard\pattern_analysis_results\error_summary.png
+2025-03-19 11:33:42,884 - PatternAnalysisPipeline - INFO - Pattern analysis pipeline completed in 0.04 minutes
+2025-03-19 11:33:42,884 - PatternAnalysisPipeline - INFO - Results: 7 successful, 0 partial, 0 failed out of 7 tickers
+2025-03-19 11:33:42,884 - PatternAnalysisPipeline - INFO - View the report at: pattern_dashboard\pattern_analysis_results\pattern_analysis_report.html
+2025-03-19 11:35:22,354 - PatternAnalysisPipeline - INFO - Loaded configuration from ..\config.json
+2025-03-19 11:35:22,354 - PatternAnalysisPipeline - INFO - Using configuration: {'min_pattern_occurrences': 2, 'price_impact_threshold': 0.1, 'significance_threshold': 0.1, 'volume_impact_threshold': 1.2, 'time_window': 5, 'time_shift_tolerance': 15, 'timezone': 'Asia/Jerusalem', 'session_times': {'pre_market': {'start': '10:00', 'end': '15:30'}, 'main_session': {'start': '15:30', 'end': '22:00'}, 'post_market': {'start': '22:00', 'end': '01:59'}}, 'parallel_processing': True, 'max_workers': None, 'cache_results': True, 'spatial_index_type': 'ball_tree', 'leaf_size': 30}
+2025-03-19 11:35:22,355 - PatternAnalysisPipeline - INFO - Loading data from cleaned_normalized_data.csv
+2025-03-19 11:35:22,455 - PatternAnalysisPipeline - INFO - Loaded 33510 rows, 7 tickers
+2025-03-19 11:35:22,455 - PatternAnalysisPipeline - INFO - Preprocessing data with vectorized operations
+2025-03-19 11:35:22,487 - PatternAnalysisPipeline - INFO - Added time_minutes column with range: 0-1435
+2025-03-19 11:35:22,518 - PatternAnalysisPipeline - INFO - Added Date and Time columns from Datetime
+2025-03-19 11:35:22,523 - PatternAnalysisPipeline - INFO - Processing 7 tickers: ['AAPL', 'AMZN', 'GOOGL', 'META', 'MSFT', 'NVDA', 'TSLA']
+2025-03-19 11:35:22,528 - PatternAnalysisPipeline - INFO - Using cache key: 115a81b5...
+2025-03-19 11:35:22,654 - Pattern_Detection_Module - INFO - Using default standard (winter) session times
+2025-03-19 11:35:22,655 - PatternAnalysisPipeline - INFO - Using parallel processing with 4 workers
+2025-03-19 11:35:22,655 - PatternAnalysisPipeline - INFO - Processing batch 1/1 (7 tickers)
+2025-03-19 11:35:22,685 - PatternAnalysisPipeline - INFO - Using cached results for AAPL
+2025-03-19 11:35:22,686 - PatternAnalysisPipeline - INFO - Progress: 1/7 (14.3%) - ETA: 0.0 minutes
+2025-03-19 11:35:22,711 - PatternAnalysisPipeline - INFO - Using cached results for AMZN
+2025-03-19 11:35:22,712 - PatternAnalysisPipeline - INFO - Progress: 2/7 (28.6%) - ETA: 0.0 minutes
+2025-03-19 11:35:22,734 - PatternAnalysisPipeline - INFO - Using cached results for GOOGL
+2025-03-19 11:35:22,735 - PatternAnalysisPipeline - INFO - Progress: 3/7 (42.9%) - ETA: 0.0 minutes
+2025-03-19 11:35:22,761 - PatternAnalysisPipeline - INFO - Using cached results for META
+2025-03-19 11:35:22,761 - PatternAnalysisPipeline - INFO - Progress: 4/7 (57.1%) - ETA: 0.0 minutes
+2025-03-19 11:35:22,782 - PatternAnalysisPipeline - INFO - Using cached results for MSFT
+2025-03-19 11:35:22,782 - PatternAnalysisPipeline - INFO - Progress: 5/7 (71.4%) - ETA: 0.0 minutes
+2025-03-19 11:35:22,813 - PatternAnalysisPipeline - INFO - Using cached results for NVDA
+2025-03-19 11:35:22,813 - PatternAnalysisPipeline - INFO - Progress: 6/7 (85.7%) - ETA: 0.0 minutes
+2025-03-19 11:35:22,848 - PatternAnalysisPipeline - INFO - Using cached results for TSLA
+2025-03-19 11:35:22,848 - PatternAnalysisPipeline - INFO - Progress: 7/7 (100.0%) - ETA: 0.0 minutes
+2025-03-19 11:35:22,848 - PatternAnalysisPipeline - INFO - Generating pattern summary
+2025-03-19 11:35:22,848 - PatternAnalysisPipeline - INFO - Saving results to pattern_dashboard\pattern_analysis_results
+2025-03-19 11:35:22,849 - PatternAnalysisPipeline - INFO - Results schema validation passed.
+2025-03-19 11:35:22,860 - PatternAnalysisPipeline - INFO - Saved recurring_patterns to pattern_dashboard\pattern_analysis_results\recurring_patterns.json
+2025-03-19 11:35:23,763 - PatternAnalysisPipeline - INFO - Saved temporal_clusters to pattern_dashboard\pattern_analysis_results\temporal_clusters.json
+2025-03-19 11:35:23,764 - PatternAnalysisPipeline - INFO - Saved trend_reversals to pattern_dashboard\pattern_analysis_results\trend_reversals.json
+2025-03-19 11:35:24,094 - PatternAnalysisPipeline - INFO - Saved time_correlations to pattern_dashboard\pattern_analysis_results\time_correlations.json
+2025-03-19 11:35:24,095 - PatternAnalysisPipeline - INFO - Saved time_shifts to pattern_dashboard\pattern_analysis_results\time_shifts.json
+2025-03-19 11:35:24,096 - PatternAnalysisPipeline - INFO - Saved pattern_summary to pattern_dashboard\pattern_analysis_results\pattern_summary.json
+2025-03-19 11:35:24,097 - PatternAnalysisPipeline - INFO - Saved processing_stats to pattern_dashboard\pattern_analysis_results\processing_stats.json
+2025-03-19 11:35:24,098 - PatternAnalysisPipeline - INFO - Error report written to pattern_dashboard\pattern_analysis_results\error_report_20250319_113524.txt
+2025-03-19 11:35:24,098 - PatternAnalysisPipeline - INFO - Generating visualizations...
+2025-03-19 11:35:24,417 - PatternAnalysisPipeline - INFO - Generating HTML report
+2025-03-19 11:35:24,472 - PatternAnalysisPipeline - INFO - Generated HTML report at pattern_dashboard\pattern_analysis_results\pattern_analysis_report.html
+2025-03-19 11:35:24,684 - PatternAnalysisPipeline - INFO - Error summary visualization saved to pattern_dashboard\pattern_analysis_results\error_summary.png
+2025-03-19 11:35:24,685 - PatternAnalysisPipeline - INFO - Pattern analysis pipeline completed in 0.04 minutes
+2025-03-19 11:35:24,685 - PatternAnalysisPipeline - INFO - Results: 7 successful, 0 partial, 0 failed out of 7 tickers
+2025-03-19 11:35:24,685 - PatternAnalysisPipeline - INFO - View the report at: pattern_dashboard\pattern_analysis_results\pattern_analysis_report.html
+2025-03-19 11:56:46,789 - PatternAnalysisPipeline - INFO - Loaded configuration from ..\config.json
+2025-03-19 11:56:46,789 - PatternAnalysisPipeline - INFO - Using configuration: {'min_pattern_occurrences': 2, 'price_impact_threshold': 0.1, 'significance_threshold': 0.1, 'volume_impact_threshold': 1.2, 'time_window': 5, 'time_shift_tolerance': 15, 'timezone': 'Asia/Jerusalem', 'session_times': {'pre_market': {'start': '10:00', 'end': '15:30'}, 'main_session': {'start': '15:30', 'end': '22:00'}, 'post_market': {'start': '22:00', 'end': '01:59'}}, 'parallel_processing': True, 'max_workers': None, 'cache_results': True, 'spatial_index_type': 'ball_tree', 'leaf_size': 30}
+2025-03-19 11:56:46,789 - PatternAnalysisPipeline - INFO - Loading data from cleaned_normalized_data.csv
+2025-03-19 11:56:46,872 - PatternAnalysisPipeline - INFO - Loaded 33510 rows, 7 tickers
+2025-03-19 11:56:46,872 - PatternAnalysisPipeline - INFO - Preprocessing data with vectorized operations
+2025-03-19 11:56:46,903 - PatternAnalysisPipeline - INFO - Added time_minutes column with range: 0-1435
+2025-03-19 11:56:46,933 - PatternAnalysisPipeline - INFO - Added Date and Time columns from Datetime
+2025-03-19 11:56:46,936 - PatternAnalysisPipeline - INFO - Processing 7 tickers: ['AAPL', 'AMZN', 'GOOGL', 'META', 'MSFT', 'NVDA', 'TSLA']
+2025-03-19 11:56:46,941 - PatternAnalysisPipeline - INFO - Using cache key: 115a81b5...
+2025-03-19 11:56:47,070 - Pattern_Detection_Module - INFO - Using default standard (winter) session times
+2025-03-19 11:56:47,071 - PatternAnalysisPipeline - INFO - Using parallel processing with 4 workers
+2025-03-19 11:56:47,071 - PatternAnalysisPipeline - INFO - Processing batch 1/1 (7 tickers)
+2025-03-19 11:56:47,102 - PatternAnalysisPipeline - INFO - Using cached results for AAPL
+2025-03-19 11:56:47,102 - PatternAnalysisPipeline - INFO - Progress: 1/7 (14.3%) - ETA: 0.0 minutes
+2025-03-19 11:56:47,128 - PatternAnalysisPipeline - INFO - Using cached results for AMZN
+2025-03-19 11:56:47,128 - PatternAnalysisPipeline - INFO - Progress: 2/7 (28.6%) - ETA: 0.0 minutes
+2025-03-19 11:56:47,150 - PatternAnalysisPipeline - INFO - Using cached results for GOOGL
+2025-03-19 11:56:47,150 - PatternAnalysisPipeline - INFO - Progress: 3/7 (42.9%) - ETA: 0.0 minutes
+2025-03-19 11:56:47,175 - PatternAnalysisPipeline - INFO - Using cached results for META
+2025-03-19 11:56:47,175 - PatternAnalysisPipeline - INFO - Progress: 4/7 (57.1%) - ETA: 0.0 minutes
+2025-03-19 11:56:47,196 - PatternAnalysisPipeline - INFO - Using cached results for MSFT
+2025-03-19 11:56:47,196 - PatternAnalysisPipeline - INFO - Progress: 5/7 (71.4%) - ETA: 0.0 minutes
+2025-03-19 11:56:47,235 - PatternAnalysisPipeline - INFO - Using cached results for NVDA
+2025-03-19 11:56:47,235 - PatternAnalysisPipeline - INFO - Progress: 6/7 (85.7%) - ETA: 0.0 minutes
+2025-03-19 11:56:47,270 - PatternAnalysisPipeline - INFO - Using cached results for TSLA
+2025-03-19 11:56:47,270 - PatternAnalysisPipeline - INFO - Progress: 7/7 (100.0%) - ETA: -0.0 minutes
+2025-03-19 11:56:47,270 - PatternAnalysisPipeline - INFO - Generating pattern summary
+2025-03-19 11:56:47,270 - PatternAnalysisPipeline - INFO - Saving results to pattern_dashboard\pattern_analysis_results
+2025-03-19 11:56:47,271 - PatternAnalysisPipeline - INFO - Results schema validation passed.
+2025-03-19 11:56:47,282 - PatternAnalysisPipeline - INFO - Saved recurring_patterns to pattern_dashboard\pattern_analysis_results\recurring_patterns.json
+2025-03-19 11:56:48,129 - PatternAnalysisPipeline - INFO - Saved temporal_clusters to pattern_dashboard\pattern_analysis_results\temporal_clusters.json
+2025-03-19 11:56:48,130 - PatternAnalysisPipeline - INFO - Saved trend_reversals to pattern_dashboard\pattern_analysis_results\trend_reversals.json
+2025-03-19 11:56:48,462 - PatternAnalysisPipeline - INFO - Saved time_correlations to pattern_dashboard\pattern_analysis_results\time_correlations.json
+2025-03-19 11:56:48,464 - PatternAnalysisPipeline - INFO - Saved time_shifts to pattern_dashboard\pattern_analysis_results\time_shifts.json
+2025-03-19 11:56:48,465 - PatternAnalysisPipeline - INFO - Saved pattern_summary to pattern_dashboard\pattern_analysis_results\pattern_summary.json
+2025-03-19 11:56:48,466 - PatternAnalysisPipeline - INFO - Saved processing_stats to pattern_dashboard\pattern_analysis_results\processing_stats.json
+2025-03-19 11:56:48,467 - PatternAnalysisPipeline - INFO - Error report written to pattern_dashboard\pattern_analysis_results\error_report_20250319_115648.txt
+2025-03-19 11:56:48,467 - PatternAnalysisPipeline - INFO - Generating visualizations...
+2025-03-19 11:56:48,777 - PatternAnalysisPipeline - INFO - Generating HTML report
+2025-03-19 11:56:48,831 - PatternAnalysisPipeline - INFO - Generated HTML report at pattern_dashboard\pattern_analysis_results\pattern_analysis_report.html
+2025-03-19 11:56:49,009 - PatternAnalysisPipeline - INFO - Error summary visualization saved to pattern_dashboard\pattern_analysis_results\error_summary.png
+2025-03-19 11:56:49,009 - PatternAnalysisPipeline - INFO - Pattern analysis pipeline completed in 0.04 minutes
+2025-03-19 11:56:49,009 - PatternAnalysisPipeline - INFO - Results: 7 successful, 0 partial, 0 failed out of 7 tickers
+2025-03-19 11:56:49,010 - PatternAnalysisPipeline - INFO - View the report at: pattern_dashboard\pattern_analysis_results\pattern_analysis_report.html
+2025-03-19 11:57:27,507 - PatternAnalysisPipeline - INFO - Loaded configuration from ..\config.json
+2025-03-19 11:57:27,508 - PatternAnalysisPipeline - INFO - Using configuration: {'min_pattern_occurrences': 2, 'price_impact_threshold': 0.1, 'significance_threshold': 0.1, 'volume_impact_threshold': 1.2, 'time_window': 5, 'time_shift_tolerance': 15, 'timezone': 'Asia/Jerusalem', 'session_times': {'pre_market': {'start': '10:00', 'end': '15:30'}, 'main_session': {'start': '15:30', 'end': '22:00'}, 'post_market': {'start': '22:00', 'end': '01:59'}}, 'parallel_processing': True, 'max_workers': None, 'cache_results': True, 'spatial_index_type': 'ball_tree', 'leaf_size': 30}
+2025-03-19 11:57:27,508 - PatternAnalysisPipeline - INFO - Loading data from cleaned_normalized_data.csv
+2025-03-19 11:57:27,594 - PatternAnalysisPipeline - INFO - Loaded 33510 rows, 7 tickers
+2025-03-19 11:57:27,594 - PatternAnalysisPipeline - INFO - Preprocessing data with vectorized operations
+2025-03-19 11:57:27,626 - PatternAnalysisPipeline - INFO - Added time_minutes column with range: 0-1435
+2025-03-19 11:57:27,658 - PatternAnalysisPipeline - INFO - Added Date and Time columns from Datetime
+2025-03-19 11:57:27,661 - PatternAnalysisPipeline - INFO - Processing 7 tickers: ['AAPL', 'AMZN', 'GOOGL', 'META', 'MSFT', 'NVDA', 'TSLA']
+2025-03-19 11:57:27,667 - PatternAnalysisPipeline - INFO - Using cache key: 115a81b5...
+2025-03-19 11:57:27,807 - Pattern_Detection_Module - INFO - Using default standard (winter) session times
+2025-03-19 11:57:27,808 - PatternAnalysisPipeline - INFO - Using parallel processing with 4 workers
+2025-03-19 11:57:27,808 - PatternAnalysisPipeline - INFO - Processing batch 1/1 (7 tickers)
+2025-03-19 11:57:27,837 - PatternAnalysisPipeline - INFO - Using cached results for AAPL
+2025-03-19 11:57:27,837 - PatternAnalysisPipeline - INFO - Progress: 1/7 (14.3%) - ETA: 0.0 minutes
+2025-03-19 11:57:27,864 - PatternAnalysisPipeline - INFO - Using cached results for AMZN
+2025-03-19 11:57:27,864 - PatternAnalysisPipeline - INFO - Progress: 2/7 (28.6%) - ETA: 0.0 minutes
+2025-03-19 11:57:27,885 - PatternAnalysisPipeline - INFO - Using cached results for GOOGL
+2025-03-19 11:57:27,885 - PatternAnalysisPipeline - INFO - Progress: 3/7 (42.9%) - ETA: 0.0 minutes
+2025-03-19 11:57:27,910 - PatternAnalysisPipeline - INFO - Using cached results for META
+2025-03-19 11:57:27,910 - PatternAnalysisPipeline - INFO - Progress: 4/7 (57.1%) - ETA: 0.0 minutes
+2025-03-19 11:57:27,932 - PatternAnalysisPipeline - INFO - Using cached results for MSFT
+2025-03-19 11:57:27,932 - PatternAnalysisPipeline - INFO - Progress: 5/7 (71.4%) - ETA: 0.0 minutes
+2025-03-19 11:57:27,964 - PatternAnalysisPipeline - INFO - Using cached results for NVDA
+2025-03-19 11:57:27,965 - PatternAnalysisPipeline - INFO - Progress: 6/7 (85.7%) - ETA: 0.0 minutes
+2025-03-19 11:57:27,999 - PatternAnalysisPipeline - INFO - Using cached results for TSLA
+2025-03-19 11:57:27,999 - PatternAnalysisPipeline - INFO - Progress: 7/7 (100.0%) - ETA: 0.0 minutes
+2025-03-19 11:57:27,999 - PatternAnalysisPipeline - INFO - Generating pattern summary
+2025-03-19 11:57:27,999 - PatternAnalysisPipeline - INFO - Saving results to pattern_dashboard\pattern_analysis_results
+2025-03-19 11:57:28,000 - PatternAnalysisPipeline - INFO - Results schema validation passed.
+2025-03-19 11:57:28,015 - PatternAnalysisPipeline - INFO - Saved recurring_patterns to pattern_dashboard\pattern_analysis_results\recurring_patterns.json
+2025-03-19 11:57:29,094 - PatternAnalysisPipeline - INFO - Saved temporal_clusters to pattern_dashboard\pattern_analysis_results\temporal_clusters.json
+2025-03-19 11:57:29,095 - PatternAnalysisPipeline - INFO - Saved trend_reversals to pattern_dashboard\pattern_analysis_results\trend_reversals.json
+2025-03-19 11:57:29,463 - PatternAnalysisPipeline - INFO - Saved time_correlations to pattern_dashboard\pattern_analysis_results\time_correlations.json
+2025-03-19 11:57:29,464 - PatternAnalysisPipeline - INFO - Saved time_shifts to pattern_dashboard\pattern_analysis_results\time_shifts.json
+2025-03-19 11:57:29,464 - PatternAnalysisPipeline - INFO - Saved pattern_summary to pattern_dashboard\pattern_analysis_results\pattern_summary.json
+2025-03-19 11:57:29,465 - PatternAnalysisPipeline - INFO - Saved processing_stats to pattern_dashboard\pattern_analysis_results\processing_stats.json
+2025-03-19 11:57:29,466 - PatternAnalysisPipeline - INFO - Error report written to pattern_dashboard\pattern_analysis_results\error_report_20250319_115729.txt
+2025-03-19 11:57:29,467 - PatternAnalysisPipeline - INFO - Generating visualizations...
+2025-03-19 11:57:29,833 - PatternAnalysisPipeline - INFO - Generating HTML report
+2025-03-19 11:57:29,887 - PatternAnalysisPipeline - INFO - Generated HTML report at pattern_dashboard\pattern_analysis_results\pattern_analysis_report.html
+2025-03-19 11:57:30,077 - PatternAnalysisPipeline - INFO - Error summary visualization saved to pattern_dashboard\pattern_analysis_results\error_summary.png
+2025-03-19 11:57:30,077 - PatternAnalysisPipeline - INFO - Pattern analysis pipeline completed in 0.04 minutes
+2025-03-19 11:57:30,077 - PatternAnalysisPipeline - INFO - Results: 7 successful, 0 partial, 0 failed out of 7 tickers
+2025-03-19 11:57:30,077 - PatternAnalysisPipeline - INFO - View the report at: pattern_dashboard\pattern_analysis_results\pattern_analysis_report.html

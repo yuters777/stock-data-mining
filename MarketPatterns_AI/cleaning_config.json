@@ -1,0 +1,40 @@
+{
+    "columns_to_validate": [
+        "Open",
+        "High",
+        "Low",
+        "Close",
+        "Volume"
+    ],
+    "validation_thresholds": {
+        "Open": [
+            0,
+            null
+        ],
+        "High": [
+            0,
+            null
+        ],
+        "Low": [
+            0,
+            null
+        ],
+        "Close": [
+            0,
+            null
+        ],
+        "Volume": [
+            0,
+            null
+        ]
+    },
+    "scaling_method": "StandardScaler",
+    "anomaly_detection": {
+        "method": "Z-Score",
+        "z_threshold": 3,
+        "isolation_forest": {
+            "contamination": 0.05,
+            "random_state": 42
+        }
+    }
+}

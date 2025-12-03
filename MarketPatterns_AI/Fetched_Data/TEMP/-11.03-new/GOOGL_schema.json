@@ -1,0 +1,70 @@
+{
+  "columns": {
+    "Datetime": {
+      "dtype": "datetime64[ns]",
+      "sample": "2025-02-10 11:00:00",
+      "description": "Date and time of the price data in 'YYYY-MM-DD HH:MM' format (Israel Standard Time)"
+    },
+    "Open": {
+      "dtype": "float64",
+      "sample": "184.56",
+      "description": "Opening price for the time period"
+    },
+    "High": {
+      "dtype": "float64",
+      "sample": "186.62",
+      "description": "Highest price during the time period"
+    },
+    "Low": {
+      "dtype": "float64",
+      "sample": "184.56",
+      "description": "Lowest price during the time period"
+    },
+    "Close": {
+      "dtype": "float64",
+      "sample": "185.47",
+      "description": "Closing price for the time period"
+    },
+    "Volume": {
+      "dtype": "int64",
+      "sample": "106852",
+      "description": "Number of shares traded during the time period"
+    },
+    "Ticker": {
+      "dtype": "object",
+      "sample": "GOOGL",
+      "description": "Stock ticker symbol"
+    }
+  },
+  "rows": 3840,
+  "date_range": "2025-02-10 11:00:00 to 2025-03-11 02:55:00",
+  "tickers": [
+    "GOOGL"
+  ],
+  "statistics": {
+    "Open": {
+      "min": 163.97,
+      "max": 217.67,
+      "mean": 177.72432291666667,
+      "median": 178.62
+    },
+    "High": {
+      "min": 164.36,
+      "max": 225.67,
+      "mean": 178.00468229166665,
+      "median": 179.03
+    },
+    "Low": {
+      "min": 155.06,
+      "max": 187.54,
+      "mean": 177.39514322916665,
+      "median": 178.055
+    },
+    "Close": {
+      "min": 163.97,
+      "max": 196.26,
+      "mean": 177.71238020833334,
+      "median": 178.64
+    }
+  }
+}

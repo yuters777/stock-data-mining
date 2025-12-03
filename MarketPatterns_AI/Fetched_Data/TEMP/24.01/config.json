@@ -1,0 +1,10 @@
+{
+  "log_file": "D:\\Google Drive\\!_Projects\\2025\\Market Pattern Analysis AI Agent\\MarketPatterns_AI\\Fetched_Data\\fetch_SP500_Data.log",
+  "data_dir": "D:\\Google Drive\\!_Projects\\2025\\Market Pattern Analysis AI Agent\\MarketPatterns_AI\\Fetched_Data",
+  "combined_file_name": "combined_sp500_all_data_5min.csv",
+  "tickers": ["^GSPC", "AAPL", "MSFT", "GOOGL", "AMZN", "NVDA", "TSLA", "META"],
+  "yahoo_params": {
+    "period": "60d",
+    "interval": "5m"
+  }
+}

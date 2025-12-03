@@ -1,0 +1,70 @@
+{
+  "columns": {
+    "Datetime": {
+      "dtype": "datetime64[ns]",
+      "sample": "2025-02-10 11:00:00",
+      "description": "Date and time of the price data in 'YYYY-MM-DD HH:MM' format (Israel Standard Time)"
+    },
+    "Open": {
+      "dtype": "float64",
+      "sample": "229.8",
+      "description": "Opening price for the time period"
+    },
+    "High": {
+      "dtype": "float64",
+      "sample": "230.1",
+      "description": "Highest price during the time period"
+    },
+    "Low": {
+      "dtype": "float64",
+      "sample": "229.18",
+      "description": "Lowest price during the time period"
+    },
+    "Close": {
+      "dtype": "float64",
+      "sample": "230.0",
+      "description": "Closing price for the time period"
+    },
+    "Volume": {
+      "dtype": "int64",
+      "sample": "12297",
+      "description": "Number of shares traded during the time period"
+    },
+    "Ticker": {
+      "dtype": "object",
+      "sample": "AMZN",
+      "description": "Stock ticker symbol"
+    }
+  },
+  "rows": 3840,
+  "date_range": "2025-02-10 11:00:00 to 2025-03-11 02:55:00",
+  "tickers": [
+    "AMZN"
+  ],
+  "statistics": {
+    "Open": {
+      "min": 190.92,
+      "max": 233.83,
+      "mean": 216.48948437500002,
+      "median": 215.34
+    },
+    "High": {
+      "min": 191.4,
+      "max": 251.74,
+      "mean": 216.8358932291667,
+      "median": 215.875
+    },
+    "Low": {
+      "min": 165.18,
+      "max": 233.65,
+      "mean": 216.07083333333333,
+      "median": 215.0
+    },
+    "Close": {
+      "min": 190.85,
+      "max": 233.82,
+      "mean": 216.48334114583335,
+      "median": 215.315
+    }
+  }
+}

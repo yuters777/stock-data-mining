@@ -1,0 +1,10 @@
+{
+  "total_tickers": 7,
+  "successful_tickers": 7,
+  "partial_success_tickers": 0,
+  "failed_tickers": 0,
+  "success_rate": 100.0,
+  "partial_success_rate": 0.0,
+  "failure_rate": 0.0,
+  "processing_time_minutes": 0.008213460445404053
+}

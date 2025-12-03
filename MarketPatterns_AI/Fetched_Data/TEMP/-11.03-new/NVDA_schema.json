@@ -1,0 +1,70 @@
+{
+  "columns": {
+    "Datetime": {
+      "dtype": "datetime64[ns]",
+      "sample": "2025-02-10 11:00:00",
+      "description": "Date and time of the price data in 'YYYY-MM-DD HH:MM' format (Israel Standard Time)"
+    },
+    "Open": {
+      "dtype": "float64",
+      "sample": "130.3",
+      "description": "Opening price for the time period"
+    },
+    "High": {
+      "dtype": "float64",
+      "sample": "130.75",
+      "description": "Highest price during the time period"
+    },
+    "Low": {
+      "dtype": "float64",
+      "sample": "129.67",
+      "description": "Lowest price during the time period"
+    },
+    "Close": {
+      "dtype": "float64",
+      "sample": "130.3",
+      "description": "Closing price for the time period"
+    },
+    "Volume": {
+      "dtype": "int64",
+      "sample": "205254",
+      "description": "Number of shares traded during the time period"
+    },
+    "Ticker": {
+      "dtype": "object",
+      "sample": "NVDA",
+      "description": "Stock ticker symbol"
+    }
+  },
+  "rows": 3840,
+  "date_range": "2025-02-10 11:00:00 to 2025-03-11 02:55:00",
+  "tickers": [
+    "NVDA"
+  ],
+  "statistics": {
+    "Open": {
+      "min": 103.1,
+      "max": 165.25,
+      "mean": 127.50322135416667,
+      "median": 130.775
+    },
+    "High": {
+      "min": 104.7,
+      "max": 905.54,
+      "mean": 128.27163281249997,
+      "median": 131.0
+    },
+    "Low": {
+      "min": 74.35,
+      "max": 142.06,
+      "mean": 126.91301822916667,
+      "median": 130.39499999999998
+    },
+    "Close": {
+      "min": 104.66,
+      "max": 143.02,
+      "mean": 127.49146614583333,
+      "median": 130.78
+    }
+  }
+}

@@ -1,0 +1,182 @@
+{
+  "AAPL": [
+    {
+      "time": "11:40",
+      "occurrences": 121,
+      "mean_price_change": 0.20064784200618108,
+      "direction_consistency": 0.7355371900826446,
+      "consistent_direction": "down",
+      "sample_dates": [
+        "2025-02-10",
+        "2025-02-11",
+        "2025-02-12",
+        "2025-02-13",
+        "2025-02-14"
+      ]
+    },
+    {
+      "time": "02:50",
+      "occurrences": 93,
+      "mean_price_change": -0.140339146830541,
+      "direction_consistency": 0.7096774193548387,
+      "consistent_direction": "down",
+      "sample_dates": [
+        "2025-02-12",
+        "2025-02-13",
+        "2025-02-14",
+        "2025-02-15",
+        "2025-02-19"
+      ]
+    }
+  ],
+  "AMZN": [
+    {
+      "time": "16:20",
+      "occurrences": 121,
+      "mean_price_change": -3.490055861524271,
+      "direction_consistency": 0.7272727272727273,
+      "consistent_direction": "down",
+      "sample_dates": [
+        "2025-02-10",
+        "2025-02-11",
+        "2025-02-12",
+        "2025-02-13",
+        "2025-02-28"
+      ]
+    },
+    {
+      "time": "00:45",
+      "occurrences": 121,
+      "mean_price_change": 1.4554557865001285,
+      "direction_consistency": 0.7024793388429752,
+      "consistent_direction": "up",
+      "sample_dates": [
+        "2025-02-22",
+        "2025-02-14",
+        "2025-02-12",
+        "2025-02-20",
+        "2025-02-19"
+      ]
+    }
+  ],
+  "GOOGL": [
+    {
+      "time": "16:10",
+      "occurrences": 121,
+      "mean_price_change": -4.580725914107267,
+      "direction_consistency": 0.71900826446281,
+      "consistent_direction": "down",
+      "sample_dates": [
+        "2025-02-10",
+        "2025-02-12",
+        "2025-02-13",
+        "2025-02-14",
+        "2025-02-18"
+      ]
+    },
+    {
+      "time": "13:45",
+      "occurrences": 121,
+      "mean_price_change": -1.7655627252522912,
+      "direction_consistency": 0.7107438016528925,
+      "consistent_direction": "down",
+      "sample_dates": [
+        "2025-02-10",
+        "2025-02-11",
+        "2025-02-12",
+        "2025-02-13",
+        "2025-02-14"
+      ]
+    },
+    {
+      "time": "16:30",
+      "occurrences": 121,
+      "mean_price_change": -6.3391799693023865,
+      "direction_consistency": 0.7024793388429752,
+      "consistent_direction": "down",
+      "sample_dates": [
+        "2025-02-11",
+        "2025-02-10",
+        "2025-02-12",
+        "2025-02-13",
+        "2025-02-14"
+      ]
+    }
+  ],
+  "META": [],
+  "MSFT": [],
+  "NVDA": [
+    {
+      "time": "22:15",
+      "occurrences": 121,
+      "mean_price_change": 0.2210921529730908,
+      "direction_consistency": 0.743801652892562,
+      "consistent_direction": "down",
+      "sample_dates": [
+        "2025-02-10",
+        "2025-02-11",
+        "2025-02-12",
+        "2025-02-13",
+        "2025-02-18"
+      ]
+    },
+    {
+      "time": "01:45",
+      "occurrences": 121,
+      "mean_price_change": -1.7704177991855194,
+      "direction_consistency": 0.7024793388429752,
+      "consistent_direction": "down",
+      "sample_dates": [
+        "2025-02-21",
+        "2025-02-15",
+        "2025-02-12",
+        "2025-02-19",
+        "2025-02-13"
+      ]
+    },
+    {
+      "time": "14:00",
+      "occurrences": 121,
+      "mean_price_change": 0.23721079053031888,
+      "direction_consistency": 0.7024793388429752,
+      "consistent_direction": "up",
+      "sample_dates": [
+        "2025-02-12",
+        "2025-02-18",
+        "2025-02-13",
+        "2025-02-11",
+        "2025-02-14"
+      ]
+    }
+  ],
+  "TSLA": [
+    {
+      "time": "22:00",
+      "occurrences": 121,
+      "mean_price_change": -1.4172034377581308,
+      "direction_consistency": 0.743801652892562,
+      "consistent_direction": "down",
+      "sample_dates": [
+        "2025-02-10",
+        "2025-02-11",
+        "2025-02-12",
+        "2025-02-14",
+        "2025-02-18"
+      ]
+    },
+    {
+      "time": "15:50",
+      "occurrences": 121,
+      "mean_price_change": -0.46898084290961806,
+      "direction_consistency": 0.7024793388429752,
+      "consistent_direction": "down",
+      "sample_dates": [
+        "2025-02-10",
+        "2025-02-11",
+        "2025-02-12",
+        "2025-02-13",
+        "2025-02-14"
+      ]
+    }
+  ]
+}

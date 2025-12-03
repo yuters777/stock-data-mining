@@ -1,0 +1,53 @@
+{
+  "processed_tickers": [
+    "AAPL",
+    "MSFT",
+    "GOOGL",
+    "AMZN",
+    "NVDA",
+    "TSLA",
+    "META"
+  ],
+  "total_tickers": 7,
+  "total_rows": 257705,
+  "rows_per_ticker": {
+    "AAPL": 36828,
+    "MSFT": 36782,
+    "GOOGL": 36828,
+    "AMZN": 36828,
+    "NVDA": 36828,
+    "TSLA": 36783,
+    "META": 36828
+  },
+  "missing_values": {
+    "Datetime": 0,
+    "Open": 0,
+    "High": 0,
+    "Low": 0,
+    "Close": 0,
+    "Volume": 0,
+    "Ticker": 0
+  },
+  "api_calls_today": 7,
+  "processing_times": {
+    "AAPL": "12.6s",
+    "MSFT": "6.6s",
+    "TSLA": "12.0s",
+    "META": "12.0s",
+    "NVDA": "12.0s",
+    "GOOGL": "12.0s",
+    "AMZN": "6.3s"
+  },
+  "generated_at": "2025-12-03 03:30:44",
+  "start_date": "2025-02-10 11:00:00",
+  "end_date": "2025-11-13 02:55:00",
+  "avg_interval_minutes": {
+    "AAPL": 10.8,
+    "AMZN": 10.8,
+    "GOOGL": 10.8,
+    "META": 10.8,
+    "MSFT": 10.8,
+    "NVDA": 10.8,
+    "TSLA": 10.8
+  }
+}

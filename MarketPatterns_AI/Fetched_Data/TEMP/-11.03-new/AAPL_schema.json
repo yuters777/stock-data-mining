@@ -1,0 +1,70 @@
+{
+  "columns": {
+    "Datetime": {
+      "dtype": "datetime64[ns]",
+      "sample": "2025-02-10 11:00:00",
+      "description": "Date and time of the price data in 'YYYY-MM-DD HH:MM' format (Israel Standard Time)"
+    },
+    "Open": {
+      "dtype": "float64",
+      "sample": "228.31",
+      "description": "Opening price for the time period"
+    },
+    "High": {
+      "dtype": "float64",
+      "sample": "228.95",
+      "description": "Highest price during the time period"
+    },
+    "Low": {
+      "dtype": "float64",
+      "sample": "227.6",
+      "description": "Lowest price during the time period"
+    },
+    "Close": {
+      "dtype": "float64",
+      "sample": "228.74",
+      "description": "Closing price for the time period"
+    },
+    "Volume": {
+      "dtype": "int64",
+      "sample": "6744",
+      "description": "Number of shares traded during the time period"
+    },
+    "Ticker": {
+      "dtype": "object",
+      "sample": "AAPL",
+      "description": "Stock ticker symbol"
+    }
+  },
+  "rows": 3840,
+  "date_range": "2025-02-10 11:00:00 to 2025-03-11 02:55:00",
+  "tickers": [
+    "AAPL"
+  ],
+  "statistics": {
+    "Open": {
+      "min": 215.83,
+      "max": 249.58,
+      "mean": 239.35205208333335,
+      "median": 239.785
+    },
+    "High": {
+      "min": 224.95,
+      "max": 265.14,
+      "mean": 239.65222916666664,
+      "median": 240.2
+    },
+    "Low": {
+      "min": 210.38,
+      "max": 249.25,
+      "mean": 239.01644010416666,
+      "median": 239.345
+    },
+    "Close": {
+      "min": 224.48,
+      "max": 258.88,
+      "mean": 239.35475260416666,
+      "median": 239.76
+    }
+  }
+}

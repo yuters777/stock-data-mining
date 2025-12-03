@@ -1,0 +1,135 @@
+{
+  "4f90fa548790150248627b18f7cf1281b3ae630430134e5abe1bc1289817b156": {
+    "created": "2025-03-18T00:27:53.847477",
+    "data_stats": {
+      "rows": 31610,
+      "tickers": 7,
+      "columns": [
+        "Datetime",
+        "Open",
+        "High",
+        "Low",
+        "Close",
+        "Volume",
+        "Ticker",
+        "time_minutes",
+        "returns",
+        "volume_change",
+        "volatility",
+        "ma5",
+        "ma20",
+        "momentum"
+      ],
+      "start_date": "2024-11-04T16:30:00",
+      "end_date": "2025-01-31T22:55:00"
+    },
+    "config": {
+      "min_pattern_occurrences": 3,
+      "price_impact_threshold": 0.2,
+      "significance_threshold": 0.05,
+      "volume_impact_threshold": 1.5,
+      "time_window": 5,
+      "time_shift_tolerance": 15,
+      "timezone": "Asia/Jerusalem",
+      "session_times": null,
+      "parallel_processing": true,
+      "max_workers": null,
+      "cache_results": true,
+      "spatial_index_type": "ball_tree",
+      "leaf_size": 30
+    },
+    "ticker": "all"
+  },
+  "df4cecc31aaa6db5e95bfce1765f83d06c6b260b65d7c6d4f4fa3bfd82dea617": {
+    "created": "2025-03-18T16:49:10.610013",
+    "data_stats": {
+      "rows": 33510,
+      "tickers": 7,
+      "columns": [
+        "Datetime",
+        "Open",
+        "High",
+        "Low",
+        "Close",
+        "Volume",
+        "Ticker",
+        "time_minutes",
+        "returns",
+        "volume_change",
+        "volatility",
+        "ma5",
+        "ma20",
+        "momentum"
+      ],
+      "start_date": "2025-02-10T11:00:00",
+      "end_date": "2025-03-18T02:55:00"
+    },
+    "config": {
+      "min_pattern_occurrences": 3,
+      "price_impact_threshold": 0.2,
+      "significance_threshold": 0.05,
+      "volume_impact_threshold": 1.5,
+      "time_window": 5,
+      "time_shift_tolerance": 15,
+      "timezone": "Asia/Jerusalem",
+      "session_times": null,
+      "parallel_processing": true,
+      "max_workers": null,
+      "cache_results": true,
+      "spatial_index_type": "ball_tree",
+      "leaf_size": 30
+    },
+    "ticker": "all"
+  },
+  "115a81b5feb0f6ebd5545705923ab0198c08ab98829293106ce004d0d9da2e97": {
+    "created": "2025-03-19T11:57:27.665702",
+    "data_stats": {
+      "rows": 33510,
+      "tickers": 7,
+      "columns": [
+        "Datetime",
+        "Open",
+        "High",
+        "Low",
+        "Close",
+        "Volume",
+        "Ticker",
+        "Date",
+        "Time",
+        "time_minutes",
+        "returns"
+      ],
+      "start_date": "2025-02-10T11:00:00",
+      "end_date": "2025-03-18T02:55:00"
+    },
+    "config": {
+      "min_pattern_occurrences": 2,
+      "price_impact_threshold": 0.1,
+      "significance_threshold": 0.1,
+      "volume_impact_threshold": 1.2,
+      "time_window": 5,
+      "time_shift_tolerance": 15,
+      "timezone": "Asia/Jerusalem",
+      "session_times": {
+        "pre_market": {
+          "start": "10:00",
+          "end": "15:30"
+        },
+        "main_session": {
+          "start": "15:30",
+          "end": "22:00"
+        },
+        "post_market": {
+          "start": "22:00",
+          "end": "01:59"
+        }
+      },
+      "parallel_processing": true,
+      "max_workers": null,
+      "cache_results": true,
+      "spatial_index_type": "ball_tree",
+      "leaf_size": 30
+    },
+    "ticker": "all"
+  }
+}

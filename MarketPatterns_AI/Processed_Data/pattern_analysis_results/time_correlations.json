@@ -1,0 +1,2503 @@
+{
+  "META": [],
+  "AAPL": [],
+  "GOOGL": [],
+  "AMZN": [],
+  "MSFT": [],
+  "NVDA": [],
+  "TSLA": [
+    {
+      "time1": "16:30",
+      "time2": "16:35",
+      "time1_minutes": 990,
+      "time2_minutes": 995,
+      "correlation": -0.7879022895303623,
+      "p_value": 1.3167245072054357e-13,
+      "sample_size": 59
+    },
+    {
+      "time1": "16:30",
+      "time2": "16:40",
+      "time1_minutes": 990,
+      "time2_minutes": 1000,
+      "correlation": -0.9030538998863779,
+      "p_value": 0.0,
+      "sample_size": 59
+    },
+    {
+      "time1": "16:30",
+      "time2": "16:45",
+      "time1_minutes": 990,
+      "time2_minutes": 1005,
+      "correlation": 0.7950732186506969,
+      "p_value": 5.484501741648273e-14,
+      "sample_size": 59
+    },
+    {
+      "time1": "16:30",
+      "time2": "20:00",
+      "time1_minutes": 990,
+      "time2_minutes": 1200,
+      "correlation": -0.7537022972573227,
+      "p_value": 1.3210321725409813e-11,
+      "sample_size": 57
+    },
+    {
+      "time1": "16:35",
+      "time2": "16:40",
+      "time1_minutes": 995,
+      "time2_minutes": 1000,
+      "correlation": 0.9000889571774711,
+      "p_value": 0.0,
+      "sample_size": 60
+    },
+    {
+      "time1": "16:35",
+      "time2": "16:45",
+      "time1_minutes": 995,
+      "time2_minutes": 1005,
+      "correlation": -0.7713042994795586,
+      "p_value": 5.562217353372034e-13,
+      "sample_size": 60
+    },
+    {
+      "time1": "16:35",
+      "time2": "18:00",
+      "time1_minutes": 995,
+      "time2_minutes": 1080,
+      "correlation": -0.7088778094578289,
+      "p_value": 2.331763671037379e-10,
+      "sample_size": 60
+    },
+    {
+      "time1": "16:35",
+      "time2": "18:20",
+      "time1_minutes": 995,
+      "time2_minutes": 1100,
+      "correlation": -0.8297772042782368,
+      "p_value": 2.220446049250313e-16,
+      "sample_size": 60
+    },
+    {
+      "time1": "16:35",
+      "time2": "19:15",
+      "time1_minutes": 995,
+      "time2_minutes": 1155,
+      "correlation": -0.7050411323002334,
+      "p_value": 3.2098568247818093e-10,
+      "sample_size": 60
+    },
+    {
+      "time1": "16:40",
+      "time2": "16:45",
+      "time1_minutes": 1000,
+      "time2_minutes": 1005,
+      "correlation": -0.9012787768296419,
+      "p_value": 0.0,
+      "sample_size": 60
+    },
+    {
+      "time1": "16:40",
+      "time2": "18:00",
+      "time1_minutes": 1000,
+      "time2_minutes": 1080,
+      "correlation": -0.7537616797418136,
+      "p_value": 3.632649736573512e-12,
+      "sample_size": 60
+    },
+    {
+      "time1": "16:40",
+      "time2": "18:20",
+      "time1_minutes": 1000,
+      "time2_minutes": 1100,
+      "correlation": -0.7226257099851966,
+      "p_value": 7.103984067668989e-11,
+      "sample_size": 60
+    },
+    {
+      "time1": "16:40",
+      "time2": "20:00",
+      "time1_minutes": 1000,
+      "time2_minutes": 1200,
+      "correlation": 0.7559340943775975,
+      "p_value": 6.892930670687747e-12,
+      "sample_size": 58
+    },
+    {
+      "time1": "16:45",
+      "time2": "18:55",
+      "time1_minutes": 1005,
+      "time2_minutes": 1135,
+      "correlation": -0.710933940455591,
+      "p_value": 1.9605628232000072e-10,
+      "sample_size": 60
+    },
+    {
+      "time1": "16:45",
+      "time2": "20:00",
+      "time1_minutes": 1005,
+      "time2_minutes": 1200,
+      "correlation": -0.7712414307894482,
+      "p_value": 1.4064305275951483e-12,
+      "sample_size": 58
+    },
+    {
+      "time1": "16:55",
+      "time2": "17:00",
+      "time1_minutes": 1015,
+      "time2_minutes": 1020,
+      "correlation": 0.7483959638975519,
+      "p_value": 6.252776074688882e-12,
+      "sample_size": 60
+    },
+    {
+      "time1": "16:55",
+      "time2": "17:10",
+      "time1_minutes": 1015,
+      "time2_minutes": 1030,
+      "correlation": 0.8829265356696541,
+      "p_value": 0.0,
+      "sample_size": 60
+    },
+    {
+      "time1": "16:55",
+      "time2": "17:15",
+      "time1_minutes": 1015,
+      "time2_minutes": 1035,
+      "correlation": -0.8201340844786045,
+      "p_value": 1.1102230246251565e-15,
+      "sample_size": 60
+    },
+    {
+      "time1": "16:55",
+      "time2": "17:20",
+      "time1_minutes": 1015,
+      "time2_minutes": 1040,
+      "correlation": -0.850512282515864,
+      "p_value": 0.0,
+      "sample_size": 60
+    },
+    {
+      "time1": "16:55",
+      "time2": "17:30",
+      "time1_minutes": 1015,
+      "time2_minutes": 1050,
+      "correlation": -0.7954975127664942,
+      "p_value": 3.1308289294429414e-14,
+      "sample_size": 60
+    },
+    {
+      "time1": "16:55",
+      "time2": "17:40",
+      "time1_minutes": 1015,
+      "time2_minutes": 1060,
+      "correlation": 0.7757292860772536,
+      "p_value": 3.375077994860476e-13,
+      "sample_size": 60
+    },
+    {
+      "time1": "16:55",
+      "time2": "17:45",
+      "time1_minutes": 1015,
+      "time2_minutes": 1065,
+      "correlation": -0.7924081858215117,
+      "p_value": 4.618527782440651e-14,
+      "sample_size": 60
+    },
+    {
+      "time1": "16:55",
+      "time2": "18:30",
+      "time1_minutes": 1015,
+      "time2_minutes": 1110,
+      "correlation": 0.7552873184627554,
+      "p_value": 3.105293799876563e-12,
+      "sample_size": 60
+    },
+    {
+      "time1": "16:55",
+      "time2": "18:40",
+      "time1_minutes": 1015,
+      "time2_minutes": 1120,
+      "correlation": 0.7987010226056669,
+      "p_value": 2.0872192862952943e-14,
+      "sample_size": 60
+    },
+    {
+      "time1": "16:55",
+      "time2": "19:10",
+      "time1_minutes": 1015,
+      "time2_minutes": 1150,
+      "correlation": 0.704846155871642,
+      "p_value": 3.2619751344498127e-10,
+      "sample_size": 60
+    },
+    {
+      "time1": "17:00",
+      "time2": "17:15",
+      "time1_minutes": 1020,
+      "time2_minutes": 1035,
+      "correlation": -0.7288741635288246,
+      "p_value": 4.042233214818225e-11,
+      "sample_size": 60
+    },
+    {
+      "time1": "17:00",
+      "time2": "17:45",
+      "time1_minutes": 1020,
+      "time2_minutes": 1065,
+      "correlation": -0.732896172968949,
+      "p_value": 2.7887248066349457e-11,
+      "sample_size": 60
+    },
+    {
+      "time1": "17:00",
+      "time2": "18:30",
+      "time1_minutes": 1020,
+      "time2_minutes": 1110,
+      "correlation": 0.7498440836884632,
+      "p_value": 5.4076743083442125e-12,
+      "sample_size": 60
+    },
+    {
+      "time1": "17:00",
+      "time2": "18:40",
+      "time1_minutes": 1020,
+      "time2_minutes": 1120,
+      "correlation": 0.7413504439252102,
+      "p_value": 1.2500223078859563e-11,
+      "sample_size": 60
+    },
+    {
+      "time1": "17:05",
+      "time2": "17:15",
+      "time1_minutes": 1025,
+      "time2_minutes": 1035,
+      "correlation": 0.8526069003394767,
+      "p_value": 0.0,
+      "sample_size": 60
+    },
+    {
+      "time1": "17:05",
+      "time2": "17:40",
+      "time1_minutes": 1025,
+      "time2_minutes": 1060,
+      "correlation": -0.8054264373627041,
+      "p_value": 8.43769498715119e-15,
+      "sample_size": 60
+    },
+    {
+      "time1": "17:05",
+      "time2": "17:45",
+      "time1_minutes": 1025,
+      "time2_minutes": 1065,
+      "correlation": 0.7615076387766745,
+      "p_value": 1.6180390360887031e-12,
+      "sample_size": 60
+    },
+    {
+      "time1": "17:05",
+      "time2": "18:30",
+      "time1_minutes": 1025,
+      "time2_minutes": 1110,
+      "correlation": -0.7521833240899928,
+      "p_value": 4.267919351264027e-12,
+      "sample_size": 60
+    },
+    {
+      "time1": "17:10",
+      "time2": "17:15",
+      "time1_minutes": 1030,
+      "time2_minutes": 1035,
+      "correlation": -0.8885798321005709,
+      "p_value": 0.0,
+      "sample_size": 60
+    },
+    {
+      "time1": "17:10",
+      "time2": "17:20",
+      "time1_minutes": 1030,
+      "time2_minutes": 1040,
+      "correlation": -0.8247133618576864,
+      "p_value": 6.661338147750939e-16,
+      "sample_size": 60
+    },
+    {
+      "time1": "17:10",
+      "time2": "17:30",
+      "time1_minutes": 1030,
+      "time2_minutes": 1050,
+      "correlation": -0.831208817647473,
+      "p_value": 2.220446049250313e-16,
+      "sample_size": 60
+    },
+    {
+      "time1": "17:10",
+      "time2": "17:40",
+      "time1_minutes": 1030,
+      "time2_minutes": 1060,
+      "correlation": 0.7546010830772157,
+      "p_value": 3.332667475319795e-12,
+      "sample_size": 60
+    },
+    {
+      "time1": "17:10",
+      "time2": "17:45",
+      "time1_minutes": 1030,
+      "time2_minutes": 1065,
+      "correlation": -0.8047439562666444,
+      "p_value": 9.325873406851315e-15,
+      "sample_size": 60
+    },
+    {
+      "time1": "17:10",
+      "time2": "17:55",
+      "time1_minutes": 1030,
+      "time2_minutes": 1075,
+      "correlation": 0.7061907124383013,
+      "p_value": 2.9182900540547507e-10,
+      "sample_size": 60
+    },
+    {
+      "time1": "17:10",
+      "time2": "18:35",
+      "time1_minutes": 1030,
+      "time2_minutes": 1115,
+      "correlation": -0.7958526209819643,
+      "p_value": 2.9976021664879227e-14,
+      "sample_size": 60
+    },
+    {
+      "time1": "17:10",
+      "time2": "18:40",
+      "time1_minutes": 1030,
+      "time2_minutes": 1120,
+      "correlation": 0.7981027052806267,
+      "p_value": 2.2426505097428162e-14,
+      "sample_size": 60
+    },
+    {
+      "time1": "17:10",
+      "time2": "18:50",
+      "time1_minutes": 1030,
+      "time2_minutes": 1130,
+      "correlation": -0.7622025379746871,
+      "p_value": 1.5025758415276869e-12,
+      "sample_size": 60
+    },
+    {
+      "time1": "17:10",
+      "time2": "21:30",
+      "time1_minutes": 1030,
+      "time2_minutes": 1290,
+      "correlation": 0.7426928347798712,
+      "p_value": 2.4890978167491085e-11,
+      "sample_size": 58
+    },
+    {
+      "time1": "17:15",
+      "time2": "17:20",
+      "time1_minutes": 1035,
+      "time2_minutes": 1040,
+      "correlation": 0.8049538274997114,
+      "p_value": 9.103828801926284e-15,
+      "sample_size": 60
+    },
+    {
+      "time1": "17:15",
+      "time2": "17:30",
+      "time1_minutes": 1035,
+      "time2_minutes": 1050,
+      "correlation": 0.7626312358445759,
+      "p_value": 1.4352963262354024e-12,
+      "sample_size": 60
+    },
+    {
+      "time1": "17:15",
+      "time2": "17:40",
+      "time1_minutes": 1035,
+      "time2_minutes": 1060,
+      "correlation": -0.8917855525024205,
+      "p_value": 0.0,
+      "sample_size": 60
+    },
+    {
+      "time1": "17:15",
+      "time2": "17:45",
+      "time1_minutes": 1035,
+      "time2_minutes": 1065,
+      "correlation": 0.8901468239728457,
+      "p_value": 0.0,
+      "sample_size": 60
+    },
+    {
+      "time1": "17:15",
+      "time2": "18:30",
+      "time1_minutes": 1035,
+      "time2_minutes": 1110,
+      "correlation": -0.7820425853232278,
+      "p_value": 1.6231460620019789e-13,
+      "sample_size": 60
+    },
+    {
+      "time1": "17:15",
+      "time2": "18:40",
+      "time1_minutes": 1035,
+      "time2_minutes": 1120,
+      "correlation": -0.7655124785714972,
+      "p_value": 1.0522693827397234e-12,
+      "sample_size": 60
+    },
+    {
+      "time1": "17:15",
+      "time2": "22:35",
+      "time1_minutes": 1035,
+      "time2_minutes": 1355,
+      "correlation": 0.7566359710163046,
+      "p_value": 6.424860643505781e-12,
+      "sample_size": 58
+    },
+    {
+      "time1": "17:20",
+      "time2": "17:30",
+      "time1_minutes": 1040,
+      "time2_minutes": 1050,
+      "correlation": 0.7415741827174053,
+      "p_value": 1.2232437285319975e-11,
+      "sample_size": 60
+    },
+    {
+      "time1": "17:20",
+      "time2": "17:40",
+      "time1_minutes": 1040,
+      "time2_minutes": 1060,
+      "correlation": -0.7454818899617951,
+      "p_value": 8.349987368205802e-12,
+      "sample_size": 60
+    },
+    {
+      "time1": "17:20",
+      "time2": "17:45",
+      "time1_minutes": 1040,
+      "time2_minutes": 1065,
+      "correlation": 0.7220160543167138,
+      "p_value": 7.499645349184902e-11,
+      "sample_size": 60
+    },
+    {
+      "time1": "17:20",
+      "time2": "18:30",
+      "time1_minutes": 1040,
+      "time2_minutes": 1110,
+      "correlation": -0.7530194593452398,
+      "p_value": 3.919309321531728e-12,
+      "sample_size": 60
+    },
+    {
+      "time1": "17:20",
+      "time2": "18:40",
+      "time1_minutes": 1040,
+      "time2_minutes": 1120,
+      "correlation": -0.7535135419745286,
+      "p_value": 3.7263525598518754e-12,
+      "sample_size": 60
+    },
+    {
+      "time1": "17:20",
+      "time2": "19:10",
+      "time1_minutes": 1040,
+      "time2_minutes": 1150,
+      "correlation": -0.7191490716047518,
+      "p_value": 9.658429611647534e-11,
+      "sample_size": 60
+    },
+    {
+      "time1": "17:25",
+      "time2": "19:40",
+      "time1_minutes": 1045,
+      "time2_minutes": 1180,
+      "correlation": -0.7852998430516737,
+      "p_value": 1.1013412404281553e-13,
+      "sample_size": 60
+    },
+    {
+      "time1": "17:25",
+      "time2": "20:50",
+      "time1_minutes": 1045,
+      "time2_minutes": 1250,
+      "correlation": -0.7238574987770094,
+      "p_value": 1.3597523107478082e-10,
+      "sample_size": 58
+    },
+    {
+      "time1": "17:25",
+      "time2": "21:00",
+      "time1_minutes": 1045,
+      "time2_minutes": 1260,
+      "correlation": 0.7098185218301681,
+      "p_value": 4.4158809942018706e-10,
+      "sample_size": 58
+    },
+    {
+      "time1": "17:25",
+      "time2": "21:10",
+      "time1_minutes": 1045,
+      "time2_minutes": 1270,
+      "correlation": -0.7719626363856756,
+      "p_value": 1.3009593402557584e-12,
+      "sample_size": 58
+    },
+    {
+      "time1": "17:25",
+      "time2": "21:15",
+      "time1_minutes": 1045,
+      "time2_minutes": 1275,
+      "correlation": 0.7742816389399986,
+      "p_value": 1.0107470416187425e-12,
+      "sample_size": 58
+    },
+    {
+      "time1": "17:25",
+      "time2": "21:20",
+      "time1_minutes": 1045,
+      "time2_minutes": 1280,
+      "correlation": 0.711049940493704,
+      "p_value": 3.9935010853753283e-10,
+      "sample_size": 58
+    },
+    {
+      "time1": "17:25",
+      "time2": "21:25",
+      "time1_minutes": 1045,
+      "time2_minutes": 1285,
+      "correlation": 0.8099607281927149,
+      "p_value": 1.354472090042691e-14,
+      "sample_size": 58
+    },
+    {
+      "time1": "17:25",
+      "time2": "21:35",
+      "time1_minutes": 1045,
+      "time2_minutes": 1295,
+      "correlation": 0.7422920219732265,
+      "p_value": 2.5845992013273644e-11,
+      "sample_size": 58
+    },
+    {
+      "time1": "17:25",
+      "time2": "21:45",
+      "time1_minutes": 1045,
+      "time2_minutes": 1305,
+      "correlation": -0.7183573486853199,
+      "p_value": 2.175364333112384e-10,
+      "sample_size": 58
+    },
+    {
+      "time1": "17:25",
+      "time2": "21:50",
+      "time1_minutes": 1045,
+      "time2_minutes": 1310,
+      "correlation": 0.7117883133825258,
+      "p_value": 3.758930944286476e-10,
+      "sample_size": 58
+    },
+    {
+      "time1": "17:25",
+      "time2": "22:00",
+      "time1_minutes": 1045,
+      "time2_minutes": 1320,
+      "correlation": -0.7366116252997904,
+      "p_value": 4.374656192851489e-11,
+      "sample_size": 58
+    },
+    {
+      "time1": "17:25",
+      "time2": "22:10",
+      "time1_minutes": 1045,
+      "time2_minutes": 1330,
+      "correlation": 0.726497890368113,
+      "p_value": 1.0808220984870331e-10,
+      "sample_size": 58
+    },
+    {
+      "time1": "17:25",
+      "time2": "22:40",
+      "time1_minutes": 1045,
+      "time2_minutes": 1360,
+      "correlation": -0.8145741323290163,
+      "p_value": 7.327471962526033e-15,
+      "sample_size": 58
+    },
+    {
+      "time1": "17:25",
+      "time2": "22:55",
+      "time1_minutes": 1045,
+      "time2_minutes": 1375,
+      "correlation": 0.7701367450470026,
+      "p_value": 1.5838441669302483e-12,
+      "sample_size": 58
+    },
+    {
+      "time1": "17:30",
+      "time2": "17:45",
+      "time1_minutes": 1050,
+      "time2_minutes": 1065,
+      "correlation": 0.7680117999149982,
+      "p_value": 8.01136934569513e-13,
+      "sample_size": 60
+    },
+    {
+      "time1": "17:30",
+      "time2": "18:40",
+      "time1_minutes": 1050,
+      "time2_minutes": 1120,
+      "correlation": -0.8130019234479368,
+      "p_value": 3.1086244689504383e-15,
+      "sample_size": 60
+    },
+    {
+      "time1": "17:30",
+      "time2": "20:05",
+      "time1_minutes": 1050,
+      "time2_minutes": 1205,
+      "correlation": 0.8911648873279527,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "17:40",
+      "time2": "17:45",
+      "time1_minutes": 1060,
+      "time2_minutes": 1065,
+      "correlation": -0.8363945773791017,
+      "p_value": 2.220446049250313e-16,
+      "sample_size": 60
+    },
+    {
+      "time1": "17:45",
+      "time2": "18:30",
+      "time1_minutes": 1065,
+      "time2_minutes": 1110,
+      "correlation": -0.7229523754510144,
+      "p_value": 6.90023593818978e-11,
+      "sample_size": 60
+    },
+    {
+      "time1": "17:45",
+      "time2": "22:35",
+      "time1_minutes": 1065,
+      "time2_minutes": 1355,
+      "correlation": 0.7039752763047041,
+      "p_value": 7.066134344313468e-10,
+      "sample_size": 58
+    },
+    {
+      "time1": "17:55",
+      "time2": "18:10",
+      "time1_minutes": 1075,
+      "time2_minutes": 1090,
+      "correlation": -0.7090037975053379,
+      "p_value": 2.3072210808550153e-10,
+      "sample_size": 60
+    },
+    {
+      "time1": "17:55",
+      "time2": "19:40",
+      "time1_minutes": 1075,
+      "time2_minutes": 1180,
+      "correlation": 0.7585774613814382,
+      "p_value": 2.204902926905561e-12,
+      "sample_size": 60
+    },
+    {
+      "time1": "18:05",
+      "time2": "18:25",
+      "time1_minutes": 1085,
+      "time2_minutes": 1105,
+      "correlation": 0.7237267742691686,
+      "p_value": 6.439204724983938e-11,
+      "sample_size": 60
+    },
+    {
+      "time1": "18:05",
+      "time2": "18:40",
+      "time1_minutes": 1085,
+      "time2_minutes": 1120,
+      "correlation": -0.7202390988621131,
+      "p_value": 8.775957738293982e-11,
+      "sample_size": 60
+    },
+    {
+      "time1": "18:10",
+      "time2": "18:20",
+      "time1_minutes": 1090,
+      "time2_minutes": 1100,
+      "correlation": 0.755150525951451,
+      "p_value": 3.149258631651719e-12,
+      "sample_size": 60
+    },
+    {
+      "time1": "18:15",
+      "time2": "18:20",
+      "time1_minutes": 1095,
+      "time2_minutes": 1100,
+      "correlation": 0.750410528154757,
+      "p_value": 5.107692047090495e-12,
+      "sample_size": 60
+    },
+    {
+      "time1": "18:15",
+      "time2": "19:15",
+      "time1_minutes": 1095,
+      "time2_minutes": 1155,
+      "correlation": 0.7464354614369648,
+      "p_value": 7.599254558954271e-12,
+      "sample_size": 60
+    },
+    {
+      "time1": "18:20",
+      "time2": "19:15",
+      "time1_minutes": 1100,
+      "time2_minutes": 1155,
+      "correlation": 0.8350633113031174,
+      "p_value": 2.220446049250313e-16,
+      "sample_size": 60
+    },
+    {
+      "time1": "18:30",
+      "time2": "21:40",
+      "time1_minutes": 1110,
+      "time2_minutes": 1300,
+      "correlation": 0.7033581398909662,
+      "p_value": 7.42092609584688e-10,
+      "sample_size": 58
+    },
+    {
+      "time1": "18:30",
+      "time2": "22:35",
+      "time1_minutes": 1110,
+      "time2_minutes": 1355,
+      "correlation": -0.7090138544086636,
+      "p_value": 4.714417745077526e-10,
+      "sample_size": 58
+    },
+    {
+      "time1": "18:35",
+      "time2": "18:50",
+      "time1_minutes": 1115,
+      "time2_minutes": 1130,
+      "correlation": 0.7619733394254717,
+      "p_value": 1.5398793351550921e-12,
+      "sample_size": 60
+    },
+    {
+      "time1": "18:35",
+      "time2": "21:30",
+      "time1_minutes": 1115,
+      "time2_minutes": 1290,
+      "correlation": -0.7066387277002828,
+      "p_value": 5.711286998888454e-10,
+      "sample_size": 58
+    },
+    {
+      "time1": "18:50",
+      "time2": "19:10",
+      "time1_minutes": 1130,
+      "time2_minutes": 1150,
+      "correlation": -0.7892688758209161,
+      "p_value": 6.794564910705958e-14,
+      "sample_size": 60
+    },
+    {
+      "time1": "18:50",
+      "time2": "21:30",
+      "time1_minutes": 1130,
+      "time2_minutes": 1290,
+      "correlation": -0.7117549398398085,
+      "p_value": 3.7692449161852437e-10,
+      "sample_size": 58
+    },
+    {
+      "time1": "19:30",
+      "time2": "19:50",
+      "time1_minutes": 1170,
+      "time2_minutes": 1190,
+      "correlation": -0.750240441958502,
+      "p_value": 5.196065799850658e-12,
+      "sample_size": 60
+    },
+    {
+      "time1": "19:30",
+      "time2": "20:25",
+      "time1_minutes": 1170,
+      "time2_minutes": 1225,
+      "correlation": 0.77617264208009,
+      "p_value": 8.208989044078407e-13,
+      "sample_size": 58
+    },
+    {
+      "time1": "19:30",
+      "time2": "20:50",
+      "time1_minutes": 1170,
+      "time2_minutes": 1250,
+      "correlation": 0.7259044621011945,
+      "p_value": 1.1383183284863208e-10,
+      "sample_size": 58
+    },
+    {
+      "time1": "19:30",
+      "time2": "21:15",
+      "time1_minutes": 1170,
+      "time2_minutes": 1275,
+      "correlation": -0.7389243728110951,
+      "p_value": 3.536704262785406e-11,
+      "sample_size": 58
+    },
+    {
+      "time1": "19:30",
+      "time2": "21:50",
+      "time1_minutes": 1170,
+      "time2_minutes": 1310,
+      "correlation": -0.757912160385298,
+      "p_value": 5.650147016922347e-12,
+      "sample_size": 58
+    },
+    {
+      "time1": "19:30",
+      "time2": "22:15",
+      "time1_minutes": 1170,
+      "time2_minutes": 1335,
+      "correlation": -0.8666332728933906,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "19:30",
+      "time2": "22:50",
+      "time1_minutes": 1170,
+      "time2_minutes": 1370,
+      "correlation": 0.88136694026855,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "19:30",
+      "time2": "22:55",
+      "time1_minutes": 1170,
+      "time2_minutes": 1375,
+      "correlation": -0.7690354986957921,
+      "p_value": 1.7816859099184512e-12,
+      "sample_size": 58
+    },
+    {
+      "time1": "19:40",
+      "time2": "19:50",
+      "time1_minutes": 1180,
+      "time2_minutes": 1190,
+      "correlation": -0.8049544582367715,
+      "p_value": 9.103828801926284e-15,
+      "sample_size": 60
+    },
+    {
+      "time1": "19:40",
+      "time2": "20:50",
+      "time1_minutes": 1180,
+      "time2_minutes": 1250,
+      "correlation": 0.7120627293634779,
+      "p_value": 3.6751335308338184e-10,
+      "sample_size": 58
+    },
+    {
+      "time1": "19:40",
+      "time2": "21:10",
+      "time1_minutes": 1180,
+      "time2_minutes": 1270,
+      "correlation": 0.7561440637626872,
+      "p_value": 6.749489855906177e-12,
+      "sample_size": 58
+    },
+    {
+      "time1": "19:40",
+      "time2": "21:15",
+      "time1_minutes": 1180,
+      "time2_minutes": 1275,
+      "correlation": -0.7810277596461004,
+      "p_value": 4.767297667740422e-13,
+      "sample_size": 58
+    },
+    {
+      "time1": "19:40",
+      "time2": "21:20",
+      "time1_minutes": 1180,
+      "time2_minutes": 1280,
+      "correlation": -0.7340569032042364,
+      "p_value": 5.518741019727713e-11,
+      "sample_size": 58
+    },
+    {
+      "time1": "19:40",
+      "time2": "21:25",
+      "time1_minutes": 1180,
+      "time2_minutes": 1285,
+      "correlation": -0.7443216824041368,
+      "p_value": 2.134425969302356e-11,
+      "sample_size": 58
+    },
+    {
+      "time1": "19:40",
+      "time2": "21:45",
+      "time1_minutes": 1180,
+      "time2_minutes": 1305,
+      "correlation": 0.7698130288838803,
+      "p_value": 1.6395773627664312e-12,
+      "sample_size": 58
+    },
+    {
+      "time1": "19:40",
+      "time2": "21:50",
+      "time1_minutes": 1180,
+      "time2_minutes": 1310,
+      "correlation": -0.8249473186701125,
+      "p_value": 1.7763568394002505e-15,
+      "sample_size": 58
+    },
+    {
+      "time1": "19:40",
+      "time2": "22:00",
+      "time1_minutes": 1180,
+      "time2_minutes": 1320,
+      "correlation": 0.7505067870888037,
+      "p_value": 1.1780354469692611e-11,
+      "sample_size": 58
+    },
+    {
+      "time1": "19:40",
+      "time2": "22:25",
+      "time1_minutes": 1180,
+      "time2_minutes": 1345,
+      "correlation": -0.771643355022736,
+      "p_value": 1.3467005288703149e-12,
+      "sample_size": 58
+    },
+    {
+      "time1": "19:40",
+      "time2": "22:40",
+      "time1_minutes": 1180,
+      "time2_minutes": 1360,
+      "correlation": 0.7767710751083713,
+      "p_value": 7.682743330406083e-13,
+      "sample_size": 58
+    },
+    {
+      "time1": "19:40",
+      "time2": "22:55",
+      "time1_minutes": 1180,
+      "time2_minutes": 1375,
+      "correlation": -0.7910637323725105,
+      "p_value": 1.4832579608992091e-13,
+      "sample_size": 58
+    },
+    {
+      "time1": "19:50",
+      "time2": "20:15",
+      "time1_minutes": 1190,
+      "time2_minutes": 1215,
+      "correlation": -0.8024818609285482,
+      "p_value": 3.6193270602780103e-14,
+      "sample_size": 58
+    },
+    {
+      "time1": "19:50",
+      "time2": "20:50",
+      "time1_minutes": 1190,
+      "time2_minutes": 1250,
+      "correlation": -0.8004657247293533,
+      "p_value": 4.6629367034256575e-14,
+      "sample_size": 58
+    },
+    {
+      "time1": "19:50",
+      "time2": "21:00",
+      "time1_minutes": 1190,
+      "time2_minutes": 1260,
+      "correlation": 0.791374471567344,
+      "p_value": 1.4277468096679513e-13,
+      "sample_size": 58
+    },
+    {
+      "time1": "19:50",
+      "time2": "21:10",
+      "time1_minutes": 1190,
+      "time2_minutes": 1270,
+      "correlation": -0.8277607584385172,
+      "p_value": 1.1102230246251565e-15,
+      "sample_size": 58
+    },
+    {
+      "time1": "19:50",
+      "time2": "21:15",
+      "time1_minutes": 1190,
+      "time2_minutes": 1275,
+      "correlation": 0.8884484098415673,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "19:50",
+      "time2": "21:20",
+      "time1_minutes": 1190,
+      "time2_minutes": 1280,
+      "correlation": 0.7857384485085812,
+      "p_value": 2.7755575615628914e-13,
+      "sample_size": 58
+    },
+    {
+      "time1": "19:50",
+      "time2": "21:25",
+      "time1_minutes": 1190,
+      "time2_minutes": 1285,
+      "correlation": 0.7745554856347793,
+      "p_value": 9.809930645587883e-13,
+      "sample_size": 58
+    },
+    {
+      "time1": "19:50",
+      "time2": "21:35",
+      "time1_minutes": 1190,
+      "time2_minutes": 1295,
+      "correlation": 0.7398734706200405,
+      "p_value": 3.239097878804387e-11,
+      "sample_size": 58
+    },
+    {
+      "time1": "19:50",
+      "time2": "21:45",
+      "time1_minutes": 1190,
+      "time2_minutes": 1305,
+      "correlation": -0.8535966754271508,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "19:50",
+      "time2": "21:50",
+      "time1_minutes": 1190,
+      "time2_minutes": 1310,
+      "correlation": 0.8981855925168895,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "19:50",
+      "time2": "22:00",
+      "time1_minutes": 1190,
+      "time2_minutes": 1320,
+      "correlation": -0.8621545591225889,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "19:50",
+      "time2": "22:10",
+      "time1_minutes": 1190,
+      "time2_minutes": 1330,
+      "correlation": 0.7475234461765013,
+      "p_value": 1.5724976876185792e-11,
+      "sample_size": 58
+    },
+    {
+      "time1": "19:50",
+      "time2": "22:15",
+      "time1_minutes": 1190,
+      "time2_minutes": 1335,
+      "correlation": 0.7748017301842496,
+      "p_value": 9.547918011776346e-13,
+      "sample_size": 58
+    },
+    {
+      "time1": "19:50",
+      "time2": "22:25",
+      "time1_minutes": 1190,
+      "time2_minutes": 1345,
+      "correlation": 0.8591929176635865,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "19:50",
+      "time2": "22:30",
+      "time1_minutes": 1190,
+      "time2_minutes": 1350,
+      "correlation": -0.791824102317487,
+      "p_value": 1.3522516439934407e-13,
+      "sample_size": 58
+    },
+    {
+      "time1": "19:50",
+      "time2": "22:40",
+      "time1_minutes": 1190,
+      "time2_minutes": 1360,
+      "correlation": -0.8676291686021084,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "19:50",
+      "time2": "22:50",
+      "time1_minutes": 1190,
+      "time2_minutes": 1370,
+      "correlation": -0.9100728565877417,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "19:50",
+      "time2": "22:55",
+      "time1_minutes": 1190,
+      "time2_minutes": 1375,
+      "correlation": 0.9105202168555567,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "19:55",
+      "time2": "20:30",
+      "time1_minutes": 1195,
+      "time2_minutes": 1230,
+      "correlation": -0.7496927291351101,
+      "p_value": 1.2751355527029773e-11,
+      "sample_size": 58
+    },
+    {
+      "time1": "20:15",
+      "time2": "20:50",
+      "time1_minutes": 1215,
+      "time2_minutes": 1250,
+      "correlation": 0.7084880587117182,
+      "p_value": 4.919729068575407e-10,
+      "sample_size": 58
+    },
+    {
+      "time1": "20:15",
+      "time2": "21:00",
+      "time1_minutes": 1215,
+      "time2_minutes": 1260,
+      "correlation": -0.758278170470816,
+      "p_value": 5.444977801971618e-12,
+      "sample_size": 58
+    },
+    {
+      "time1": "20:15",
+      "time2": "21:10",
+      "time1_minutes": 1215,
+      "time2_minutes": 1270,
+      "correlation": 0.8752626908311913,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "20:15",
+      "time2": "21:15",
+      "time1_minutes": 1215,
+      "time2_minutes": 1275,
+      "correlation": -0.8534066148748012,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "20:15",
+      "time2": "21:20",
+      "time1_minutes": 1215,
+      "time2_minutes": 1280,
+      "correlation": -0.8286646793201874,
+      "p_value": 1.1102230246251565e-15,
+      "sample_size": 58
+    },
+    {
+      "time1": "20:15",
+      "time2": "21:25",
+      "time1_minutes": 1215,
+      "time2_minutes": 1285,
+      "correlation": -0.7064780514608557,
+      "p_value": 5.785487644516252e-10,
+      "sample_size": 58
+    },
+    {
+      "time1": "20:15",
+      "time2": "21:35",
+      "time1_minutes": 1215,
+      "time2_minutes": 1295,
+      "correlation": -0.7461351251020722,
+      "p_value": 1.7962520360015333e-11,
+      "sample_size": 58
+    },
+    {
+      "time1": "20:15",
+      "time2": "21:45",
+      "time1_minutes": 1215,
+      "time2_minutes": 1305,
+      "correlation": 0.8262492234550493,
+      "p_value": 1.3322676295501878e-15,
+      "sample_size": 58
+    },
+    {
+      "time1": "20:15",
+      "time2": "22:10",
+      "time1_minutes": 1215,
+      "time2_minutes": 1330,
+      "correlation": -0.7707128939562524,
+      "p_value": 1.4885870314174099e-12,
+      "sample_size": 58
+    },
+    {
+      "time1": "20:15",
+      "time2": "22:25",
+      "time1_minutes": 1215,
+      "time2_minutes": 1345,
+      "correlation": -0.7552409170371915,
+      "p_value": 7.386979916645942e-12,
+      "sample_size": 58
+    },
+    {
+      "time1": "20:15",
+      "time2": "22:30",
+      "time1_minutes": 1215,
+      "time2_minutes": 1350,
+      "correlation": 0.8623448715026566,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "20:15",
+      "time2": "22:40",
+      "time1_minutes": 1215,
+      "time2_minutes": 1360,
+      "correlation": 0.8142780644926269,
+      "p_value": 7.771561172376096e-15,
+      "sample_size": 58
+    },
+    {
+      "time1": "20:15",
+      "time2": "22:50",
+      "time1_minutes": 1215,
+      "time2_minutes": 1370,
+      "correlation": 0.7800553102589615,
+      "p_value": 5.322409180053e-13,
+      "sample_size": 58
+    },
+    {
+      "time1": "20:15",
+      "time2": "22:55",
+      "time1_minutes": 1215,
+      "time2_minutes": 1375,
+      "correlation": -0.8481706812905915,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "20:25",
+      "time2": "21:15",
+      "time1_minutes": 1225,
+      "time2_minutes": 1275,
+      "correlation": -0.7571646599553566,
+      "p_value": 6.092459869933009e-12,
+      "sample_size": 58
+    },
+    {
+      "time1": "20:25",
+      "time2": "21:50",
+      "time1_minutes": 1225,
+      "time2_minutes": 1310,
+      "correlation": -0.7748758259994876,
+      "p_value": 9.470202400052585e-13,
+      "sample_size": 58
+    },
+    {
+      "time1": "20:25",
+      "time2": "22:30",
+      "time1_minutes": 1225,
+      "time2_minutes": 1350,
+      "correlation": 0.7372420251146236,
+      "p_value": 4.129230291027852e-11,
+      "sample_size": 58
+    },
+    {
+      "time1": "20:25",
+      "time2": "22:40",
+      "time1_minutes": 1225,
+      "time2_minutes": 1360,
+      "correlation": 0.7096629507839772,
+      "p_value": 4.4721648606582676e-10,
+      "sample_size": 58
+    },
+    {
+      "time1": "20:25",
+      "time2": "22:50",
+      "time1_minutes": 1225,
+      "time2_minutes": 1370,
+      "correlation": 0.8157457234972246,
+      "p_value": 6.217248937900877e-15,
+      "sample_size": 58
+    },
+    {
+      "time1": "20:25",
+      "time2": "22:55",
+      "time1_minutes": 1225,
+      "time2_minutes": 1375,
+      "correlation": -0.7443986682372432,
+      "p_value": 2.1189272558785888e-11,
+      "sample_size": 58
+    },
+    {
+      "time1": "20:35",
+      "time2": "21:05",
+      "time1_minutes": 1235,
+      "time2_minutes": 1265,
+      "correlation": 0.7543344147142145,
+      "p_value": 8.083977931505615e-12,
+      "sample_size": 58
+    },
+    {
+      "time1": "20:50",
+      "time2": "21:00",
+      "time1_minutes": 1250,
+      "time2_minutes": 1260,
+      "correlation": -0.9164353653702709,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "20:50",
+      "time2": "21:10",
+      "time1_minutes": 1250,
+      "time2_minutes": 1270,
+      "correlation": 0.8854039662566247,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "20:50",
+      "time2": "21:15",
+      "time1_minutes": 1250,
+      "time2_minutes": 1275,
+      "correlation": -0.9252895307640681,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "20:50",
+      "time2": "21:20",
+      "time1_minutes": 1250,
+      "time2_minutes": 1280,
+      "correlation": -0.9020447733788088,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "20:50",
+      "time2": "21:25",
+      "time1_minutes": 1250,
+      "time2_minutes": 1285,
+      "correlation": -0.8414155269012795,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "20:50",
+      "time2": "21:35",
+      "time1_minutes": 1250,
+      "time2_minutes": 1295,
+      "correlation": -0.9239834020770853,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "20:50",
+      "time2": "21:45",
+      "time1_minutes": 1250,
+      "time2_minutes": 1305,
+      "correlation": 0.8725530516568762,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "20:50",
+      "time2": "21:50",
+      "time1_minutes": 1250,
+      "time2_minutes": 1310,
+      "correlation": -0.8822969466498704,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "20:50",
+      "time2": "22:00",
+      "time1_minutes": 1250,
+      "time2_minutes": 1320,
+      "correlation": 0.8608771633341048,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "20:50",
+      "time2": "22:10",
+      "time1_minutes": 1250,
+      "time2_minutes": 1330,
+      "correlation": -0.9144184810760623,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "20:50",
+      "time2": "22:15",
+      "time1_minutes": 1250,
+      "time2_minutes": 1335,
+      "correlation": -0.7464517038496955,
+      "p_value": 1.7426948772936157e-11,
+      "sample_size": 58
+    },
+    {
+      "time1": "20:50",
+      "time2": "22:25",
+      "time1_minutes": 1250,
+      "time2_minutes": 1345,
+      "correlation": -0.9424679966152494,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "20:50",
+      "time2": "22:30",
+      "time1_minutes": 1250,
+      "time2_minutes": 1350,
+      "correlation": 0.8083981451604235,
+      "p_value": 1.687538997430238e-14,
+      "sample_size": 58
+    },
+    {
+      "time1": "20:50",
+      "time2": "22:40",
+      "time1_minutes": 1250,
+      "time2_minutes": 1360,
+      "correlation": 0.9355252764962017,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "20:50",
+      "time2": "22:50",
+      "time1_minutes": 1250,
+      "time2_minutes": 1370,
+      "correlation": 0.8410203291933513,
+      "p_value": 2.220446049250313e-16,
+      "sample_size": 58
+    },
+    {
+      "time1": "20:50",
+      "time2": "22:55",
+      "time1_minutes": 1250,
+      "time2_minutes": 1375,
+      "correlation": -0.9387134142188337,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:00",
+      "time2": "21:10",
+      "time1_minutes": 1260,
+      "time2_minutes": 1270,
+      "correlation": -0.8754320230405079,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:00",
+      "time2": "21:15",
+      "time1_minutes": 1260,
+      "time2_minutes": 1275,
+      "correlation": 0.8829606120367485,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:00",
+      "time2": "21:20",
+      "time1_minutes": 1260,
+      "time2_minutes": 1280,
+      "correlation": 0.8505355200393653,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:00",
+      "time2": "21:25",
+      "time1_minutes": 1260,
+      "time2_minutes": 1285,
+      "correlation": 0.8134874137916182,
+      "p_value": 8.43769498715119e-15,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:00",
+      "time2": "21:35",
+      "time1_minutes": 1260,
+      "time2_minutes": 1295,
+      "correlation": 0.8422812718849251,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:00",
+      "time2": "21:45",
+      "time1_minutes": 1260,
+      "time2_minutes": 1305,
+      "correlation": -0.8421540874812374,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:00",
+      "time2": "21:50",
+      "time1_minutes": 1260,
+      "time2_minutes": 1310,
+      "correlation": 0.7583621507569364,
+      "p_value": 5.399014568752136e-12,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:00",
+      "time2": "22:00",
+      "time1_minutes": 1260,
+      "time2_minutes": 1320,
+      "correlation": -0.8202807751067203,
+      "p_value": 3.3306690738754696e-15,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:00",
+      "time2": "22:10",
+      "time1_minutes": 1260,
+      "time2_minutes": 1330,
+      "correlation": 0.9276393317316226,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:00",
+      "time2": "22:25",
+      "time1_minutes": 1260,
+      "time2_minutes": 1345,
+      "correlation": 0.8689267314478687,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:00",
+      "time2": "22:30",
+      "time1_minutes": 1260,
+      "time2_minutes": 1350,
+      "correlation": -0.7452105081223903,
+      "p_value": 1.961741880052159e-11,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:00",
+      "time2": "22:40",
+      "time1_minutes": 1260,
+      "time2_minutes": 1360,
+      "correlation": -0.9166247246427934,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:00",
+      "time2": "22:50",
+      "time1_minutes": 1260,
+      "time2_minutes": 1370,
+      "correlation": -0.7841084287274271,
+      "p_value": 3.352873534367973e-13,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:00",
+      "time2": "22:55",
+      "time1_minutes": 1260,
+      "time2_minutes": 1375,
+      "correlation": 0.9036641088928874,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:10",
+      "time2": "21:15",
+      "time1_minutes": 1270,
+      "time2_minutes": 1275,
+      "correlation": -0.9634312257578798,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:10",
+      "time2": "21:20",
+      "time1_minutes": 1270,
+      "time2_minutes": 1280,
+      "correlation": -0.9645633134394523,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:10",
+      "time2": "21:25",
+      "time1_minutes": 1270,
+      "time2_minutes": 1285,
+      "correlation": -0.856831861980076,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:10",
+      "time2": "21:35",
+      "time1_minutes": 1270,
+      "time2_minutes": 1295,
+      "correlation": -0.9335692890722749,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:10",
+      "time2": "21:45",
+      "time1_minutes": 1270,
+      "time2_minutes": 1305,
+      "correlation": 0.9252809964032642,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:10",
+      "time2": "21:50",
+      "time1_minutes": 1270,
+      "time2_minutes": 1310,
+      "correlation": -0.8145894771356406,
+      "p_value": 7.327471962526033e-15,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:10",
+      "time2": "22:00",
+      "time1_minutes": 1270,
+      "time2_minutes": 1320,
+      "correlation": 0.8122418232414376,
+      "p_value": 1.021405182655144e-14,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:10",
+      "time2": "22:10",
+      "time1_minutes": 1270,
+      "time2_minutes": 1330,
+      "correlation": -0.9202901016606263,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:10",
+      "time2": "22:25",
+      "time1_minutes": 1270,
+      "time2_minutes": 1345,
+      "correlation": -0.8949602712169688,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:10",
+      "time2": "22:30",
+      "time1_minutes": 1270,
+      "time2_minutes": 1350,
+      "correlation": 0.9117912509724003,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:10",
+      "time2": "22:40",
+      "time1_minutes": 1270,
+      "time2_minutes": 1360,
+      "correlation": 0.9473805548481662,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:10",
+      "time2": "22:50",
+      "time1_minutes": 1270,
+      "time2_minutes": 1370,
+      "correlation": 0.8153712840980478,
+      "p_value": 6.661338147750939e-15,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:10",
+      "time2": "22:55",
+      "time1_minutes": 1270,
+      "time2_minutes": 1375,
+      "correlation": -0.9499878192502184,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:15",
+      "time2": "21:20",
+      "time1_minutes": 1275,
+      "time2_minutes": 1280,
+      "correlation": 0.9539290277865473,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:15",
+      "time2": "21:25",
+      "time1_minutes": 1275,
+      "time2_minutes": 1285,
+      "correlation": 0.8993749967391166,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:15",
+      "time2": "21:35",
+      "time1_minutes": 1275,
+      "time2_minutes": 1295,
+      "correlation": 0.943730211308111,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:15",
+      "time2": "21:45",
+      "time1_minutes": 1275,
+      "time2_minutes": 1305,
+      "correlation": -0.958984441777364,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:15",
+      "time2": "21:50",
+      "time1_minutes": 1275,
+      "time2_minutes": 1310,
+      "correlation": 0.9141771697383335,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:15",
+      "time2": "22:00",
+      "time1_minutes": 1275,
+      "time2_minutes": 1320,
+      "correlation": -0.882550359145529,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:15",
+      "time2": "22:10",
+      "time1_minutes": 1275,
+      "time2_minutes": 1330,
+      "correlation": 0.8991128686890311,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:15",
+      "time2": "22:15",
+      "time1_minutes": 1275,
+      "time2_minutes": 1335,
+      "correlation": 0.7146029484061093,
+      "p_value": 2.9791857869554406e-10,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:15",
+      "time2": "22:25",
+      "time1_minutes": 1275,
+      "time2_minutes": 1345,
+      "correlation": 0.9276306469949385,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:15",
+      "time2": "22:30",
+      "time1_minutes": 1275,
+      "time2_minutes": 1350,
+      "correlation": -0.9261026877148973,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:15",
+      "time2": "22:40",
+      "time1_minutes": 1275,
+      "time2_minutes": 1360,
+      "correlation": -0.9757652141906041,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:15",
+      "time2": "22:50",
+      "time1_minutes": 1275,
+      "time2_minutes": 1370,
+      "correlation": -0.8925550896817239,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:15",
+      "time2": "22:55",
+      "time1_minutes": 1275,
+      "time2_minutes": 1375,
+      "correlation": 0.9880444622136907,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:20",
+      "time2": "21:25",
+      "time1_minutes": 1280,
+      "time2_minutes": 1285,
+      "correlation": 0.8159316700584629,
+      "p_value": 6.217248937900877e-15,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:20",
+      "time2": "21:35",
+      "time1_minutes": 1280,
+      "time2_minutes": 1295,
+      "correlation": 0.9312986890092023,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:20",
+      "time2": "21:45",
+      "time1_minutes": 1280,
+      "time2_minutes": 1305,
+      "correlation": -0.9072914057497937,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:20",
+      "time2": "21:50",
+      "time1_minutes": 1280,
+      "time2_minutes": 1310,
+      "correlation": 0.8228332559492326,
+      "p_value": 2.4424906541753444e-15,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:20",
+      "time2": "22:00",
+      "time1_minutes": 1280,
+      "time2_minutes": 1320,
+      "correlation": -0.8339849247663824,
+      "p_value": 4.440892098500626e-16,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:20",
+      "time2": "22:10",
+      "time1_minutes": 1280,
+      "time2_minutes": 1330,
+      "correlation": 0.930416889049264,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:20",
+      "time2": "22:25",
+      "time1_minutes": 1280,
+      "time2_minutes": 1345,
+      "correlation": 0.8824839856296891,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:20",
+      "time2": "22:30",
+      "time1_minutes": 1280,
+      "time2_minutes": 1350,
+      "correlation": -0.8999273277387777,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:20",
+      "time2": "22:40",
+      "time1_minutes": 1280,
+      "time2_minutes": 1360,
+      "correlation": -0.9280417974894996,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:20",
+      "time2": "22:50",
+      "time1_minutes": 1280,
+      "time2_minutes": 1370,
+      "correlation": -0.8059317906448649,
+      "p_value": 2.3092638912203256e-14,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:20",
+      "time2": "22:55",
+      "time1_minutes": 1280,
+      "time2_minutes": 1375,
+      "correlation": 0.9371060065623746,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:25",
+      "time2": "21:35",
+      "time1_minutes": 1285,
+      "time2_minutes": 1295,
+      "correlation": 0.8628858212616515,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:25",
+      "time2": "21:45",
+      "time1_minutes": 1285,
+      "time2_minutes": 1305,
+      "correlation": -0.906197789422617,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:25",
+      "time2": "21:50",
+      "time1_minutes": 1285,
+      "time2_minutes": 1310,
+      "correlation": 0.820517130368633,
+      "p_value": 3.3306690738754696e-15,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:25",
+      "time2": "22:00",
+      "time1_minutes": 1285,
+      "time2_minutes": 1320,
+      "correlation": -0.8266629077571617,
+      "p_value": 1.3322676295501878e-15,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:25",
+      "time2": "22:10",
+      "time1_minutes": 1285,
+      "time2_minutes": 1330,
+      "correlation": 0.782572414195746,
+      "p_value": 3.999023334699814e-13,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:25",
+      "time2": "22:25",
+      "time1_minutes": 1285,
+      "time2_minutes": 1345,
+      "correlation": 0.8131890695264652,
+      "p_value": 8.881784197001252e-15,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:25",
+      "time2": "22:30",
+      "time1_minutes": 1285,
+      "time2_minutes": 1350,
+      "correlation": -0.8236029599132573,
+      "p_value": 1.9984014443252818e-15,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:25",
+      "time2": "22:40",
+      "time1_minutes": 1285,
+      "time2_minutes": 1360,
+      "correlation": -0.9027592004458276,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:25",
+      "time2": "22:50",
+      "time1_minutes": 1285,
+      "time2_minutes": 1370,
+      "correlation": -0.7650949764455732,
+      "p_value": 2.700950574308081e-12,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:25",
+      "time2": "22:55",
+      "time1_minutes": 1285,
+      "time2_minutes": 1375,
+      "correlation": 0.8812668147158135,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:35",
+      "time2": "21:45",
+      "time1_minutes": 1295,
+      "time2_minutes": 1305,
+      "correlation": -0.899156415704933,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:35",
+      "time2": "21:50",
+      "time1_minutes": 1295,
+      "time2_minutes": 1310,
+      "correlation": 0.8422668768701869,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:35",
+      "time2": "22:00",
+      "time1_minutes": 1295,
+      "time2_minutes": 1320,
+      "correlation": -0.7761682331071006,
+      "p_value": 8.213429936176908e-13,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:35",
+      "time2": "22:10",
+      "time1_minutes": 1295,
+      "time2_minutes": 1330,
+      "correlation": 0.8912496887719328,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:35",
+      "time2": "22:25",
+      "time1_minutes": 1295,
+      "time2_minutes": 1345,
+      "correlation": 0.9092040110797612,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:35",
+      "time2": "22:30",
+      "time1_minutes": 1295,
+      "time2_minutes": 1350,
+      "correlation": -0.8896870084586876,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:35",
+      "time2": "22:40",
+      "time1_minutes": 1295,
+      "time2_minutes": 1360,
+      "correlation": -0.92928401268723,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:35",
+      "time2": "22:50",
+      "time1_minutes": 1295,
+      "time2_minutes": 1370,
+      "correlation": -0.7751368412761095,
+      "p_value": 9.201528428093297e-13,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:35",
+      "time2": "22:55",
+      "time1_minutes": 1295,
+      "time2_minutes": 1375,
+      "correlation": 0.9179871583265421,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:45",
+      "time2": "21:50",
+      "time1_minutes": 1305,
+      "time2_minutes": 1310,
+      "correlation": -0.8794589237457741,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:45",
+      "time2": "22:00",
+      "time1_minutes": 1305,
+      "time2_minutes": 1320,
+      "correlation": 0.8656128070621959,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:45",
+      "time2": "22:10",
+      "time1_minutes": 1305,
+      "time2_minutes": 1330,
+      "correlation": -0.8131706288431649,
+      "p_value": 8.881784197001252e-15,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:45",
+      "time2": "22:25",
+      "time1_minutes": 1305,
+      "time2_minutes": 1345,
+      "correlation": -0.903115775993127,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:45",
+      "time2": "22:30",
+      "time1_minutes": 1305,
+      "time2_minutes": 1350,
+      "correlation": 0.8950232315363996,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:45",
+      "time2": "22:40",
+      "time1_minutes": 1305,
+      "time2_minutes": 1360,
+      "correlation": 0.9314083544441818,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:45",
+      "time2": "22:50",
+      "time1_minutes": 1305,
+      "time2_minutes": 1370,
+      "correlation": 0.8151049842813373,
+      "p_value": 6.8833827526759706e-15,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:45",
+      "time2": "22:55",
+      "time1_minutes": 1305,
+      "time2_minutes": 1375,
+      "correlation": -0.9416377307777896,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:50",
+      "time2": "22:00",
+      "time1_minutes": 1310,
+      "time2_minutes": 1320,
+      "correlation": -0.8636675790604004,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:50",
+      "time2": "22:10",
+      "time1_minutes": 1310,
+      "time2_minutes": 1330,
+      "correlation": 0.740427103574831,
+      "p_value": 3.076650045841234e-11,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:50",
+      "time2": "22:15",
+      "time1_minutes": 1310,
+      "time2_minutes": 1335,
+      "correlation": 0.7720180150710627,
+      "p_value": 1.2931877790833823e-12,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:50",
+      "time2": "22:25",
+      "time1_minutes": 1310,
+      "time2_minutes": 1345,
+      "correlation": 0.9218744017049042,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:50",
+      "time2": "22:30",
+      "time1_minutes": 1310,
+      "time2_minutes": 1350,
+      "correlation": -0.8077465556213794,
+      "p_value": 1.8207657603852567e-14,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:50",
+      "time2": "22:40",
+      "time1_minutes": 1310,
+      "time2_minutes": 1360,
+      "correlation": -0.8821254418477332,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:50",
+      "time2": "22:50",
+      "time1_minutes": 1310,
+      "time2_minutes": 1370,
+      "correlation": -0.8894624808352536,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "21:50",
+      "time2": "22:55",
+      "time1_minutes": 1310,
+      "time2_minutes": 1375,
+      "correlation": 0.9248877681842884,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "22:00",
+      "time2": "22:10",
+      "time1_minutes": 1320,
+      "time2_minutes": 1330,
+      "correlation": -0.7949155038011082,
+      "p_value": 9.303668946358812e-14,
+      "sample_size": 58
+    },
+    {
+      "time1": "22:00",
+      "time2": "22:25",
+      "time1_minutes": 1320,
+      "time2_minutes": 1345,
+      "correlation": -0.8171460331376161,
+      "p_value": 5.10702591327572e-15,
+      "sample_size": 58
+    },
+    {
+      "time1": "22:00",
+      "time2": "22:30",
+      "time1_minutes": 1320,
+      "time2_minutes": 1350,
+      "correlation": 0.7377925579035084,
+      "p_value": 3.925637592772091e-11,
+      "sample_size": 58
+    },
+    {
+      "time1": "22:00",
+      "time2": "22:40",
+      "time1_minutes": 1320,
+      "time2_minutes": 1360,
+      "correlation": 0.8960717214217724,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "22:00",
+      "time2": "22:50",
+      "time1_minutes": 1320,
+      "time2_minutes": 1370,
+      "correlation": 0.8293133961265634,
+      "p_value": 8.881784197001252e-16,
+      "sample_size": 58
+    },
+    {
+      "time1": "22:00",
+      "time2": "22:55",
+      "time1_minutes": 1320,
+      "time2_minutes": 1375,
+      "correlation": -0.8889266060739838,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "22:10",
+      "time2": "22:25",
+      "time1_minutes": 1330,
+      "time2_minutes": 1345,
+      "correlation": 0.8446955975145457,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "22:10",
+      "time2": "22:30",
+      "time1_minutes": 1330,
+      "time2_minutes": 1350,
+      "correlation": -0.7945029906653427,
+      "p_value": 9.792167077193881e-14,
+      "sample_size": 58
+    },
+    {
+      "time1": "22:10",
+      "time2": "22:40",
+      "time1_minutes": 1330,
+      "time2_minutes": 1360,
+      "correlation": -0.919255612266834,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "22:10",
+      "time2": "22:50",
+      "time1_minutes": 1330,
+      "time2_minutes": 1370,
+      "correlation": -0.7886800893063168,
+      "p_value": 1.9673151996357774e-13,
+      "sample_size": 58
+    },
+    {
+      "time1": "22:10",
+      "time2": "22:55",
+      "time1_minutes": 1330,
+      "time2_minutes": 1375,
+      "correlation": 0.9056320300933363,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "22:15",
+      "time2": "22:25",
+      "time1_minutes": 1335,
+      "time2_minutes": 1345,
+      "correlation": 0.7172264073643064,
+      "p_value": 2.3927637649023836e-10,
+      "sample_size": 58
+    },
+    {
+      "time1": "22:15",
+      "time2": "22:40",
+      "time1_minutes": 1335,
+      "time2_minutes": 1360,
+      "correlation": -0.7095796821331165,
+      "p_value": 4.502567207964603e-10,
+      "sample_size": 58
+    },
+    {
+      "time1": "22:15",
+      "time2": "22:50",
+      "time1_minutes": 1335,
+      "time2_minutes": 1370,
+      "correlation": -0.8465424370652649,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "22:15",
+      "time2": "22:55",
+      "time1_minutes": 1335,
+      "time2_minutes": 1375,
+      "correlation": 0.7569791204828695,
+      "p_value": 6.20725693067925e-12,
+      "sample_size": 58
+    },
+    {
+      "time1": "22:25",
+      "time2": "22:30",
+      "time1_minutes": 1345,
+      "time2_minutes": 1350,
+      "correlation": -0.8334413826931598,
+      "p_value": 4.440892098500626e-16,
+      "sample_size": 58
+    },
+    {
+      "time1": "22:25",
+      "time2": "22:40",
+      "time1_minutes": 1345,
+      "time2_minutes": 1360,
+      "correlation": -0.9112587126372182,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "22:25",
+      "time2": "22:50",
+      "time1_minutes": 1345,
+      "time2_minutes": 1370,
+      "correlation": -0.8360246910735912,
+      "p_value": 4.440892098500626e-16,
+      "sample_size": 58
+    },
+    {
+      "time1": "22:25",
+      "time2": "22:55",
+      "time1_minutes": 1345,
+      "time2_minutes": 1375,
+      "correlation": 0.9452824828533587,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "22:30",
+      "time2": "22:40",
+      "time1_minutes": 1350,
+      "time2_minutes": 1360,
+      "correlation": 0.8593919279140907,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "22:30",
+      "time2": "22:50",
+      "time1_minutes": 1350,
+      "time2_minutes": 1370,
+      "correlation": 0.8351348127068766,
+      "p_value": 4.440892098500626e-16,
+      "sample_size": 58
+    },
+    {
+      "time1": "22:30",
+      "time2": "22:55",
+      "time1_minutes": 1350,
+      "time2_minutes": 1375,
+      "correlation": -0.8926285577257175,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "22:40",
+      "time2": "22:50",
+      "time1_minutes": 1360,
+      "time2_minutes": 1370,
+      "correlation": 0.8640979551502478,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "22:40",
+      "time2": "22:55",
+      "time1_minutes": 1360,
+      "time2_minutes": 1375,
+      "correlation": -0.9734629933512751,
+      "p_value": 0.0,
+      "sample_size": 58
+    },
+    {
+      "time1": "22:50",
+      "time2": "22:55",
+      "time1_minutes": 1370,
+      "time2_minutes": 1375,
+      "correlation": -0.9029638432042889,
+      "p_value": 0.0,
+      "sample_size": 58
+    }
+  ]
+}

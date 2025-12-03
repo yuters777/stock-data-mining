@@ -1,0 +1,108 @@
+{
+  "alpha_vantage_api_key": "E4T2VQPX8FU6BI17",
+  "alpha_vantage_params": {
+    "data_type": "intraday",
+    "interval": "5min"
+  },
+  "cache_max_age_hours": {
+    "market_hours": 0.5,
+    "non_market_hours": 4.0
+  },
+  "combined_file_name": "combined_sp500_all_data_5min.csv",
+  "data_dir": "D:\\Google Drive\\!_Projects\\2025\\Market Pattern Analysis AI Agent\\MarketPatterns_AI\\Fetched_Data",
+  "enable_caching": true,
+  "last_fetched_times": {
+    "AAPL": "2025-11-13 02:55:00",
+    "AMZN": "2025-11-13 02:55:00",
+    "GOOGL": "2025-11-13 02:55:00",
+    "META": "2025-11-13 02:55:00",
+    "MSFT": "2025-11-13 02:55:00",
+    "NVDA": "2025-11-13 02:55:00",
+    "TSLA": "2025-11-13 02:55:00"
+  },
+  "log_file": "D:\\Google Drive\\!_Projects\\2025\\Market Pattern Analysis AI Agent\\MarketPatterns_AI\\Fetched_Data\\fetch_SP500_Data.log",
+  "max_daily_calls": 500,
+  "min_api_call_interval": 6,
+  "parallel_processing": {
+    "adaptive_rate_limiting": true,
+    "alpha_vantage_tier": "free",
+    "backoff_factor": 1.5,
+    "cpu_multiplier": 3.0,
+    "dynamic_throttling": true,
+    "enable_resource_monitoring": true,
+    "max_memory_percent": 85,
+    "max_retries_per_ticker": 2,
+    "max_semaphore_limit": 7,
+    "min_semaphore_limit": 2,
+    "progress_update_interval": 2,
+    "response_time_threshold": 0.25
+  },
+  "pattern_detector": {
+    "auto_adjust_session_times": false,
+    "magnitude_similarity_threshold": 0.7,
+    "min_pattern_occurrences": 2,
+    "param_comments": {
+      "auto_adjust_session_times": "When true, automatically selects DST or standard session times based on current date.",
+      "magnitude_similarity_threshold": "Minimum similarity ratio (0-1) between price changes to be considered part of the same pattern.",
+      "min_pattern_occurrences": "Minimum number of times a pattern must occur to be considered valid. Increase for higher confidence, decrease to catch rare patterns.",
+      "peak_prominence": "Minimum prominence for peak detection. Higher values detect only the most significant peaks and troughs.",
+      "price_impact_threshold": "Minimum percentage price change to be considered significant (0.2 = 0.2%). Adjust based on market volatility.",
+      "price_smooth_span": "Span parameter for exponential smoothing of prices. Higher values = more smoothing, less noise.",
+      "random_seed": "Random seed for reproducible visualizations in demonstration charts.",
+      "session_times": "Trading session definitions for both DST (summer) and standard time (winter) periods.",
+      "significance_threshold": "P-value threshold (0.05 = 95% confidence). Lower values require stronger statistical evidence.",
+      "strong_correlation_threshold": "Correlation coefficient threshold (0-1) for identifying strong relationships between different time periods.",
+      "time_shift_cluster_eps": "DBSCAN clustering distance parameter in minutes. Controls how close time points must be to form a cluster.",
+      "time_shift_cluster_min_samples": "Minimum samples needed for DBSCAN to form a cluster. Higher values require more evidence.",
+      "time_shift_tolerance": "Maximum time difference in minutes to consider events as the same pattern shifting in time.",
+      "time_window": "Time window in minutes for grouping events. Smaller values identify more precise patterns, larger values group more events together.",
+      "timezone": "Timezone used for analysis. Should match the primary market being analyzed.",
+      "volume_impact_threshold": "Volume ratio compared to average to be considered significant (1.5 = 50% above average)."
+    },
+    "peak_prominence": 0.5,
+    "price_impact_threshold": 0.1,
+    "price_smooth_span": 5,
+    "random_seed": 42,
+    "session_times": {
+      "main_session": {
+        "end": "22:00",
+        "start": "15:30"
+      },
+      "post_market": {
+        "end": "01:59",
+        "start": "22:00"
+      },
+      "pre_market": {
+        "end": "15:30",
+        "start": "10:00"
+      }
+    },
+    "significance_threshold": 0.1,
+    "strong_correlation_threshold": 0.7,
+    "time_shift_cluster_eps": 15,
+    "time_shift_cluster_min_samples": 2,
+    "time_shift_tolerance": 15,
+    "time_window": 5,
+    "timezone": "Asia/Jerusalem",
+    "volume_impact_threshold": 1.2
+  },
+  "proxy": null,
+  "skip_validation_unless_forced": true,
+  "smart_gap_filling": {
+    "enable": true,
+    "max_gap_size_for_compact": 200,
+    "use_incremental_fetching": true
+  },
+  "tickers": [
+    "AAPL",
+    "MSFT",
+    "GOOGL",
+    "AMZN",
+    "NVDA",
+    "TSLA",
+    "META"
+  ],
+  "timezone_conversion": {
+    "enable_batch_conversion": true
+  }
+}

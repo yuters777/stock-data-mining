@@ -1,0 +1,2 @@
+tickers_processed,data_range,total_rows,missing_values
+"['AAPL', 'AMZN', 'GOOGL', 'META', 'MSFT', 'NVDA', 'TSLA']","{'start': '2024-11-04T16:30:00+00:00', 'end': '2025-01-31T22:55:00+00:00'}",32256,96768
