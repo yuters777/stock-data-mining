@@ -1,0 +1,13 @@
+# Level Detection Module Requirements
+# Phase 1: BSU Detection
+
+# Core data processing
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Visualization
+matplotlib>=3.7.0
+
+# Testing
+pytest>=7.0.0
+pytest-cov>=4.0.0
