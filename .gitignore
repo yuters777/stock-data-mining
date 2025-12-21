@@ -8,3 +8,4 @@ venv/
 *.gdoc
 *.gsheet
 *.gslides
+level_detection/cache/

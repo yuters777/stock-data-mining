@@ -1,5 +1,5 @@
 # Level Detection Module Requirements
-# Phase 1: BSU Detection
+# Phase 1: BSU Detection + MarketPatterns-AI Integration
 
 # Core data processing
 pandas>=2.0.0
@@ -7,6 +7,15 @@ numpy>=1.24.0
 
 # Visualization
 matplotlib>=3.7.0
+
+# GitHub API / Data fetching
+requests>=2.31.0
+
+# Earnings calendar (yfinance)
+yfinance>=0.2.0
+
+# Environment variables
+python-dotenv>=1.0.0
 
 # Testing
 pytest>=7.0.0
