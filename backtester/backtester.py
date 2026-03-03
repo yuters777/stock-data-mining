@@ -44,6 +44,9 @@ class BacktestConfig:
     # Tiered target configuration
     tier_config: Optional[dict] = None  # None = original D1-only targeting
 
+    # Direction filter: None = both, "long" = long only, "short" = short only
+    direction_filter: Optional[str] = None
+
     # Data split
     in_sample_end: str = '2025-10-01'  # 70% IS
     out_of_sample_start: str = '2025-10-01'  # 30% OOS
@@ -251,6 +254,19 @@ class Backtester:
             # Take best signal (highest priority)
             signals.sort(key=lambda s: s.priority, reverse=True)
             signal = signals[0]
+
+            # Direction filter
+            if self.config.direction_filter:
+                if (self.config.direction_filter == 'long' and
+                        signal.direction != TradeDirection.LONG):
+                    self.signals_blocked['direction_filter'] = \
+                        self.signals_blocked.get('direction_filter', 0) + 1
+                    continue
+                if (self.config.direction_filter == 'short' and
+                        signal.direction != TradeDirection.SHORT):
+                    self.signals_blocked['direction_filter'] = \
+                        self.signals_blocked.get('direction_filter', 0) + 1
+                    continue
 
             # Check position limits
             can_trade, reason = self.risk_manager.check_position_limits(

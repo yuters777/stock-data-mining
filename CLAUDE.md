@@ -1,15 +1,19 @@
-# CLAUDE.md v5 — Regime Analysis & Adaptive Filters
+# CLAUDE.md v6 — Direction Analysis & Filtering
 
 ## Context
 
-**v4.1 complete.** Whitelist portfolio (AAPL, AMZN, GOOGL, TSLA) achieves:
-- OOS: 63 trades, PF=1.27, +$2,070 (with trail_factor=0.7, t1_pct=0.30)
-- Walk-Forward: **0/8 positive windows** (mean Sharpe=-6.29)
-- NVDA rescue failed (PF=0.89 unchanged across all param variations)
+**v5 complete.** Regime analysis (Phase 5A) found:
+- IS period: ALL regimes unprofitable (PF 0.24-0.97)
+- OOS period: ALL regimes profitable (PF 1.13-2.16)
+- Walk-forward failure is NOT regime-driven — it's a time-period issue
+- ADX/ATR regime filters cannot fix walk-forward (no clear signal)
 
-**The core problem:** Strategy is profitable in Oct 2025-Jan 2026 but loses in Feb-Sep 2025. This is regime-dependent performance — the false breakout edge exists only in certain market conditions.
+**v4.1 baseline** (still best config):
+- OOS: 63 trades, PF=1.27, +$2,070
+- Walk-Forward: 0/8 positive windows (mean Sharpe=-6.29)
+- Portfolio: AAPL, AMZN, GOOGL, TSLA
 
-**Phase 5 hypothesis:** ADX (trend strength) and ATR regime (volatility expansion/contraction) explain which periods the strategy works. Low-ADX ranging markets should favor false breakouts; high-ADX trending markets should destroy them.
+**Phase 6 hypothesis:** LONG and SHORT trades may have very different edge profiles. False breakouts at support (LONG) vs resistance (SHORT) may perform differently. If one direction dominates losses, filtering it out could improve walk-forward stability.
 
 ## Current Best Config (v4.1 winner)
 
@@ -28,72 +32,60 @@ Portfolio: AAPL, AMZN, GOOGL, TSLA (NVDA excluded)
 
 ---
 
-## Phase 5A: Regime Analysis (DATA FIRST)
+## Phase 6A: Direction Experiments
 
-Compute regime indicators, correlate with trade outcomes, map to WF windows.
-**Output `results/regime_analysis.md` before any filter experiments.**
+### Experiments
+```
+L-001: LONG only — block all SHORT signals
+L-002: SHORT only — block all LONG signals
+L-003: BOTH (baseline) — no direction filter (v4.1 rerun for comparison)
+```
 
-### Indicators
-1. **ADX(14)** on D1 bars — trend strength (0-100)
-   - ADX < 20: weak/no trend (ranging) — favorable for false breakouts
-   - ADX 20-30: developing trend
-   - ADX > 30: strong trend — unfavorable
-2. **ATR regime** — ATR(14) / rolling ATR(50) ratio
-   - Ratio < 0.8: low-vol contraction — levels hold better
-   - Ratio 0.8-1.2: normal
-   - Ratio > 1.2: vol expansion — levels break more easily
-3. **Combined regime classification:**
-   - FAVORABLE: ADX < 25 AND ATR_ratio < 1.2
-   - NEUTRAL: everything else
-   - HOSTILE: ADX > 30 OR ATR_ratio > 1.5
+### For each experiment:
+1. Run IS + OOS on 4-ticker portfolio
+2. Per-ticker breakdown (trades, WR, PF, P&L)
+3. 8-window walk-forward
+4. Compare all three side by side
 
-### Analysis Steps
-1. Compute ADX(14) + ATR regime for all 4 tickers on D1 bars
-2. Re-run v4.1 best config, capture per-trade entry dates
-3. Map each trade to its regime at entry
-4. Map each WF window (8 windows) to dominant regime
-5. Correlate: WR, PF, avg P&L by regime bucket
-6. Output regime_analysis.md with tables + verdict
+### Implementation:
+- Add `direction_filter` field to `BacktestConfig` (None | "long" | "short")
+- Filter signals in `Backtester.run()` after signal selection, before filter chain
+- No changes to pattern engine, risk manager, or trade manager
 
 ---
 
-## Phase 5B: Regime Filter Experiments (if 5A shows signal)
+## Phase 6B: Proceed Based on Results
 
-```
-R001: ADX ceiling filter — block trades when ADX > threshold
-R002: ATR expansion filter — block when ATR_ratio > threshold
-R003: Combined regime filter
-R004: Walk-forward with regime filter
-```
+If one direction is clearly stronger:
+- Adopt direction filter into best config
+- Re-run walk-forward with combined best config
+- Generate final report
 
----
-
-## Phase 5C: Final Walk-Forward & Report
-
-8-window walk-forward with regime filters on whitelist portfolio.
-Generate `results/OPTIMIZATION_REPORT_v5.md`.
+If both directions contribute:
+- Keep BOTH, investigate other angles
+- Consider per-ticker direction preferences
 
 ---
 
 ## Execution Order
 
 ```
-1. Phase 5A: Regime analysis — compute, correlate, output regime_analysis.md  <- START HERE
-2. Phase 5B: Regime filter experiments (R001-R004)
-3. Phase 5C: Walk-forward with best regime filter
-4. Final report
+1. Add direction_filter to BacktestConfig + Backtester.run()
+2. Run L-001 (LONG), L-002 (SHORT), L-003 (BOTH)
+3. Per-ticker breakdown + walk-forward for all three
+4. Output results/direction_analysis.md
+5. Proceed based on results
 ```
 
 ---
 
-## Success Criteria v5
+## Success Criteria v6
 
-| Criterion | v4.1 Result | v5 Target |
+| Criterion | v4.1 Result | v6 Target |
 |-----------|-------------|-----------|
-| Portfolio OOS PF | 1.27 | **>= 1.2** (maintain) |
-| Walk-Forward positive | 0/8 | **>= 4/8** |
-| Regime correlation | untested | **clear signal** (p < 0.10) |
-| Mean WF Sharpe | -6.29 | **> 0** |
+| Portfolio OOS PF | 1.27 | **>= 1.2** (maintain or improve) |
+| Walk-Forward positive | 0/8 | **>= 2/8** (any improvement) |
+| Direction signal | untested | **clear split** between LONG/SHORT |
 
 ---
 
@@ -103,7 +95,6 @@ Generate `results/OPTIMIZATION_REPORT_v5.md`.
 2. ONE trade per ticker at a time
 3. OOS is truth — never optimize on OOS
 4. Include slippage ($0.02/share each way)
-5. **Data first.** Output regime_analysis.md BEFORE any filter experiments
-6. **Regime analysis is diagnostic.** If no clear signal, don't force a filter
-7. **Trail is the profit engine.** Protect trailing stop logic
-8. Commit results after each step
+5. **Trail is the profit engine.** Protect trailing stop logic
+6. **Direction filter is additive** — it only blocks signals, never changes entry/exit logic
+7. Commit results after each step
