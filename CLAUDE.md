@@ -1,20 +1,15 @@
-# CLAUDE.md v7 — Direction-Specific Parameter Optimization
+# CLAUDE.md v8 — Confirmation Indicators & Signal Quality
 
 ## Context
 
-**v6 complete.** Direction analysis found a breakthrough:
-- L-005 (TSLA=long, others=short): OOS PF=2.64, +$7,064, WF **4/8** positive (was 0/8)
-- TSLA LONG: PF=4.94, +$5,209 (20 trades) — support breakouts reverse reliably
-- AAPL/AMZN/GOOGL SHORT: PF=1.33-35.92 — resistance breakouts reverse reliably
-- TSLA SHORT destroys value (PF=0.43, -$1,293)
-- LONG on AAPL/AMZN/GOOGL destroys value (PF=0.55-0.80)
+**v7 complete.** Direction-specific param optimization degraded results.
+L-005 (TSLA=long, others=short) with v4.1 baseline params confirmed as best.
 
-**v7 complete.** Direction-specific param optimization DEGRADED results:
-- v7 optimized: OOS PF=1.41 (-47%), WF 2/8 (-50%), WF P&L +$301 (-94%)
-- LP series had 0 IS trades — all picks OOS-based (overfitting)
-- SP series picked from 7-11 trade IS samples (too small)
-- GOOGL collapsed from PF=1.33 to PF=0.20 under SP params
-- Expansion (META/MSFT/NVDA SHORT) all rejected (PF 0.37-0.79)
+**v8 complete.** 5 confirmation indicators tested — NONE improve walk-forward:
+- **Score & Touches**: Zero variance (all trades score >= 20, touches >= 5)
+- **RSI extreme**: Counter-productive (PF=0.55 when RSI confirms vs PF=4.13 when not)
+- **Mirror filter**: Cosmetic (84% already mirror; removes 8 trades for +$225)
+- **Volume fade**: Best diagnostic (PF 3.69) but WF degrades 4/8→3/8
 
 **VERDICT: L-005 with v4.1 baseline params is the final best config.**
 
@@ -49,10 +44,13 @@ Portfolio: TSLA (LONG) + AAPL, AMZN, GOOGL (SHORT)
 
 ## Completed Phases
 
-- Phase 7A: LP-001→LP-007 (TSLA LONG) — 0 IS trades, no reliable optimization
-- Phase 7A: SP-001→SP-007 (SHORT tickers) — IS-optimized params degraded OOS
-- Phase 7B: X-001→X-003 (META/MSFT/NVDA expansion) — all rejected
-- Phase 7C: Combined v7 tested and rejected vs L-005 baseline
+- v4: Universe expansion (7 tickers), EXP-V001 baseline
+- v4.1: Whitelist portfolio, trail optimization, NVDA rescue, walk-forward
+- v5: Regime analysis (ADX/ATR) — no clear signal for filter
+- v6: Direction analysis — **breakthrough** (L-005: TSLA=long, others=short)
+- v7: Direction-specific param optimization — DEGRADED, rejected
+- v7B: Universe expansion (META/MSFT/NVDA SHORT) — all rejected
+- v8: Confirmation indicators (mirror, score, vol fade, RSI, touches) — NONE improve WF
 
 ---
 

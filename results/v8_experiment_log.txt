@@ -1,0 +1,231 @@
+Phase 8 — Confirmation Indicators & Signal Quality
+============================================================
+
+============================================================
+  M-001: Diagnostic Signal Count
+============================================================
+  RSI computed for AAPL: 178 days
+  RSI computed for AMZN: 221 days
+  RSI computed for GOOGL: 245 days
+  RSI computed for TSLA: 245 days
+
+  IS: 11 trades
+    Mirror levels: 11/11 (WR=27%, PF=0.56, $-856)
+    Non-mirror:    0/11 (WR=0%, PF=0.00, $0)
+    Score >= 10: 11/11 (WR=27%, PF=0.56, $-856)
+    Score >= 15: 11/11 (WR=27%, PF=0.56, $-856)
+    Score >= 20: 11/11 (WR=27%, PF=0.56, $-856)
+    Vol fade (<1x): 10/11 (WR=30%, PF=0.72, $-409)
+    Vol surge(>=1x):1/11 (WR=0%, PF=0.00, $-448)
+    RSI confirms:   6/11 (WR=17%, PF=0.16, $-1384)
+    RSI neutral:    5/11 (WR=40%, PF=2.87, $528)
+    RSI S>50/L<50: 7/11 (WR=29%, PF=0.43, $-933)
+    RSI S>55/L<45: 7/11 (WR=29%, PF=0.43, $-933)
+    RSI S>65/L<35: 5/11 (WR=20%, PF=0.20, $-1085)
+    RSI S>70/L<30: 1/11 (WR=0%, PF=0.00, $-448)
+    Touches >= 2: 11/11 (WR=27%, PF=0.56, $-856)
+    Touches >= 3: 11/11 (WR=27%, PF=0.56, $-856)
+    Touches >= 5: 11/11 (WR=27%, PF=0.56, $-856)
+
+    Per-ticker (IS):
+      AAPL: 5t, WR=20%, PF=0.20, $-1085 (mirror:5, vol_fade:4, rsi_conf:5)
+      AMZN: 4t, WR=25%, PF=1.27, $77 (mirror:4, vol_fade:4, rsi_conf:0)
+      GOOGL: 2t, WR=50%, PF=1.50, $151 (mirror:2, vol_fade:2, rsi_conf:1)
+
+  OOS: 50 trades
+    Mirror levels: 42/50 (WR=60%, PF=3.14, $7289)
+    Non-mirror:    8/50 (WR=38%, PF=0.75, $-224)
+    Score >= 10: 50/50 (WR=56%, PF=2.64, $7064)
+    Score >= 15: 50/50 (WR=56%, PF=2.64, $7064)
+    Score >= 20: 50/50 (WR=56%, PF=2.64, $7064)
+    Vol fade (<1x): 33/50 (WR=61%, PF=3.69, $6933)
+    Vol surge(>=1x):17/50 (WR=47%, PF=1.08, $131)
+    RSI confirms:   13/50 (WR=38%, PF=0.55, $-813)
+    RSI neutral:    37/50 (WR=62%, PF=4.13, $7878)
+    RSI S>50/L<50: 29/50 (WR=52%, PF=1.79, $2153)
+    RSI S>55/L<45: 20/50 (WR=40%, PF=0.84, $-386)
+    RSI S>65/L<35: 8/50 (WR=25%, PF=0.39, $-729)
+    RSI S>70/L<30: 6/50 (WR=33%, PF=0.78, $-130)
+    Touches >= 2: 50/50 (WR=56%, PF=2.64, $7064)
+    Touches >= 3: 50/50 (WR=56%, PF=2.64, $7064)
+    Touches >= 5: 50/50 (WR=56%, PF=2.64, $7064)
+
+    Per-ticker (OOS):
+      AAPL: 4t, WR=75%, PF=35.92, $845 (mirror:4, vol_fade:3, rsi_conf:0)
+      AMZN: 13t, WR=46%, PF=1.35, $588 (mirror:13, vol_fade:10, rsi_conf:2)
+      GOOGL: 13t, WR=46%, PF=1.33, $423 (mirror:5, vol_fade:8, rsi_conf:9)
+      TSLA: 20t, WR=65%, PF=4.94, $5209 (mirror:20, vol_fade:12, rsi_conf:2)
+
+  OOS trade count: 50
+
+############################################################
+  M-002 to M-006: Individual Indicator Filter Tests
+############################################################
+
+  Baseline: 50t PF=2.64 $7064
+
+  M-002: Mirror levels only
+    IS: 11/11 pass (WR=27%, PF=0.56, $-856) | blocked: 0t PF=0.00 $0
+    OOS: 42/50 pass (WR=60%, PF=3.14, $7289) | blocked: 8t PF=0.75 $-224
+      AAPL: 4t WR=75% PF=35.92 $845
+      AMZN: 13t WR=46% PF=1.35 $588
+      GOOGL: 5t WR=60% PF=2.65 $647
+      TSLA: 20t WR=65% PF=4.94 $5209
+
+  M-003-10: Level score >= 10
+    IS: 11/11 pass (WR=27%, PF=0.56, $-856) | blocked: 0t PF=0.00 $0
+    OOS: 50/50 pass (WR=56%, PF=2.64, $7064) | blocked: 0t PF=0.00 $0
+      AAPL: 4t WR=75% PF=35.92 $845
+      AMZN: 13t WR=46% PF=1.35 $588
+      GOOGL: 13t WR=46% PF=1.33 $423
+      TSLA: 20t WR=65% PF=4.94 $5209
+
+  M-003-15: Level score >= 15
+    IS: 11/11 pass (WR=27%, PF=0.56, $-856) | blocked: 0t PF=0.00 $0
+    OOS: 50/50 pass (WR=56%, PF=2.64, $7064) | blocked: 0t PF=0.00 $0
+      AAPL: 4t WR=75% PF=35.92 $845
+      AMZN: 13t WR=46% PF=1.35 $588
+      GOOGL: 13t WR=46% PF=1.33 $423
+      TSLA: 20t WR=65% PF=4.94 $5209
+
+  M-003-20: Level score >= 20
+    IS: 11/11 pass (WR=27%, PF=0.56, $-856) | blocked: 0t PF=0.00 $0
+    OOS: 50/50 pass (WR=56%, PF=2.64, $7064) | blocked: 0t PF=0.00 $0
+      AAPL: 4t WR=75% PF=35.92 $845
+      AMZN: 13t WR=46% PF=1.35 $588
+      GOOGL: 13t WR=46% PF=1.33 $423
+      TSLA: 20t WR=65% PF=4.94 $5209
+
+  M-004: Volume fade (vol < 1.0x)
+    IS: 10/11 pass (WR=30%, PF=0.72, $-409) | blocked: 1t PF=0.00 $-448
+    OOS: 33/50 pass (WR=61%, PF=3.69, $6933) | blocked: 17t PF=1.08 $131
+      AAPL: 3t WR=100% PF=inf $869
+      AMZN: 10t WR=50% PF=2.19 $1200
+      GOOGL: 8t WR=62% PF=1.97 $534
+      TSLA: 12t WR=58% PF=5.24 $4329
+
+  M-005-55/45: RSI S>55/L<45
+    IS: 7/11 pass (WR=29%, PF=0.43, $-933) | blocked: 4t PF=1.27 $77
+    OOS: 20/50 pass (WR=40%, PF=0.84, $-386) | blocked: 30t PF=4.91 $7451
+      AAPL: 0 trades
+      AMZN: 5t WR=20% PF=0.06 $-770
+      GOOGL: 13t WR=46% PF=1.33 $423
+      TSLA: 2t WR=50% PF=0.87 $-39
+
+  M-005-60/40: RSI S>60/L<40
+    IS: 6/11 pass (WR=17%, PF=0.16, $-1384) | blocked: 5t PF=2.87 $528
+    OOS: 13/50 pass (WR=38%, PF=0.55, $-813) | blocked: 37t PF=4.13 $7878
+      AAPL: 0 trades
+      AMZN: 2t WR=50% PF=0.16 $-253
+      GOOGL: 9t WR=33% PF=0.57 $-522
+      TSLA: 2t WR=50% PF=0.87 $-39
+
+  M-005-65/35: RSI S>65/L<35
+    IS: 5/11 pass (WR=20%, PF=0.20, $-1085) | blocked: 6t PF=1.39 $228
+    OOS: 8/50 pass (WR=25%, PF=0.39, $-729) | blocked: 42t PF=3.50 $7793
+      AAPL: 0 trades
+      AMZN: 0 trades
+      GOOGL: 8t WR=25% PF=0.39 $-729
+      TSLA: 0 trades
+
+  M-005-70/30: RSI S>70/L<30
+    IS: 1/11 pass (WR=0%, PF=0.00, $-448) | blocked: 10t PF=0.72 $-409
+    OOS: 6/50 pass (WR=33%, PF=0.78, $-130) | blocked: 44t PF=2.94 $7194
+      AAPL: 0 trades
+      AMZN: 0 trades
+      GOOGL: 6t WR=33% PF=0.78 $-130
+      TSLA: 0 trades
+
+  M-006-2: Touches >= 2
+    IS: 11/11 pass (WR=27%, PF=0.56, $-856) | blocked: 0t PF=0.00 $0
+    OOS: 50/50 pass (WR=56%, PF=2.64, $7064) | blocked: 0t PF=0.00 $0
+      AAPL: 4t WR=75% PF=35.92 $845
+      AMZN: 13t WR=46% PF=1.35 $588
+      GOOGL: 13t WR=46% PF=1.33 $423
+      TSLA: 20t WR=65% PF=4.94 $5209
+
+  M-006-3: Touches >= 3
+    IS: 11/11 pass (WR=27%, PF=0.56, $-856) | blocked: 0t PF=0.00 $0
+    OOS: 50/50 pass (WR=56%, PF=2.64, $7064) | blocked: 0t PF=0.00 $0
+      AAPL: 4t WR=75% PF=35.92 $845
+      AMZN: 13t WR=46% PF=1.35 $588
+      GOOGL: 13t WR=46% PF=1.33 $423
+      TSLA: 20t WR=65% PF=4.94 $5209
+
+  M-006-5: Touches >= 5
+    IS: 11/11 pass (WR=27%, PF=0.56, $-856) | blocked: 0t PF=0.00 $0
+    OOS: 50/50 pass (WR=56%, PF=2.64, $7064) | blocked: 0t PF=0.00 $0
+      AAPL: 4t WR=75% PF=35.92 $845
+      AMZN: 13t WR=46% PF=1.35 $588
+      GOOGL: 13t WR=46% PF=1.33 $423
+      TSLA: 20t WR=65% PF=4.94 $5209
+
+############################################################
+  FILTER COMPARISON SUMMARY (OOS)
+############################################################
+
+  Experiment            Trades     WR     PF      P&L
+  -------------------- ------- ------ ------ --------
+  L-005                     50    56%   2.64 $   7064
+  M-002                     42    60%   3.14 $   7289
+  M-003-10                  50    56%   2.64 $   7064
+  M-003-15                  50    56%   2.64 $   7064
+  M-003-20                  50    56%   2.64 $   7064
+  M-004                     33    61%   3.69 $   6933
+  M-005-55/45               20    40%   0.84 $   -386
+  M-005-60/40               13    38%   0.55 $   -813
+  M-005-65/35                8    25%   0.39 $   -729
+  M-005-70/30                6    33%   0.78 $   -130
+  M-006-2                   50    56%   2.64 $   7064
+  M-006-3                   50    56%   2.64 $   7064
+  M-006-5                   50    56%   2.64 $   7064
+
+  CANDIDATE: M-002 (Mirror levels only)
+
+  CANDIDATE: M-003-10 (Level score >= 10)
+
+  CANDIDATE: M-003-15 (Level score >= 15)
+
+  CANDIDATE: M-003-20 (Level score >= 20)
+
+  CANDIDATE: M-004 (Volume fade (vol < 1.0x))
+
+  CANDIDATE: M-006-2 (Touches >= 2)
+
+  CANDIDATE: M-006-3 (Touches >= 3)
+
+  CANDIDATE: M-006-5 (Touches >= 5)
+
+############################################################
+  M-007: Walk-Forward with Best Filters
+############################################################
+
+  M-007-base: Baseline (no filter) (Walk-Forward)
+    W1: 2025-05-10→2025-06-10 baseline 5t $-162 | filtered 5t $-162
+    W2: 2025-06-10→2025-07-10 baseline 12t $1086 | filtered 12t $1086
+    W3: 2025-07-10→2025-08-10 baseline 18t $-349 | filtered 18t $-349
+    W4: 2025-08-10→2025-09-10 baseline 7t $-1159 | filtered 7t $-1159
+    W5: 2025-09-10→2025-10-10 baseline 20t $-440 | filtered 20t $-440
+    W6: 2025-10-10→2025-11-10 baseline 26t $895 | filtered 26t $895
+    W7: 2025-11-10→2025-12-10 baseline 13t $1559 | filtered 13t $1559
+    W8: 2025-12-10→2026-01-10 baseline 15t $3447 | filtered 15t $3447
+
+  WF Summary:
+    Baseline: 4/8 positive, total $4876
+    Filtered: 4/8 positive, total $4876
+
+  Best candidate: M-004 (Volume fade (vol < 1.0x))
+
+  M-007-best: Vol fade (Walk-Forward)
+    W1: 2025-05-10→2025-06-10 baseline 5t $-162 | filtered 4t $-613
+    W2: 2025-06-10→2025-07-10 baseline 12t $1086 | filtered 9t $1835
+    W3: 2025-07-10→2025-08-10 baseline 18t $-349 | filtered 14t $-320
+    W4: 2025-08-10→2025-09-10 baseline 7t $-1159 | filtered 3t $-337
+    W5: 2025-09-10→2025-10-10 baseline 20t $-440 | filtered 15t $393
+    W6: 2025-10-10→2025-11-10 baseline 26t $895 | filtered 13t $-210
+    W7: 2025-11-10→2025-12-10 baseline 13t $1559 | filtered 5t $325
+    W8: 2025-12-10→2026-01-10 baseline 15t $3447 | filtered 10t $-464
+
+  WF Summary:
+    Baseline: 4/8 positive, total $4876
+    Filtered: 3/8 positive, total $609
