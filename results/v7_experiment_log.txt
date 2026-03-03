@@ -1,0 +1,216 @@
+Phase 7 — Direction-Specific Parameter Optimization
+============================================================
+
+############################################################
+  PHASE 7A — TSLA LONG Parameter Optimization (LP series)
+############################################################
+
+============================================================
+  LP-001: fractal_depth sweep  (TSLA)
+  Values: [5, 7, 10, 15]
+============================================================
+  fractal_depth=    5: IS 0t PF=0.00 $0 | OOS 38t PF=2.21 $4582
+  fractal_depth=    7: IS 0t PF=0.00 $0 | OOS 24t PF=2.96 $4347
+  fractal_depth=   10: IS 0t PF=0.00 $0 | OOS 20t PF=4.94 $5209 <-- baseline
+  fractal_depth=   15: IS 0t PF=0.00 $0 | OOS 20t PF=4.94 $5209
+  ** No variant has >=5 IS trades. Picking by OOS PF (caution).
+  >> BEST: fractal_depth=10 (IS PF=0.00, OOS PF=4.94)
+
+============================================================
+  LP-002: tail_ratio_min sweep  (TSLA)
+  Values: [0.05, 0.1, 0.15, 0.2]
+============================================================
+  tail_ratio_min= 0.05: IS 0t PF=0.00 $0 | OOS 26t PF=2.03 $2329
+  tail_ratio_min=  0.1: IS 0t PF=0.00 $0 | OOS 20t PF=4.94 $5209 <-- baseline
+  tail_ratio_min= 0.15: IS 0t PF=0.00 $0 | OOS 17t PF=5.80 $4902
+  tail_ratio_min=  0.2: IS 0t PF=0.00 $0 | OOS 14t PF=3.44 $1759
+  ** No variant has >=5 IS trades. Picking by OOS PF (caution).
+  >> BEST: tail_ratio_min=0.15 (IS PF=0.00, OOS PF=5.80)
+
+============================================================
+  LP-003: atr_entry_threshold sweep  (TSLA)
+  Values: [0.6, 0.7, 0.8, 0.9]
+============================================================
+  atr_entry_threshold=  0.6: IS 3t PF=2.27 $563 | OOS 20t PF=4.94 $5209
+  atr_entry_threshold=  0.7: IS 2t PF=0.81 $-85 | OOS 20t PF=4.94 $5209
+  atr_entry_threshold=  0.8: IS 0t PF=0.00 $0 | OOS 20t PF=4.94 $5209 <-- baseline
+  atr_entry_threshold=  0.9: IS 0t PF=0.00 $0 | OOS 20t PF=4.94 $5209
+  ** No variant has >=5 IS trades. Picking by OOS PF (caution).
+  >> BEST: atr_entry_threshold=0.6 (IS PF=2.27, OOS PF=4.94)
+
+============================================================
+  LP-004: min_rr sweep  (TSLA)
+  Values: [1.0, 1.5, 2.0, 2.5]
+============================================================
+  min_rr=  1.0: IS 0t PF=0.00 $0 | OOS 31t PF=1.71 $2205
+  min_rr=  1.5: IS 0t PF=0.00 $0 | OOS 20t PF=4.94 $5209 <-- baseline
+  min_rr=  2.0: IS 0t PF=0.00 $0 | OOS 14t PF=4.58 $3660
+  min_rr=  2.5: IS 0t PF=0.00 $0 | OOS 12t PF=0.82 $-180
+  ** No variant has >=5 IS trades. Picking by OOS PF (caution).
+  >> BEST: min_rr=1.5 (IS PF=0.00, OOS PF=4.94)
+
+============================================================
+  LP-005: max_stop_atr_pct sweep  (TSLA)
+  Values: [0.05, 0.08, 0.1, 0.15]
+============================================================
+  max_stop_atr_pct= 0.05: IS 0t PF=0.00 $0 | OOS 20t PF=1.01 $47
+  max_stop_atr_pct= 0.08: IS 0t PF=0.00 $0 | OOS 21t PF=4.06 $5214
+  max_stop_atr_pct=  0.1: IS 0t PF=0.00 $0 | OOS 20t PF=4.94 $5209 <-- baseline
+  max_stop_atr_pct= 0.15: IS 0t PF=0.00 $0 | OOS 19t PF=2.98 $3213
+  ** No variant has >=5 IS trades. Picking by OOS PF (caution).
+  >> BEST: max_stop_atr_pct=0.1 (IS PF=0.00, OOS PF=4.94)
+
+============================================================
+  LP-006: trail_factor sweep  (TSLA)
+  Values: [0.5, 0.7, 0.9, 1.0]
+============================================================
+  trail_factor=  0.5: IS 0t PF=0.00 $0 | OOS 20t PF=4.97 $5248
+  trail_factor=  0.7: IS 0t PF=0.00 $0 | OOS 20t PF=4.94 $5209 <-- baseline
+  trail_factor=  0.9: IS 0t PF=0.00 $0 | OOS 20t PF=4.91 $5169
+  trail_factor=  1.0: IS 0t PF=0.00 $0 | OOS 20t PF=4.90 $5149
+  ** No variant has >=5 IS trades. Picking by OOS PF (caution).
+  >> BEST: trail_factor=0.5 (IS PF=0.00, OOS PF=4.97)
+
+============================================================
+  LP-007: t1_pct sweep  (TSLA)
+  Values: [0.2, 0.3, 0.4, 0.5]
+============================================================
+  t1_pct=  0.2: IS 0t PF=0.00 $0 | OOS 20t PF=5.25 $5615
+  t1_pct=  0.3: IS 0t PF=0.00 $0 | OOS 20t PF=4.94 $5209 <-- baseline
+  t1_pct=  0.4: IS 0t PF=0.00 $0 | OOS 20t PF=4.64 $4811
+  t1_pct=  0.5: IS 0t PF=0.00 $0 | OOS 20t PF=4.33 $4405
+  ** No variant has >=5 IS trades. Picking by OOS PF (caution).
+  >> BEST: t1_pct=0.2 (IS PF=0.00, OOS PF=5.25)
+
+  LP WINNERS: {'fractal_depth': 10, 'tail_ratio_min': 0.15, 'atr_entry_threshold': 0.6, 'min_rr': 1.5, 'max_stop_atr_pct': 0.1, 'trail_factor': 0.5, 't1_pct': 0.2}
+
+############################################################
+  PHASE 7A — SHORT Ticker Parameter Optimization (SP series)
+############################################################
+
+============================================================
+  SP-001: fractal_depth sweep  (AAPL, AMZN, GOOGL)
+  Values: [5, 7, 10, 15]
+============================================================
+  fractal_depth=    5: IS 27t PF=0.64 $-1552 | OOS 51t PF=0.76 $-1624
+  fractal_depth=    7: IS 22t PF=0.78 $-708 | OOS 40t PF=0.98 $-83
+  fractal_depth=   10: IS 11t PF=0.56 $-856 | OOS 30t PF=1.62 $1856 <-- baseline
+  fractal_depth=   15: IS 7t PF=0.47 $-500 | OOS 15t PF=2.42 $1841
+  >> BEST: fractal_depth=7 (IS PF=0.78, OOS PF=0.98)
+
+============================================================
+  SP-002: tail_ratio_min sweep  (AAPL, AMZN, GOOGL)
+  Values: [0.05, 0.1, 0.15, 0.2]
+============================================================
+  tail_ratio_min= 0.05: IS 13t PF=0.61 $-874 | OOS 35t PF=1.77 $2555
+  tail_ratio_min=  0.1: IS 11t PF=0.56 $-856 | OOS 30t PF=1.62 $1856 <-- baseline
+  tail_ratio_min= 0.15: IS 10t PF=0.82 $-298 | OOS 27t PF=1.45 $1346
+  tail_ratio_min=  0.2: IS 9t PF=1.00 $2 | OOS 22t PF=1.43 $1050
+  >> BEST: tail_ratio_min=0.2 (IS PF=1.00, OOS PF=1.43)
+
+============================================================
+  SP-003: atr_entry_threshold sweep  (AAPL, AMZN, GOOGL)
+  Values: [0.6, 0.7, 0.8, 0.9]
+============================================================
+  atr_entry_threshold=  0.6: IS 11t PF=0.56 $-856 | OOS 30t PF=1.62 $1856
+  atr_entry_threshold=  0.7: IS 11t PF=0.56 $-856 | OOS 30t PF=1.62 $1856
+  atr_entry_threshold=  0.8: IS 11t PF=0.56 $-856 | OOS 30t PF=1.62 $1856 <-- baseline
+  atr_entry_threshold=  0.9: IS 10t PF=0.66 $-557 | OOS 30t PF=1.62 $1856
+  >> BEST: atr_entry_threshold=0.9 (IS PF=0.66, OOS PF=1.62)
+
+============================================================
+  SP-004: min_rr sweep  (AAPL, AMZN, GOOGL)
+  Values: [1.0, 1.5, 2.0, 2.5]
+============================================================
+  min_rr=  1.0: IS 14t PF=0.52 $-1005 | OOS 48t PF=0.74 $-1657
+  min_rr=  1.5: IS 11t PF=0.56 $-856 | OOS 30t PF=1.62 $1856 <-- baseline
+  min_rr=  2.0: IS 9t PF=0.38 $-1008 | OOS 21t PF=1.14 $296
+  min_rr=  2.5: IS 8t PF=0.47 $-708 | OOS 14t PF=1.78 $845
+  >> BEST: min_rr=1.5 (IS PF=0.56, OOS PF=1.62)
+
+============================================================
+  SP-005: max_stop_atr_pct sweep  (AAPL, AMZN, GOOGL)
+  Values: [0.05, 0.08, 0.1, 0.15]
+============================================================
+  max_stop_atr_pct= 0.05: IS 8t PF=0.64 $-498 | OOS 27t PF=0.61 $-1726
+  max_stop_atr_pct= 0.08: IS 9t PF=0.82 $-244 | OOS 28t PF=0.98 $-70
+  max_stop_atr_pct=  0.1: IS 11t PF=0.56 $-856 | OOS 30t PF=1.62 $1856 <-- baseline
+  max_stop_atr_pct= 0.15: IS 11t PF=0.47 $-1121 | OOS 32t PF=1.34 $849
+  >> BEST: max_stop_atr_pct=0.08 (IS PF=0.82, OOS PF=0.98)
+
+============================================================
+  SP-006: trail_factor sweep  (AAPL, AMZN, GOOGL)
+  Values: [0.5, 0.7, 0.9, 1.0]
+============================================================
+  trail_factor=  0.5: IS 11t PF=0.56 $-856 | OOS 30t PF=1.53 $1600
+  trail_factor=  0.7: IS 11t PF=0.56 $-856 | OOS 30t PF=1.62 $1856 <-- baseline
+  trail_factor=  0.9: IS 11t PF=0.56 $-856 | OOS 30t PF=1.58 $1730
+  trail_factor=  1.0: IS 11t PF=0.56 $-856 | OOS 30t PF=1.56 $1667
+  >> BEST: trail_factor=0.5 (IS PF=0.56, OOS PF=1.53)
+
+============================================================
+  SP-007: t1_pct sweep  (AAPL, AMZN, GOOGL)
+  Values: [0.2, 0.3, 0.4, 0.5]
+============================================================
+  t1_pct=  0.2: IS 11t PF=0.55 $-859 | OOS 30t PF=1.66 $1961
+  t1_pct=  0.3: IS 11t PF=0.56 $-856 | OOS 30t PF=1.62 $1856 <-- baseline
+  t1_pct=  0.4: IS 11t PF=0.56 $-854 | OOS 30t PF=1.58 $1750
+  t1_pct=  0.5: IS 11t PF=0.56 $-851 | OOS 30t PF=1.55 $1645
+  >> BEST: t1_pct=0.5 (IS PF=0.56, OOS PF=1.55)
+
+  SP WINNERS: {'fractal_depth': 7, 'tail_ratio_min': 0.2, 'atr_entry_threshold': 0.9, 'min_rr': 1.5, 'max_stop_atr_pct': 0.08, 'trail_factor': 0.5, 't1_pct': 0.5}
+
+############################################################
+  COMBINED WINNERS — Full Portfolio Test
+############################################################
+
+  Running combined IS/OOS...
+
+  COMBINED IS:  15t PF=1.38 $717
+  COMBINED OOS: 50t PF=1.41 $2731
+    AAPL OOS: 3t PF=2.52 $455
+    AMZN OOS: 14t PF=0.68 $-778
+    GOOGL OOS: 16t PF=0.20 $-2298
+    TSLA OOS: 17t PF=6.24 $5352
+
+  Running L-005 baseline IS/OOS for comparison...
+  BASELINE IS:  11t PF=0.56 $-856
+  BASELINE OOS: 50t PF=2.64 $7064
+
+  Running combined walk-forward...
+
+  COMBINED WF: 2/8 positive, mean Sharpe=-831.60, total P&L=$301
+    W1: 2025-05-10→2025-06-10 6t PF=0.41 $-665 [-]
+    W2: 2025-06-10→2025-07-10 18t PF=1.13 $277 [-]
+    W3: 2025-07-10→2025-08-10 21t PF=0.86 $-332 [-]
+    W4: 2025-08-10→2025-09-10 14t PF=0.47 $-1073 [-]
+    W5: 2025-09-10→2025-10-10 20t PF=0.66 $-962 [-]
+    W6: 2025-10-10→2025-11-10 24t PF=0.59 $-1289 [+]
+    W7: 2025-11-10→2025-12-10 12t PF=0.83 $-347 [-]
+    W8: 2025-12-10→2026-01-10 16t PF=4.24 $4692 [+]
+
+  Running L-005 baseline walk-forward for comparison...
+  BASELINE WF: 4/8 positive, mean Sharpe=22.25, total P&L=$4876
+
+############################################################
+  PHASE 7B — Universe Expansion (SHORT)
+############################################################
+
+  X-001: META SHORT
+    IS:  3t PF=0.74 $-135
+    OOS: 44t PF=0.79 $-1525
+    >> REJECT
+
+  X-002: MSFT SHORT
+    IS:  0t PF=0.00 $0
+    OOS: 29t PF=0.37 $-4645
+    >> REJECT
+
+  X-003: NVDA SHORT
+    IS:  1t PF=0.00 $-300
+    OOS: 4t PF=0.74 $-158
+    >> REJECT
+
+  EXPANSION ACCEPTED: NONE
+
+Report written to /home/user/stock-data-mining/results/v7_optimization_report.md
