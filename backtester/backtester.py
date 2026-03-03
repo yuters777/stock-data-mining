@@ -25,6 +25,9 @@ from backtester.core.risk_manager import (
 from backtester.core.trade_manager import (
     TradeManager, TradeManagerConfig, Trade, ExitReason
 )
+from backtester.core.intraday_levels import (
+    IntradayLevelDetector, IntradayLevelConfig
+)
 
 
 @dataclass
@@ -36,6 +39,10 @@ class BacktestConfig:
     filter_config: FilterChainConfig = field(default_factory=FilterChainConfig)
     risk_config: RiskManagerConfig = field(default_factory=RiskManagerConfig)
     trade_config: TradeManagerConfig = field(default_factory=TradeManagerConfig)
+    intraday_config: Optional[IntradayLevelConfig] = None
+
+    # Tiered target configuration
+    tier_config: Optional[dict] = None  # None = original D1-only targeting
 
     # Data split
     in_sample_end: str = '2025-10-01'  # 70% IS
@@ -67,6 +74,11 @@ class Backtester:
         self.risk_manager = RiskManager(self.config.risk_config)
         self.trade_manager = TradeManager(self.config.trade_config, self.risk_manager)
 
+        # Intraday level detector (for tiered targets)
+        self.intraday_detector = None
+        if self.config.intraday_config:
+            self.intraday_detector = IntradayLevelDetector(self.config.intraday_config)
+
         self.m5_df: Optional[pd.DataFrame] = None
         self.daily_df: Optional[pd.DataFrame] = None
         self.levels: list[Level] = []
@@ -75,6 +87,8 @@ class Backtester:
         self.proximity_events = 0
         self.patterns_found = 0
         self.signals_blocked: dict[str, int] = {}
+        self.intraday_targets_found = 0
+        self.intraday_targets_used = 0
 
     def load_data(self, csv_path: str) -> pd.DataFrame:
         """Load M5 OHLCV data from CSV."""
@@ -262,9 +276,51 @@ class Backtester:
                 atr_m5_val = 0.5
 
             opposing = self._get_opposing_levels(signal, active_levels)
-            risk_params = self.risk_manager.calculate_risk_params(
-                signal, m5_df, atr_m5_val, signal.level.atr_d1, opposing
-            )
+
+            # Use tiered targets if intraday detector is configured
+            risk_params = None
+            if self.intraday_detector and self.config.tier_config:
+                # Find the M5 bar index within the ticker's data
+                ticker_m5 = m5_df[m5_df['Ticker'] == bar_ticker]
+                ticker_bar_positions = ticker_m5.index.tolist()
+                try:
+                    ticker_relative_idx = ticker_bar_positions.index(m5_df.index[bar_idx])
+                except (ValueError, IndexError):
+                    ticker_relative_idx = bar_idx
+
+                intraday_levels = self.intraday_detector.detect_levels(
+                    m5_df, bar_ticker, ticker_relative_idx
+                )
+                if intraday_levels:
+                    self.intraday_targets_found += 1
+
+                # Calculate D1 target first (needed as fallback)
+                d1_target = self.risk_manager.calculate_target(
+                    signal, opposing, signal.level.atr_d1
+                )
+                stop_price = self.risk_manager.calculate_stop(
+                    signal, m5_df, atr_m5_val, signal.level.atr_d1
+                )
+                stop_dist = abs(signal.entry_price - stop_price)
+
+                direction_str = "short" if signal.direction == TradeDirection.SHORT else "long"
+                intraday_targets = self.intraday_detector.get_intraday_targets(
+                    intraday_levels, signal.entry_price, direction_str,
+                    stop_dist, d1_target
+                )
+
+                if intraday_targets:
+                    self.intraday_targets_used += 1
+
+                risk_params = self.risk_manager.calculate_risk_params_tiered(
+                    signal, m5_df, atr_m5_val, signal.level.atr_d1,
+                    opposing, intraday_targets, self.config.tier_config
+                )
+            else:
+                # Original D1-only targeting
+                risk_params = self.risk_manager.calculate_risk_params(
+                    signal, m5_df, atr_m5_val, signal.level.atr_d1, opposing
+                )
 
             if risk_params is None:
                 self.signals_blocked['risk_rr'] = \

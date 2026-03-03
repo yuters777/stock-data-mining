@@ -14,6 +14,15 @@ from backtester.core.pattern_engine import Signal, TradeDirection
 
 
 @dataclass
+class TargetTier:
+    """A single tier in the tiered target system."""
+    price: float
+    exit_pct: float  # fraction of position to exit at this tier (0.0-1.0)
+    source: str  # "M5", "H1", "D1", "trail"
+    r_multiple: float = 0.0  # R-multiple at this target
+
+
+@dataclass
 class RiskParams:
     """Calculated risk parameters for a trade."""
     stop_price: float
@@ -24,6 +33,12 @@ class RiskParams:
     position_size: int
     risk_per_share: float
     slippage_total: float  # total slippage cost for the trade
+    # Tiered targets (empty = single D1 target, original behavior)
+    target_tiers: list = None
+
+    def __post_init__(self):
+        if self.target_tiers is None:
+            self.target_tiers = []
 
 
 # Min R:R
@@ -284,6 +299,195 @@ class RiskManager:
             position_size=position_size,
             risk_per_share=effective_stop,
             slippage_total=slippage * position_size,
+        )
+
+    def calculate_tiered_targets(self, signal: Signal, stop_distance: float,
+                                d1_target: float,
+                                intraday_targets: list,
+                                tier_config: dict = None) -> list:
+        """Build tiered target list from intraday levels.
+
+        Args:
+            signal: the trade signal
+            stop_distance: absolute stop distance
+            d1_target: original D1 target price
+            intraday_targets: list of IntradayLevel objects (nearest first)
+            tier_config: dict with 'mode' and allocation params
+
+        Returns:
+            list of TargetTier objects
+        """
+        from backtester.core.intraday_levels import IntradayLevel
+        if tier_config is None:
+            tier_config = {'mode': 'single_intraday'}
+
+        mode = tier_config.get('mode', 'single_intraday')
+        tiers = []
+
+        if mode == 'single_intraday':
+            # Replace D1 target with nearest intraday target
+            if intraday_targets:
+                t = intraday_targets[0]
+                dist = abs(t.price - signal.entry_price)
+                r_mult = dist / stop_distance if stop_distance > 0 else 0
+                tiers.append(TargetTier(
+                    price=t.price, exit_pct=1.0,
+                    source=t.timeframe, r_multiple=r_mult
+                ))
+            else:
+                # Fallback to D1
+                dist = abs(d1_target - signal.entry_price)
+                r_mult = dist / stop_distance if stop_distance > 0 else 0
+                tiers.append(TargetTier(
+                    price=d1_target, exit_pct=1.0,
+                    source="D1", r_multiple=r_mult
+                ))
+
+        elif mode == '2tier':
+            pct1 = tier_config.get('t1_pct', 0.50)
+            pct2 = 1.0 - pct1
+            if intraday_targets:
+                t = intraday_targets[0]
+                dist = abs(t.price - signal.entry_price)
+                r_mult = dist / stop_distance if stop_distance > 0 else 0
+                tiers.append(TargetTier(
+                    price=t.price, exit_pct=pct1,
+                    source=t.timeframe, r_multiple=r_mult
+                ))
+            else:
+                # No intraday target — put everything on D1
+                pct2 = 1.0
+
+            dist_d1 = abs(d1_target - signal.entry_price)
+            r_d1 = dist_d1 / stop_distance if stop_distance > 0 else 0
+            tiers.append(TargetTier(
+                price=d1_target, exit_pct=pct2,
+                source="D1", r_multiple=r_d1
+            ))
+
+        elif mode == '3tier':
+            pct1 = tier_config.get('t1_pct', 0.40)
+            pct2 = tier_config.get('t2_pct', 0.30)
+            pct3 = 1.0 - pct1 - pct2
+
+            used = 0.0
+            # T1: nearest M5
+            if intraday_targets:
+                t = intraday_targets[0]
+                dist = abs(t.price - signal.entry_price)
+                r_mult = dist / stop_distance if stop_distance > 0 else 0
+                tiers.append(TargetTier(
+                    price=t.price, exit_pct=pct1,
+                    source=t.timeframe, r_multiple=r_mult
+                ))
+                used += pct1
+
+            # T2: second intraday or H1 level
+            h1_targets = [x for x in intraday_targets[1:] if x.timeframe == "H1"]
+            m5_next = intraday_targets[1:2] if len(intraday_targets) > 1 else []
+            t2_src = h1_targets[0] if h1_targets else (m5_next[0] if m5_next else None)
+
+            if t2_src:
+                dist = abs(t2_src.price - signal.entry_price)
+                r_mult = dist / stop_distance if stop_distance > 0 else 0
+                tiers.append(TargetTier(
+                    price=t2_src.price, exit_pct=pct2,
+                    source=t2_src.timeframe, r_multiple=r_mult
+                ))
+                used += pct2
+
+            # T3: D1
+            dist_d1 = abs(d1_target - signal.entry_price)
+            r_d1 = dist_d1 / stop_distance if stop_distance > 0 else 0
+            tiers.append(TargetTier(
+                price=d1_target, exit_pct=1.0 - used,
+                source="D1", r_multiple=r_d1
+            ))
+
+        elif mode == '2tier_trail':
+            pct1 = tier_config.get('t1_pct', 0.50)
+            if intraday_targets:
+                t = intraday_targets[0]
+                dist = abs(t.price - signal.entry_price)
+                r_mult = dist / stop_distance if stop_distance > 0 else 0
+                tiers.append(TargetTier(
+                    price=t.price, exit_pct=pct1,
+                    source=t.timeframe, r_multiple=r_mult
+                ))
+            # Remainder uses trailing stop (no fixed target)
+            tiers.append(TargetTier(
+                price=d1_target, exit_pct=1.0 - pct1,
+                source="trail", r_multiple=0
+            ))
+
+        return tiers
+
+    def calculate_risk_params_tiered(self, signal: Signal, m5_bars: pd.DataFrame,
+                                     atr_m5: float, atr_d1: float,
+                                     opposing_levels: list,
+                                     intraday_targets: list = None,
+                                     tier_config: dict = None) -> Optional[RiskParams]:
+        """Calculate risk params with tiered target support.
+
+        Like calculate_risk_params but uses intraday levels for targets
+        and has a lower min R:R since targets are closer.
+        """
+        stop_price = self.calculate_stop(signal, m5_bars, atr_m5, atr_d1)
+        d1_target = self.calculate_target(signal, opposing_levels, atr_d1)
+
+        stop_distance = abs(signal.entry_price - stop_price)
+        slippage = 2 * self.config.slippage_per_share
+        effective_stop = stop_distance + slippage
+
+        if effective_stop <= 0:
+            return None
+
+        # Build tiered targets
+        target_tiers = []
+        if intraday_targets and tier_config:
+            target_tiers = self.calculate_tiered_targets(
+                signal, stop_distance, d1_target, intraday_targets, tier_config
+            )
+
+        # Determine primary target for R:R check
+        if target_tiers:
+            primary_target = target_tiers[0].price
+        else:
+            primary_target = d1_target
+
+        target_distance = abs(primary_target - signal.entry_price)
+        rr_ratio = target_distance / effective_stop
+
+        # Use tier-specific min R:R (typically lower than D1-only)
+        min_rr = tier_config.get('min_rr', self.config.min_rr) if tier_config else self.config.min_rr
+        if rr_ratio < min_rr:
+            return None
+
+        # Validate stop caps
+        max_stop = self.config.max_stop_atr_pct * atr_d1
+        hard_cap = self._get_hard_stop_cap(signal.entry_price)
+        if hard_cap is not None:
+            max_stop = min(max_stop, hard_cap)
+        if stop_distance > max_stop + 0.001:
+            return None
+
+        # Position sizing
+        risk_amount = self.config.capital * self.config.risk_pct
+        position_size = int(risk_amount / effective_stop)
+        if signal.is_model4:
+            position_size = int(position_size * self.config.model4_size_mult)
+        position_size = max(position_size, 1)
+
+        return RiskParams(
+            stop_price=stop_price,
+            target_price=primary_target,
+            stop_distance=stop_distance,
+            target_distance=target_distance,
+            rr_ratio=rr_ratio,
+            position_size=position_size,
+            risk_per_share=effective_stop,
+            slippage_total=slippage * position_size,
+            target_tiers=target_tiers,
         )
 
     def check_position_limits(self, signal: Signal,

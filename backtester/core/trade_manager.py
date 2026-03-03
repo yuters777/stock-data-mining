@@ -45,6 +45,10 @@ class Trade:
     target_price: float = 0.0
     max_favorable: float = 0.0  # max favorable excursion
     max_adverse: float = 0.0    # max adverse excursion
+    # Tiered target tracking
+    tier_exits_done: int = 0  # how many tiers have been hit
+    trailing_stop_active: bool = False
+    trailing_stop_price: float = 0.0
 
     @property
     def is_winner(self) -> bool:
@@ -237,6 +241,102 @@ class TradeManager:
 
         return False
 
+    def _check_tiered_targets(self, trade: Trade, high: float, low: float,
+                              close: float, bar_time: pd.Timestamp) -> bool:
+        """Check if any tiered target has been hit. Execute partial exits.
+        Returns True if any tier was hit this bar.
+        """
+        tiers = trade.risk_params.target_tiers
+        if not tiers:
+            return False
+
+        any_hit = False
+        while trade.tier_exits_done < len(tiers) and trade.remaining_size > 0:
+            tier = tiers[trade.tier_exits_done]
+
+            # Skip trail tiers (handled by trailing stop)
+            if tier.source == "trail":
+                if not trade.trailing_stop_active:
+                    trade.trailing_stop_active = True
+                    # Set initial trailing stop at breakeven
+                    buffer = self.config.slippage_per_share
+                    if trade.direction == TradeDirection.SHORT:
+                        trade.trailing_stop_price = trade.entry_price - buffer
+                    else:
+                        trade.trailing_stop_price = trade.entry_price + buffer
+                trade.tier_exits_done += 1
+                continue
+
+            hit = False
+            if trade.direction == TradeDirection.SHORT:
+                hit = low <= tier.price
+            else:
+                hit = high >= tier.price
+
+            if not hit:
+                break
+
+            # Execute partial exit at this tier
+            exit_size = int(trade.position_size * tier.exit_pct)
+            exit_size = min(exit_size, trade.remaining_size)
+            if exit_size < 1:
+                exit_size = 1
+
+            exit_price = self._apply_exit_slippage(tier.price, trade.direction)
+            if trade.direction == TradeDirection.SHORT:
+                pnl = (trade.entry_price - exit_price) * exit_size
+            else:
+                pnl = (exit_price - trade.entry_price) * exit_size
+
+            trade.partial_exits.append({
+                'time': bar_time,
+                'price': exit_price,
+                'size': exit_size,
+                'pnl': pnl,
+                'tier': trade.tier_exits_done + 1,
+                'source': tier.source,
+            })
+            trade.remaining_size -= exit_size
+            trade.tier_exits_done += 1
+            any_hit = True
+
+            # If position fully closed, finalize
+            if trade.remaining_size <= 0:
+                trade.exit_time = bar_time
+                trade.exit_price = exit_price
+                trade.exit_reason = ExitReason.TARGET_HIT
+                trade.pnl = sum(p['pnl'] for p in trade.partial_exits)
+                risk = trade.risk_params.risk_per_share * trade.risk_params.position_size
+                trade.pnl_r = trade.pnl / risk if risk > 0 else 0.0
+                self.open_trades = [t for t in self.open_trades if t is not trade]
+                self.closed_trades.append(trade)
+                if self.risk_manager:
+                    self.risk_manager.cb_state.set_position(trade.signal.ticker, False)
+                    self.risk_manager.cb_state.record_trade_result(
+                        trade.signal.ticker, bar_time, trade.pnl, False
+                    )
+                break
+
+        return any_hit
+
+    def _update_trailing_stop(self, trade: Trade, high: float, low: float):
+        """Update trailing stop price for trail tier."""
+        if not trade.trailing_stop_active:
+            return
+
+        trail_dist = trade.risk_params.stop_distance  # trail by 1R
+
+        if trade.direction == TradeDirection.SHORT:
+            # Trail down: stop follows price down
+            new_stop = low + trail_dist
+            if new_stop < trade.trailing_stop_price:
+                trade.trailing_stop_price = new_stop
+        else:
+            # Trail up: stop follows price up
+            new_stop = high - trail_dist
+            if new_stop > trade.trailing_stop_price:
+                trade.trailing_stop_price = new_stop
+
     def _is_eod(self, timestamp: pd.Timestamp) -> bool:
         """Check if we should force exit (end of day)."""
         return (timestamp.hour > self.config.eod_exit_hour or
@@ -269,43 +369,61 @@ class TradeManager:
             trade.max_adverse = max(trade.max_adverse, adverse)
 
             # Check stop loss first (worst case)
+            # Use trailing stop if active
+            effective_stop = trade.trailing_stop_price if trade.trailing_stop_active else trade.stop_price
             stopped = False
             if trade.direction == TradeDirection.SHORT:
-                if high >= trade.stop_price:
-                    self._close_trade(trade, trade.stop_price, bar_time,
-                                      ExitReason.STOP_LOSS)
+                if high >= effective_stop:
+                    reason = ExitReason.STOP_LOSS
+                    if trade.trailing_stop_active:
+                        reason = ExitReason.BREAKEVEN
+                    self._close_trade(trade, effective_stop, bar_time, reason)
                     closed_this_bar.append(trade)
                     stopped = True
             else:
-                if low <= trade.stop_price:
-                    self._close_trade(trade, trade.stop_price, bar_time,
-                                      ExitReason.STOP_LOSS)
+                if low <= effective_stop:
+                    reason = ExitReason.STOP_LOSS
+                    if trade.trailing_stop_active:
+                        reason = ExitReason.BREAKEVEN
+                    self._close_trade(trade, effective_stop, bar_time, reason)
                     closed_this_bar.append(trade)
                     stopped = True
 
             if stopped:
                 continue
 
-            # Check target hit
-            target_hit = False
-            if trade.direction == TradeDirection.SHORT:
-                if low <= trade.target_price:
-                    self._close_trade(trade, trade.target_price, bar_time,
-                                      ExitReason.TARGET_HIT)
+            # Tiered target exits
+            tier_closed = False
+            if trade.risk_params.target_tiers:
+                tier_closed = self._check_tiered_targets(trade, high, low, close, bar_time)
+                if trade.remaining_size <= 0:
                     closed_this_bar.append(trade)
-                    target_hit = True
+                    continue
+
+                # Update trailing stop if applicable
+                if trade.trailing_stop_active:
+                    self._update_trailing_stop(trade, high, low)
             else:
-                if high >= trade.target_price:
-                    self._close_trade(trade, trade.target_price, bar_time,
-                                      ExitReason.TARGET_HIT)
-                    closed_this_bar.append(trade)
-                    target_hit = True
+                # Original single-target behavior
+                target_hit = False
+                if trade.direction == TradeDirection.SHORT:
+                    if low <= trade.target_price:
+                        self._close_trade(trade, trade.target_price, bar_time,
+                                          ExitReason.TARGET_HIT)
+                        closed_this_bar.append(trade)
+                        target_hit = True
+                else:
+                    if high >= trade.target_price:
+                        self._close_trade(trade, trade.target_price, bar_time,
+                                          ExitReason.TARGET_HIT)
+                        closed_this_bar.append(trade)
+                        target_hit = True
 
-            if target_hit:
-                continue
+                if target_hit:
+                    continue
 
-            # Partial take profit
-            self._partial_take_profit(trade, close, bar_time)
+                # Partial take profit (original behavior for non-tiered)
+                self._partial_take_profit(trade, close, bar_time)
 
             # Breakeven check
             self._check_breakeven(trade, close)
