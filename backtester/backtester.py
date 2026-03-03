@@ -72,7 +72,8 @@ class Backtester:
         self.pattern_engine = PatternEngine(self.config.pattern_config)
         self.filter_chain = FilterChain(self.config.filter_config)
         self.risk_manager = RiskManager(self.config.risk_config)
-        self.trade_manager = TradeManager(self.config.trade_config, self.risk_manager)
+        self.trade_manager = TradeManager(self.config.trade_config, self.risk_manager,
+                                                tier_config=self.config.tier_config)
 
         # Intraday level detector (for tiered targets)
         self.intraday_detector = None
