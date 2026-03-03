@@ -1,96 +1,99 @@
-# CLAUDE.md v4.1 — Whitelist Portfolio, Trail Optimization & NVDA Rescue
+# CLAUDE.md v5 — Regime Analysis & Adaptive Filters
 
 ## Context
 
-**EXP-V001 complete.** Ran v3 winner (STRUCT-002d) on 7 tickers uniformly.
+**v4.1 complete.** Whitelist portfolio (AAPL, AMZN, GOOGL, TSLA) achieves:
+- OOS: 63 trades, PF=1.27, +$2,070 (with trail_factor=0.7, t1_pct=0.30)
+- Walk-Forward: **0/8 positive windows** (mean Sharpe=-6.29)
+- NVDA rescue failed (PF=0.89 unchanged across all param variations)
 
-**Key findings:**
-- All 7 tickers classified HIGH_VOL (rel ATR 3.2-7.1%) — no natural MED_VOL split
-- 4/7 profitable OOS: AAPL (PF=2.10), AMZN (PF=1.22), GOOGL (PF=1.20), TSLA (PF=1.10)
-- 3/7 losing: MSFT (PF=0.45, -$2,289), META (PF=0.74, -$1,548), NVDA (PF=0.86, -$415)
-- Portfolio OOS: 132 trades, PF=0.88, -$2,538
-- Target hit rate ~0% (1 target in 132 trades)
-- Trail/breakeven exits only 5/132 — trail is barely activating
+**The core problem:** Strategy is profitable in Oct 2025-Jan 2026 but loses in Feb-Sep 2025. This is regime-dependent performance — the false breakout edge exists only in certain market conditions.
 
-**Strategic pivot:** Instead of volatility profiles, whitelist profitable tickers, optimize trail (the profit engine), then attempt NVDA rescue.
+**Phase 5 hypothesis:** ADX (trend strength) and ATR regime (volatility expansion/contraction) explain which periods the strategy works. Low-ADX ranging markets should favor false breakouts; high-ADX trending markets should destroy them.
 
-## Current Best Config (v3 winner: STRUCT-002d)
+## Current Best Config (v4.1 winner)
 
 ```python
 fractal_depth = 10, tolerance_cents = 0.05, tolerance_pct = 0.001
 atr_period = 5, min_level_score = 5
 tail_ratio_min = 0.10, lp2_engulfing_required = True, clp_min_bars = 3
 atr_block_threshold = 0.30, atr_entry_threshold = 0.80
-enable_volume_filter = True, enable_time_filter = True, enable_squeeze_filter = True
 min_rr = 1.5, max_stop_atr_pct = 0.10, risk_pct = 0.003
-tier_config = {'mode': '2tier_trail', 't1_pct': 0.50, 'min_rr': 1.5}
+tier_config = {'mode': '2tier_trail', 't1_pct': 0.30, 'trail_factor': 0.7,
+               'trail_activation_r': 0.0, 'min_rr': 1.5}
 intraday: h1 fractal k=3, enable_h1=True, min_target_r=1.0
 ```
 
----
-
-## EXP-W001: Whitelist Portfolio Baseline
-
-Drop META, MSFT (clearly unprofitable). Run v3 winner on AAPL, AMZN, GOOGL, TSLA.
-This is the baseline for all optimization — must be positive.
+Portfolio: AAPL, AMZN, GOOGL, TSLA (NVDA excluded)
 
 ---
 
-## T001-T004: Trail Optimization
+## Phase 5A: Regime Analysis (DATA FIRST)
 
-Trail is barely activating (5/132 trades). The trail starts at breakeven but uses 1R distance — too wide for intraday moves. Need to wire `trail_factor` and `trail_activation_r` into TradeManager.
+Compute regime indicators, correlate with trade outcomes, map to WF windows.
+**Output `results/regime_analysis.md` before any filter experiments.**
+
+### Indicators
+1. **ADX(14)** on D1 bars — trend strength (0-100)
+   - ADX < 20: weak/no trend (ranging) — favorable for false breakouts
+   - ADX 20-30: developing trend
+   - ADX > 30: strong trend — unfavorable
+2. **ATR regime** — ATR(14) / rolling ATR(50) ratio
+   - Ratio < 0.8: low-vol contraction — levels hold better
+   - Ratio 0.8-1.2: normal
+   - Ratio > 1.2: vol expansion — levels break more easily
+3. **Combined regime classification:**
+   - FAVORABLE: ADX < 25 AND ATR_ratio < 1.2
+   - NEUTRAL: everything else
+   - HOSTILE: ADX > 30 OR ATR_ratio > 1.5
+
+### Analysis Steps
+1. Compute ADX(14) + ATR regime for all 4 tickers on D1 bars
+2. Re-run v4.1 best config, capture per-trade entry dates
+3. Map each trade to its regime at entry
+4. Map each WF window (8 windows) to dominant regime
+5. Correlate: WR, PF, avg P&L by regime bucket
+6. Output regime_analysis.md with tables + verdict
+
+---
+
+## Phase 5B: Regime Filter Experiments (if 5A shows signal)
 
 ```
-T001: trail_factor sweep [0.5, 0.7, 1.0, 1.5] on whitelist (controls trail distance)
-T002: trail_activation_r sweep [0.0, 0.5, 1.0, 1.5] using best trail_factor
-T003: t1_pct sweep [0.30, 0.40, 0.50, 0.60] using best trail params
-T004: Combined best trail config vs W001 baseline
+R001: ADX ceiling filter — block trades when ADX > threshold
+R002: ATR expansion filter — block when ATR_ratio > threshold
+R003: Combined regime filter
+R004: Walk-forward with regime filter
 ```
 
 ---
 
-## N001-N003: NVDA Rescue
+## Phase 5C: Final Walk-Forward & Report
 
-NVDA is closest to breakeven (-$415, PF=0.86). Test wider stops and shallower fractals.
-
-```
-N001: max_stop_atr_pct sweep [0.10, 0.15, 0.20, 0.25] on NVDA only
-N002: fractal_depth sweep [3, 5, 7, 10] on NVDA with best stop from N001
-N003: Combined NVDA-tuned config — if PF >= 1.0, add to portfolio
-```
-
----
-
-## Walk-Forward Validation
-
-8-window walk-forward (3-month train / 1-month test) on final portfolio.
+8-window walk-forward with regime filters on whitelist portfolio.
+Generate `results/OPTIMIZATION_REPORT_v5.md`.
 
 ---
 
 ## Execution Order
 
 ```
-1. EXP-W001: Whitelist baseline (AAPL, AMZN, GOOGL, TSLA)      <- START HERE
-2. Wire trail_factor + trail_activation_r into TradeManager
-3. T001-T004: Trail optimization on whitelist
-4. N001-N003: NVDA rescue attempts
-5. Walk-forward on final portfolio
-6. Final report
+1. Phase 5A: Regime analysis — compute, correlate, output regime_analysis.md  <- START HERE
+2. Phase 5B: Regime filter experiments (R001-R004)
+3. Phase 5C: Walk-forward with best regime filter
+4. Final report
 ```
 
 ---
 
-## Success Criteria v4.1
+## Success Criteria v5
 
-| Criterion | EXP-V001 Result | v4.1 Target |
-|-----------|-----------------|-------------|
-| Whitelist OOS PF | n/a | **> 1.2** |
-| Whitelist OOS P&L | n/a | **> +$1,500** |
-| Trail exits | 5/132 (4%) | **> 15%** |
-| Walk-Forward positive | untested | **>= 5/8** |
-| NVDA PF | 0.86 | **>= 1.0 or exclude** |
-| Total OOS trades | 132 (7 tickers) | **>= 50** (whitelist) |
-| Max single-ticker DD | 2.65% | **< 3%** |
+| Criterion | v4.1 Result | v5 Target |
+|-----------|-------------|-----------|
+| Portfolio OOS PF | 1.27 | **>= 1.2** (maintain) |
+| Walk-Forward positive | 0/8 | **>= 4/8** |
+| Regime correlation | untested | **clear signal** (p < 0.10) |
+| Mean WF Sharpe | -6.29 | **> 0** |
 
 ---
 
@@ -98,12 +101,9 @@ N003: Combined NVDA-tuned config — if PF >= 1.0, add to portfolio
 
 1. NEVER skip the ATR filter
 2. ONE trade per ticker at a time
-3. Assert everything
-4. Log everything to the signal funnel
-5. OOS is truth — never optimize on OOS
-6. Include slippage ($0.02/share each way)
-7. Intraday targets must be >= 1.0R — no micro-targets
-8. **Trail is the profit engine.** Protect trailing stop logic
-9. **Portfolio-level metrics matter most**
-10. **Don't over-optimize.** "Exclude ticker" is a valid conclusion
-11. Commit experiment results after each step
+3. OOS is truth — never optimize on OOS
+4. Include slippage ($0.02/share each way)
+5. **Data first.** Output regime_analysis.md BEFORE any filter experiments
+6. **Regime analysis is diagnostic.** If no clear signal, don't force a filter
+7. **Trail is the profit engine.** Protect trailing stop logic
+8. Commit results after each step

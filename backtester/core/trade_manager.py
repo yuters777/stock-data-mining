@@ -334,7 +334,6 @@ class TradeManager:
         if not trade.trailing_stop_active:
             return
 
-        tier_cfg = trade.risk_params.target_tiers  # access via trade
         trail_factor = self._trail_factor
         trail_activation_r = self._trail_activation_r
         trail_dist = trail_factor * trade.risk_params.stop_distance
