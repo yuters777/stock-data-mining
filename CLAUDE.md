@@ -1,91 +1,165 @@
-# CLAUDE.md v3 — Structural Target Optimization
+# CLAUDE.md v4 — Universe Expansion & Volatility Profiles
 
 ## Context
 
-v2 optimization (13 parameter experiments) reduced OOS loss 87% but the strategy remains net negative.
-The root cause is structural: **57% of trades exit at EOD because D1 targets are unreachable intraday.**
-Only 1/53 OOS trades hit its D1 target. The entry edge is real (EOD exits average +$176) but targets are broken.
+Phases 1-3 complete. Strategy crossed breakeven on OOS (PF=1.03, +$156) using 2-tier exit (50% H1 target + trailing stop). But results are fragile: only 2 tickers, 33 OOS trades, 3/8 walk-forward windows positive. IS has only 6 trades — effectively no IS validation.
 
-**v3 fixes the target system** by introducing intraday levels and tiered exits.
+**Core finding from Phase 2-3:** Strategy works on AMZN (MED_VOL, PF=2.08) but fails on NVDA (HIGH_VOL, PF=0.13). False breakout patterns work best on moderate-volatility stocks where D1 levels hold reliably and intraday moves are contained.
 
-## Current Optimized Baseline (from v2)
+**Phase 4 tests that hypothesis on 7 tickers across volatility buckets.**
+
+## Current Best Config (v3 winner: STRUCT-002d)
 
 ```python
-# "optimized_v2" — the starting point for v3 experiments
-fractal_depth=10, atr_entry=0.80, max_stop_atr=0.10, tail_ratio=0.10
-IS:  10 trades, 30.0% WR, PF=0.45, -$843
-OOS: 53 trades, 41.5% WR, PF=0.92, -$691  (AMZN: PF=2.08, NVDA: PF=0.13)
+# Level detection
+fractal_depth = 10
+tolerance_cents = 0.05
+tolerance_pct = 0.001
+atr_period = 5
+min_level_score = 5
+
+# Pattern
+tail_ratio_min = 0.10
+lp2_engulfing_required = True
+clp_min_bars = 3
+
+# Filters
+atr_block_threshold = 0.30
+atr_entry_threshold = 0.80
+enable_volume_filter = True
+enable_time_filter = True
+enable_squeeze_filter = True
+
+# Risk
+min_rr = 1.5
+max_stop_atr_pct = 0.10
+risk_pct = 0.003
+
+# Exit: 2-tier with trail
+tier1_pct = 0.50
+tier2_mode = 'trail'
+trail_activation = 1.0
+trail_factor = 0.7
+
+# Intraday targets
+intraday_target_source = 'h1_fractal'
+intraday_fractal_k = 3
 ```
 
-## v3 New Modules
+---
 
-### IntradayLevelDetector (`backtester/core/intraday_levels.py`)
+## Phase 4A: Data Acquisition & Preparation
 
-Detects M5 and H1 fractal support/resistance for **target placement only**.
-Entry signals still use D1 levels — this module provides closer, reachable profit targets.
+### Universe (7 tickers, 2 buckets)
 
-- M5 fractals: `H[i] > max(H[i-k]...H[i-1]) AND H[i] > max(H[i+1]...H[i+k])` on M5 bars
-- H1 fractals: aggregate M5 → H1, then same fractal detection
-- Configurable: `fractal_depth_m5`, `fractal_depth_h1`, `min_m5_level_age_bars`
-- Returns sorted list of intraday levels between entry and D1 target
+| Bucket | Ticker | Notes |
+|--------|--------|-------|
+| MED_VOL | AMZN | Proven profitable (PF=2.08 OOS) |
+| MED_VOL | AAPL | Highest liquidity, clean levels (data to 2025-11-13 only) |
+| MED_VOL | GOOGL | Substitutes for AMD (unavailable in MarketPatterns-AI) |
+| MED_VOL | META | Similar profile to AMZN |
+| MED_VOL | MSFT | Blue chip, clean price action |
+| HIGH_VOL | NVDA | Already tested, need to fix |
+| HIGH_VOL | TSLA | Classic false breakout candidate |
 
-### Tiered Target System (modifications to risk_manager + trade_manager)
+### Volatility Classification
 
-Replace single D1 target with multi-tier exits:
-
-| Tier | Source | Exit % | Condition |
-|------|--------|--------|-----------|
-| T1 | Nearest M5/H1 fractal | configurable | Must be ≥ 1.0R from entry |
-| T2 | Next intraday level or D1 | configurable | Remainder after T1 |
-| T3 (optional) | D1 opposing level | remainder | Original target |
-
-If no intraday target exists ≥ 1.0R, fall back to D1-only (current behavior).
-
-## Experiment Plan
-
-### STRUCT-001: M5 Intraday Targets (single-tier replacement)
-
-Replace D1 target with nearest qualifying M5 intraday fractal level.
-Tests whether closer targets improve WR and P&L.
-
-| ID | Config | Hypothesis |
-|----|--------|------------|
-| STRUCT-001a | M5 fractal k=3, nearest M5 target | More M5 levels = closer targets = higher WR |
-| STRUCT-001b | M5 fractal k=5, nearest M5 target | Fewer but stronger M5 levels |
-| STRUCT-001c | M5 fractal k=10, nearest M5 target | Only major intraday S/R |
-| STRUCT-001d | H1 fractal k=3, nearest H1 target | Hourly levels = more significant targets |
-
-All variants: min_rr=1.5 (reduced from 3.0 since targets are closer).
-
-### STRUCT-002: Tiered Exit System
-
-Multi-level partial exits using best STRUCT-001 fractal config.
-
-| ID | Config | Hypothesis |
-|----|--------|------------|
-| STRUCT-002a | 2-tier: 50% at M5, 50% at D1 | Lock profits early, hold for upside |
-| STRUCT-002b | 2-tier: 60% at M5, 40% at D1 | Aggressive early exit |
-| STRUCT-002c | 3-tier: 40%/30%/30% M5/H1/D1 | Graduated exits at each timeframe |
-| STRUCT-002d | 2-tier: 50% at M5, 50% trail | Trailing stop on remainder |
-
-### STRUCT-003: Combined + Walk-Forward
-
-Combine best STRUCT-001 + STRUCT-002 winners. Run 8-window walk-forward.
-
-## Experiment Log Format
-
-```markdown
-## STRUCT-{NNN}{x}: {Title}
-**Hypothesis:** ...
-**Change:** ...
-**Baseline (v2 optimized):** ...
-**Result (IS):** ...
-**Result (OOS):** ...
-**Verdict:** ACCEPT / REJECT / INCONCLUSIVE
-**Notes:** ...
+```python
+for ticker in universe:
+    # 1. Load 5-min OHLCV
+    # 2. Filter RTH (14:30-21:00 UTC = 9:30-16:00 ET)
+    # 3. Aggregate to D1 OHLCV + ATR(14)
+    # 4. Classify:
+    #    avg_relative_atr = mean(ATR_D1 / Close)
+    #    MED_VOL: < 0.030
+    #    HIGH_VOL: >= 0.030
+    # 5. Print summary table
 ```
 
-## Critical Rules (unchanged from v2)
+---
+
+## Phase 4B: EXP-V001 — Uniform Baseline
+
+Run v3 winner config (STRUCT-002d) on ALL 7 tickers unchanged.
+This is the "one-size-fits-all" baseline showing which tickers the strategy naturally works on.
+
+**Key output:** Per-ticker IS + OOS metrics, signal funnels, exit analysis.
+
+---
+
+## Phase 4C: EXP-V002 — Adaptive Volatility Profiles
+
+```python
+VOLATILITY_PROFILES = {
+    'MED_VOL': {
+        'fractal_depth': 10,
+        'max_stop_atr_pct': 0.10,
+        'atr_entry_threshold': 0.80,
+        'tail_ratio_min': 0.10,
+        'min_rr': 1.5,
+        'trail_activation': 1.0,
+        'trail_factor': 0.7,
+    },
+    'HIGH_VOL': {
+        'fractal_depth': 5,
+        'max_stop_atr_pct': 0.20,
+        'atr_entry_threshold': 0.85,
+        'tail_ratio_min': 0.15,
+        'min_rr': 1.5,
+        'trail_activation': 1.5,
+        'trail_factor': 1.0,
+    },
+}
+```
+
+---
+
+## Phase 4D: EXP-V003–V005 — HIGH_VOL Tuning
+
+```
+EXP-V003: HIGH_VOL param sweep on NVDA
+EXP-V004: Validate HIGH_VOL on TSLA
+EXP-V005: Combined best profiles (full portfolio)
+```
+
+---
+
+## Phase 4E: Walk-Forward & Final Report
+
+8-window walk-forward on full 7-ticker portfolio.
+Generate `results/OPTIMIZATION_REPORT_v4.md`.
+
+---
+
+## Execution Order
+
+```
+1. Phase 4A: Prepare data for 7 tickers, classify volatility  <- START HERE
+2. EXP-V001: Uniform config on all 7 tickers (baseline per ticker)
+3. EXP-V002: Adaptive profiles (MED vs HIGH)
+4. EXP-V003-V005: HIGH_VOL tuning + combined
+5. Trail optimization on full portfolio
+6. Walk-forward (8 windows, 7 tickers)
+7. Final report
+```
+
+---
+
+## Success Criteria v4
+
+| Criterion | v3 Result | v4 Target |
+|-----------|-----------|-----------|
+| Portfolio OOS PF | 1.03 (2 tickers) | **> 1.3** (7 tickers) |
+| Portfolio OOS P&L | +$156 | **> +$2,000** |
+| Walk-Forward positive | 3/8 | **>= 5/8** |
+| MED_VOL profitable | 1/1 (AMZN) | **>= 3/5** |
+| HIGH_VOL improved | 0/1 (NVDA) | **>= 1/2 breakeven** |
+| OOS trades (portfolio) | 33 | **>= 100** |
+| Max single-ticker DD | ~3.5% | **< 5%** |
+
+---
+
+## Critical Rules
 
 1. NEVER skip the ATR filter
 2. ONE trade per ticker at a time
@@ -93,14 +167,23 @@ Combine best STRUCT-001 + STRUCT-002 winners. Run 8-window walk-forward.
 4. Log everything to the signal funnel
 5. OOS is truth — never optimize on OOS
 6. Include slippage ($0.02/share each way)
-7. New: **intraday targets must be ≥ 1.0R** — no micro-targets
+7. Intraday targets must be >= 1.0R — no micro-targets
+8. **Data first.** Print summary table before any experiments
+9. **EXP-V001 is most important.** Shows natural edge before tuning
+10. **Don't over-optimize HIGH_VOL.** "Don't trade HIGH_VOL" is a valid conclusion
+11. **Trail is the profit engine.** Protect trailing stop logic
+12. **Portfolio-level metrics matter most**
+13. Commit data files + experiment results after each step
 
-## Success Criteria
+## Experiment Log Format
 
-- [ ] OOS Sharpe > 1.0
-- [ ] Win Rate > 45% with Avg R > 1.0
-- [ ] Profit Factor > 1.5
-- [ ] Max Drawdown < 5%
-- [ ] OOS Trades ≥ 20
-- [ ] Walk-forward: positive Sharpe in ≥ 5 of 8 windows
-- [ ] Target hit rate > 20% (vs current 2%)
+```markdown
+## EXP-V{NNN}: {Title}
+**Hypothesis:** ...
+**Config:** ...
+**Result (IS per ticker):** ...
+**Result (OOS per ticker):** ...
+**Portfolio (OOS):** ...
+**Verdict:** ACCEPT / REJECT / INCONCLUSIVE
+**Notes:** ...
+```
