@@ -72,11 +72,15 @@ class TradeManagerConfig:
 
 class TradeManager:
     def __init__(self, config: Optional[TradeManagerConfig] = None,
-                 risk_manager: Optional[RiskManager] = None):
+                 risk_manager: Optional[RiskManager] = None,
+                 tier_config: Optional[dict] = None):
         self.config = config or TradeManagerConfig()
         self.risk_manager = risk_manager
         self.open_trades: list[Trade] = []
         self.closed_trades: list[Trade] = []
+        # Trail parameters from tier_config
+        self._trail_factor = (tier_config or {}).get('trail_factor', 1.0)
+        self._trail_activation_r = (tier_config or {}).get('trail_activation_r', 0.0)
 
     def open_trade(self, signal: Signal, risk_params: RiskParams) -> Trade:
         """Create and register a new trade."""
@@ -320,11 +324,30 @@ class TradeManager:
         return any_hit
 
     def _update_trailing_stop(self, trade: Trade, high: float, low: float):
-        """Update trailing stop price for trail tier."""
+        """Update trailing stop price for trail tier.
+
+        Uses trail_factor from tier_config to control trail distance:
+          trail_dist = trail_factor * stop_distance
+        Uses trail_activation_r to delay trail movement until price moves
+          favorably by at least trail_activation_r * stop_distance.
+        """
         if not trade.trailing_stop_active:
             return
 
-        trail_dist = trade.risk_params.stop_distance  # trail by 1R
+        tier_cfg = trade.risk_params.target_tiers  # access via trade
+        trail_factor = self._trail_factor
+        trail_activation_r = self._trail_activation_r
+        trail_dist = trail_factor * trade.risk_params.stop_distance
+
+        # Check activation threshold
+        if trail_activation_r > 0:
+            activation_dist = trail_activation_r * trade.risk_params.stop_distance
+            if trade.direction == TradeDirection.SHORT:
+                favorable = trade.entry_price - low
+            else:
+                favorable = high - trade.entry_price
+            if favorable < activation_dist:
+                return  # Not enough favorable movement to start trailing
 
         if trade.direction == TradeDirection.SHORT:
             # Trail down: stop follows price down
