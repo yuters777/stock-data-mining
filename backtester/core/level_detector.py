@@ -340,39 +340,74 @@ class LevelDetector:
         self.levels = levels
         return levels, df
 
+    def build_daily_index(self, daily_df: pd.DataFrame) -> dict:
+        """Pre-index daily data by ticker for fast lookups."""
+        index = {}
+        for ticker in daily_df['Ticker'].unique():
+            tdf = daily_df[daily_df['Ticker'] == ticker].sort_values('Date')
+            index[ticker] = {
+                'dates': tdf['Date'].values,
+                'highs': tdf['High'].values,
+                'lows': tdf['Low'].values,
+                'closes': tdf['Close'].values,
+            }
+        return index
+
     def check_anti_sawing(self, level: Level, daily_df: pd.DataFrame,
-                          current_date: pd.Timestamp) -> bool:
+                          current_date: pd.Timestamp,
+                          daily_index: dict = None) -> bool:
         """Check if level is invalidated by cross-count sawing.
         Returns True if level is INVALIDATED (should not trade).
         Uses daily bars up to current_date (last N bars where N=window).
         """
-        tdf = daily_df[
-            (daily_df['Ticker'] == level.ticker) &
-            (daily_df['Date'] <= current_date)
-        ]
-        window = self.config.cross_count_window
-        if len(tdf) > window:
-            tdf = tdf.tail(window)
+        # Already invalidated
+        if level.status == LevelStatus.INVALIDATED:
+            return True
 
-        cross_count = 0
+        window = self.config.cross_count_window
         price = level.price
         tol = self.config.get_tolerance(price)
 
-        prev_side = None
+        # Use pre-indexed data if available
+        if daily_index and level.ticker in daily_index:
+            idx = daily_index[level.ticker]
+            date_mask = idx['dates'] <= np.datetime64(current_date)
+            closes = idx['closes'][date_mask]
+            if len(closes) > window:
+                closes = closes[-window:]
 
-        for _, row in tdf.iterrows():
-            # Determine which side of level the close is on
-            if row['Close'] > price + tol:
-                current_side = 'above'
-            elif row['Close'] < price - tol:
-                current_side = 'below'
-            else:
-                continue  # Within tolerance, no cross
+            cross_count = 0
+            prev_side = None
+            for c in closes:
+                if c > price + tol:
+                    current_side = 'above'
+                elif c < price - tol:
+                    current_side = 'below'
+                else:
+                    continue
+                if prev_side is not None and current_side != prev_side:
+                    cross_count += 1
+                prev_side = current_side
+        else:
+            tdf = daily_df[
+                (daily_df['Ticker'] == level.ticker) &
+                (daily_df['Date'] <= current_date)
+            ]
+            if len(tdf) > window:
+                tdf = tdf.tail(window)
 
-            if prev_side is not None and current_side != prev_side:
-                cross_count += 1
-
-            prev_side = current_side
+            cross_count = 0
+            prev_side = None
+            for _, row in tdf.iterrows():
+                if row['Close'] > price + tol:
+                    current_side = 'above'
+                elif row['Close'] < price - tol:
+                    current_side = 'below'
+                else:
+                    continue
+                if prev_side is not None and current_side != prev_side:
+                    cross_count += 1
+                prev_side = current_side
 
         if cross_count >= self.config.cross_count_invalidate:
             level.status = LevelStatus.INVALIDATED
@@ -382,58 +417,95 @@ class LevelDetector:
         return False
 
     def update_mirror_status(self, level: Level, daily_df: pd.DataFrame,
-                             current_date: pd.Timestamp) -> None:
+                             current_date: pd.Timestamp,
+                             daily_index: dict = None) -> None:
         """Update mirror candidate/confirmed status for a level after breakout."""
         if level.status == LevelStatus.MIRROR_CONFIRMED:
             return
 
-        tdf = daily_df[
-            (daily_df['Ticker'] == level.ticker) &
-            (daily_df['Date'] <= current_date) &
-            (daily_df['Date'] > level.date)
-        ]
-
-        if tdf.empty:
-            return
-
         price = level.price
         atr = level.atr_d1
-        min_distance = self.config.mirror_atr_distance * atr
-
-        # Check if price traveled far enough away
-        max_dist_above = (tdf['High'] - price).max()
-        max_dist_below = (price - tdf['Low']).max()
-        max_distance = max(max_dist_above, max_dist_below)
-
-        if max_distance < min_distance:
+        if atr <= 0:
             return
-
-        # Count days price stayed beyond the level
-        days_beyond = 0
+        min_distance = self.config.mirror_atr_distance * atr
         tol = self.config.get_tolerance(price)
-        for _, row in tdf.iterrows():
-            if row['Low'] > price + tol or row['High'] < price - tol:
-                days_beyond += 1
 
-        if days_beyond >= self.config.mirror_days_beyond:
-            level.status = LevelStatus.MIRROR_CANDIDATE
-            level.mirror_max_distance_atr = max_distance / atr if atr > 0 else 0
-            level.mirror_days_beyond = days_beyond
+        if daily_index and level.ticker in daily_index:
+            idx = daily_index[level.ticker]
+            date_mask = (idx['dates'] <= np.datetime64(current_date)) & \
+                        (idx['dates'] > np.datetime64(level.date))
+            highs = idx['highs'][date_mask]
+            lows = idx['lows'][date_mask]
 
-            # Check for return + BPU (touch after traveling away)
-            last_bars = tdf.tail(10)
-            for _, row in last_bars.iterrows():
-                if (row['Low'] - tol) <= price <= (row['High'] + tol):
-                    level.status = LevelStatus.MIRROR_CONFIRMED
-                    level.is_mirror = True
-                    level.level_type = LevelType.MIRROR
-                    if 'mirror' not in level.score_breakdown:
-                        level.score += SCORE_MIRROR
-                        level.score_breakdown['mirror'] = SCORE_MIRROR
-                    break
+            if len(highs) == 0:
+                return
+
+            max_dist_above = (highs - price).max()
+            max_dist_below = (price - lows).max()
+            max_distance = max(max_dist_above, max_dist_below)
+
+            if max_distance < min_distance:
+                return
+
+            days_beyond = int(((lows > price + tol) | (highs < price - tol)).sum())
+
+            if days_beyond >= self.config.mirror_days_beyond:
+                level.status = LevelStatus.MIRROR_CANDIDATE
+                level.mirror_max_distance_atr = max_distance / atr
+                level.mirror_days_beyond = days_beyond
+
+                # Check last 10 bars for return touch
+                last_h = highs[-10:] if len(highs) >= 10 else highs
+                last_l = lows[-10:] if len(lows) >= 10 else lows
+                for h, l in zip(last_h, last_l):
+                    if (l - tol) <= price <= (h + tol):
+                        level.status = LevelStatus.MIRROR_CONFIRMED
+                        level.is_mirror = True
+                        level.level_type = LevelType.MIRROR
+                        if 'mirror' not in level.score_breakdown:
+                            level.score += SCORE_MIRROR
+                            level.score_breakdown['mirror'] = SCORE_MIRROR
+                        break
+        else:
+            tdf = daily_df[
+                (daily_df['Ticker'] == level.ticker) &
+                (daily_df['Date'] <= current_date) &
+                (daily_df['Date'] > level.date)
+            ]
+            if tdf.empty:
+                return
+
+            max_dist_above = (tdf['High'] - price).max()
+            max_dist_below = (price - tdf['Low']).max()
+            max_distance = max(max_dist_above, max_dist_below)
+
+            if max_distance < min_distance:
+                return
+
+            days_beyond = 0
+            for _, row in tdf.iterrows():
+                if row['Low'] > price + tol or row['High'] < price - tol:
+                    days_beyond += 1
+
+            if days_beyond >= self.config.mirror_days_beyond:
+                level.status = LevelStatus.MIRROR_CANDIDATE
+                level.mirror_max_distance_atr = max_distance / atr
+                level.mirror_days_beyond = days_beyond
+
+                last_bars = tdf.tail(10)
+                for _, row in last_bars.iterrows():
+                    if (row['Low'] - tol) <= price <= (row['High'] + tol):
+                        level.status = LevelStatus.MIRROR_CONFIRMED
+                        level.is_mirror = True
+                        level.level_type = LevelType.MIRROR
+                        if 'mirror' not in level.score_breakdown:
+                            level.score += SCORE_MIRROR
+                            level.score_breakdown['mirror'] = SCORE_MIRROR
+                        break
 
     def get_active_levels(self, ticker: str, current_date: pd.Timestamp,
-                          daily_df: pd.DataFrame) -> list[Level]:
+                          daily_df: pd.DataFrame,
+                          daily_index: dict = None) -> list[Level]:
         """Get all active (non-invalidated) levels for a ticker on a given date."""
         active = []
         for level in self.levels:
@@ -445,7 +517,7 @@ class LevelDetector:
                 continue
 
             # Update mirror status
-            self.update_mirror_status(level, daily_df, current_date)
+            self.update_mirror_status(level, daily_df, current_date, daily_index)
 
             active.append(level)
         return active

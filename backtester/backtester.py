@@ -143,6 +143,9 @@ class Backtester:
         for tkr in m5_df['Ticker'].unique():
             m5_atr_cache[tkr] = self.pattern_engine.calculate_m5_atr(m5_df, tkr)
 
+        # Pre-index daily data for fast lookups
+        daily_index = self.level_detector.build_daily_index(daily_df)
+
         # Reset filter chain funnel
         self.filter_chain.reset_funnel()
         self.proximity_events = 0
@@ -155,16 +158,29 @@ class Backtester:
         daily_pnl = {}
 
         prev_date = None
+        # Cache: recompute active levels only when day changes
+        cached_active_levels = {}  # ticker -> list[Level]
+        cached_date = None
+
+        # Convert m5_df to numpy arrays for fast access
+        m5_datetimes = pd.to_datetime(m5_df['Datetime']).values
+        m5_highs = m5_df['High'].values
+        m5_lows = m5_df['Low'].values
+        m5_closes = m5_df['Close'].values
+        m5_tickers = m5_df['Ticker'].values
 
         # Process each M5 bar
         for bar_idx in range(len(m5_df)):
             bar = m5_df.iloc[bar_idx]
-            bar_time = pd.Timestamp(bar['Datetime'])
+            bar_time = pd.Timestamp(m5_datetimes[bar_idx])
             bar_date = bar_time.normalize()
+            bar_ticker = m5_tickers[bar_idx]
 
-            # Reset daily state on new day
+            # Reset daily state and level cache on new day
             if prev_date is not None and bar_date != prev_date:
                 self.risk_manager.cb_state.reset_daily(bar_date)
+                cached_active_levels = {}
+                cached_date = None
             prev_date = bar_date
 
             # Update existing open trades
@@ -176,32 +192,38 @@ class Backtester:
                 daily_pnl[date_str] = daily_pnl.get(date_str, 0.0) + trade.pnl
 
             # Skip if already in position for this ticker
-            if self.risk_manager.cb_state.has_open_position(bar['Ticker']):
+            if self.risk_manager.cb_state.has_open_position(bar_ticker):
                 continue
 
-            # Get active levels for this ticker/date
-            active_levels = self.level_detector.get_active_levels(
-                bar['Ticker'], bar_date, daily_df
-            )
+            # Get active levels (cached per day per ticker)
+            if bar_ticker not in cached_active_levels or cached_date != bar_date:
+                active_levels = self.level_detector.get_active_levels(
+                    bar_ticker, bar_date, daily_df, daily_index
+                )
+                # Check anti-sawing once per day
+                active_levels = [
+                    lvl for lvl in active_levels
+                    if not self.level_detector.check_anti_sawing(lvl, daily_df, bar_date, daily_index)
+                ]
+                cached_active_levels[bar_ticker] = active_levels
+                cached_date = bar_date
+
+            active_levels = cached_active_levels.get(bar_ticker, [])
 
             if not active_levels:
                 continue
 
-            # Check anti-sawing for each level
-            active_levels = [
-                lvl for lvl in active_levels
-                if not self.level_detector.check_anti_sawing(lvl, daily_df, bar_date)
-            ]
-
-            # Check proximity to any level
+            # Check proximity to any level using pre-extracted values
+            bar_high = m5_highs[bar_idx]
+            bar_low = m5_lows[bar_idx]
             for level in active_levels:
                 tol = tol_func(level.price)
-                if bar['Low'] - tol <= level.price <= bar['High'] + tol:
+                if bar_low - tol <= level.price <= bar_high + tol:
                     self.proximity_events += 1
                     break  # count once per bar
 
             # Scan for patterns
-            atr_m5 = m5_atr_cache.get(bar['Ticker'], pd.Series())
+            atr_m5 = m5_atr_cache.get(bar_ticker, pd.Series())
             signals = self.pattern_engine.scan_bar(
                 m5_df, bar_idx, active_levels, atr_m5, tol_func
             )
