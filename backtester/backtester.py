@@ -303,8 +303,10 @@ class Backtester:
 
             opposing = self._get_opposing_levels(signal, active_levels)
 
-            # Use tiered targets if intraday detector is configured
+            # Calculate risk parameters with tiered targets if configured
             risk_params = None
+            intraday_targets = []
+
             if self.intraday_detector and self.config.tier_config:
                 # Find the M5 bar index within the ticker's data
                 ticker_m5 = m5_df[m5_df['Ticker'] == bar_ticker]
@@ -320,7 +322,6 @@ class Backtester:
                 if intraday_levels:
                     self.intraday_targets_found += 1
 
-                # Calculate D1 target first (needed as fallback)
                 d1_target = self.risk_manager.calculate_target(
                     signal, opposing, signal.level.atr_d1
                 )
@@ -338,12 +339,14 @@ class Backtester:
                 if intraday_targets:
                     self.intraday_targets_used += 1
 
+            if self.config.tier_config:
+                # Tiered path: use intraday targets if available, D1-only otherwise
                 risk_params = self.risk_manager.calculate_risk_params_tiered(
                     signal, m5_df, atr_m5_val, signal.level.atr_d1,
                     opposing, intraday_targets, self.config.tier_config
                 )
             else:
-                # Original D1-only targeting
+                # Original D1-only targeting (no tiers)
                 risk_params = self.risk_manager.calculate_risk_params(
                     signal, m5_df, atr_m5_val, signal.level.atr_d1, opposing
                 )

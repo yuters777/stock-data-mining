@@ -437,6 +437,19 @@ class RiskManager:
                     price=t.price, exit_pct=pct1,
                     source=t.timeframe, r_multiple=r_mult
                 ))
+            else:
+                # No intraday target: T1 at 50% of D1 TP distance
+                d1_dist = abs(d1_target - signal.entry_price)
+                t1_dist = 0.5 * d1_dist
+                if signal.direction == SignalDirection.SHORT:
+                    t1_price = signal.entry_price - t1_dist
+                else:
+                    t1_price = signal.entry_price + t1_dist
+                r_mult = t1_dist / stop_distance if stop_distance > 0 else 0
+                tiers.append(TargetTier(
+                    price=t1_price, exit_pct=pct1,
+                    source="D1", r_multiple=r_mult
+                ))
             # Remainder uses trailing stop (no fixed target)
             tiers.append(TargetTier(
                 price=d1_target, exit_pct=1.0 - pct1,
