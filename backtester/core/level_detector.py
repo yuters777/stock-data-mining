@@ -353,6 +353,10 @@ class LevelDetector:
                           daily_index: dict = None) -> bool:
         """Check if level is invalidated by cross-count sawing.
 
+        Only counts crosses that occur AFTER the level's confirmed_at date.
+        Pre-creation price oscillations are inherent to fractal formation
+        and must not count as sawing crosses (L-005.1 §2.5).
+
         Returns True if level is INVALIDATED (should not trade).
         """
         if level.status == LevelStatus.INVALIDATED:
@@ -362,9 +366,14 @@ class LevelDetector:
         price = level.price
         tol = self.config.get_tolerance(price)
 
+        # Only count crosses after the level was confirmed
+        level_start = level.confirmed_at if level.confirmed_at else level.date
+        level_start_np = np.datetime64(level_start)
+
         if daily_index and level.ticker in daily_index:
             idx = daily_index[level.ticker]
-            date_mask = idx['dates'] <= np.datetime64(current_date)
+            # Filter: after level confirmation AND up to current_date
+            date_mask = (idx['dates'] >= level_start_np) & (idx['dates'] <= np.datetime64(current_date))
             closes = idx['closes'][date_mask]
             if len(closes) > window:
                 closes = closes[-window:]
@@ -384,6 +393,7 @@ class LevelDetector:
         else:
             tdf = daily_df[
                 (daily_df['Ticker'] == level.ticker) &
+                (daily_df['Date'] >= level_start) &
                 (daily_df['Date'] <= current_date)
             ]
             if len(tdf) > window:
