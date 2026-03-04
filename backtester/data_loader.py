@@ -176,17 +176,16 @@ def aggregate_d1(m5_df: pd.DataFrame) -> pd.DataFrame:
         return pd.DataFrame(columns=["trading_day", "Open", "High", "Low",
                                       "Close", "Volume", "Ticker"])
 
-    # Group by trading_day, aggregate OHLCV
-    d1 = regular.groupby("trading_day").agg(
+    # Group by (Ticker, trading_day), aggregate OHLCV
+    d1 = regular.groupby(["Ticker", "trading_day"]).agg(
         Open=("Open", "first"),
         High=("High", "max"),
         Low=("Low", "min"),
         Close=("Close", "last"),
         Volume=("Volume", "sum"),
-        Ticker=("Ticker", "first"),
     ).reset_index()
 
-    d1 = d1.sort_values("trading_day").reset_index(drop=True)
+    d1 = d1.sort_values(["Ticker", "trading_day"]).reset_index(drop=True)
 
     logger.info(f"D1 aggregation: {len(d1)} trading days from "
                 f"{len(m5_df)} M5 bars ({len(regular)} regular session)")

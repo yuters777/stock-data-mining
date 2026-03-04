@@ -55,7 +55,7 @@ DEFAULT_CONFIG: dict[str, Any] = {
     "earnings_blackout_days": 1,    # days around earnings to skip
 
     # ── Risk Manager ──
-    "min_rr": 1.5,
+    "min_rr": 3.0,                  # L-005.1 spec minimum R:R
     "max_stop_atr_pct": 0.10,      # max stop as % of ATR_D1
     "stop_buffer_min": 0.02,
     "stop_buffer_atr_mult": 0.10,
@@ -86,7 +86,7 @@ DEFAULT_CONFIG: dict[str, Any] = {
         "t1_pct": 0.30,
         "trail_factor": 0.7,
         "trail_activation_r": 0.0,
-        "min_rr": 1.5,
+        "min_rr": 3.0,
     },
 
     # ── Intraday Levels ──
