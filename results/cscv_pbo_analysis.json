@@ -1,0 +1,66 @@
+{
+  "phase": "CSCV/PBO",
+  "description": "Probability of Backtest Overfitting via CSCV",
+  "method": "Bailey, Borwein, L\u00f3pez de Prado, Zhu (2015)",
+  "parameters": {
+    "S": 8,
+    "N_strategies": 16,
+    "T_days": 85,
+    "T_used": 80,
+    "block_size": 10,
+    "n_splits": 70
+  },
+  "results": {
+    "pbo": 0.18571428571428572,
+    "oos_negative_count": 13,
+    "logit_mean": -0.5087309073318435,
+    "logit_median": -0.5108256237659907,
+    "logit_std": 0.9429235216932231,
+    "is_sharpe_mean": 0.2305788490713353,
+    "oos_sharpe_mean": 0.09094551046167555,
+    "degradation_pct": 60.55773943362026,
+    "is_oos_correlation": -0.41703433198357637
+  },
+  "focus_strategy": {
+    "name": "S00_ConfigA_Simplified",
+    "full_sample_sr": 0.06804467510564635,
+    "selected_as_is_best_count": 7,
+    "selected_as_is_best_pct": 10.0
+  },
+  "strategy_names": [
+    "S00_ConfigA_Simplified",
+    "S01_Baseline_AllFilters",
+    "S02_ConfigC_Minimal",
+    "S03_Nuclear",
+    "S04_FD3",
+    "S05_FD5",
+    "S06_FD7",
+    "S07_ATR_high",
+    "S08_ATR_low",
+    "S09_RR3",
+    "S10_Stop010",
+    "S11_Stop020",
+    "S12_Saw_3_20",
+    "S13_Tail010",
+    "S14_Tail020",
+    "S15_NoRegime"
+  ],
+  "strategy_full_sample_sr": [
+    0.06804467510564635,
+    0.1441225745904572,
+    -0.020665006395969354,
+    -0.01783110444325023,
+    0.16068049886674063,
+    0.163283364012571,
+    0.16633259399256806,
+    0.08885098127865143,
+    0.15254157527993978,
+    0.1441225745904572,
+    0.10576681837717991,
+    0.13977218899043317,
+    0.12769634746188965,
+    0.15967227522898833,
+    0.07673638039278668,
+    0.09773034263392985
+  ]
+}

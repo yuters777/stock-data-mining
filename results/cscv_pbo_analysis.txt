@@ -1,0 +1,177 @@
+==========================================================================================
+  CSCV / PBO ANALYSIS — Probability of Backtest Overfitting
+  Bailey, Borwein, López de Prado, Zhu (2015)
+==========================================================================================
+  Focus strategy: Config A (Simplified Filter Chain)
+  Tickers: TSLA, AMZN, GOOGL, META, MSFT, NVDA  |  Period: 2025-02-10 -> 2026-01-31
+  CSCV blocks: S=8  |  Splits: C(8,4) = 70
+
+  Step 1: Loading data and computing daily indicators...
+    TSLA: 259 days
+    AMZN: 235 days
+    GOOGL: 259 days
+    META: 259 days
+    MSFT: 259 days
+    NVDA: 235 days
+
+  Step 2: Running 16 strategy variants to build trials matrix...
+    [ 0] S00_ConfigA_Simplified         P&L=$   3,126  trade_days= 48  [29.5s]
+    [ 1] S01_Baseline_AllFilters        P&L=$   5,402  trade_days= 14  [24.6s]
+    [ 2] S02_ConfigC_Minimal            P&L=$  -1,027  trade_days= 66  [31.0s]
+    [ 3] S03_Nuclear                    P&L=$    -930  trade_days= 70  [36.9s]
+    [ 4] S04_FD3                        P&L=$   6,732  trade_days= 32  [67.2s]
+    [ 5] S05_FD5                        P&L=$   6,572  trade_days= 24  [41.4s]
+    [ 6] S06_FD7                        P&L=$   6,531  trade_days= 20  [30.6s]
+    [ 7] S07_ATR_high                   P&L=$   1,707  trade_days=  5  [23.7s]
+    [ 8] S08_ATR_low                    P&L=$   6,467  trade_days= 24  [25.6s]
+    [ 9] S09_RR3                        P&L=$   5,402  trade_days= 14  [24.0s]
+    [10] S10_Stop010                    P&L=$   4,579  trade_days= 15  [24.3s]
+    [11] S11_Stop020                    P&L=$   5,118  trade_days= 14  [23.0s]
+    [12] S12_Saw_3_20                   P&L=$   3,484  trade_days= 13  [20.2s]
+    [13] S13_Tail010                    P&L=$   6,024  trade_days= 15  [24.0s]
+    [14] S14_Tail020                    P&L=$   1,890  trade_days= 10  [22.6s]
+    [15] S15_NoRegime                   P&L=$   3,749  trade_days= 19  [23.8s]
+
+  Step 3: Building trials matrix M...
+    Total trading days: 85
+
+    Strategy return statistics:
+       # Strategy                             Mean        Std       SR   Total%
+    ──────────────────────────────────────────────────────────────────────────────
+       0 S00_ConfigA_Simplified            0.0368%    0.5373%   0.068   3.126%
+       1 S01_Baseline_AllFilters           0.0635%    0.4383%   0.144   5.402%
+       2 S02_ConfigC_Minimal              -0.0121%    0.5814%  -0.021  -1.027%
+       3 S03_Nuclear                      -0.0109%    0.6100%  -0.018  -0.930%
+       4 S04_FD3                           0.0792%    0.4900%   0.161   6.732%
+       5 S05_FD5                           0.0773%    0.4708%   0.163   6.572%
+       6 S06_FD7                           0.0768%    0.4592%   0.166   6.531%
+       7 S07_ATR_high                      0.0201%    0.2247%   0.089   1.707%
+       8 S08_ATR_low                       0.0761%    0.4958%   0.153   6.467%
+       9 S09_RR3                           0.0635%    0.4383%   0.144   5.402%
+      10 S10_Stop010                       0.0539%    0.5063%   0.106   4.579%
+      11 S11_Stop020                       0.0602%    0.4282%   0.140   5.118%
+      12 S12_Saw_3_20                      0.0410%    0.3191%   0.128   3.484%
+      13 S13_Tail010                       0.0709%    0.4412%   0.160   6.024%
+      14 S14_Tail020                       0.0222%    0.2881%   0.077   1.890%
+      15 S15_NoRegime                      0.0441%    0.4487%   0.098   3.749%
+
+  Step 4: Running CSCV (S=8)...
+    CSCV: T=85, N=16, S=8, block_size=10, splits=C(8,4)=70
+
+==========================================================================================
+  CSCV / PBO RESULTS
+==========================================================================================
+
+  1. PROBABILITY OF BACKTEST OVERFITTING (PBO)
+  ────────────────────────────────────────────────────────────
+     PBO = 0.1857 (18.6%)
+     OOS-negative splits: 13 / 70
+     Interpretation: SOME OVERFITTING RISK — use caution
+
+  2. LOGIT DISTRIBUTION (lambda)
+  ────────────────────────────────────────────────────────────
+     Mean logit:     -0.5087
+     Median logit:   -0.5108
+     Std logit:       0.9429
+     Min logit:      -2.7081
+     Max logit:       1.9459
+
+     Logit histogram:
+     [ -2.81,  -2.32):   3 ███████
+     [ -2.32,  -1.84):   3 ███████
+     [ -1.84,  -1.35):  10 █████████████████████████
+     [ -1.35,  -0.87):   6 ███████████████
+     [ -0.87,  -0.38):  14 ███████████████████████████████████
+     [ -0.38,   0.10):  16 ████████████████████████████████████████
+     [  0.10,   0.59):  12 ██████████████████████████████
+     [  0.59,   1.08):   2 █████
+     [  1.08,   1.56):   3 ███████
+     [  1.56,   2.05):   1 ██
+
+     Positive logits (IS-best ranks well OOS): 18 / 70 (25.7%)
+     Negative logits (IS-best ranks poorly OOS): 52 / 70 (74.3%)
+
+  3. PERFORMANCE DEGRADATION (IS vs OOS Sharpe)
+  ────────────────────────────────────────────────────────────
+     IS Sharpe  — Mean: 0.2306, Median: 0.2389
+     OOS Sharpe — Mean: 0.0909, Median: 0.1071
+     Mean degradation: 0.1396 (60.6%)
+     IS-OOS correlation: r=-0.4170 (p=0.0003)
+     >> Zero or negative correlation — IS performance is NOT predictive
+
+     IS vs OOS Sharpe scatter (first 20 splits):
+      Split    IS SR   OOS SR   Degrad Best Strat
+     ──────────────────────────────────────────
+          1   0.1825   0.2088  -0.0263 S06
+          2   0.1821   0.0343   0.1478 S10
+          3   0.2744   0.0994   0.1751 S04
+          4   0.1581  -0.0008   0.1589 S07
+          5   0.1997   0.1689   0.0308 S04
+          6   0.2101   0.1398   0.0703 S08
+          7   0.2924   0.0998   0.1926 S06
+          8   0.1840   0.2072  -0.0232 S06
+          9   0.2112   0.1545   0.0568 S04
+         10   0.2756  -0.1520   0.4276 S12
+         11   0.1825   0.2289  -0.0464 S06
+         12   0.2064   0.1470   0.0594 S04
+         13   0.2723   0.1280   0.1443 S06
+         14   0.3220   0.0488   0.2732 S04
+         15   0.1837   0.1786   0.0050 S04
+         16   0.2228  -0.0668   0.2896 S00
+         17   0.2545   0.0926   0.1619 S12
+         18   0.0885   0.1019  -0.0134 S00
+         19   0.1353   0.2155  -0.0802 S04
+         20   0.2751   0.0669   0.2082 S12
+
+  4. STOCHASTIC DOMINANCE CHECK
+  ────────────────────────────────────────────────────────────
+     IS-optimal OOS mean return: 0.04867%
+     Overall OOS mean return:    0.06148%
+     KS test: stat=0.0481, p=0.0330
+     >> IS-optimal does NOT dominate — selection is not adding value
+
+  5. CONFIG A FOCUS ANALYSIS
+  ────────────────────────────────────────────────────────────
+     Focus strategy: S00_ConfigA_Simplified
+     Selected as IS-best: 7 / 70 (10.0%)
+     When selected, OOS Sharpe:
+       Mean:   -0.0245
+       Median: -0.0049
+       Min:    -0.1376
+       Max:    0.1019
+       OOS < 0: 5 / 7
+     Full-sample Sharpe ratio: 0.0680
+
+  6. CONFIG A vs BASELINE PBO COMPARISON
+  ────────────────────────────────────────────────────────────
+     Config A selected as IS-best:  7 / 70
+     Baseline selected as IS-best:  0 / 70
+     Config A full-sample SR:  0.0680
+     Baseline full-sample SR:  0.1441
+
+     Most frequently IS-best strategies:
+       S04_FD3: 15/70 (21.4%)
+       S05_FD5: 13/70 (18.6%)
+       S08_ATR_low: 12/70 (17.1%)
+       S06_FD7: 9/70 (12.9%)
+       S00_ConfigA_Simplified: 7/70 (10.0%)
+
+==========================================================================================
+  VERDICT
+==========================================================================================
+
+  PBO = 18.57%
+  There is MODERATE overfitting risk (18.6%).
+  Roughly 19% of the time, the IS-best strategy loses money OOS.
+
+  Mean performance degradation: 60.6%
+  Severe degradation — IS performance is heavily inflated.
+
+  DEGREES OF FREEDOM NOTE:
+  Config A (simplified, 2 filters) should have lower PBO than
+  Baseline (all filters, more parameters). Fewer knobs = less room
+  for overfitting. Observed: Config A selected 7x vs Baseline 0x as IS-best.
+
+==========================================================================================
+  COMPLETE — 473s (7.9min)
+==========================================================================================
