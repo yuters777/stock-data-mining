@@ -6,7 +6,7 @@ import numpy as np
 
 from backtester.core.risk_manager import (
     RiskManager, RiskManagerConfig, RiskParams,
-    CircuitBreakerState, HARD_STOP_CAPS
+    CircuitBreakerState, HARD_STOP_CAPS, calculate_slippage,
 )
 from backtester.data_types import (
     Level, LevelType, Signal, SignalDirection, PatternType,
@@ -109,7 +109,7 @@ class TestStopCalculation:
         assert stop_dist <= 0.26  # 25¢ + small tolerance
 
     def test_min_stop(self):
-        """Stop should not be smaller than min_stop."""
+        """Stop should not be smaller than MVS = MAX(0.25 × ATR_M5, 3¢)."""
         rm = RiskManager()
         signal = make_signal(entry_price=99.5)
         # Very small range bar
@@ -117,7 +117,7 @@ class TestStopCalculation:
 
         stop = rm.calculate_stop(signal, m5_bars, atr_m5=0.1, atr_d1=3.0)
         stop_dist = abs(signal.entry_price - stop)
-        min_stop = max(0.15 * 0.1, 0.05)  # max(0.015, 0.05) = 0.05
+        min_stop = max(0.25 * 0.1, 0.03)  # max(0.025, 0.03) = 0.03
         assert stop_dist >= min_stop - 0.001
 
 
@@ -289,3 +289,98 @@ class TestPositionLimits:
 
         assert can_trade == False
         assert 'stopped' in reason.lower()
+
+
+class TestLP2QualityMultiplier:
+    def test_lp2_acceptable_reduces_size(self):
+        """LP2 ACCEPTABLE quality should reduce position size by 0.7x."""
+        cfg = RiskManagerConfig(capital=100000, min_rr=1.0)
+        rm = RiskManager(cfg)
+
+        signal_normal = make_signal(entry_price=99.5)
+        signal_lp2 = make_signal(entry_price=99.5)
+        signal_lp2.position_size_mult = 0.7  # ACCEPTABLE
+
+        m5_bars = make_m5_bars(10, base_price=99.5, bar_range=0.5)
+        far_opp = make_level(95.0)
+        far_opp.level_type = LevelType.SUPPORT
+
+        r1 = rm.calculate_risk_params(signal_normal, m5_bars, 0.5, 3.0, [far_opp])
+        r2 = rm.calculate_risk_params(signal_lp2, m5_bars, 0.5, 3.0, [far_opp])
+
+        if r1 is not None and r2 is not None:
+            assert r2.position_size < r1.position_size
+            assert r2.position_size == int(r1.position_size * 0.7) or \
+                   abs(r2.position_size - r1.position_size * 0.7) <= 1
+
+    def test_lp2_weak_reduces_size(self):
+        """LP2 WEAK quality should reduce position size by 0.5x."""
+        cfg = RiskManagerConfig(capital=100000, min_rr=1.0)
+        rm = RiskManager(cfg)
+
+        signal_weak = make_signal(entry_price=99.5)
+        signal_weak.position_size_mult = 0.5  # WEAK
+
+        m5_bars = make_m5_bars(10, base_price=99.5, bar_range=0.5)
+        far_opp = make_level(95.0)
+        far_opp.level_type = LevelType.SUPPORT
+
+        r_weak = rm.calculate_risk_params(signal_weak, m5_bars, 0.5, 3.0, [far_opp])
+        if r_weak is not None:
+            # Should be roughly half of normal size
+            normal_signal = make_signal(entry_price=99.5)
+            r_normal = rm.calculate_risk_params(normal_signal, m5_bars, 0.5, 3.0, [far_opp])
+            if r_normal is not None:
+                assert r_weak.position_size <= int(r_normal.position_size * 0.6)
+
+
+class TestSlippageModel:
+    def test_slippage_cheap_stock(self):
+        """Cheap stock ($40): MAX(0.01, 40 × 0.0002) = MAX(0.01, 0.008) = 0.01."""
+        assert calculate_slippage(40.0) == 0.01
+
+    def test_slippage_expensive_stock(self):
+        """Expensive stock ($200): MAX(0.01, 200 × 0.0002) = MAX(0.01, 0.04) = 0.04."""
+        assert calculate_slippage(200.0) == pytest.approx(0.04)
+
+    def test_slippage_breakpoint(self):
+        """At $50, MAX(0.01, 50 × 0.0002) = MAX(0.01, 0.01) = 0.01."""
+        assert calculate_slippage(50.0) == 0.01
+
+
+class TestPortfolioAwareCircuitBreakers:
+    def test_daily_loss_with_unrealized(self):
+        """Daily circuit breaker should include worst-case open risk."""
+        cfg = RiskManagerConfig(max_daily_loss_pct=0.01)
+        cb = CircuitBreakerState(cfg)
+
+        date = pd.Timestamp('2025-03-03')
+        # Realized loss of $800
+        cb.record_trade_result('TEST', date, -800.0, was_stop=False)
+        # Worst-case unrealized loss of $300
+        cb.update_unrealized(-200.0, -300.0)
+
+        # Total = $800 + $300 = $1100 > 1% of $100K
+        blocked, reason = cb.check_circuit_breakers(date, 100000)
+        assert blocked == True
+        assert 'daily' in reason.lower()
+
+    def test_daily_loss_without_unrealized_ok(self):
+        """Realized loss alone below threshold should not trigger."""
+        cfg = RiskManagerConfig(max_daily_loss_pct=0.01)
+        cb = CircuitBreakerState(cfg)
+
+        date = pd.Timestamp('2025-03-03')
+        cb.record_trade_result('TEST', date, -800.0, was_stop=False)
+        # No open positions (default unrealized = 0)
+
+        blocked, _ = cb.check_circuit_breakers(date, 100000)
+        assert blocked == False
+
+
+class TestMVSDefaults:
+    def test_mvs_defaults(self):
+        """MVS defaults should be 0.25 × ATR_M5 and 3 cents."""
+        cfg = RiskManagerConfig()
+        assert cfg.min_stop_atr_mult == 0.25
+        assert cfg.min_stop_absolute == 0.03

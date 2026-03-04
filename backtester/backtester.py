@@ -353,8 +353,8 @@ class Backtester:
                     self.signals_blocked.get('risk_rr', 0) + 1
                 continue
 
-            # Execute trade
-            trade = self.trade_manager.open_trade(signal, risk_params)
+            # Queue for next-bar-open execution (L-005.1 §7)
+            self.trade_manager.queue_entry(signal, risk_params)
 
         # Force close any remaining open trades at last bar
         if self.trade_manager.open_trades:

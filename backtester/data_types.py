@@ -75,14 +75,18 @@ class TradeStatus(Enum):
 
 
 class ExitReason(Enum):
-    """Reason a trade was closed."""
+    """Reason a trade was closed.
+
+    Exit precedence: SL → TP → Mirror/Nison → Time → EOD
+    """
     STOP_LOSS = "stop_loss"
     TARGET_HIT = "target_hit"
     PARTIAL_TP = "partial_tp"
     BREAKEVEN = "breakeven_stop"
+    NISON_EXIT = "nison_exit"        # mirror level invalidated mid-trade
+    TRAIL_STOP = "trail_stop"
     EOD_EXIT = "eod_exit"
     CIRCUIT_BREAKER = "circuit_breaker"
-    TRAIL_STOP = "trail_stop"
 
 
 # ── Dataclasses ────────────────────────────────────────────────────────────

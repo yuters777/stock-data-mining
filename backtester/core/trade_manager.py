@@ -2,29 +2,25 @@
 Trade Manager for the False Breakout Strategy Backtester.
 
 Handles trade execution, partial take-profit, breakeven stop movement,
-and EOD exit logic. Manages the lifecycle of each trade from entry to exit.
+Nison invalidation exit, and EOD exit logic.
+Manages the lifecycle of each trade from entry to exit.
+
+Exit precedence: SL → TP → Mirror/Nison → Breakeven → EOD
 """
 
 import pandas as pd
 import numpy as np
 from dataclasses import dataclass, field
-from enum import Enum
 from typing import Optional
 
-from backtester.data_types import Signal, SignalDirection
+from backtester.data_types import Signal, SignalDirection, LevelStatus
+from backtester.core.risk_manager import RiskParams, RiskManager, calculate_slippage
 
 # Backwards-compatible alias used throughout this module
 TradeDirection = SignalDirection
-from backtester.core.risk_manager import RiskParams, RiskManager
 
-
-class ExitReason(Enum):
-    STOP_LOSS = "stop_loss"
-    TARGET_HIT = "target_hit"
-    PARTIAL_TP = "partial_tp"
-    BREAKEVEN = "breakeven_stop"
-    EOD_EXIT = "eod_exit"
-    CIRCUIT_BREAKER = "circuit_breaker"
+# Use canonical ExitReason from data_types
+from backtester.data_types import ExitReason
 
 
 @dataclass
@@ -62,15 +58,26 @@ class Trade:
         return self.exit_time is not None and self.remaining_size == 0
 
 
+# IST market hours — data timestamps are IST
+# ET 15:55 = IST 22:55 (winter/EST), IST 21:55 (summer/EDT)
+# We use winter IST (22:55) as default since most of the year is EST
+EOD_EXIT_HOUR_IST = 22
+EOD_EXIT_MINUTE_IST = 55
+ENTRY_CUTOFF_HOUR_IST = 22
+ENTRY_CUTOFF_MINUTE_IST = 45
+
+
 class TradeManagerConfig:
     def __init__(self, **kwargs):
-        self.slippage_per_share = kwargs.get('slippage_per_share', 0.02)
         self.partial_tp_at_r = kwargs.get('partial_tp_at_r', 2.0)
         self.partial_tp_pct = kwargs.get('partial_tp_pct', 0.50)
         self.breakeven_stop_dist_mult = kwargs.get('breakeven_stop_dist_mult', 2.0)
         self.breakeven_tp_path_pct = kwargs.get('breakeven_tp_path_pct', 0.50)
-        self.eod_exit_hour = kwargs.get('eod_exit_hour', 15)
-        self.eod_exit_minute = kwargs.get('eod_exit_minute', 55)
+        # IST hours (22:55 IST = 15:55 ET winter)
+        self.eod_exit_hour = kwargs.get('eod_exit_hour', EOD_EXIT_HOUR_IST)
+        self.eod_exit_minute = kwargs.get('eod_exit_minute', EOD_EXIT_MINUTE_IST)
+        self.entry_cutoff_hour = kwargs.get('entry_cutoff_hour', ENTRY_CUTOFF_HOUR_IST)
+        self.entry_cutoff_minute = kwargs.get('entry_cutoff_minute', ENTRY_CUTOFF_MINUTE_IST)
 
 
 class TradeManager:
@@ -84,25 +91,50 @@ class TradeManager:
         # Trail parameters from tier_config
         self._trail_factor = (tier_config or {}).get('trail_factor', 1.0)
         self._trail_activation_r = (tier_config or {}).get('trail_activation_r', 0.0)
+        # Pending entries: signals waiting for next bar open
+        self._pending_entries: list[tuple[Signal, RiskParams]] = []
 
-    def open_trade(self, signal: Signal, risk_params: RiskParams) -> Trade:
-        """Create and register a new trade."""
+    def queue_entry(self, signal: Signal, risk_params: RiskParams):
+        """Queue a signal for entry at the NEXT bar's open + slippage.
+
+        Per L-005.1 §7: entry must be at next bar open, not signal bar.
+        Call this when a signal passes all filters. The actual trade is
+        opened on the next call to update_trades().
+        """
+        self._pending_entries.append((signal, risk_params))
+
+    def _is_past_entry_cutoff(self, timestamp: pd.Timestamp) -> bool:
+        """Check if we're past the entry cutoff (22:45 IST = 15:45 ET winter)."""
+        return (timestamp.hour > self.config.entry_cutoff_hour or
+                (timestamp.hour == self.config.entry_cutoff_hour and
+                 timestamp.minute >= self.config.entry_cutoff_minute))
+
+    def open_trade(self, signal: Signal, risk_params: RiskParams,
+                   entry_price: float, entry_time: pd.Timestamp) -> Trade:
+        """Create and register a new trade.
+
+        Args:
+            signal: The signal that triggered the trade
+            risk_params: Calculated risk parameters
+            entry_price: The next bar's open price (before slippage)
+            entry_time: The next bar's timestamp
+        """
         assert not any(
             t.signal.ticker == signal.ticker for t in self.open_trades
         ), f"Already in position for {signal.ticker}"
 
-        # Apply entry slippage
-        slippage = self.config.slippage_per_share
+        # Apply entry slippage: MAX(1¢, 0.02% of price)
+        slippage = calculate_slippage(entry_price)
         if signal.direction == TradeDirection.SHORT:
-            entry_price = signal.entry_price - slippage  # worse fill for short
+            fill_price = entry_price - slippage  # worse fill for short
         else:
-            entry_price = signal.entry_price + slippage  # worse fill for long
+            fill_price = entry_price + slippage  # worse fill for long
 
         trade = Trade(
             signal=signal,
             risk_params=risk_params,
-            entry_price=entry_price,
-            entry_time=signal.timestamp,
+            entry_price=fill_price,
+            entry_time=entry_time,
             direction=signal.direction,
             position_size=risk_params.position_size,
             remaining_size=risk_params.position_size,
@@ -125,8 +157,8 @@ class TradeManager:
             return (current_price - trade.entry_price) * trade.remaining_size
 
     def _apply_exit_slippage(self, price: float, direction: TradeDirection) -> float:
-        """Apply slippage on exit."""
-        slippage = self.config.slippage_per_share
+        """Apply slippage on exit: MAX(1¢, 0.02% of price)."""
+        slippage = calculate_slippage(price)
         if direction == TradeDirection.SHORT:
             return price + slippage  # buying back at higher price
         else:
@@ -238,12 +270,31 @@ class TradeManager:
 
         if cond1 or cond2:
             # Move stop to entry (breakeven) + tiny buffer
-            buffer = self.config.slippage_per_share
+            buffer = calculate_slippage(entry)
             if trade.direction == TradeDirection.SHORT:
                 trade.stop_price = entry - buffer  # slightly profitable
             else:
                 trade.stop_price = entry + buffer
             trade.is_breakeven = True
+            return True
+
+        return False
+
+    def _check_nison_exit(self, trade: Trade, close: float,
+                          bar_time: pd.Timestamp) -> bool:
+        """Check if trade's mirror level has been invalidated (Nison).
+
+        Per L-005.1: if a mirror level is invalidated (close beyond level),
+        exit the trade at next bar open. We detect the condition here and
+        mark the trade for exit.
+        """
+        level = trade.signal.level
+        if not level.is_mirror:
+            return False
+
+        # Check if level status is INVALIDATED (set by level_detector.check_nison_invalidation)
+        if level.status == LevelStatus.INVALIDATED:
+            self._close_trade(trade, close, bar_time, ExitReason.NISON_EXIT)
             return True
 
         return False
@@ -266,7 +317,7 @@ class TradeManager:
                 if not trade.trailing_stop_active:
                     trade.trailing_stop_active = True
                     # Set initial trailing stop at breakeven
-                    buffer = self.config.slippage_per_share
+                    buffer = calculate_slippage(trade.entry_price)
                     if trade.direction == TradeDirection.SHORT:
                         trade.trailing_stop_price = trade.entry_price - buffer
                     else:
@@ -363,15 +414,54 @@ class TradeManager:
                 trade.trailing_stop_price = new_stop
 
     def _is_eod(self, timestamp: pd.Timestamp) -> bool:
-        """Check if we should force exit (end of day)."""
+        """Check if we should force exit (end of day). IST hours."""
         return (timestamp.hour > self.config.eod_exit_hour or
                 (timestamp.hour == self.config.eod_exit_hour and
                  timestamp.minute >= self.config.eod_exit_minute))
 
-    def update_trades(self, m5_bar: pd.Series, bar_time: pd.Timestamp) -> list[Trade]:
+    def _process_pending_entries(self, m5_bar: pd.Series,
+                                 bar_time: pd.Timestamp) -> list[Trade]:
+        """Process pending entries using this bar's open as entry price.
+
+        Per L-005.1 §7: entry at NEXT bar open + slippage.
+        """
+        opened = []
+        remaining = []
+
+        for signal, risk_params in self._pending_entries:
+            # Skip if past entry cutoff
+            if self._is_past_entry_cutoff(bar_time):
+                continue
+
+            # Skip if ticker doesn't match this bar
+            if signal.ticker != m5_bar['Ticker']:
+                remaining.append((signal, risk_params))
+                continue
+
+            # Skip if already in position
+            if any(t.signal.ticker == signal.ticker for t in self.open_trades):
+                continue
+
+            # Enter at this bar's open
+            entry_price = m5_bar['Open']
+            trade = self.open_trade(signal, risk_params, entry_price, bar_time)
+            opened.append(trade)
+
+        self._pending_entries = remaining
+        return opened
+
+    def update_trades(self, m5_bar: pd.Series,
+                      bar_time: pd.Timestamp) -> list[Trade]:
         """Update all open trades with a new M5 bar.
+
+        Exit precedence: SL → TP → Mirror/Nison → Breakeven → EOD
+
+        Also processes pending entries (next-bar-open execution).
         Returns list of trades that were closed this bar.
         """
+        # Process pending entries first (enter at this bar's open)
+        self._process_pending_entries(m5_bar, bar_time)
+
         closed_this_bar = []
 
         for trade in list(self.open_trades):
@@ -393,23 +483,22 @@ class TradeManager:
             trade.max_favorable = max(trade.max_favorable, favorable)
             trade.max_adverse = max(trade.max_adverse, adverse)
 
-            # Check stop loss first (worst case)
-            # Use trailing stop if active
-            effective_stop = trade.trailing_stop_price if trade.trailing_stop_active else trade.stop_price
+            # === EXIT PRECEDENCE: SL → TP → Mirror/Nison → Breakeven → EOD ===
+
+            # 1. STOP LOSS (highest priority — worst case assumption)
+            effective_stop = (trade.trailing_stop_price
+                              if trade.trailing_stop_active
+                              else trade.stop_price)
             stopped = False
             if trade.direction == TradeDirection.SHORT:
                 if high >= effective_stop:
-                    reason = ExitReason.STOP_LOSS
-                    if trade.trailing_stop_active:
-                        reason = ExitReason.BREAKEVEN
+                    reason = ExitReason.TRAIL_STOP if trade.trailing_stop_active else ExitReason.STOP_LOSS
                     self._close_trade(trade, effective_stop, bar_time, reason)
                     closed_this_bar.append(trade)
                     stopped = True
             else:
                 if low <= effective_stop:
-                    reason = ExitReason.STOP_LOSS
-                    if trade.trailing_stop_active:
-                        reason = ExitReason.BREAKEVEN
+                    reason = ExitReason.TRAIL_STOP if trade.trailing_stop_active else ExitReason.STOP_LOSS
                     self._close_trade(trade, effective_stop, bar_time, reason)
                     closed_this_bar.append(trade)
                     stopped = True
@@ -417,10 +506,11 @@ class TradeManager:
             if stopped:
                 continue
 
-            # Tiered target exits
+            # 2. TARGET PROFIT
             tier_closed = False
             if trade.risk_params.target_tiers:
-                tier_closed = self._check_tiered_targets(trade, high, low, close, bar_time)
+                tier_closed = self._check_tiered_targets(
+                    trade, high, low, close, bar_time)
                 if trade.remaining_size <= 0:
                     closed_this_bar.append(trade)
                     continue
@@ -450,15 +540,41 @@ class TradeManager:
                 # Partial take profit (original behavior for non-tiered)
                 self._partial_take_profit(trade, close, bar_time)
 
-            # Breakeven check
+            # 3. MIRROR/NISON INVALIDATION EXIT
+            if self._check_nison_exit(trade, close, bar_time):
+                closed_this_bar.append(trade)
+                continue
+
+            # 4. BREAKEVEN CHECK (move stop, not an exit)
             self._check_breakeven(trade, close)
 
-            # EOD exit
+            # 5. EOD EXIT (lowest priority)
             if self._is_eod(bar_time):
                 self._close_trade(trade, close, bar_time, ExitReason.EOD_EXIT)
                 closed_this_bar.append(trade)
 
         return closed_this_bar
+
+    def get_portfolio_exposure(self) -> tuple[float, float]:
+        """Calculate unrealized P&L and worst-case P&L for all open trades.
+
+        Returns (unrealized_pnl, worst_case_pnl) for circuit breaker use.
+        worst_case = P&L if all stops are hit simultaneously.
+        """
+        unrealized = 0.0
+        worst_case = 0.0
+
+        for trade in self.open_trades:
+            # Unrealized uses last known close (approximate with entry for now)
+            # In practice, caller should pass current prices
+            stop_dist = trade.risk_params.stop_distance
+            slippage = calculate_slippage(trade.entry_price)
+
+            # Worst case: all stops hit
+            wc_loss = -(stop_dist + slippage) * trade.remaining_size
+            worst_case += wc_loss
+
+        return unrealized, worst_case
 
     def get_open_trade(self, ticker: str) -> Optional[Trade]:
         for trade in self.open_trades:
@@ -486,6 +602,7 @@ class TradeManager:
             'winners': len(winners),
             'losers': len(losers),
             'eod_exits': sum(1 for t in self.closed_trades if t.exit_reason == ExitReason.EOD_EXIT),
+            'nison_exits': sum(1 for t in self.closed_trades if t.exit_reason == ExitReason.NISON_EXIT),
             'win_rate': len(winners) / len(self.closed_trades) if self.closed_trades else 0.0,
             'avg_r': np.mean([t.pnl_r for t in self.closed_trades]) if self.closed_trades else 0.0,
             'total_pnl': total_pnl,

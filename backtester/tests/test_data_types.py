@@ -56,6 +56,8 @@ class TestEnums:
     def test_exit_reason_values(self):
         assert ExitReason.STOP_LOSS.value == "stop_loss"
         assert ExitReason.TRAIL_STOP.value == "trail_stop"
+        assert ExitReason.NISON_EXIT.value == "nison_exit"
+        assert ExitReason.EOD_EXIT.value == "eod_exit"
 
 
 class TestBar:
