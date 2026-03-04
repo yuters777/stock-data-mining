@@ -1,0 +1,262 @@
+{
+  "phase": "2.3",
+  "description": "Walk-forward validation with reduced parameter grid",
+  "grid_size": 32,
+  "n_windows": 6,
+  "tickers": [
+    "TSLA",
+    "AMZN",
+    "GOOGL",
+    "META",
+    "MSFT",
+    "NVDA"
+  ],
+  "train_months": 3,
+  "test_months": 1,
+  "overall_start": "2025-02-10",
+  "overall_end": "2026-01-31",
+  "param_grid": {
+    "atr_entry_threshold": [
+      "0.6",
+      "0.8"
+    ],
+    "max_stop_atr_pct": [
+      "0.1",
+      "0.2"
+    ],
+    "min_rr": [
+      "2.0",
+      "3.0"
+    ],
+    "tail_ratio_min": [
+      "0.1",
+      "0.2"
+    ],
+    "fractal_depth": [
+      "5",
+      "10"
+    ]
+  },
+  "baseline": {
+    "fractal_depth": 5,
+    "tolerance_cents": 0.05,
+    "tolerance_pct": 0.001,
+    "atr_period": 5,
+    "min_level_score": 5,
+    "cross_count_invalidate": 5,
+    "cross_count_window": 30,
+    "tail_ratio_min": 0.15,
+    "lp2_engulfing_required": true,
+    "clp_min_bars": 3,
+    "clp_max_bars": 7,
+    "atr_block_threshold": 0.25,
+    "atr_entry_threshold": 0.7,
+    "max_stop_atr_pct": 0.1,
+    "min_rr": 3.0,
+    "capital": 100000.0,
+    "risk_pct": 0.003,
+    "tier_mode": "2tier_trail",
+    "t1_pct": 0.3,
+    "trail_factor": 0.7,
+    "trail_activation_r": 0.0,
+    "tier_min_rr": 1.5
+  },
+  "total_elapsed_s": 1096.909512758255,
+  "windows": [
+    {
+      "window": 1,
+      "train_start": "2025-02-10",
+      "train_end": "2025-05-10",
+      "test_start": "2025-05-10",
+      "test_end": "2025-06-10",
+      "best_params": {
+        "atr_entry_threshold": 0.8,
+        "fractal_depth": 5,
+        "max_stop_atr_pct": 0.2,
+        "min_rr": 2.0,
+        "tail_ratio_min": 0.1
+      },
+      "is_metrics": {
+        "trades": 8,
+        "win_rate": 0.375,
+        "profit_factor": 1.670792454868511,
+        "avg_r": 0.31102217884810546,
+        "total_pnl": 997.027365010977,
+        "sharpe": 3.6799744522427424
+      },
+      "oos_metrics": {
+        "trades": 38,
+        "win_rate": 0.2631578947368421,
+        "profit_factor": 0.8595563958055065,
+        "avg_r": -0.0759351365475529,
+        "total_pnl": -1136.0799018432363,
+        "sharpe": -1.0719473070156085
+      },
+      "elapsed_s": 153.16503047943115
+    },
+    {
+      "window": 2,
+      "train_start": "2025-03-10",
+      "train_end": "2025-06-10",
+      "test_start": "2025-06-10",
+      "test_end": "2025-07-10",
+      "best_params": {
+        "atr_entry_threshold": 0.6,
+        "fractal_depth": 5,
+        "max_stop_atr_pct": 0.2,
+        "min_rr": 2.0,
+        "tail_ratio_min": 0.2
+      },
+      "is_metrics": {
+        "trades": 81,
+        "win_rate": 0.3333333333333333,
+        "profit_factor": 1.1447426899476607,
+        "avg_r": 0.08703336261177311,
+        "total_pnl": 2255.4014800255727,
+        "sharpe": 1.159815408203733
+      },
+      "oos_metrics": {
+        "trades": 31,
+        "win_rate": 0.3548387096774194,
+        "profit_factor": 1.0312570861697536,
+        "avg_r": 0.018328235811712192,
+        "total_pnl": 173.97819604124345,
+        "sharpe": 0.27672048226244894
+      },
+      "elapsed_s": 172.32579970359802
+    },
+    {
+      "window": 3,
+      "train_start": "2025-04-10",
+      "train_end": "2025-07-10",
+      "test_start": "2025-07-10",
+      "test_end": "2025-08-10",
+      "best_params": {
+        "atr_entry_threshold": 0.6,
+        "fractal_depth": 5,
+        "max_stop_atr_pct": 0.2,
+        "min_rr": 2.0,
+        "tail_ratio_min": 0.2
+      },
+      "is_metrics": {
+        "trades": 85,
+        "win_rate": 0.3058823529411765,
+        "profit_factor": 0.8530614626066108,
+        "avg_r": -0.08164327437981314,
+        "total_pnl": -2488.1868917390593,
+        "sharpe": -1.3997049058112392
+      },
+      "oos_metrics": {
+        "trades": 17,
+        "win_rate": 0.47058823529411764,
+        "profit_factor": 1.206799095427212,
+        "avg_r": 0.07115650796260986,
+        "total_pnl": 524.5747471811108,
+        "sharpe": 1.4984210509313232
+      },
+      "elapsed_s": 185.78560948371887
+    },
+    {
+      "window": 4,
+      "train_start": "2025-05-10",
+      "train_end": "2025-08-10",
+      "test_start": "2025-08-10",
+      "test_end": "2025-09-10",
+      "best_params": {
+        "atr_entry_threshold": 0.6,
+        "fractal_depth": 10,
+        "max_stop_atr_pct": 0.1,
+        "min_rr": 2.0,
+        "tail_ratio_min": 0.2
+      },
+      "is_metrics": {
+        "trades": 45,
+        "win_rate": 0.3111111111111111,
+        "profit_factor": 1.0484520744138073,
+        "avg_r": 0.016624629015200416,
+        "total_pnl": 407.6291409687327,
+        "sharpe": 0.2651119186743683
+      },
+      "oos_metrics": {
+        "trades": 16,
+        "win_rate": 0.25,
+        "profit_factor": 0.6109814086008677,
+        "avg_r": -0.2500720662740614,
+        "total_pnl": -1336.5968889136616,
+        "sharpe": -3.469588842200758
+      },
+      "elapsed_s": 187.59651923179626
+    },
+    {
+      "window": 5,
+      "train_start": "2025-06-10",
+      "train_end": "2025-09-10",
+      "test_start": "2025-09-10",
+      "test_end": "2025-10-10",
+      "best_params": {
+        "atr_entry_threshold": 0.6,
+        "fractal_depth": 10,
+        "max_stop_atr_pct": 0.1,
+        "min_rr": 2.0,
+        "tail_ratio_min": 0.2
+      },
+      "is_metrics": {
+        "trades": 43,
+        "win_rate": 0.37209302325581395,
+        "profit_factor": 1.212656600902374,
+        "avg_r": 0.10584002521126301,
+        "total_pnl": 1550.1443174111932,
+        "sharpe": 1.3003439721320935
+      },
+      "oos_metrics": {
+        "trades": 18,
+        "win_rate": 0.4444444444444444,
+        "profit_factor": 1.4371443882480373,
+        "avg_r": 0.22470587571693346,
+        "total_pnl": 1210.0253462746045,
+        "sharpe": 3.7290517480886214
+      },
+      "elapsed_s": 194.2827479839325
+    },
+    {
+      "window": 6,
+      "train_start": "2025-07-10",
+      "train_end": "2025-10-10",
+      "test_start": "2025-10-10",
+      "test_end": "2025-11-10",
+      "best_params": {
+        "atr_entry_threshold": 0.6,
+        "fractal_depth": 10,
+        "max_stop_atr_pct": 0.1,
+        "min_rr": 2.0,
+        "tail_ratio_min": 0.1
+      },
+      "is_metrics": {
+        "trades": 44,
+        "win_rate": 0.4090909090909091,
+        "profit_factor": 1.6056181595236392,
+        "avg_r": 0.31988410303018155,
+        "total_pnl": 4399.0208714755445,
+        "sharpe": 3.1724220631214415
+      },
+      "oos_metrics": {
+        "trades": 30,
+        "win_rate": 0.13333333333333333,
+        "profit_factor": 0.21416963603228945,
+        "avg_r": -0.6180125895655237,
+        "total_pnl": -5686.429693637415,
+        "sharpe": -14.332860196035819
+      },
+      "elapsed_s": 203.75202178955078
+    }
+  ],
+  "aggregate": {
+    "total_oos_pnl": -6250.528194897353,
+    "mean_oos_pf": 0.8933180017139444,
+    "mean_oos_sharpe": -2.2283671773282987,
+    "worst_oos_sharpe": -14.332860196035819,
+    "positive_windows": 3,
+    "positive_window_pct": 0.5,
+    "total_oos_trades": 150
+  }
+}
