@@ -1,0 +1,118 @@
+{
+  "phase": "2.6b",
+  "description": "Ablation validation: simplified filter chain",
+  "configs": {
+    "baseline": "All filters on (Phase 2.5)",
+    "config_a": "Simplified: remove earnings, ATR gate, volume, R:R, squeeze; keep regime + sawing",
+    "config_b": "Same as A (squeeze confirmation)",
+    "config_c": "Minimal: nuclear + same-level limit only (no regime post-filters)",
+    "nuclear": "All filters removed"
+  },
+  "results": [
+    {
+      "label": "BASELINE (all filters)",
+      "trades": 54,
+      "wr": 0.3333,
+      "pf": 1.4462,
+      "pnl": 4355.49,
+      "sharpe_trade": 1.9525,
+      "sharpe_window": 1.0009,
+      "max_dd": 2459.92,
+      "positive_windows": 4,
+      "window_pnls": [
+        144.49,
+        400.46,
+        -531.84,
+        1237.97,
+        5287.8,
+        -2183.39
+      ],
+      "delta_vs_baseline": 0.0,
+      "delta_vs_nuclear": 1254.44
+    },
+    {
+      "label": "Config A \u2014 Simplified",
+      "trades": 55,
+      "wr": 0.3455,
+      "pf": 1.4734,
+      "pnl": 4613.82,
+      "sharpe_trade": 2.0491,
+      "sharpe_window": 1.0814,
+      "max_dd": 2459.92,
+      "positive_windows": 4,
+      "window_pnls": [
+        144.49,
+        400.46,
+        -23.81,
+        988.26,
+        5287.8,
+        -2183.39
+      ],
+      "delta_vs_baseline": 258.33,
+      "delta_vs_nuclear": 1512.76
+    },
+    {
+      "label": "Config B \u2014 Simplified+NoSqueeze",
+      "trades": 55,
+      "wr": 0.3455,
+      "pf": 1.4734,
+      "pnl": 4613.82,
+      "sharpe_trade": 2.0491,
+      "sharpe_window": 1.0814,
+      "max_dd": 2459.92,
+      "positive_windows": 4,
+      "window_pnls": [
+        144.49,
+        400.46,
+        -23.81,
+        988.26,
+        5287.8,
+        -2183.39
+      ],
+      "delta_vs_baseline": 258.33,
+      "delta_vs_nuclear": 1512.76
+    },
+    {
+      "label": "Config C \u2014 Minimal (nuclear+sawing)",
+      "trades": 75,
+      "wr": 0.3067,
+      "pf": 1.2526,
+      "pnl": 3597.53,
+      "sharpe_trade": 1.254,
+      "sharpe_window": 0.7468,
+      "max_dd": 3695.68,
+      "positive_windows": 5,
+      "window_pnls": [
+        61.12,
+        258.49,
+        462.2,
+        947.06,
+        5287.8,
+        -3419.14
+      ],
+      "delta_vs_baseline": -757.96,
+      "delta_vs_nuclear": 496.47
+    },
+    {
+      "label": "NUCLEAR (reference)",
+      "trades": 84,
+      "wr": 0.2976,
+      "pf": 1.1916,
+      "pnl": 3101.05,
+      "sharpe_trade": 0.975,
+      "sharpe_window": 0.5866,
+      "max_dd": 4536.16,
+      "positive_windows": 4,
+      "window_pnls": [
+        61.12,
+        -19.71,
+        1084.41,
+        947.06,
+        5287.8,
+        -4259.63
+      ],
+      "delta_vs_baseline": -1254.44,
+      "delta_vs_nuclear": 0.0
+    }
+  ]
+}
