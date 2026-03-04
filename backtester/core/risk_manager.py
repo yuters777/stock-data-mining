@@ -82,6 +82,8 @@ class RiskManagerConfig:
         self.max_monthly_loss_pct = kwargs.get('max_monthly_loss_pct', 0.08)  # 8%
         # Model4 size multiplier
         self.model4_size_mult = kwargs.get('model4_size_mult', 1.5)
+        # Per-level loss limit (0 = disabled)
+        self.max_losses_per_level = kwargs.get('max_losses_per_level', 0)
 
 
 class CircuitBreakerState:
@@ -95,6 +97,9 @@ class CircuitBreakerState:
         self.monthly_pnl: dict[str, float] = {}  # month_str -> pnl
         self.stopped_today: set[str] = set()      # "ticker|level_price|date" combos
         self.open_positions: dict[str, bool] = {}  # ticker -> has_position
+        # Per-level loss tracking (persists across days)
+        self.level_losses: dict[str, int] = {}     # "ticker|level_price" -> consecutive loss count
+        self.max_losses_per_level = getattr(config, 'max_losses_per_level', 0)  # 0 = disabled
 
     def record_trade_result(self, ticker: str, date: pd.Timestamp,
                             pnl: float, was_stop: bool):
@@ -115,6 +120,21 @@ class CircuitBreakerState:
                              date: pd.Timestamp):
         key = f"{ticker}|{level_price:.2f}|{date.strftime('%Y-%m-%d')}"
         self.stopped_today.add(key)
+        # Track per-level losses (persists across days)
+        level_key = f"{ticker}|{level_price:.2f}"
+        self.level_losses[level_key] = self.level_losses.get(level_key, 0) + 1
+
+    def record_win_at_level(self, ticker: str, level_price: float):
+        """Reset per-level loss count on a win (level is still tradeable)."""
+        level_key = f"{ticker}|{level_price:.2f}"
+        self.level_losses.pop(level_key, None)
+
+    def is_level_exhausted(self, ticker: str, level_price: float) -> bool:
+        """Check if a level has exceeded max consecutive losses."""
+        if self.max_losses_per_level <= 0:
+            return False
+        level_key = f"{ticker}|{level_price:.2f}"
+        return self.level_losses.get(level_key, 0) >= self.max_losses_per_level
 
     def is_stopped_at_level_today(self, ticker: str, level_price: float,
                                   date: pd.Timestamp) -> bool:
@@ -542,6 +562,11 @@ class RiskManager:
         if self.cb_state.is_stopped_at_level_today(
                 ticker, signal.level.price, date):
             return False, f"Already stopped at level {signal.level.price:.2f} today"
+
+        # Per-level consecutive loss limit (persists across days)
+        if self.cb_state.is_level_exhausted(ticker, signal.level.price):
+            max_l = self.cb_state.max_losses_per_level
+            return False, f"Level {signal.level.price:.2f} exhausted ({max_l} consecutive losses)"
 
         # Global circuit breakers
         blocked, reason = self.cb_state.check_circuit_breakers(

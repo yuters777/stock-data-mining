@@ -88,6 +88,10 @@ class FilterChainConfig:
         # Direction filter: dict mapping ticker -> "long"/"short", or None
         self.direction_filter = kwargs.get('direction_filter', None)
 
+        # Trend filter (SMA-based)
+        self.enable_trend_filter = kwargs.get('enable_trend_filter', False)
+        self.trend_sma_period = kwargs.get('trend_sma_period', 20)
+
         # Level score minimum
         self.min_level_score = kwargs.get('min_level_score', 5)
 
@@ -300,6 +304,46 @@ class FilterChain:
 
         return FilterResult(True, f"Volume OK (ratio={vol_ratio:.1f}x)")
 
+    def _check_trend_filter(self, signal: Signal,
+                            daily_df: pd.DataFrame) -> FilterResult:
+        """Trend filter: block counter-trend trades using D1 SMA.
+
+        If price > SMA: BLOCK SHORT (trending up, don't fade the trend).
+        If price < SMA: BLOCK LONG (trending down, don't fade the trend).
+        """
+        if not self.config.enable_trend_filter:
+            return FilterResult(True, "Trend filter disabled")
+
+        period = self.config.trend_sma_period
+        ticker = signal.ticker
+        bar_date = pd.Timestamp(signal.timestamp).normalize()
+
+        # Get daily closes for this ticker up to signal date
+        ticker_daily = daily_df[
+            (daily_df['Ticker'] == ticker) &
+            (daily_df['Date'] <= bar_date)
+        ].sort_values('Date')
+
+        if len(ticker_daily) < period:
+            return FilterResult(True, f"Insufficient D1 data for SMA{period}")
+
+        sma = ticker_daily['Close'].iloc[-period:].mean()
+        last_close = ticker_daily['Close'].iloc[-1]
+
+        if last_close > sma and signal.direction == SignalDirection.SHORT:
+            return FilterResult(
+                False,
+                f"Trend filter: {ticker} price ${last_close:.2f} > SMA{period} ${sma:.2f} — BLOCK SHORT")
+
+        if last_close < sma and signal.direction == SignalDirection.LONG:
+            return FilterResult(
+                False,
+                f"Trend filter: {ticker} price ${last_close:.2f} < SMA{period} ${sma:.2f} — BLOCK LONG")
+
+        return FilterResult(True,
+                            f"Trend OK ({signal.direction.value}, "
+                            f"price=${last_close:.2f} vs SMA{period}=${sma:.2f})")
+
     def _check_squeeze_filter(self, signal: Signal, m5_bars: pd.DataFrame,
                               atr_passed: bool) -> FilterResult:
         """Stage 8: Bollinger Band squeeze detection.
@@ -354,6 +398,7 @@ class FilterChain:
             ('level_score', lambda: self._check_level_score(signal)),
             ('time', lambda: self._check_time_filter(signal)),
             ('earnings', lambda: self._check_earnings_filter(signal)),
+            ('trend', lambda: self._check_trend_filter(signal, daily_df)),
             ('atr', lambda: self._check_atr_filter(signal, m5_bars, daily_df, entry)),
             ('volume', lambda: self._check_volume_filter(signal, m5_bars)),
             ('squeeze', lambda: self._check_squeeze_filter(signal, m5_bars, atr_passed)),
@@ -394,6 +439,7 @@ class FilterChain:
             'blocked_by_level_score': sum(1 for e in self.funnel if e.blocked_by == 'level_score'),
             'blocked_by_time': sum(1 for e in self.funnel if e.blocked_by == 'time'),
             'blocked_by_earnings': sum(1 for e in self.funnel if e.blocked_by == 'earnings'),
+            'blocked_by_trend': sum(1 for e in self.funnel if e.blocked_by == 'trend'),
             'blocked_by_atr_hard': sum(1 for e in self.funnel
                                        if e.blocked_by == 'atr' and 'HARD BLOCK' in e.blocked_reason),
             'blocked_by_atr_threshold': sum(1 for e in self.funnel
