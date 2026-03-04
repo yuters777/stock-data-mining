@@ -264,6 +264,48 @@ class PatternEngine:
 
         return min_overlap
 
+    def _qualify_clp_trigger(self, trigger_bar: pd.Series,
+                             m5_bars: pd.DataFrame, bar_idx: int,
+                             atr_m5: float, direction: str) -> bool:
+        """CLP trigger bar qualification (L-005.1 §3.3).
+
+        At least ONE of three conditions must be true:
+        (a) Body size >= 1.5 × ATR_M5
+        (b) Volume >= 2.0 × 20-bar average volume
+        (c) Close in bottom 25% of range (SHORT) or top 25% (LONG)
+        """
+        bar_range = trigger_bar['High'] - trigger_bar['Low']
+        if bar_range <= 0:
+            return False
+
+        body = abs(trigger_bar['Close'] - trigger_bar['Open'])
+
+        # (a) Big body
+        if body >= 1.5 * atr_m5:
+            return True
+
+        # (b) Volume climax
+        if 'Volume' in trigger_bar.index:
+            lookback = min(20, bar_idx)
+            if lookback > 0:
+                avg_vol = m5_bars.iloc[bar_idx - lookback:bar_idx]['Volume'].mean()
+                if avg_vol > 0 and trigger_bar['Volume'] >= 2.0 * avg_vol:
+                    return True
+
+        # (c) Close position in bar range
+        if direction == 'short':
+            # Close in bottom 25%: (close - low) / range <= 0.25
+            close_position = (trigger_bar['Close'] - trigger_bar['Low']) / bar_range
+            if close_position <= 0.25:
+                return True
+        else:
+            # Close in top 25%: (high - close) / range <= 0.25
+            close_position = (trigger_bar['High'] - trigger_bar['Close']) / bar_range
+            if close_position <= 0.25:
+                return True
+
+        return False
+
     def detect_clp(self, m5_bars: pd.DataFrame, bar_idx: int,
                    level: Level, tolerance: float,
                    atr_m5: pd.Series) -> Optional[Signal]:
@@ -290,7 +332,9 @@ class PatternEngine:
 
         # Short CLP: consolidation above resistance, trigger closes back below
         if level.level_type in (LevelType.RESISTANCE, LevelType.MIRROR):
-            if trigger_bar['Close'] < level_price:
+            if (trigger_bar['Close'] < level_price and
+                    self._qualify_clp_trigger(
+                        trigger_bar, m5_bars, bar_idx, current_atr, 'short')):
                 for n_bars in range(min_bars, min(max_bars + 1, bar_idx)):
                     consol_start = bar_idx - n_bars
                     consol_bars = m5_bars.iloc[consol_start:bar_idx]
@@ -299,8 +343,8 @@ class PatternEngine:
                     if not (consol_bars['Close'] > level_price).all():
                         continue
 
-                    # Max deviation from level
-                    if (consol_bars['High'] - level_price).max() > max_deviation:
+                    # Max deviation from level (use CLOSE, not HIGH/wick)
+                    if (consol_bars['Close'] - level_price).max() > max_deviation:
                         continue
 
                     # Range compression check: consecutive bars must overlap >= 50%
@@ -330,7 +374,9 @@ class PatternEngine:
 
         # Long CLP: consolidation below support, trigger closes back above
         if level.level_type in (LevelType.SUPPORT, LevelType.MIRROR):
-            if trigger_bar['Close'] > level_price:
+            if (trigger_bar['Close'] > level_price and
+                    self._qualify_clp_trigger(
+                        trigger_bar, m5_bars, bar_idx, current_atr, 'long')):
                 for n_bars in range(min_bars, min(max_bars + 1, bar_idx)):
                     consol_start = bar_idx - n_bars
                     consol_bars = m5_bars.iloc[consol_start:bar_idx]
@@ -338,7 +384,8 @@ class PatternEngine:
                     if not (consol_bars['Close'] < level_price).all():
                         continue
 
-                    if (level_price - consol_bars['Low']).max() > max_deviation:
+                    # Max deviation from level (use CLOSE, not LOW/wick)
+                    if (level_price - consol_bars['Close']).max() > max_deviation:
                         continue
 
                     overlap = self._check_bar_overlap(consol_bars)
