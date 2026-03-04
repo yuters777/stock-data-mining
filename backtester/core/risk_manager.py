@@ -10,7 +10,10 @@ import numpy as np
 from dataclasses import dataclass
 from typing import Optional
 
-from backtester.core.pattern_engine import Signal, TradeDirection
+from backtester.data_types import Signal, SignalDirection
+
+# Backwards-compatible alias used throughout this module
+TradeDirection = SignalDirection
 
 
 @dataclass

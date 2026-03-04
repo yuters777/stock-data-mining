@@ -10,24 +10,18 @@ import numpy as np
 from typing import Optional
 from dataclasses import dataclass, field
 
-from backtester.core.level_detector import (
-    LevelDetector, LevelDetectorConfig, Level, LevelStatus, LevelType
+from backtester.data_types import (
+    Level, LevelType, LevelStatus, Signal, SignalDirection,
 )
-from backtester.core.pattern_engine import (
-    PatternEngine, PatternEngineConfig, Signal, TradeDirection
-)
-from backtester.core.filter_chain import (
-    FilterChain, FilterChainConfig, SignalFunnelEntry
-)
-from backtester.core.risk_manager import (
-    RiskManager, RiskManagerConfig
-)
-from backtester.core.trade_manager import (
-    TradeManager, TradeManagerConfig, Trade, ExitReason
-)
-from backtester.core.intraday_levels import (
-    IntradayLevelDetector, IntradayLevelConfig
-)
+from backtester.core.level_detector import LevelDetector, LevelDetectorConfig
+from backtester.core.pattern_engine import PatternEngine, PatternEngineConfig
+from backtester.core.filter_chain import FilterChain, FilterChainConfig, SignalFunnelEntry
+from backtester.core.risk_manager import RiskManager, RiskManagerConfig
+from backtester.core.trade_manager import TradeManager, TradeManagerConfig, Trade, ExitReason
+from backtester.core.intraday_levels import IntradayLevelDetector, IntradayLevelConfig
+
+# Backwards-compatible alias
+TradeDirection = SignalDirection
 
 
 @dataclass
@@ -104,11 +98,9 @@ class Backtester:
 
     @staticmethod
     def filter_rth(m5_df: pd.DataFrame,
-                   rth_start_hour: int = 14, rth_start_min: int = 30,
-                   rth_end_hour: int = 21, rth_end_min: int = 0) -> pd.DataFrame:
-        """Filter M5 data to regular trading hours only (default: 14:30-21:00 UTC = 9:30-4:00 ET).
-        Extended-hours bars can have extreme spikes that corrupt level detection.
-        """
+                   rth_start_hour: int = 16, rth_start_min: int = 30,
+                   rth_end_hour: int = 23, rth_end_min: int = 0) -> pd.DataFrame:
+        """Filter M5 data to regular trading hours (IST: 16:30-23:00 = 9:30-4:00 ET)."""
         minutes = m5_df['Datetime'].dt.hour * 60 + m5_df['Datetime'].dt.minute
         start_min = rth_start_hour * 60 + rth_start_min
         end_min = rth_end_hour * 60 + rth_end_min
@@ -116,9 +108,19 @@ class Backtester:
         return m5_df[mask].reset_index(drop=True)
 
     def prepare_data(self, m5_df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame, list[Level]]:
-        """Run the full data preparation pipeline. Filters to RTH before processing."""
+        """Run the full data preparation pipeline.
+
+        Uses data_loader for session tagging and D1 aggregation (no duplicate logic).
+        """
+        from backtester.data_loader import tag_dataframe, aggregate_d1
+
         self.m5_df = self.filter_rth(m5_df)
-        raw_daily = self.level_detector.aggregate_m5_to_d1(self.m5_df)
+        tagged = tag_dataframe(self.m5_df)
+        raw_daily = aggregate_d1(tagged)
+        # Rename trading_day → Date for level detector compatibility
+        if 'trading_day' in raw_daily.columns and 'Date' not in raw_daily.columns:
+            raw_daily = raw_daily.rename(columns={'trading_day': 'Date'})
+        raw_daily['Date'] = pd.to_datetime(raw_daily['Date'])
         self.levels, self.daily_df = self.level_detector.detect_levels(raw_daily)
         return self.m5_df, self.daily_df, self.levels
 

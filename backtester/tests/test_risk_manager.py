@@ -8,8 +8,12 @@ from backtester.core.risk_manager import (
     RiskManager, RiskManagerConfig, RiskParams,
     CircuitBreakerState, HARD_STOP_CAPS
 )
-from backtester.core.pattern_engine import Signal, PatternType, TradeDirection
-from backtester.core.level_detector import Level, LevelType
+from backtester.data_types import (
+    Level, LevelType, Signal, SignalDirection, PatternType,
+)
+
+# Backwards-compatible alias used in this test file
+TradeDirection = SignalDirection
 
 
 def make_level(price=100.0):

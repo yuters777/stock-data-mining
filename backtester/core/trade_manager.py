@@ -11,7 +11,10 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Optional
 
-from backtester.core.pattern_engine import Signal, TradeDirection
+from backtester.data_types import Signal, SignalDirection
+
+# Backwards-compatible alias used throughout this module
+TradeDirection = SignalDirection
 from backtester.core.risk_manager import RiskParams, RiskManager
 
 
