@@ -185,4 +185,4 @@ Avg Touches:       {ls.get('avg_touches', 0):.1f}
 
 
 # Import here to avoid circular import issues with TradeDirection
-from backtester.core.pattern_engine import TradeDirection
+from backtester.data_types import SignalDirection as TradeDirection

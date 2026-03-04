@@ -201,7 +201,7 @@ class TestCLPDetection:
             (100.5, 101.2, 100.0, 100.8),  # Consolidation 1 (above)
             (100.8, 101.0, 100.2, 100.5),  # Consolidation 2 (above)
             (100.5, 100.8, 100.1, 100.3),  # Consolidation 3 (above)
-            (100.3, 100.5, 99.0, 99.5),    # Trigger: closes back below level
+            (100.3, 101.0, 99.0, 99.1),    # Trigger: closes back below level (close in bottom 25%)
         ])
 
         engine = PatternEngine()
@@ -259,6 +259,93 @@ class TestCLPDetection:
         signal = engine.detect_clp(bars, 4, level, 0.05, atr_m5)
 
         assert signal is None  # No breakout before consolidation
+
+    def test_clp_max_deviation_uses_close(self):
+        """MaxDeviation should use CLOSE, not HIGH. Wick spike with tight close should pass."""
+        level = make_level(100.0, LevelType.RESISTANCE)
+        # All consol bars have HIGH wicks to 103.0 (>2.5 ATR) but CLOSE stays tight at ~100.5
+        # Overlap is fine because all bars share similar [100.0, 103.0] range
+        bars = make_m5_bars([
+            (99.0, 101.0, 98.5, 100.5),    # Breakout bar
+            (100.5, 103.0, 100.0, 100.8),   # Consolidation 1: wick to 103, close tight
+            (100.8, 103.0, 100.2, 100.5),   # Consolidation 2: wick to 103, close tight
+            (100.5, 103.0, 100.1, 100.3),   # Consolidation 3: wick to 103, close tight
+            (100.3, 101.0, 99.0, 99.1),     # Trigger (close in bottom 25%)
+        ])
+        engine = PatternEngine()
+        atr_m5 = pd.Series([1.0] * 5)  # max_deviation = 2.5 * 1.0 = 2.5
+        signal = engine.detect_clp(bars, 4, level, 0.05, atr_m5)
+
+        # Close deviation max = 100.8 - 100.0 = 0.8 < 2.5 → should PASS
+        # Old code would reject: High deviation = 103.0 - 100.0 = 3.0 > 2.5
+        assert signal is not None
+        assert signal.direction == SignalDirection.SHORT
+
+    def test_clp_max_deviation_rejects_by_close(self):
+        """MaxDeviation should reject when CLOSE is too far, even if HIGH is close."""
+        level = make_level(100.0, LevelType.RESISTANCE)
+        bars = make_m5_bars([
+            (99.0, 101.0, 98.5, 100.5),    # Breakout bar
+            (100.5, 101.2, 100.0, 100.8),   # Consolidation 1
+            (102.0, 103.0, 101.5, 103.0),   # Consolidation 2: CLOSE 103.0 (3.0 > 2.5)
+            (100.5, 100.8, 100.1, 100.3),   # Consolidation 3
+            (100.3, 101.0, 99.0, 99.1),     # Trigger
+        ])
+        engine = PatternEngine()
+        atr_m5 = pd.Series([1.0] * 5)
+        signal = engine.detect_clp(bars, 4, level, 0.05, atr_m5)
+
+        assert signal is None  # Close deviation 3.0 > 2.5
+
+    def test_clp_trigger_bar_big_body(self):
+        """Trigger bar qualifies via big body (>= 1.5 * ATR_M5)."""
+        level = make_level(100.0, LevelType.RESISTANCE)
+        bars = make_m5_bars([
+            (99.0, 101.0, 98.5, 100.5),
+            (100.5, 101.2, 100.0, 100.8),
+            (100.8, 101.0, 100.2, 100.5),
+            (100.5, 100.8, 100.1, 100.3),
+            (101.0, 101.0, 99.0, 99.3),  # body = 1.7 >= 1.5*1.0, close NOT in bottom 25%
+        ])
+        engine = PatternEngine()
+        atr_m5 = pd.Series([1.0] * 5)
+        signal = engine.detect_clp(bars, 4, level, 0.05, atr_m5)
+
+        assert signal is not None
+
+    def test_clp_trigger_bar_high_volume(self):
+        """Trigger bar qualifies via volume >= 2x average."""
+        level = make_level(100.0, LevelType.RESISTANCE)
+        bars = make_m5_bars([
+            (99.0, 101.0, 98.5, 100.5, 100000),
+            (100.5, 101.2, 100.0, 100.8, 100000),
+            (100.8, 101.0, 100.2, 100.5, 100000),
+            (100.5, 100.8, 100.1, 100.3, 100000),
+            (100.3, 100.5, 99.0, 99.5, 250000),  # volume 2.5x avg, but close not in bottom 25%
+        ])
+        engine = PatternEngine()
+        atr_m5 = pd.Series([1.0] * 5)
+        signal = engine.detect_clp(bars, 4, level, 0.05, atr_m5)
+
+        assert signal is not None
+
+    def test_clp_trigger_bar_unqualified_rejected(self):
+        """Trigger bar without any qualification is rejected."""
+        level = make_level(100.0, LevelType.RESISTANCE)
+        bars = make_m5_bars([
+            (99.0, 101.0, 98.5, 100.5, 100000),
+            (100.5, 101.2, 100.0, 100.8, 100000),
+            (100.8, 101.0, 100.2, 100.5, 100000),
+            (100.5, 100.8, 100.1, 100.3, 100000),
+            # Trigger: tiny body (0.2), normal vol, close at 50% of range
+            (100.0, 100.5, 99.5, 99.8, 100000),
+        ])
+        engine = PatternEngine()
+        atr_m5 = pd.Series([1.0] * 5)
+        signal = engine.detect_clp(bars, 4, level, 0.05, atr_m5)
+
+        # body=0.2 < 1.5, vol=100k < 200k, position=(99.8-99.5)/1.0=0.30 > 0.25
+        assert signal is None
 
 
 class TestModel4:

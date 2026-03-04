@@ -284,6 +284,168 @@ class TestMirrorLifecycle:
         detector.update_mirror_status(level, df, base_date + pd.Timedelta(days=4))
 
         assert level.status == LevelStatus.BROKEN
+        assert level.mirror_breakout_side == 'above'
+
+    def test_broken_uses_close_not_wick(self):
+        """BROKEN should use CLOSE distance, not HIGH/LOW wicks."""
+        base_date = pd.Timestamp('2025-03-01')
+        level = Level(
+            price=100.0,
+            level_type=LevelType.RESISTANCE,
+            status=LevelStatus.ACTIVE,
+            score=7,
+            ticker='TEST',
+            date=base_date,
+            bsu_index=0,
+            atr_d1=2.0,
+            touches=3,
+        )
+
+        # HIGH wick goes to 107 (>3*ATR) but CLOSE stays at 104 (<3*ATR=6.0)
+        prices = [(100, 107, 99, 104)] * 5
+        df = make_daily_df(prices)
+
+        detector = LevelDetector()
+        detector.update_mirror_status(level, df, base_date + pd.Timedelta(days=4))
+
+        # Close distance = 104-100 = 4.0 < 6.0 → should NOT be BROKEN
+        assert level.status == LevelStatus.ACTIVE
+
+    def test_broken_by_close_below(self):
+        """BROKEN below: close drops far enough below level."""
+        base_date = pd.Timestamp('2025-03-01')
+        level = Level(
+            price=100.0,
+            level_type=LevelType.SUPPORT,
+            status=LevelStatus.ACTIVE,
+            score=7,
+            ticker='TEST',
+            date=base_date,
+            bsu_index=0,
+            atr_d1=2.0,
+            touches=3,
+        )
+
+        # Close at 93 → distance = 7.0 ≥ 6.0
+        prices = [(99, 100, 92, 93)] * 5
+        df = make_daily_df(prices)
+
+        detector = LevelDetector()
+        detector.update_mirror_status(level, df, base_date + pd.Timedelta(days=4))
+
+        assert level.status == LevelStatus.BROKEN
+        assert level.mirror_breakout_side == 'below'
+
+    def test_mirror_confirmed_requires_bpu_support(self):
+        """Support mirror confirmation requires bar to touch level AND close above it."""
+        base_date = pd.Timestamp('2025-03-01')
+        level = Level(
+            price=100.0,
+            level_type=LevelType.RESISTANCE,
+            status=LevelStatus.MIRROR_CANDIDATE,
+            score=7,
+            ticker='TEST',
+            date=base_date - pd.Timedelta(days=30),
+            bsu_index=0,
+            atr_d1=2.0,
+            touches=3,
+            mirror_breakout_side='above',  # support mirror
+            mirror_max_distance_atr=4.0,
+            mirror_days_beyond=5,
+        )
+
+        # Bar touches level (low=99.5) but closes BELOW (99.0) → no BPU rejection
+        prices = [(101, 102, 99.5, 99.0)] * 5  # all close below level
+        df = make_daily_df(prices)
+
+        detector = LevelDetector()
+        detector.update_mirror_status(level, df, base_date)
+
+        assert level.status == LevelStatus.MIRROR_CANDIDATE  # NOT confirmed
+
+    def test_mirror_confirmed_bpu_support_passes(self):
+        """Support mirror confirms when bar touches level AND closes above it."""
+        base_date = pd.Timestamp('2025-03-01')
+        level = Level(
+            price=100.0,
+            level_type=LevelType.RESISTANCE,
+            status=LevelStatus.MIRROR_CANDIDATE,
+            score=7,
+            ticker='TEST',
+            date=base_date - pd.Timedelta(days=30),
+            bsu_index=0,
+            atr_d1=2.0,
+            touches=3,
+            mirror_breakout_side='above',  # support mirror
+            mirror_max_distance_atr=4.0,
+            mirror_days_beyond=5,
+        )
+
+        # Bar touches level (low=99.8) AND closes above (101.5) → BPU rejection!
+        prices = [(101, 103, 99.8, 101.5)] * 3
+        df = make_daily_df(prices)
+
+        detector = LevelDetector()
+        detector.update_mirror_status(level, df, base_date)
+
+        assert level.status == LevelStatus.MIRROR_CONFIRMED
+        assert level.is_mirror is True
+        assert level.mirror_confirmed_date == base_date
+
+    def test_mirror_confirmed_requires_bpu_resistance(self):
+        """Resistance mirror confirmation requires bar to touch level AND close below it."""
+        base_date = pd.Timestamp('2025-03-01')
+        level = Level(
+            price=100.0,
+            level_type=LevelType.SUPPORT,
+            status=LevelStatus.MIRROR_CANDIDATE,
+            score=7,
+            ticker='TEST',
+            date=base_date - pd.Timedelta(days=30),
+            bsu_index=0,
+            atr_d1=2.0,
+            touches=3,
+            mirror_breakout_side='below',  # resistance mirror
+            mirror_max_distance_atr=4.0,
+            mirror_days_beyond=5,
+        )
+
+        # Bar touches level (high=100.5) but closes ABOVE (101.0) → no BPU
+        prices = [(99, 100.5, 98, 101.0)] * 5
+        df = make_daily_df(prices)
+
+        detector = LevelDetector()
+        detector.update_mirror_status(level, df, base_date)
+
+        assert level.status == LevelStatus.MIRROR_CANDIDATE  # NOT confirmed
+
+    def test_mirror_confirmed_bpu_resistance_passes(self):
+        """Resistance mirror confirms when bar touches level AND closes below it."""
+        base_date = pd.Timestamp('2025-03-01')
+        level = Level(
+            price=100.0,
+            level_type=LevelType.SUPPORT,
+            status=LevelStatus.MIRROR_CANDIDATE,
+            score=7,
+            ticker='TEST',
+            date=base_date - pd.Timedelta(days=30),
+            bsu_index=0,
+            atr_d1=2.0,
+            touches=3,
+            mirror_breakout_side='below',  # resistance mirror
+            mirror_max_distance_atr=4.0,
+            mirror_days_beyond=5,
+        )
+
+        # Bar touches level (high=100.2) AND closes below (98.5) → BPU!
+        prices = [(99, 100.2, 97, 98.5)] * 3
+        df = make_daily_df(prices)
+
+        detector = LevelDetector()
+        detector.update_mirror_status(level, df, base_date)
+
+        assert level.status == LevelStatus.MIRROR_CONFIRMED
+        assert level.is_mirror is True
 
 
 class TestNisonInvalidation:

@@ -562,6 +562,7 @@ class LevelDetector:
             idx = daily_index[level.ticker]
             date_mask = (idx['dates'] <= np.datetime64(current_date)) & \
                         (idx['dates'] > np.datetime64(level.date))
+            closes = idx['closes'][date_mask]
             highs = idx['highs'][date_mask]
             lows = idx['lows'][date_mask]
         else:
@@ -572,23 +573,25 @@ class LevelDetector:
             ]
             if tdf.empty:
                 return
+            closes = tdf['Close'].values
             highs = tdf['High'].values
             lows = tdf['Low'].values
 
-        if len(highs) == 0:
+        if len(closes) == 0:
             return
 
-        max_dist_above = (highs - price).max()
-        max_dist_below = (price - lows).max()
-        max_distance = max(max_dist_above, max_dist_below)
+        # Use CLOSE for breakout distance (not wicks) per L-005.1 §2.5
+        max_close_above = (closes - price).max()
+        max_close_below = (price - closes).max()
+        max_distance = max(max_close_above, max_close_below)
 
-        # ACTIVE → BROKEN: price moved beyond level significantly
+        # ACTIVE → BROKEN: price CLOSED beyond level significantly
         if level.status == LevelStatus.ACTIVE:
             if max_distance >= min_distance:
                 level.status = LevelStatus.BROKEN
                 level.mirror_max_distance_atr = max_distance / atr
-                # Track which side price broke to
-                if max_dist_above >= max_dist_below:
+                # Track which side price broke to (by close)
+                if max_close_above >= max_close_below:
                     level.mirror_breakout_side = 'above'
                 else:
                     level.mirror_breakout_side = 'below'
@@ -603,12 +606,40 @@ class LevelDetector:
                 level.mirror_days_beyond = days_beyond
             # Fall through to check for MIRROR_CONFIRMED too
 
-        # MIRROR_CANDIDATE → MIRROR_CONFIRMED: price returns to touch level
+        # MIRROR_CANDIDATE → MIRROR_CONFIRMED: price returns with BPU rejection
         if level.status == LevelStatus.MIRROR_CANDIDATE:
+            last_c = closes[-10:] if len(closes) >= 10 else closes
             last_h = highs[-10:] if len(highs) >= 10 else highs
             last_l = lows[-10:] if len(lows) >= 10 else lows
-            for h, l in zip(last_h, last_l):
-                if (l - tol) <= price <= (h + tol):
+            for c, h, l in zip(last_c, last_h, last_l):
+                bar_touched = (l - tol) <= price <= (h + tol)
+                if not bar_touched:
+                    continue
+                # BPU rejection: bar must show it respected the level
+                if level.mirror_breakout_side == 'above':
+                    # Support mirror: bar touches level AND closes above it
+                    if c > price:
+                        level.status = LevelStatus.MIRROR_CONFIRMED
+                        level.is_mirror = True
+                        level.level_type = LevelType.MIRROR
+                        level.mirror_confirmed_date = current_date
+                        if 'mirror' not in level.score_breakdown:
+                            level.score += SCORE_MIRROR
+                            level.score_breakdown['mirror'] = SCORE_MIRROR
+                        break
+                elif level.mirror_breakout_side == 'below':
+                    # Resistance mirror: bar touches level AND closes below it
+                    if c < price:
+                        level.status = LevelStatus.MIRROR_CONFIRMED
+                        level.is_mirror = True
+                        level.level_type = LevelType.MIRROR
+                        level.mirror_confirmed_date = current_date
+                        if 'mirror' not in level.score_breakdown:
+                            level.score += SCORE_MIRROR
+                            level.score_breakdown['mirror'] = SCORE_MIRROR
+                        break
+                else:
+                    # No breakout side info — fallback to raw touch (legacy levels)
                     level.status = LevelStatus.MIRROR_CONFIRMED
                     level.is_mirror = True
                     level.level_type = LevelType.MIRROR

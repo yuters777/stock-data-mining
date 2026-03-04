@@ -14,7 +14,7 @@ from dataclasses import dataclass, field
 from typing import Optional
 
 from backtester.data_types import Signal, SignalDirection, LevelStatus
-from backtester.core.risk_manager import RiskParams, RiskManager, calculate_slippage
+from backtester.core.risk_manager import RiskParams, RiskManager, TargetTier, calculate_slippage
 
 # Backwards-compatible alias used throughout this module
 TradeDirection = SignalDirection
@@ -91,6 +91,10 @@ class TradeManager:
         # Trail parameters from tier_config
         self._trail_factor = (tier_config or {}).get('trail_factor', 1.0)
         self._trail_activation_r = (tier_config or {}).get('trail_activation_r', 0.0)
+        # Min R:R for gap check (use tier min_rr if available, else risk_manager's)
+        self._min_rr = (tier_config or {}).get('min_rr', 3.0)
+        if risk_manager and not tier_config:
+            self._min_rr = risk_manager.config.min_rr
         # Pending entries: signals waiting for next bar open
         self._pending_entries: list[tuple[Signal, RiskParams]] = []
 
@@ -110,7 +114,7 @@ class TradeManager:
                  timestamp.minute >= self.config.entry_cutoff_minute))
 
     def open_trade(self, signal: Signal, risk_params: RiskParams,
-                   entry_price: float, entry_time: pd.Timestamp) -> Trade:
+                   entry_price: float, entry_time: pd.Timestamp) -> Optional[Trade]:
         """Create and register a new trade.
 
         Args:
@@ -118,6 +122,9 @@ class TradeManager:
             risk_params: Calculated risk parameters
             entry_price: The next bar's open price (before slippage)
             entry_time: The next bar's timestamp
+
+        Returns:
+            Trade if opened, None if skipped due to R:R degradation from gap.
         """
         assert not any(
             t.signal.ticker == signal.ticker for t in self.open_trades
@@ -130,16 +137,66 @@ class TradeManager:
         else:
             fill_price = entry_price + slippage  # worse fill for long
 
+        # Re-anchor stop and target to ACTUAL fill price (not signal price).
+        # stop_distance and target_distance stay the same, but anchored to fill.
+        stop_dist = risk_params.stop_distance
+        target_dist = risk_params.target_distance
+        if signal.direction == TradeDirection.SHORT:
+            new_stop = fill_price + stop_dist
+            new_target = fill_price - target_dist
+        else:
+            new_stop = fill_price - stop_dist
+            new_target = fill_price + target_dist
+
+        # Validate R:R with re-anchored prices. If gap degraded R:R, skip.
+        effective_stop_dist = stop_dist + risk_params.slippage_total / max(risk_params.position_size, 1)
+        if effective_stop_dist > 0:
+            new_rr = target_dist / effective_stop_dist
+        else:
+            new_rr = 0
+        min_rr = self._min_rr
+        if new_rr < min_rr:
+            return None  # Gap degraded R:R below minimum
+
+        # Re-anchor tiered target prices to fill price
+        new_tiers = []
+        for tier in risk_params.target_tiers:
+            if tier.source == "trail":
+                new_tiers.append(tier)  # trail has no fixed price
+            else:
+                tier_dist = abs(tier.price - signal.entry_price)
+                if signal.direction == TradeDirection.SHORT:
+                    new_tier_price = fill_price - tier_dist
+                else:
+                    new_tier_price = fill_price + tier_dist
+                new_tiers.append(TargetTier(
+                    price=new_tier_price, exit_pct=tier.exit_pct,
+                    source=tier.source, r_multiple=tier.r_multiple
+                ))
+
+        # Build updated risk_params with re-anchored prices
+        anchored_params = RiskParams(
+            stop_price=new_stop,
+            target_price=new_target,
+            stop_distance=stop_dist,
+            target_distance=target_dist,
+            rr_ratio=new_rr,
+            position_size=risk_params.position_size,
+            risk_per_share=risk_params.risk_per_share,
+            slippage_total=risk_params.slippage_total,
+            target_tiers=new_tiers if new_tiers else risk_params.target_tiers,
+        )
+
         trade = Trade(
             signal=signal,
-            risk_params=risk_params,
+            risk_params=anchored_params,
             entry_price=fill_price,
             entry_time=entry_time,
             direction=signal.direction,
-            position_size=risk_params.position_size,
-            remaining_size=risk_params.position_size,
-            stop_price=risk_params.stop_price,
-            target_price=risk_params.target_price,
+            position_size=anchored_params.position_size,
+            remaining_size=anchored_params.position_size,
+            stop_price=new_stop,
+            target_price=new_target,
         )
 
         self.open_trades.append(trade)
@@ -445,6 +502,8 @@ class TradeManager:
             # Enter at this bar's open
             entry_price = m5_bar['Open']
             trade = self.open_trade(signal, risk_params, entry_price, bar_time)
+            if trade is None:
+                continue  # Gap degraded R:R — skip entry
             opened.append(trade)
 
         self._pending_entries = remaining
@@ -492,13 +551,23 @@ class TradeManager:
             stopped = False
             if trade.direction == TradeDirection.SHORT:
                 if high >= effective_stop:
-                    reason = ExitReason.TRAIL_STOP if trade.trailing_stop_active else ExitReason.STOP_LOSS
+                    if trade.trailing_stop_active:
+                        reason = ExitReason.TRAIL_STOP
+                    elif trade.is_breakeven:
+                        reason = ExitReason.BREAKEVEN
+                    else:
+                        reason = ExitReason.STOP_LOSS
                     self._close_trade(trade, effective_stop, bar_time, reason)
                     closed_this_bar.append(trade)
                     stopped = True
             else:
                 if low <= effective_stop:
-                    reason = ExitReason.TRAIL_STOP if trade.trailing_stop_active else ExitReason.STOP_LOSS
+                    if trade.trailing_stop_active:
+                        reason = ExitReason.TRAIL_STOP
+                    elif trade.is_breakeven:
+                        reason = ExitReason.BREAKEVEN
+                    else:
+                        reason = ExitReason.STOP_LOSS
                     self._close_trade(trade, effective_stop, bar_time, reason)
                     closed_this_bar.append(trade)
                     stopped = True
@@ -603,6 +672,8 @@ class TradeManager:
             'losers': len(losers),
             'eod_exits': sum(1 for t in self.closed_trades if t.exit_reason == ExitReason.EOD_EXIT),
             'nison_exits': sum(1 for t in self.closed_trades if t.exit_reason == ExitReason.NISON_EXIT),
+            'breakeven_exits': sum(1 for t in self.closed_trades if t.exit_reason == ExitReason.BREAKEVEN),
+            'trail_stop_exits': sum(1 for t in self.closed_trades if t.exit_reason == ExitReason.TRAIL_STOP),
             'win_rate': len(winners) / len(self.closed_trades) if self.closed_trades else 0.0,
             'avg_r': np.mean([t.pnl_r for t in self.closed_trades]) if self.closed_trades else 0.0,
             'total_pnl': total_pnl,
