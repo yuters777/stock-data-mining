@@ -1,0 +1,116 @@
+{
+  "phase": "2.6",
+  "description": "Ablation study: filter chain value analysis",
+  "baseline_ref": {
+    "trades": 54,
+    "pf": 2.6040966991643466,
+    "pnl": 4355.489967701865
+  },
+  "ablation_results": [
+    {
+      "id": 0,
+      "label": "BASELINE (all filters)",
+      "skipped": false,
+      "total_trades": 54,
+      "total_pnl": 4355.489967701865,
+      "agg_pf": 2.6040966991643466,
+      "delta_pnl": 0,
+      "positive_windows": 4
+    },
+    {
+      "id": 1,
+      "label": "No Earnings filter",
+      "skipped": false,
+      "total_trades": 54,
+      "total_pnl": 4355.489967701865,
+      "agg_pf": 2.6040966991643466,
+      "delta_pnl": 0.0,
+      "positive_windows": 4
+    },
+    {
+      "id": 2,
+      "label": "No Open delay",
+      "skipped": false,
+      "total_trades": 56,
+      "total_pnl": 4276.279523259999,
+      "agg_pf": 2.4269629102825916,
+      "delta_pnl": -79.21044444186555,
+      "positive_windows": 3
+    },
+    {
+      "id": 3,
+      "label": "No Squeeze filter",
+      "skipped": false,
+      "total_trades": 55,
+      "total_pnl": 4613.817346965643,
+      "agg_pf": 3.0903494168399988,
+      "delta_pnl": 258.3273792637783,
+      "positive_windows": 4
+    },
+    {
+      "id": 4,
+      "label": "No Breakaway gap (N/A)",
+      "skipped": true
+    },
+    {
+      "id": 5,
+      "label": "No ATR energy gate",
+      "skipped": false,
+      "total_trades": 54,
+      "total_pnl": 4355.489967701865,
+      "agg_pf": 2.6040966991643466,
+      "delta_pnl": 0.0,
+      "positive_windows": 4
+    },
+    {
+      "id": 6,
+      "label": "No Volume VSA",
+      "skipped": false,
+      "total_trades": 54,
+      "total_pnl": 4355.489967701865,
+      "agg_pf": 2.6040966991643466,
+      "delta_pnl": 0.0,
+      "positive_windows": 4
+    },
+    {
+      "id": 7,
+      "label": "No R:R filter (min_rr=0.01)",
+      "skipped": false,
+      "total_trades": 54,
+      "total_pnl": 4355.489967701865,
+      "agg_pf": 2.6040966991643466,
+      "delta_pnl": 0.0,
+      "positive_windows": 4
+    },
+    {
+      "id": 8,
+      "label": "No Regime filters",
+      "skipped": false,
+      "total_trades": 72,
+      "total_pnl": 3926.444028788542,
+      "agg_pf": 2.148056216628964,
+      "delta_pnl": -429.04593891332297,
+      "positive_windows": 5
+    },
+    {
+      "id": 9,
+      "label": "No Same-level limit",
+      "skipped": false,
+      "total_trades": 56,
+      "total_pnl": 3797.4565208822714,
+      "agg_pf": 2.160144203689239,
+      "delta_pnl": -558.0334468195933,
+      "positive_windows": 4
+    },
+    {
+      "id": 10,
+      "label": "NUCLEAR (patterns only)",
+      "skipped": false,
+      "total_trades": 84,
+      "total_pnl": 3101.0525677756495,
+      "agg_pf": 1.7246577909125906,
+      "delta_pnl": -1254.4373999262152,
+      "positive_windows": 4
+    }
+  ]
+}

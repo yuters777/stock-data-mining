@@ -1,0 +1,172 @@
+==========================================================================================
+  PHASE 2.6 — ABLATION STUDY: Filter Chain Value Analysis
+==========================================================================================
+  Baseline: FD=10, ATR_ENTRY=0.60, ATR_BLOCK=0.20, RR=2.0, TAIL=0.15, STOP=0.15
+            SAWING=5/30, ADX<=27, ATR_ratio<=1.3
+  Tickers:  TSLA, AMZN, GOOGL, META, MSFT, NVDA  |  Direction: BOTH
+  Period:   2025-02-10 -> 2026-01-31  |  Windows: 6
+  Reference Baseline: 54 OOS trades, PF 1.45, +$4,355
+
+  Step 1: Loading data and computing indicators...
+    TSLA: 259 days
+    AMZN: 235 days
+    GOOGL: 259 days
+    META: 259 days
+    MSFT: 259 days
+    NVDA: 235 days
+
+  Step 2: Walk-forward windows (6 windows)
+    W1: Test 2025-05-10 -> 2025-06-10
+    W2: Test 2025-06-10 -> 2025-07-10
+    W3: Test 2025-07-10 -> 2025-08-10
+    W4: Test 2025-08-10 -> 2025-09-10
+    W5: Test 2025-09-10 -> 2025-10-10
+    W6: Test 2025-10-10 -> 2025-11-10
+
+  Step 3: Running 11 ablation experiments...
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  [ 0] BASELINE (all filters)...
+      W1:   9t  PF=  1.07  P&L=$     144  WR= 22.2%
+      W2:  10t  PF=  1.21  P&L=$     400  WR= 20.0%
+      W3:   2t  PF=  0.00  P&L=$    -532  WR=  0.0%
+      W4:   6t  PF=  2.49  P&L=$    1238  WR= 50.0%
+      W5:   8t  PF= 10.84  P&L=$    5288  WR= 75.0%
+      W6:  19t  PF=  0.44  P&L=$   -2183  WR= 26.3%
+      Total: 54t  PF=2.60  P&L=$4355  [28.6s]
+
+  [ 1] No Earnings filter...
+      W1:   9t  PF=  1.07  P&L=$     144  WR= 22.2%
+      W2:  10t  PF=  1.21  P&L=$     400  WR= 20.0%
+      W3:   2t  PF=  0.00  P&L=$    -532  WR=  0.0%
+      W4:   6t  PF=  2.49  P&L=$    1238  WR= 50.0%
+      W5:   8t  PF= 10.84  P&L=$    5288  WR= 75.0%
+      W6:  19t  PF=  0.44  P&L=$   -2183  WR= 26.3%
+      Total: 54t  PF=2.60  P&L=$4355  [30.0s]
+
+  [ 2] No Open delay...
+      W1:  10t  PF=  0.94  P&L=$    -133  WR= 20.0%
+      W2:  10t  PF=  1.13  P&L=$     258  WR= 20.0%
+      W3:   2t  PF=  0.00  P&L=$    -681  WR=  0.0%
+      W4:   7t  PF=  3.08  P&L=$    1727  WR= 57.1%
+      W5:   8t  PF= 10.84  P&L=$    5288  WR= 75.0%
+      W6:  19t  PF=  0.44  P&L=$   -2182  WR= 26.3%
+      Total: 56t  PF=2.43  P&L=$4276  [30.3s]
+
+  [ 3] No Squeeze filter...
+      W1:   9t  PF=  1.07  P&L=$     144  WR= 22.2%
+      W2:  10t  PF=  1.21  P&L=$     400  WR= 20.0%
+      W3:   2t  PF=  0.91  P&L=$     -24  WR= 50.0%
+      W4:   7t  PF=  1.92  P&L=$     988  WR= 42.9%
+      W5:   8t  PF= 10.84  P&L=$    5288  WR= 75.0%
+      W6:  19t  PF=  0.44  P&L=$   -2183  WR= 26.3%
+      Total: 55t  PF=3.09  P&L=$4614  [28.6s]
+
+  [ 4] No Breakaway gap (N/A) — SKIPPED (not implemented)
+
+  [ 5] No ATR energy gate...
+      W1:   9t  PF=  1.07  P&L=$     144  WR= 22.2%
+      W2:  10t  PF=  1.21  P&L=$     400  WR= 20.0%
+      W3:   2t  PF=  0.00  P&L=$    -532  WR=  0.0%
+      W4:   6t  PF=  2.49  P&L=$    1238  WR= 50.0%
+      W5:   8t  PF= 10.84  P&L=$    5288  WR= 75.0%
+      W6:  19t  PF=  0.44  P&L=$   -2183  WR= 26.3%
+      Total: 54t  PF=2.60  P&L=$4355  [28.6s]
+
+  [ 6] No Volume VSA...
+      W1:   9t  PF=  1.07  P&L=$     144  WR= 22.2%
+      W2:  10t  PF=  1.21  P&L=$     400  WR= 20.0%
+      W3:   2t  PF=  0.00  P&L=$    -532  WR=  0.0%
+      W4:   6t  PF=  2.49  P&L=$    1238  WR= 50.0%
+      W5:   8t  PF= 10.84  P&L=$    5288  WR= 75.0%
+      W6:  19t  PF=  0.44  P&L=$   -2183  WR= 26.3%
+      Total: 54t  PF=2.60  P&L=$4355  [29.1s]
+
+  [ 7] No R:R filter (min_rr=0.01)...
+      W1:   9t  PF=  1.07  P&L=$     144  WR= 22.2%
+      W2:  10t  PF=  1.21  P&L=$     400  WR= 20.0%
+      W3:   2t  PF=  0.00  P&L=$    -532  WR=  0.0%
+      W4:   6t  PF=  2.49  P&L=$    1238  WR= 50.0%
+      W5:   8t  PF= 10.84  P&L=$    5288  WR= 75.0%
+      W6:  19t  PF=  0.44  P&L=$   -2183  WR= 26.3%
+      Total: 54t  PF=2.60  P&L=$4355  [29.6s]
+
+  [ 8] No Regime filters...
+      W1:  12t  PF=  1.13  P&L=$     339  WR= 25.0%
+      W2:  10t  PF=  1.21  P&L=$     400  WR= 20.0%
+      W3:   7t  PF=  1.56  P&L=$     611  WR= 28.6%
+      W4:   8t  PF=  1.52  P&L=$     708  WR= 37.5%
+      W5:   8t  PF= 10.84  P&L=$    5288  WR= 75.0%
+      W6:  27t  PF=  0.42  P&L=$   -3420  WR= 22.2%
+      Total: 72t  PF=2.15  P&L=$3926  [31.3s]
+
+  [ 9] No Same-level limit...
+      W1:   9t  PF=  1.07  P&L=$     144  WR= 22.2%
+      W2:  10t  PF=  1.21  P&L=$     400  WR= 20.0%
+      W3:   2t  PF=  0.00  P&L=$    -532  WR=  0.0%
+      W4:   6t  PF=  2.49  P&L=$    1238  WR= 50.0%
+      W5:   8t  PF= 10.84  P&L=$    5288  WR= 75.0%
+      W6:  21t  PF=  0.38  P&L=$   -2741  WR= 23.8%
+      Total: 56t  PF=2.16  P&L=$3797  [33.8s]
+
+  [10] NUCLEAR (patterns only)...
+      W1:  13t  PF=  1.02  P&L=$      61  WR= 23.1%
+      W2:  11t  PF=  0.99  P&L=$     -20  WR= 18.2%
+      W3:  12t  PF=  1.52  P&L=$    1084  WR= 33.3%
+      W4:  10t  PF=  1.59  P&L=$     947  WR= 40.0%
+      W5:   8t  PF= 10.84  P&L=$    5288  WR= 75.0%
+      W6:  30t  PF=  0.36  P&L=$   -4260  WR= 20.0%
+      Total: 84t  PF=1.72  P&L=$3101  [35.8s]
+
+
+==========================================================================================
+  ABLATION RESULTS SUMMARY
+==========================================================================================
+
+  BASELINE: 54 OOS trades, PF=2.60, P&L=$4355
+
+    # Filter Removed                 OOS Trades   OOS PF    OOS P&L    Delta P&L      Verdict
+  ────────────────────────────────────────────────────────────────────────────────────────────────
+    0 BASELINE (all filters)                 54     2.60     $4,355            —     BASELINE
+    1 No Earnings filter                     54     2.60     $4,355          +$0      NEUTRAL
+    2 No Open delay                          56     2.43     $4,276         $-79      NEUTRAL
+    3 No Squeeze filter                      55     3.09     $4,614        +$258      NEUTRAL
+    4 No Breakaway gap (N/A)                N/A      N/A        N/A          N/A          N/A
+    5 No ATR energy gate                     54     2.60     $4,355          +$0      NEUTRAL
+    6 No Volume VSA                          54     2.60     $4,355          +$0      NEUTRAL
+    7 No R:R filter (min_rr=0.01)            54     2.60     $4,355          +$0      NEUTRAL
+    8 No Regime filters                      72     2.15     $3,926        $-429      NEUTRAL
+    9 No Same-level limit                    56     2.16     $3,797        $-558     PROTECTS
+   10 NUCLEAR (patterns only)                84     1.72     $3,101      $-1,254     PROTECTS
+  ────────────────────────────────────────────────────────────────────────────────────────────────
+
+==========================================================================================
+  ANALYSIS
+==========================================================================================
+
+  PROTECTORS (removing them hurts P&L by >$500):
+    NUCLEAR (patterns only)             Delta: $-1,254
+    No Same-level limit                 Delta: $-558
+
+  SUPPRESSORS (removing them improves P&L by >$500):
+    (none)
+
+  NEUTRAL (removing them changes P&L by <$500):
+    No Earnings filter                  Delta: +$0
+    No ATR energy gate                  Delta: +$0
+    No Volume VSA                       Delta: +$0
+    No R:R filter (min_rr=0.01)         Delta: +$0
+    No Open delay                       Delta: $-79
+    No Squeeze filter                   Delta: +$258
+    No Regime filters                   Delta: $-429
+
+  NUCLEAR TEST (all filters removed):
+    Trades: 84 (vs baseline 54)
+    P&L:    $3,101 (vs baseline $4,355)
+    Delta:  $-1,254
+    >> Edge lives in BOTH pattern detection and filtering
+    >> Filter chain adds $1,254 of value
+
+==========================================================================================
+  COMPLETE — 306s (5.1min)
+==========================================================================================
