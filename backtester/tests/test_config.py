@@ -27,7 +27,7 @@ class TestDefaultConfig:
         assert DEFAULT_CONFIG["clp_min_bars"] == 3
         assert DEFAULT_CONFIG["atr_block_threshold"] == 0.30
         assert DEFAULT_CONFIG["atr_entry_threshold"] == 0.80
-        assert DEFAULT_CONFIG["min_rr"] == 1.5
+        assert DEFAULT_CONFIG["min_rr"] == 3.0  # L-005.1 spec
         assert DEFAULT_CONFIG["max_stop_atr_pct"] == 0.10
         assert DEFAULT_CONFIG["risk_pct"] == 0.003
         assert DEFAULT_CONFIG["slippage_per_share"] == 0.02

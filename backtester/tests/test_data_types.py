@@ -35,9 +35,12 @@ class TestEnums:
         assert SignalDirection.SHORT.value == "short"
 
     def test_lp2_quality_values(self):
-        assert LP2Quality.A.value == "A"
-        assert LP2Quality.B.value == "B"
-        assert LP2Quality.C.value == "C"
+        assert LP2Quality.IDEAL.value == "ideal"
+        assert LP2Quality.ACCEPTABLE.value == "acceptable"
+        assert LP2Quality.WEAK.value == "weak"
+
+    def test_level_status_broken(self):
+        assert LevelStatus.BROKEN.value == "broken"
 
     def test_signal_status_values(self):
         assert SignalStatus.PENDING.value == "pending"
@@ -53,6 +56,8 @@ class TestEnums:
     def test_exit_reason_values(self):
         assert ExitReason.STOP_LOSS.value == "stop_loss"
         assert ExitReason.TRAIL_STOP.value == "trail_stop"
+        assert ExitReason.NISON_EXIT.value == "nison_exit"
+        assert ExitReason.EOD_EXIT.value == "eod_exit"
 
 
 class TestBar:

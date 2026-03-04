@@ -4,9 +4,8 @@ import pytest
 import pandas as pd
 import numpy as np
 
-from backtester.core.level_detector import (
-    LevelDetector, LevelDetectorConfig, Level, LevelType, LevelStatus
-)
+from backtester.data_types import Level, LevelType, LevelStatus
+from backtester.core.level_detector import LevelDetector, LevelDetectorConfig
 
 
 def make_daily_df(prices, ticker="TEST"):
@@ -26,27 +25,10 @@ def make_daily_df(prices, ticker="TEST"):
     return pd.DataFrame(rows)
 
 
-def make_m5_df(daily_prices, ticker="TEST"):
-    """Helper to create M5 data from daily OHLC (simplified: 1 bar per day)."""
-    rows = []
-    base_date = pd.Timestamp('2025-03-01 09:30:00')
-    for i, (o, h, l, c) in enumerate(daily_prices):
-        rows.append({
-            'Ticker': ticker,
-            'Datetime': base_date + pd.Timedelta(days=i),
-            'Open': o,
-            'High': h,
-            'Low': l,
-            'Close': c,
-            'Volume': 1000000,
-        })
-    return pd.DataFrame(rows)
-
-
 class TestLevelDetectorConfig:
     def test_default_config(self):
         cfg = LevelDetectorConfig()
-        assert cfg.fractal_depth == 5
+        assert cfg.fractal_depth == 10  # L-005.1 default
         assert cfg.tolerance_cents == 0.05
         assert cfg.atr_period == 5
 
@@ -65,33 +47,6 @@ class TestLevelDetectorConfig:
         assert cfg.tolerance_cents == 0.10
 
 
-class TestAggregation:
-    def test_m5_to_d1(self):
-        """Test M5 to D1 aggregation produces correct OHLCV."""
-        m5_data = []
-        base = pd.Timestamp('2025-03-03 09:30:00')
-        for i in range(78):  # ~6.5 hours of 5-min bars
-            m5_data.append({
-                'Ticker': 'TEST',
-                'Datetime': base + pd.Timedelta(minutes=5 * i),
-                'Open': 100.0 + i * 0.1,
-                'High': 100.5 + i * 0.1,
-                'Low': 99.5 + i * 0.1,
-                'Close': 100.2 + i * 0.1,
-                'Volume': 1000,
-            })
-        m5_df = pd.DataFrame(m5_data)
-
-        detector = LevelDetector()
-        daily = detector.aggregate_m5_to_d1(m5_df)
-
-        assert len(daily) == 1
-        assert daily.iloc[0]['Open'] == 100.0  # first bar open
-        assert daily.iloc[0]['High'] == 100.5 + 77 * 0.1  # max high
-        assert daily.iloc[0]['Low'] == 99.5  # min low
-        assert daily.iloc[0]['Volume'] == 78 * 1000
-
-
 class TestTrueRange:
     def test_basic_true_range(self):
         prices = [
@@ -104,33 +59,28 @@ class TestTrueRange:
         df = detector.calculate_true_range(df)
 
         assert 'TrueRange' in df.columns
-        # First bar: H - L = 105 - 95 = 10
         assert df.iloc[0]['TrueRange'] == 10.0
-        # Second bar: max(108-98, |108-102|, |98-102|) = max(10, 6, 4) = 10
         assert df.iloc[1]['TrueRange'] == 10.0
 
 
 class TestModifiedATR:
     def test_paranormal_excluded(self):
         """Paranormal bars should not affect ModifiedATR."""
-        # Normal bars with range ~2, then a paranormal bar with range 20
         prices = [
             (100, 101, 99, 100.5),
             (100.5, 101.5, 99.5, 101),
             (101, 102, 100, 101.5),
             (101.5, 102.5, 100.5, 102),
             (102, 103, 101, 102.5),
-            (102.5, 103.5, 101.5, 103),  # bar 5 (index 5)
-            (103, 120, 100, 115),         # PARANORMAL: range = 20 >> ATR
+            (102.5, 103.5, 101.5, 103),
+            (103, 120, 100, 115),  # PARANORMAL: range = 20 >> ATR
         ]
         df = make_daily_df(prices)
         detector = LevelDetector()
         df = detector.calculate_true_range(df)
         df = detector.calculate_modified_atr(df)
 
-        # The paranormal bar should be marked
         assert df.iloc[6]['IsParanormal'] == True
-        # ModifiedATR should remain close to ~2 (not jump to ~20)
         mod_atr = df.iloc[6]['ModifiedATR']
         assert mod_atr < 5.0, f"ModifiedATR {mod_atr} too high (paranormal not excluded)"
 
@@ -138,7 +88,6 @@ class TestModifiedATR:
 class TestFractalDetection:
     def test_fractal_high(self):
         """With k=2, a fractal high should be detected at the peak."""
-        # Create a V-shape: low, mid, HIGH, mid, low
         prices = [
             (98, 99, 97, 98),
             (99, 101, 98, 100),
@@ -154,7 +103,6 @@ class TestFractalDetection:
         df = detector.detect_fractals(df)
 
         assert df.iloc[2]['IsFractalHigh'] == True
-        # Other bars should not be fractal highs
         assert df.iloc[0]['IsFractalHigh'] == False
         assert df.iloc[4]['IsFractalHigh'] == False
 
@@ -186,10 +134,58 @@ class TestFractalDetection:
         df = detector.calculate_modified_atr(df)
         df = detector.detect_fractals(df)
 
-        # First 3 and last 3 should never be fractals
         for i in [0, 1, 2, 7, 8, 9]:
             assert df.iloc[i]['IsFractalHigh'] == False
             assert df.iloc[i]['IsFractalLow'] == False
+
+    def test_confirmed_at_set(self):
+        """Fractal should have confirmed_at = date of bar[i+k]."""
+        prices = [
+            (98, 99, 97, 98),
+            (99, 101, 98, 100),
+            (101, 110, 100, 105),  # fractal high at index 2
+            (105, 103, 99, 100),
+            (100, 101, 97, 98),
+        ]
+        df = make_daily_df(prices)
+        cfg = LevelDetectorConfig(fractal_depth=2)
+        detector = LevelDetector(cfg)
+        df = detector.calculate_true_range(df)
+        df = detector.calculate_modified_atr(df)
+        df = detector.detect_fractals(df)
+
+        # Fractal at index 2, k=2 → confirmed at index 4
+        confirmed = df.iloc[2]['FractalConfirmedAt']
+        expected = df.iloc[4]['Date']
+        assert pd.Timestamp(confirmed) == pd.Timestamp(expected)
+
+    def test_confirmed_at_enforced_in_get_active_levels(self):
+        """get_active_levels should not return levels whose confirmed_at > current_date."""
+        base_date = pd.Timestamp('2025-03-01')
+        level = Level(
+            price=100.0,
+            level_type=LevelType.RESISTANCE,
+            score=10,
+            ticker='TEST',
+            date=base_date,
+            bsu_index=0,
+            atr_d1=2.0,
+            touches=3,
+            confirmed_at=base_date + pd.Timedelta(days=10),
+        )
+        detector = LevelDetector()
+        detector.levels = [level]
+
+        # Before confirmed_at → should not appear
+        daily_df = make_daily_df([(100, 101, 99, 100)] * 5)
+        active = detector.get_active_levels('TEST', base_date + pd.Timedelta(days=5),
+                                            daily_df)
+        assert len(active) == 0
+
+        # At confirmed_at → should appear
+        active = detector.get_active_levels('TEST', base_date + pd.Timedelta(days=10),
+                                            daily_df)
+        assert len(active) == 1
 
 
 class TestRoundNumber:
@@ -204,8 +200,7 @@ class TestRoundNumber:
 
 class TestAntiSawing:
     def test_invalidation_on_many_crosses(self):
-        """Level should be invalidated if price crosses it ≥3 times in 20 bars."""
-        # Create data where price oscillates around level at 100
+        """Level should be invalidated if price crosses it >=3 times in 20 bars."""
         prices = []
         for i in range(25):
             if i % 2 == 0:
@@ -218,36 +213,32 @@ class TestAntiSawing:
         detector = LevelDetector(cfg)
 
         level = Level(
-            date=pd.Timestamp('2025-03-01'),
-            ticker='TEST',
             price=100.0,
             level_type=LevelType.RESISTANCE,
             score=7,
+            ticker='TEST',
+            date=pd.Timestamp('2025-03-01'),
             bsu_index=0,
             atr_d1=2.0,
-            is_paranormal=False,
             touches=3,
             is_round_number=True,
-            is_mirror=False,
         )
 
-        # Check at date of bar 20 (base + 20 days)
         check_date = pd.Timestamp('2025-03-01') + pd.Timedelta(days=20)
         result = detector.check_anti_sawing(level, df, check_date)
-        assert result == True  # Should be invalidated
+        assert result == True
         assert level.status == LevelStatus.INVALIDATED
 
 
 class TestMirrorDetection:
     def test_mirror_level(self):
         """A level that acts as both support and resistance should be mirror."""
-        # Level at 100: first bounces down (resistance), then bounces up (support)
         prices = [
-            (98, 100.02, 97, 98),    # sets level at 100 (approx)
-            (99, 100.03, 98, 99),     # approaches but doesn't break — resistance action
-            (99, 100.04, 98, 99.5),   # High ≈ 100, Close < 100 → resistance
-            (102, 103, 99.98, 101),   # Low ≈ 100, Close > 100 → support
-            (101, 102, 100.01, 101.5), # Low ≈ 100, Close > 100 → support
+            (98, 100.02, 97, 98),
+            (99, 100.03, 98, 99),
+            (99, 100.04, 98, 99.5),
+            (102, 103, 99.98, 101),
+            (101, 102, 100.01, 101.5),
         ]
         df = make_daily_df(prices)
         detector = LevelDetector()
@@ -258,15 +249,99 @@ class TestMirrorDetection:
     def test_not_mirror_single_side(self):
         """A level only touched from one side should not be mirror."""
         prices = [
-            (99, 100.02, 98, 99),   # resistance action
-            (99, 100.03, 98, 99),   # resistance action
-            (98, 99.5, 97, 98),     # doesn't reach level
+            (99, 100.02, 98, 99),
+            (99, 100.03, 98, 99),
+            (98, 99.5, 97, 98),
         ]
         df = make_daily_df(prices)
         detector = LevelDetector()
 
         is_mirror = detector._check_mirror(100.0, df, 'TEST', -1)
         assert is_mirror == False
+
+
+class TestMirrorLifecycle:
+    def test_broken_state(self):
+        """Level should transition to BROKEN when price moves >= mirror_atr_distance * ATR."""
+        base_date = pd.Timestamp('2025-03-01')
+        level = Level(
+            price=100.0,
+            level_type=LevelType.RESISTANCE,
+            status=LevelStatus.ACTIVE,
+            score=7,
+            ticker='TEST',
+            date=base_date,
+            bsu_index=0,
+            atr_d1=2.0,
+            touches=3,
+        )
+
+        # Price moves 7 points above level (> 3 * 2.0 ATR = 6.0)
+        prices = [(100, 107.5, 99, 107)] * 5
+        df = make_daily_df(prices)
+
+        detector = LevelDetector()
+        detector.update_mirror_status(level, df, base_date + pd.Timedelta(days=4))
+
+        assert level.status == LevelStatus.BROKEN
+
+
+class TestNisonInvalidation:
+    def test_nison_invalidates_mirror(self):
+        """Mirror should be invalidated if price retests, bounces, then breaks beyond."""
+        base_date = pd.Timestamp('2025-03-01')
+        level = Level(
+            price=100.0,
+            level_type=LevelType.MIRROR,
+            status=LevelStatus.MIRROR_CONFIRMED,
+            score=10,
+            ticker='TEST',
+            date=base_date,
+            bsu_index=0,
+            atr_d1=2.0,
+            touches=3,
+            is_mirror=True,
+        )
+
+        # Sequence: touch level → bounce away → close beyond
+        prices = [
+            (99, 100.02, 98, 99),    # touch
+            (99, 99.5, 97, 97.5),    # bounce away (no touch)
+            (98, 99, 97, 102),       # close beyond level (above)
+        ]
+        df = make_daily_df(prices)
+
+        detector = LevelDetector()
+        result = detector.check_nison_invalidation(level, df,
+                                                    base_date + pd.Timedelta(days=2))
+        assert result == True
+        assert level.status == LevelStatus.INVALIDATED
+
+
+class TestGapBoundary:
+    def test_gap_detected(self):
+        """Gap boundary should be detected when gap >= gap_min_pct."""
+        # Day 1 closes at 100, Day 2 opens at 101 → 1% gap
+        prices = [
+            (99, 101, 98, 100),    # close at 100
+            (101, 103, 100.5, 102),  # open at 101 → gap
+        ]
+        df = make_daily_df(prices)
+        detector = LevelDetector(LevelDetectorConfig(gap_min_pct=0.005))
+
+        # 100.0 is the gap boundary (prev close)
+        assert detector._detect_gap_boundary(100.0, df, 'TEST', -1) == True
+
+    def test_no_gap(self):
+        """No gap boundary when gap is tiny."""
+        prices = [
+            (99, 101, 98, 100),
+            (100.1, 102, 99, 101),  # 0.1% gap — below threshold
+        ]
+        df = make_daily_df(prices)
+        detector = LevelDetector(LevelDetectorConfig(gap_min_pct=0.005))
+
+        assert detector._detect_gap_boundary(100.0, df, 'TEST', -1) == False
 
 
 class TestLevelScoring:
@@ -282,11 +357,21 @@ class TestLevelScoring:
         assert breakdown.get('age') == 7
         assert score == 10 + 9 + 6 + 7
 
+    def test_score_with_gap_boundary(self):
+        detector = LevelDetector()
+        score, breakdown = detector._score_level(
+            price=100.0, is_paranormal=False, touches=1,
+            is_mirror=False, is_round=False, bsu_index=0, total_bars=50,
+            is_gap_boundary=True
+        )
+        assert breakdown.get('gap_boundary') == 8
+        assert breakdown.get('age') == 7
+        assert score == 8 + 7
+
     def test_minimum_score(self):
         detector = LevelDetector()
         score, breakdown = detector._score_level(
             price=100.25, is_paranormal=False, touches=1,
             is_mirror=False, is_round=False, bsu_index=45, total_bars=50
         )
-        # No components triggered (touches < 3, not mirror, not paranormal, not round, age < 20)
         assert score == 0

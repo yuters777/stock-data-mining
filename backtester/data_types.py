@@ -21,8 +21,13 @@ class LevelType(Enum):
 
 
 class LevelStatus(Enum):
-    """Lifecycle status of a detected level."""
+    """Lifecycle status of a detected level.
+
+    Lifecycle: ACTIVE → BROKEN → MIRROR_CANDIDATE → MIRROR_CONFIRMED
+               ACTIVE → INVALIDATED (sawing or Nison)
+    """
     ACTIVE = "active"
+    BROKEN = "broken"                    # price broke through level
     INVALIDATED = "invalidated"
     MIRROR_CANDIDATE = "mirror_candidate"
     MIRROR_CONFIRMED = "mirror_confirmed"
@@ -43,10 +48,15 @@ class SignalDirection(Enum):
 
 
 class LP2Quality(Enum):
-    """Quality classification for LP2 patterns."""
-    A = "A"  # textbook engulfing with strong tail
-    B = "B"  # acceptable engulfing
-    C = "C"  # marginal / borderline
+    """Quality classification for LP2 patterns (L-005.1 §5).
+
+    IDEAL:      Close_Bar2 < Open_Bar1 (full engulfing) → size mult 1.0
+    ACCEPTABLE: Close_Bar2 < Close_Bar1 (partial)       → size mult 0.7
+    WEAK:       Close_Bar2 < Level only (minimal)        → size mult 0.5
+    """
+    IDEAL = "ideal"          # 1.0x position sizing
+    ACCEPTABLE = "acceptable"  # 0.7x position sizing
+    WEAK = "weak"            # 0.5x position sizing
 
 
 class SignalStatus(Enum):
@@ -65,14 +75,18 @@ class TradeStatus(Enum):
 
 
 class ExitReason(Enum):
-    """Reason a trade was closed."""
+    """Reason a trade was closed.
+
+    Exit precedence: SL → TP → Mirror/Nison → Time → EOD
+    """
     STOP_LOSS = "stop_loss"
     TARGET_HIT = "target_hit"
     PARTIAL_TP = "partial_tp"
     BREAKEVEN = "breakeven_stop"
+    NISON_EXIT = "nison_exit"        # mirror level invalidated mid-trade
+    TRAIL_STOP = "trail_stop"
     EOD_EXIT = "eod_exit"
     CIRCUIT_BREAKER = "circuit_breaker"
-    TRAIL_STOP = "trail_stop"
 
 
 # ── Dataclasses ────────────────────────────────────────────────────────────
@@ -152,6 +166,9 @@ class Signal:
     trigger_bar_idx: int = 0
     tail_ratio: float = 0.0
     bars_beyond: int = 0
+    is_model4: bool = False
+    lp2_quality: Optional['LP2Quality'] = None
+    position_size_mult: float = 1.0  # LP2 quality adjustment
     status: SignalStatus = SignalStatus.PENDING
     filter_results: dict = field(default_factory=dict)
     # Risk sizing (populated by risk manager)

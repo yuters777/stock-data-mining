@@ -10,7 +10,10 @@ import numpy as np
 from dataclasses import dataclass
 from typing import Optional
 
-from backtester.core.pattern_engine import Signal, TradeDirection
+from backtester.data_types import Signal, SignalDirection
+
+# Backwards-compatible alias used throughout this module
+TradeDirection = SignalDirection
 
 
 @dataclass
@@ -51,8 +54,10 @@ HARD_STOP_CAPS = [
     (100, 200, 0.40),  # $100-200 → 40¢
 ]
 
-# Slippage
-SLIPPAGE_PER_SHARE = 0.02  # $0.02 each way
+# Slippage: MAX(1¢, 0.02% of price) per L-005.1 §7.2
+def calculate_slippage(price: float) -> float:
+    """Calculate per-share slippage: MAX($0.01, price × 0.0002)."""
+    return max(0.01, price * 0.0002)
 
 # Position sizing
 DEFAULT_RISK_PCT = 0.003  # 0.3% of capital per trade
@@ -64,9 +69,8 @@ class RiskManagerConfig:
         self.max_stop_atr_pct = kwargs.get('max_stop_atr_pct', 0.15)  # 15% of ATR_D1
         self.stop_buffer_min = kwargs.get('stop_buffer_min', 0.02)
         self.stop_buffer_atr_mult = kwargs.get('stop_buffer_atr_mult', 0.10)
-        self.min_stop_atr_mult = kwargs.get('min_stop_atr_mult', 0.15)  # min 15% of ATR_M5
-        self.min_stop_absolute = kwargs.get('min_stop_absolute', 0.05)
-        self.slippage_per_share = kwargs.get('slippage_per_share', SLIPPAGE_PER_SHARE)
+        self.min_stop_atr_mult = kwargs.get('min_stop_atr_mult', 0.25)  # MVS: 25% of ATR_M5
+        self.min_stop_absolute = kwargs.get('min_stop_absolute', 0.03)  # MVS: 3 cents
         self.risk_pct = kwargs.get('risk_pct', DEFAULT_RISK_PCT)
         self.capital = kwargs.get('capital', 100000.0)
         self.partial_tp_at = kwargs.get('partial_tp_at', 2.0)  # Take 50% at 2R
@@ -123,9 +127,19 @@ class CircuitBreakerState:
     def has_open_position(self, ticker: str) -> bool:
         return self.open_positions.get(ticker, False)
 
+    def update_unrealized(self, unrealized_pnl: float, worst_case_pnl: float):
+        """Update current unrealized P&L and worst-case (all stops hit) P&L.
+
+        Called each bar by the backtester with aggregated open-position data.
+        """
+        self._unrealized_pnl = unrealized_pnl
+        self._worst_case_pnl = worst_case_pnl
+
     def check_circuit_breakers(self, date: pd.Timestamp,
                                capital: float) -> tuple[bool, str]:
         """Check if any circuit breaker is triggered.
+
+        Portfolio-aware: includes realized + unrealized + worst-case open risk.
         Returns (is_blocked, reason).
         """
         # Consecutive stops
@@ -136,10 +150,15 @@ class CircuitBreakerState:
         week_str = f"{date.year}-W{date.isocalendar()[1]:02d}"
         month_str = date.strftime('%Y-%m')
 
-        # Daily loss
-        daily = self.daily_pnl.get(date_str, 0.0)
-        if daily < 0 and abs(daily) / capital >= self.config.max_daily_loss_pct:
-            return True, f"Daily loss {daily:.2f} exceeds {self.config.max_daily_loss_pct*100:.1f}%"
+        # Portfolio-aware daily loss = realized + worst-case open risk
+        unrealized = getattr(self, '_unrealized_pnl', 0.0)
+        worst_case = getattr(self, '_worst_case_pnl', 0.0)
+
+        # Daily loss (realized + worst-case exposure)
+        daily_realized = self.daily_pnl.get(date_str, 0.0)
+        daily_total = daily_realized + min(unrealized, worst_case)
+        if daily_total < 0 and abs(daily_total) / capital >= self.config.max_daily_loss_pct:
+            return True, f"Daily loss {daily_total:.2f} (realized={daily_realized:.2f} + open={min(unrealized, worst_case):.2f}) exceeds {self.config.max_daily_loss_pct*100:.1f}%"
 
         # Weekly loss
         weekly = self.weekly_pnl.get(week_str, 0.0)
@@ -257,8 +276,8 @@ class RiskManager:
         stop_distance = abs(signal.entry_price - stop_price)
         target_distance = abs(target_price - signal.entry_price)
 
-        # Include slippage in effective costs
-        slippage = 2 * self.config.slippage_per_share  # entry + exit
+        # Include slippage in effective costs (MAX(1¢, 0.02% of price) each way)
+        slippage = 2 * calculate_slippage(signal.entry_price)
 
         # Effective stop distance (including slippage)
         effective_stop = stop_distance + slippage
@@ -283,6 +302,10 @@ class RiskManager:
         # Position sizing: Capital × 0.3% / |Entry - Stop|
         risk_amount = self.config.capital * self.config.risk_pct
         position_size = int(risk_amount / effective_stop)
+
+        # LP2 quality multiplier (1.0 / 0.7 / 0.5)
+        if signal.position_size_mult != 1.0:
+            position_size = int(position_size * signal.position_size_mult)
 
         # Model4 multiplier
         if signal.is_model4:
@@ -436,7 +459,7 @@ class RiskManager:
         d1_target = self.calculate_target(signal, opposing_levels, atr_d1)
 
         stop_distance = abs(signal.entry_price - stop_price)
-        slippage = 2 * self.config.slippage_per_share
+        slippage = 2 * calculate_slippage(signal.entry_price)
         effective_stop = stop_distance + slippage
 
         if effective_stop <= 0:
@@ -474,6 +497,9 @@ class RiskManager:
         # Position sizing
         risk_amount = self.config.capital * self.config.risk_pct
         position_size = int(risk_amount / effective_stop)
+        # LP2 quality multiplier (1.0 / 0.7 / 0.5)
+        if signal.position_size_mult != 1.0:
+            position_size = int(position_size * signal.position_size_mult)
         if signal.is_model4:
             position_size = int(position_size * self.config.model4_size_mult)
         position_size = max(position_size, 1)
