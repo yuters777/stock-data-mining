@@ -1,0 +1,54 @@
+{
+  "total_signals": 720,
+  "total_trades": 24,
+  "filters": {
+    "earnings": {
+      "label": "1. Earnings filter",
+      "evaluated": 720,
+      "blocked": 0,
+      "unique_kills": 0
+    },
+    "time": {
+      "label": "2. Open delay / time",
+      "evaluated": 720,
+      "blocked": 36,
+      "unique_kills": 0
+    },
+    "squeeze": {
+      "label": "3. Squeeze detection",
+      "evaluated": 720,
+      "blocked": 97,
+      "unique_kills": 1
+    },
+    "atr": {
+      "label": "5. ATR energy gate",
+      "evaluated": 720,
+      "blocked": 562,
+      "unique_kills": 74
+    },
+    "volume": {
+      "label": "6. Volume VSA",
+      "evaluated": 720,
+      "blocked": 0,
+      "unique_kills": 0
+    },
+    "rr_feasibility": {
+      "label": "7. R:R feasibility",
+      "evaluated": 720,
+      "blocked": 539,
+      "unique_kills": 78
+    },
+    "regime": {
+      "label": "8. Regime (ADX+ATR exp)",
+      "evaluated": 720,
+      "blocked": 166,
+      "unique_kills": 6
+    },
+    "sawing": {
+      "label": "9. Same-level limit",
+      "evaluated": 720,
+      "blocked": 18,
+      "unique_kills": 0
+    }
+  }
+}

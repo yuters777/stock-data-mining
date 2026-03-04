@@ -1,0 +1,145 @@
+==========================================================================================
+  FILTER EFFECTIVENESS AUDIT
+  Full-period backtest with ALL filters active
+==========================================================================================
+  Config: Baseline (FD=10, ATR=0.60/0.20, RR=2.0, TAIL=0.15, STOP=0.15)
+  Tickers: TSLA, AMZN, GOOGL, META, MSFT, NVDA  |  Period: 2025-02-10 -> 2026-01-31
+  Regime: ADX<=27, ATR_ratio<=1.3
+
+  Step 1: Computing daily indicators...
+
+  Step 2: Running audit backtest (all filters, no early exit)...
+    TSLA: 70 signals audited, 1 trades, P&L=$-269  [5.3s]
+    AMZN: 223 signals audited, 8 trades, P&L=$-510  [11.9s]
+    GOOGL: 152 signals audited, 5 trades, P&L=$4,097  [7.7s]
+    META: 97 signals audited, 4 trades, P&L=$2,046  [6.4s]
+    MSFT: 73 signals audited, 4 trades, P&L=$-1,062  [5.3s]
+    NVDA: 105 signals audited, 2 trades, P&L=$-553  [6.6s]
+
+    TOTAL: 720 signals audited across 6 tickers, 24 trades
+
+  Step 3: Analyzing filter effectiveness...
+
+==========================================================================================
+  FILTER EFFECTIVENESS TABLE
+==========================================================================================
+
+  Filter                        Evaluated    Blocked   Block%  Unique Kills       Status
+  ──────────────────────────────────────────────────────────────────────────────────────────
+  1. Earnings filter                  720          0     0.0%             0        INERT
+  2. Open delay / time                720         36     5.0%             0    REDUNDANT
+  3. Squeeze detection                720         97    13.5%             1       ACTIVE
+  5. ATR energy gate                  720        562    78.1%            74       ACTIVE
+  6. Volume VSA                       720          0     0.0%             0        INERT
+  7. R:R feasibility                  720        539    74.9%            78       ACTIVE
+  8. Regime (ADX+ATR exp)             720        166    23.1%             6       ACTIVE
+  9. Same-level limit                 720         18     2.5%             0    REDUNDANT
+  ──────────────────────────────────────────────────────────────────────────────────────────
+  TOTAL SIGNALS                       720
+
+  4. Breakaway gap block:  NOT IMPLEMENTED in codebase — skipped
+
+==========================================================================================
+  DEEP AUDIT: Zero-Impact Filters
+==========================================================================================
+
+  ──────────────────────────────────────────────────────────────────────────────────────
+  1. Earnings filter
+  ──────────────────────────────────────────────────────────────────────────────────────
+    Ever triggered (BLOCK)?  NO
+    Is filter code called?   YES (it was evaluated 720 times)
+    Conclusion: Filter is GENUINELY REDUNDANT — it never fires
+                with current config/data. Safe to remove.
+
+  ──────────────────────────────────────────────────────────────────────────────────────
+  5. ATR energy gate
+  ──────────────────────────────────────────────────────────────────────────────────────
+    Ever triggered (BLOCK)?  YES — 562 times
+    But ablation showed zero impact. Why?
+    Answer: Another filter killed those signals first (in pipeline order):
+
+      rr_feasibility                 killed 334 of those signals first
+      (none — unique kill)           killed  74 of those signals first
+      squeeze                        killed  60 of those signals first
+      regime                         killed  44 of those signals first
+      time                           killed  32 of those signals first
+      sawing                         killed  18 of those signals first
+
+    Sample block reasons:
+      "ATR ratio 0.105 < 0.2 (HARD BLOCK)"
+      "ATR ratio 0.324 < 0.6 (below entry threshold)"
+      "ATR ratio 0.246 < 0.6 (below entry threshold)"
+
+    SURPRISE: 74 signals are UNIQUELY killed by this filter
+    but ablation showed zero P&L impact — those signals would have
+    been losers anyway (removing the filter doesn't hurt P&L).
+
+  ──────────────────────────────────────────────────────────────────────────────────────
+  6. Volume VSA
+  ──────────────────────────────────────────────────────────────────────────────────────
+    Ever triggered (BLOCK)?  NO
+    Is filter code called?   YES (it was evaluated 720 times)
+    Conclusion: Filter is GENUINELY REDUNDANT — it never fires
+                with current config/data. Safe to remove.
+
+  ──────────────────────────────────────────────────────────────────────────────────────
+  7. R:R feasibility
+  ──────────────────────────────────────────────────────────────────────────────────────
+    Ever triggered (BLOCK)?  YES — 539 times
+    But ablation showed zero impact. Why?
+    Answer: Another filter killed those signals first (in pipeline order):
+
+      atr                            killed 384 of those signals first
+      (none — unique kill)           killed  78 of those signals first
+      squeeze                        killed  34 of those signals first
+      time                           killed  26 of those signals first
+      regime                         killed  17 of those signals first
+
+    Sample block reasons:
+      "R:R or stop cap failed"
+      "R:R or stop cap failed"
+      "R:R or stop cap failed"
+
+    SURPRISE: 78 signals are UNIQUELY killed by this filter
+    but ablation showed zero P&L impact — those signals would have
+    been losers anyway (removing the filter doesn't hurt P&L).
+
+==========================================================================================
+  SIGNAL FLOW — Pipeline Attrition
+==========================================================================================
+
+  Stage                         Blocked  Remaining  Attrition
+  ──────────────────────────────────────────────────────────────
+  Signals entering pipeline                    720
+  9. Same-level limit                18        702       2.5%
+  2. Open delay / time               35        667       4.9%
+  1. Earnings filter                  0        667       0.0%
+  5. ATR energy gate                512        155      71.1%
+  6. Volume VSA                       0        155       0.0%
+  3. Squeeze detection               35        120       4.9%
+  7. R:R feasibility                 95         25      13.2%
+  8. Regime (ADX+ATR exp)             6         19       0.8%
+  ──────────────────────────────────────────────────────────────
+  → PASS ALL FILTERS                            19       2.6%
+
+==========================================================================================
+  CONCLUSIONS
+==========================================================================================
+
+  ACTIVE filters (have unique kills):
+    3. Squeeze detection         1 unique kills
+    5. ATR energy gate           74 unique kills
+    7. R:R feasibility           78 unique kills
+    8. Regime (ADX+ATR exp)      6 unique kills
+
+  INERT filters (never trigger at all):
+    1. Earnings filter           — genuinely redundant, safe to remove
+    6. Volume VSA                — genuinely redundant, safe to remove
+
+  REDUNDANT filters (trigger but no unique kills):
+    2. Open delay / time         36 blocks, all also caught by other filters
+    9. Same-level limit          18 blocks, all also caught by other filters
+
+==========================================================================================
+  COMPLETE — 44s (0.7min)
+==========================================================================================
