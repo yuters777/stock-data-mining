@@ -70,6 +70,7 @@ DEFAULT_CONFIG: dict[str, Any] = {
     "max_daily_loss_pct": 0.01,     # 1%
     "max_weekly_loss_pct": 0.02,    # 2%
     "max_monthly_loss_pct": 0.08,   # 8%
+    "max_consecutive_losses_per_level": 2,  # exhaust level after N consecutive stop losses
 
     # ── Trade Manager ──
     "partial_tp_at_r": 2.0,

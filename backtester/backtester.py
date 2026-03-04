@@ -258,6 +258,13 @@ class Backtester:
             signals.sort(key=lambda s: s.priority, reverse=True)
             signal = signals[0]
 
+            # Same-level exhaustion check: skip if level produced too many consecutive stops
+            if self.risk_manager.cb_state.is_level_exhausted(
+                    bar_ticker, signal.level.price):
+                self.signals_blocked['level_exhausted'] = \
+                    self.signals_blocked.get('level_exhausted', 0) + 1
+                continue
+
             # Direction filter (str or dict)
             if self.config.direction_filter:
                 df = self.config.direction_filter
@@ -266,6 +273,10 @@ class Backtester:
                 else:
                     allowed = df
                 if allowed:
+                    if allowed == 'excluded':
+                        self.signals_blocked['direction_filter'] = \
+                            self.signals_blocked.get('direction_filter', 0) + 1
+                        continue
                     if (allowed == 'long' and
                             signal.direction != TradeDirection.LONG):
                         self.signals_blocked['direction_filter'] = \

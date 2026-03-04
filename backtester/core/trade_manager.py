@@ -263,6 +263,11 @@ class TradeManager:
                 self.risk_manager.cb_state.record_stop_at_level(
                     trade.signal.ticker, trade.signal.level.price, exit_time
                 )
+            else:
+                # Non-stop exit resets consecutive loss counter for this level
+                self.risk_manager.cb_state.record_win_at_level(
+                    trade.signal.ticker, trade.signal.level.price
+                )
 
     def _partial_take_profit(self, trade: Trade, current_price: float,
                              current_time: pd.Timestamp) -> bool:

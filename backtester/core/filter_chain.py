@@ -117,6 +117,8 @@ class FilterChain:
         if allowed is None:
             return FilterResult(True, "No direction restriction for ticker")
 
+        if allowed == 'excluded':
+            return FilterResult(False, f"Direction filter: {signal.ticker} is EXCLUDED")
         if allowed == 'long' and signal.direction != SignalDirection.LONG:
             return FilterResult(False, f"Direction filter: {signal.ticker} allows long only")
         if allowed == 'short' and signal.direction != SignalDirection.SHORT:

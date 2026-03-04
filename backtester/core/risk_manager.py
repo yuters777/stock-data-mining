@@ -82,6 +82,8 @@ class RiskManagerConfig:
         self.max_monthly_loss_pct = kwargs.get('max_monthly_loss_pct', 0.08)  # 8%
         # Model4 size multiplier
         self.model4_size_mult = kwargs.get('model4_size_mult', 1.5)
+        # Same-level exhaustion: block after N consecutive stop losses at same level
+        self.max_consecutive_losses_per_level = kwargs.get('max_consecutive_losses_per_level', 2)
 
 
 class CircuitBreakerState:
@@ -95,6 +97,10 @@ class CircuitBreakerState:
         self.monthly_pnl: dict[str, float] = {}  # month_str -> pnl
         self.stopped_today: set[str] = set()      # "ticker|level_price|date" combos
         self.open_positions: dict[str, bool] = {}  # ticker -> has_position
+        # Same-level consecutive loss tracking: (ticker, level_price_rounded) -> consecutive_stop_count
+        self.level_stop_history: dict[tuple[str, float], int] = {}
+        self.exhausted_levels: set[tuple[str, float]] = set()
+        self.max_consecutive_losses_per_level = getattr(config, 'max_consecutive_losses_per_level', 2)
 
     def record_trade_result(self, ticker: str, date: pd.Timestamp,
                             pnl: float, was_stop: bool):
@@ -115,11 +121,26 @@ class CircuitBreakerState:
                              date: pd.Timestamp):
         key = f"{ticker}|{level_price:.2f}|{date.strftime('%Y-%m-%d')}"
         self.stopped_today.add(key)
+        # Track consecutive losses per level for exhaustion rule
+        level_key = (ticker, round(level_price, 2))
+        self.level_stop_history[level_key] = self.level_stop_history.get(level_key, 0) + 1
+        if self.level_stop_history[level_key] >= self.max_consecutive_losses_per_level:
+            self.exhausted_levels.add(level_key)
+
+    def record_win_at_level(self, ticker: str, level_price: float):
+        """Reset consecutive loss counter for a level on a winning trade."""
+        level_key = (ticker, round(level_price, 2))
+        self.level_stop_history.pop(level_key, None)
 
     def is_stopped_at_level_today(self, ticker: str, level_price: float,
                                   date: pd.Timestamp) -> bool:
         key = f"{ticker}|{level_price:.2f}|{date.strftime('%Y-%m-%d')}"
         return key in self.stopped_today
+
+    def is_level_exhausted(self, ticker: str, level_price: float) -> bool:
+        """Check if a level has been exhausted (too many consecutive stop losses)."""
+        level_key = (ticker, round(level_price, 2))
+        return level_key in self.exhausted_levels
 
     def set_position(self, ticker: str, has_position: bool):
         self.open_positions[ticker] = has_position
