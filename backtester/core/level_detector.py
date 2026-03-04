@@ -412,73 +412,118 @@ class LevelDetector:
     def check_nison_invalidation(self, level: Level, daily_df: pd.DataFrame,
                                  current_date: pd.Timestamp,
                                  daily_index: dict = None) -> bool:
-        """Nison invalidation: if price retests a mirror level, bounces,
-        then closes back beyond the level → INVALIDATED.
+        """Nison invalidation: 3-step sequence per L-005.1 §2.5.
 
-        Specifically: after mirror confirmation, if price touches the level,
-        moves away (bounce), then a subsequent bar closes on the breakout side
-        of the level, the mirror is invalidated.
+        Step 1 (RETEST): Price approaches/touches the mirror level.
+        Step 2 (BOUNCE): Price closes on the hold side (moves away from level
+                in the direction the mirror should defend).
+        Step 3 (FAILURE): Price closes back beyond the level on the breakout
+                side — the mirror failed to hold.
+
+        All 3 steps must occur in sequence AFTER mirror confirmation.
+        A simple close beyond the mirror on any random bar is NOT Nison —
+        that's just a broken level.
 
         Returns True if level is INVALIDATED.
         """
         if level.status not in (LevelStatus.MIRROR_CANDIDATE, LevelStatus.MIRROR_CONFIRMED):
             return False
 
+        # Need breakout direction to determine hold vs failure sides
+        if not level.mirror_breakout_side:
+            return False
+
         price = level.price
         tol = self.config.get_tolerance(price)
 
+        # Determine directional sides:
+        # If breakout was ABOVE: level is now support, hold=close above, fail=close below
+        # If breakout was BELOW: level is now resistance, hold=close below, fail=close above
+        breakout_above = (level.mirror_breakout_side == 'above')
+
         if daily_index and level.ticker in daily_index:
             idx = daily_index[level.ticker]
-            date_mask = idx['dates'] <= np.datetime64(current_date)
+            # Only look at bars AFTER mirror confirmation
+            if level.mirror_confirmed_date is not None:
+                date_mask = (idx['dates'] <= np.datetime64(current_date)) & \
+                            (idx['dates'] > np.datetime64(level.mirror_confirmed_date))
+            else:
+                date_mask = idx['dates'] <= np.datetime64(current_date)
+            dates = idx['dates'][date_mask]
             closes = idx['closes'][date_mask]
             highs = idx['highs'][date_mask]
             lows = idx['lows'][date_mask]
         else:
-            tdf = daily_df[
-                (daily_df['Ticker'] == level.ticker) &
-                (daily_df['Date'] <= current_date)
-            ].sort_values('Date')
+            mask = (daily_df['Ticker'] == level.ticker) & \
+                   (daily_df['Date'] <= current_date)
+            if level.mirror_confirmed_date is not None:
+                mask = mask & (daily_df['Date'] > level.mirror_confirmed_date)
+            tdf = daily_df[mask].sort_values('Date')
             closes = tdf['Close'].values
             highs = tdf['High'].values
             lows = tdf['Low'].values
 
-        # Look at last 10 bars for the Nison pattern
-        n = min(10, len(closes))
-        if n < 3:
+        # Need at least 3 bars after confirmation for the full sequence
+        if len(closes) < 3:
             return False
 
+        # Look at last 15 bars (post-confirmation only)
+        n = min(15, len(closes))
         closes = closes[-n:]
         highs = highs[-n:]
         lows = lows[-n:]
 
-        # State machine: touch → bounce → close beyond
-        touched = False
+        # State machine: retest → bounce → failure
+        retested = False
         bounced = False
 
         for i in range(n):
             bar_touched_level = (lows[i] - tol) <= price <= (highs[i] + tol)
 
-            if not touched:
+            if not retested:
+                # Step 1: bar must touch/approach the mirror level
                 if bar_touched_level:
-                    touched = True
+                    retested = True
                 continue
 
-            if touched and not bounced:
-                # Bounce = close back on the expected side
-                if not bar_touched_level:
-                    bounced = True
+            if retested and not bounced:
+                # Step 2: close must be on the HOLD side (mirror is working)
+                if breakout_above:
+                    # Level is support — bounce = close above level
+                    if closes[i] > price + tol:
+                        bounced = True
+                        continue
+                else:
+                    # Level is resistance — bounce = close below level
+                    if closes[i] < price - tol:
+                        bounced = True
+                        continue
+                # If bar still touching level, keep waiting for bounce
+                if bar_touched_level:
+                    continue
+                # Close on wrong side without bounce = not a Nison pattern,
+                # reset and look for next retest
+                retested = False
                 continue
 
-            if touched and bounced:
-                # Close beyond = invalidation
-                # For a resistance-turned-mirror: close above = breakout beyond
-                # For a support-turned-mirror: close below = breakout beyond
-                if level.level_type == LevelType.MIRROR:
-                    # Check both directions
-                    if closes[i] > price + tol or closes[i] < price - tol:
-                        if bar_touched_level or (closes[i] > price + tol) or (closes[i] < price - tol):
-                            level.status = LevelStatus.INVALIDATED
-                            return True
+            if retested and bounced:
+                # Step 3: close on the FAILURE side (mirror broke)
+                if breakout_above:
+                    # Level was support — failure = close below level
+                    if closes[i] < price - tol:
+                        level.status = LevelStatus.INVALIDATED
+                        return True
+                else:
+                    # Level was resistance — failure = close above level
+                    if closes[i] > price + tol:
+                        level.status = LevelStatus.INVALIDATED
+                        return True
+                # If bar closes on hold side or touches level, reset bounce
+                # (the mirror held again, need a new failure)
+                if bar_touched_level:
+                    # New touch — restart from step 2
+                    bounced = False
+                continue
 
         return False
 
@@ -532,6 +577,11 @@ class LevelDetector:
             if max_distance >= min_distance:
                 level.status = LevelStatus.BROKEN
                 level.mirror_max_distance_atr = max_distance / atr
+                # Track which side price broke to
+                if max_dist_above >= max_dist_below:
+                    level.mirror_breakout_side = 'above'
+                else:
+                    level.mirror_breakout_side = 'below'
             return
 
         # BROKEN → MIRROR_CANDIDATE: price stayed beyond for enough days
@@ -552,6 +602,7 @@ class LevelDetector:
                     level.status = LevelStatus.MIRROR_CONFIRMED
                     level.is_mirror = True
                     level.level_type = LevelType.MIRROR
+                    level.mirror_confirmed_date = current_date
                     if 'mirror' not in level.score_breakdown:
                         level.score += SCORE_MIRROR
                         level.score_breakdown['mirror'] = SCORE_MIRROR

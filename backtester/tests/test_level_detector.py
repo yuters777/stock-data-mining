@@ -287,8 +287,111 @@ class TestMirrorLifecycle:
 
 
 class TestNisonInvalidation:
-    def test_nison_invalidates_mirror(self):
-        """Mirror should be invalidated if price retests, bounces, then breaks beyond."""
+    def test_nison_invalidates_support_mirror(self):
+        """Support mirror (breakout above): retest→bounce above→close below = invalidated."""
+        base_date = pd.Timestamp('2025-03-01')
+        # Mirror confirmed on day 0; bars below are AFTER confirmation
+        confirmed_date = base_date
+        level = Level(
+            price=100.0,
+            level_type=LevelType.MIRROR,
+            status=LevelStatus.MIRROR_CONFIRMED,
+            score=10,
+            ticker='TEST',
+            date=base_date - pd.Timedelta(days=30),
+            bsu_index=0,
+            atr_d1=2.0,
+            touches=3,
+            is_mirror=True,
+            mirror_breakout_side='above',           # level is now support
+            mirror_confirmed_date=confirmed_date,
+        )
+
+        # Bars AFTER confirmed_date (days 1, 2, 3):
+        prices = [
+            (101, 102, 100, 101),     # day 0 (confirmation day, excluded)
+            (101, 101, 99.5, 100.03), # day 1: retest — low touches level
+            (100.5, 102, 100.3, 101.5),  # day 2: bounce — close above level
+            (101, 101.2, 98, 98.5),   # day 3: failure — close below level
+        ]
+        df = make_daily_df(prices)
+
+        detector = LevelDetector()
+        result = detector.check_nison_invalidation(level, df,
+                                                    base_date + pd.Timedelta(days=3))
+        assert result is True
+        assert level.status == LevelStatus.INVALIDATED
+
+    def test_nison_invalidates_resistance_mirror(self):
+        """Resistance mirror (breakout below): retest→bounce below→close above = invalidated."""
+        base_date = pd.Timestamp('2025-03-01')
+        confirmed_date = base_date
+        level = Level(
+            price=100.0,
+            level_type=LevelType.MIRROR,
+            status=LevelStatus.MIRROR_CONFIRMED,
+            score=10,
+            ticker='TEST',
+            date=base_date - pd.Timedelta(days=30),
+            bsu_index=0,
+            atr_d1=2.0,
+            touches=3,
+            is_mirror=True,
+            mirror_breakout_side='below',           # level is now resistance
+            mirror_confirmed_date=confirmed_date,
+        )
+
+        # Bars AFTER confirmed_date:
+        prices = [
+            (99, 100, 98, 99),         # day 0 (confirmation day, excluded)
+            (99, 100.02, 98.5, 99.8),  # day 1: retest — high touches level
+            (99.5, 99.8, 97, 97.5),    # day 2: bounce — close below level
+            (98, 102, 97.5, 101.5),    # day 3: failure — close above level
+        ]
+        df = make_daily_df(prices)
+
+        detector = LevelDetector()
+        result = detector.check_nison_invalidation(level, df,
+                                                    base_date + pd.Timedelta(days=3))
+        assert result is True
+        assert level.status == LevelStatus.INVALIDATED
+
+    def test_nison_no_invalidation_without_bounce(self):
+        """Price drifting through level without bounce is NOT Nison."""
+        base_date = pd.Timestamp('2025-03-01')
+        confirmed_date = base_date
+        level = Level(
+            price=100.0,
+            level_type=LevelType.MIRROR,
+            status=LevelStatus.MIRROR_CONFIRMED,
+            score=10,
+            ticker='TEST',
+            date=base_date - pd.Timedelta(days=30),
+            bsu_index=0,
+            atr_d1=2.0,
+            touches=3,
+            is_mirror=True,
+            mirror_breakout_side='above',
+            mirror_confirmed_date=confirmed_date,
+        )
+
+        # Price drifts down through the level — no bounce on hold side
+        prices = [
+            (101, 102, 100, 101),     # day 0 (excluded)
+            (101, 101, 99.5, 100.03), # day 1: retest
+            (100, 100.2, 97, 97.5),   # day 2: close BELOW — no bounce above first
+            (97, 98, 95, 96),         # day 3: still below
+        ]
+        df = make_daily_df(prices)
+
+        detector = LevelDetector()
+        result = detector.check_nison_invalidation(level, df,
+                                                    base_date + pd.Timedelta(days=3))
+        assert result is False
+        assert level.status == LevelStatus.MIRROR_CONFIRMED
+
+    def test_nison_no_invalidation_without_breakout_side(self):
+        """Nison should not fire if breakout direction is unknown."""
         base_date = pd.Timestamp('2025-03-01')
         level = Level(
             price=100.0,
@@ -301,21 +404,58 @@ class TestNisonInvalidation:
             atr_d1=2.0,
             touches=3,
             is_mirror=True,
+            mirror_breakout_side='',   # no direction info
         )
 
-        # Sequence: touch level → bounce away → close beyond
         prices = [
-            (99, 100.02, 98, 99),    # touch
-            (99, 99.5, 97, 97.5),    # bounce away (no touch)
-            (98, 99, 97, 102),       # close beyond level (above)
+            (99, 100.02, 98, 99),
+            (99, 99.5, 97, 97.5),
+            (98, 99, 97, 102),
         ]
         df = make_daily_df(prices)
 
         detector = LevelDetector()
         result = detector.check_nison_invalidation(level, df,
                                                     base_date + pd.Timedelta(days=2))
-        assert result == True
-        assert level.status == LevelStatus.INVALIDATED
+        assert result is False
+
+    def test_nison_not_before_confirmation(self):
+        """Bars before mirror_confirmed_date should be excluded from Nison check."""
+        base_date = pd.Timestamp('2025-03-01')
+        # Confirmed on day 5, only 2 bars after = too few for 3-step sequence
+        confirmed_date = base_date + pd.Timedelta(days=5)
+        level = Level(
+            price=100.0,
+            level_type=LevelType.MIRROR,
+            status=LevelStatus.MIRROR_CONFIRMED,
+            score=10,
+            ticker='TEST',
+            date=base_date - pd.Timedelta(days=30),
+            bsu_index=0,
+            atr_d1=2.0,
+            touches=3,
+            is_mirror=True,
+            mirror_breakout_side='above',
+            mirror_confirmed_date=confirmed_date,
+        )
+
+        # 8 bars total, but only days 6,7 are after confirmation (< 3 needed)
+        prices = [
+            (99, 100.02, 98, 99),     # day 0
+            (101, 102, 100, 101.5),   # day 1
+            (99, 100.02, 98, 97),     # day 2: touch + close below (before confirm)
+            (101, 102, 100, 101.5),   # day 3
+            (99, 100.02, 98, 99),     # day 4
+            (101, 102, 100, 101.5),   # day 5 (confirmation day, excluded)
+            (101, 101, 99.5, 100.03), # day 6: retest
+            (100.5, 102, 100.3, 101), # day 7: bounce (only 2 post-confirm bars)
+        ]
+        df = make_daily_df(prices)
+
+        detector = LevelDetector()
+        result = detector.check_nison_invalidation(level, df,
+                                                    base_date + pd.Timedelta(days=7))
+        assert result is False
 
 
 class TestGapBoundary:

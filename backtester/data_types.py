@@ -149,6 +149,8 @@ class Level:
     cross_count: int = 0
     last_cross_bar: int = -1
     mirror_breakout_date: Optional[pd.Timestamp] = None
+    mirror_breakout_side: str = ""          # 'above' or 'below' — which side price broke to
+    mirror_confirmed_date: Optional[pd.Timestamp] = None  # date mirror was confirmed
     mirror_max_distance_atr: float = 0.0
     mirror_days_beyond: int = 0
     score_breakdown: dict = field(default_factory=dict)
