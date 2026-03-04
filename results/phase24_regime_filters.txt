@@ -1,0 +1,227 @@
+================================================================================
+  PHASE 2.4 — Additional Indicators Research
+  Config A: FD=10, ATR=0.60, RR=2.0, TAIL=0.15, STOP=0.15
+  Tickers: TSLA, AMZN, GOOGL, META, MSFT, NVDA
+  Period: 2025-02-10 → 2026-01-31
+================================================================================
+
+  Step 1: Running Config A baseline...
+  Baseline: 22t, WR=31.8%, PF=1.52, P&L=$2099, MaxDD=$1630
+
+  Step 2: Computing indicators...
+    TSLA...
+      D1: 259 days, H1: 4132 bars, ADX mean=24.0
+    AMZN...
+      D1: 235 days, H1: 3751 bars, ADX mean=23.6
+    GOOGL...
+      D1: 259 days, H1: 4135 bars, ADX mean=30.2
+    META...
+      D1: 259 days, H1: 4135 bars, ADX mean=25.0
+    MSFT...
+      D1: 259 days, H1: 4132 bars, ADX mean=29.5
+    NVDA...
+      D1: 235 days, H1: 3751 bars, ADX mean=29.0
+
+================================================================================
+  EXPERIMENT 1: ADX Regime Filter
+================================================================================
+
+  Trades with valid ADX: 22 / 22
+
+  ADX Distribution — Winners vs Losers:
+     ADX Range  Total  Winners  Losers      WR      PF        P&L
+  -----------------------------------------------------------------
+    0-15             4        0       4    0.0%   0.00 $    -1054
+   15-20             9        4       5   44.4%   2.74 $     2364
+   20-25             5        1       4   20.0%   0.85 $     -163
+   25-30             2        2       0  100.0%    inf $     1514
+   30-40             2        0       2    0.0%   0.00 $     -562
+   40-100            0        0       0     —      —         —
+
+  ADX Percentiles:
+    P10: 13.7
+    P25: 17.4
+    P50: 19.5
+    P75: 22.2
+    P90: 25.3
+
+  Winner mean ADX: 21.1 (median: 19.7)
+  Loser mean ADX:  19.8 (median: 17.8)
+
+  ADX Threshold Sweep (block when ADX > threshold):
+   Threshold  Trades  Blocked      WR      PF        P&L    MaxDD
+  -----------------------------------------------------------------
+   No filter 22t, WR=31.8%, PF=1.52, P&L=$2099, MaxDD=$1630
+  ADX<= 20          13        9   30.8%   1.54 $     1310 $   1054
+  ADX<= 22          15        7   33.3%   1.72 $     1938 $   1332
+  ADX<= 25          18        4   27.8%   1.33 $     1147 $   1351
+  ADX<= 27          20        2   35.0%   1.76 $     2661 $   1351
+  ADX<= 30          20        2   35.0%   1.76 $     2661 $   1351
+  ADX<= 35          21        1   33.3%   1.63 $     2382 $   1630
+  ADX<= 40          22        0   31.8%   1.52 $     2099 $   1630
+
+  >> Best ADX threshold: 27 (PF=1.76)
+
+================================================================================
+  EXPERIMENT 2: VWAP Filter
+================================================================================
+
+  Trades with valid VWAP: 22 / 22
+
+  SHORT trades vs VWAP:
+    Price above VWAP: 12t, WR=41.7%, PF=2.63, P&L=$3052, MaxDD=$806
+    Price below VWAP: 2t, WR=0.0%, PF=0.00, P&L=$-568, MaxDD=$284
+
+  LONG trades vs VWAP:
+    Price above VWAP: 0 trades
+    Price below VWAP: 8t, WR=25.0%, PF=0.76, P&L=$-386, MaxDD=$927
+
+  VWAP Filter Test (block counter-VWAP signals):
+    Baseline (no filter):   22t, WR=31.8%, PF=1.52, P&L=$2099, MaxDD=$1630
+    With VWAP filter:       20t, WR=35.0%, PF=1.77, P&L=$2666, MaxDD=$1345 (blocked 2)
+    Inverse (counter-hypo): 2t, WR=0.0%, PF=0.00, P&L=$-568, MaxDD=$284
+
+  Distance from VWAP at entry:
+    Mean:   0.045%
+    Median: 0.328%
+    Winners mean: 0.090%
+    Losers mean:  0.024%
+
+================================================================================
+  EXPERIMENT 3: Volatility Regime (ATR Expansion)
+================================================================================
+
+  Trades with valid ATR ratio: 22 / 22
+
+  ATR(5)/ATR(20) Distribution — Winners vs Losers:
+     Ratio Range  Total  Winners  Losers      WR      PF        P&L
+  -------------------------------------------------------------------
+  0.0-0.7              0        0       0     —      —         —
+  0.7-0.9              3        1       2   33.3%   1.02 $       12
+  0.9-1.1              6        1       5   16.7%   1.45 $      607
+  1.1-1.3              9        5       4   55.6%   3.44 $     2586
+  1.3-1.5              0        0       0     —      —         —
+  1.5-3.0              4        0       4    0.0%   0.00 $    -1106
+
+  Winner mean ratio: 1.13 (median: 1.18)
+  Loser mean ratio:  1.16 (median: 1.11)
+
+  ATR Ratio Threshold Sweep (block when ratio > threshold):
+   Threshold  Trades  Blocked      WR      PF        P&L    MaxDD
+  -----------------------------------------------------------------
+   No filter 22t, WR=31.8%, PF=1.52, P&L=$2099, MaxDD=$1630
+  ratio<=1.0          7       15   14.3%   0.34 $    -1059 $   1332
+  ratio<=1.1          9       13   22.2%   1.33 $      618 $   1332
+  ratio<=1.2         13        9   30.8%   1.70 $     1682 $   1068
+  ratio<=1.3         18        4   38.9%   2.09 $     3205 $   1345
+  ratio<=1.5         18        4   38.9%   2.09 $     3205 $   1345
+  ratio<=1.7         22        0   31.8%   1.52 $     2099 $   1630
+  ratio<=2.0         22        0   31.8%   1.52 $     2099 $   1630
+
+  >> Best ATR ratio threshold: 1.3 (PF=2.09)
+
+================================================================================
+  EXPERIMENT 4: Multi-Timeframe Trend (H1)
+================================================================================
+
+  Trades with valid H1 trend: 22 / 22
+
+  H1 Trend Alignment Analysis:
+
+  SHORT trades:
+    H1 trend=up: 11t, WR=36.4%, PF=2.14, P&L=$2146, MaxDD=$806 [COUNTER-TREND]
+    H1 trend=down: 3t, WR=33.3%, PF=1.60, P&L=$338, MaxDD=$284 [WITH-TREND]
+
+  LONG trades:
+    H1 trend=up: 1t, WR=0.0%, PF=0.00, P&L=$-278, MaxDD=$0 [WITH-TREND]
+    H1 trend=down: 7t, WR=28.6%, PF=0.92, P&L=$-108, MaxDD=$807 [COUNTER-TREND]
+
+  Filter Results:
+    Baseline (no filter):    22t, WR=31.8%, PF=1.52, P&L=$2099, MaxDD=$1630
+    WITH-trend only:         4t, WR=25.0%, PF=1.07, P&L=$60, MaxDD=$284 (blocked 18)
+    COUNTER-trend only:      18t, WR=33.3%, PF=1.64, P&L=$2039, MaxDD=$1345 (blocked 4)
+
+  Note: For mean-reversion, COUNTER-trend entries (SHORT on H1 uptrend,
+  LONG on H1 downtrend) capture overextended moves snapping back.
+
+  --- SMA(10) variant ---
+    WITH-trend SMA(10):      5t, WR=20.0%, PF=0.81, P&L=$-217, MaxDD=$562
+    COUNTER-trend SMA(10):   17t, WR=35.3%, PF=1.79, P&L=$2316, MaxDD=$1068
+
+================================================================================
+  COMBINATION: Best Filters Together
+================================================================================
+
+  Baseline (all filters off): 22t, WR=31.8%, PF=1.52, P&L=$2099, MaxDD=$1630
+
+  ADX<=27 only:             20t, WR=35.0%, PF=1.76, P&L=$2661, MaxDD=$1351 (blocked 2)
+  ATR_ratio<=1.3 only:        18t, WR=38.9%, PF=2.09, P&L=$3205, MaxDD=$1345 (blocked 4)
+  VWAP filter only:           20t, WR=35.0%, PF=1.77, P&L=$2666, MaxDD=$1345 (blocked 2)
+  H1 counter-trend only:      18t, WR=33.3%, PF=1.64, P&L=$2039, MaxDD=$1345 (blocked 4)
+
+  --- Pairwise Combinations ---
+  ADX<=27 + ATR_ratio<=1.3: 17t, WR=41.2%, PF=2.31, P&L=$3484, MaxDD=$1066 (blocked 5)
+  ADX<=27 + VWAP:            19t, WR=36.8%, PF=1.92, P&L=$2945, MaxDD=$1332 (blocked 3)
+  ADX<=27 + H1 counter:      17t, WR=35.3%, PF=1.79, P&L=$2318, MaxDD=$1066 (blocked 5)
+
+  --- Walk-forward with ADX filter only ---
+
+================================================================================
+  WALK-FORWARD WITH BEST FILTER(S)
+  ADX threshold: 27
+================================================================================
+  W1 2025-05-10→2025-06-10: Base 12t PF=1.13 $339 | Filt 9t PF=1.07 $144
+  W2 2025-06-10→2025-07-10: Base 7t PF=0.37 $-876 | Filt 7t PF=0.37 $-876
+  W3 2025-07-10→2025-08-10: Base 7t PF=1.56 $611 | Filt 3t PF=0.00 $-813
+  W4 2025-08-10→2025-09-10: Base 8t PF=1.52 $708 | Filt 6t PF=2.49 $1238
+  W5 2025-09-10→2025-10-10: Base 6t PF=4.57 $1918 | Filt 6t PF=4.57 $1918
+  W6 2025-10-10→2025-11-10: Base 22t PF=0.54 $-2048 | Filt 21t PF=0.38 $-2795
+  W7 2025-11-10→2025-12-10: Base 15t PF=1.37 $991 | Filt 14t PF=1.53 $1275
+  W8 2025-12-10→2026-01-10: Base 8t PF=0.00 $-1919 | Filt 8t PF=0.00 $-1919
+
+  Walk-Forward Summary:
+    Baseline: 85t, $-276, 5/8 positive windows
+    Filtered: 74t, $-1827, 4/8 positive windows
+
+  --- Walk-forward with ATR ratio filter only ---
+
+================================================================================
+  WALK-FORWARD WITH BEST FILTER(S)
+  ATR ratio threshold: 1.3
+================================================================================
+  W1 2025-05-10→2025-06-10: Base 12t PF=1.13 $339 | Filt 9t PF=1.07 $144
+  W2 2025-06-10→2025-07-10: Base 7t PF=0.37 $-876 | Filt 7t PF=0.37 $-876
+  W3 2025-07-10→2025-08-10: Base 7t PF=1.56 $611 | Filt 3t PF=0.00 $-532
+  W4 2025-08-10→2025-09-10: Base 8t PF=1.52 $708 | Filt 8t PF=1.52 $708
+  W5 2025-09-10→2025-10-10: Base 6t PF=4.57 $1918 | Filt 6t PF=4.57 $1918
+  W6 2025-10-10→2025-11-10: Base 22t PF=0.54 $-2048 | Filt 14t PF=0.68 $-811
+  W7 2025-11-10→2025-12-10: Base 15t PF=1.37 $991 | Filt 14t PF=1.49 $1212
+  W8 2025-12-10→2026-01-10: Base 8t PF=0.00 $-1919 | Filt 4t PF=0.00 $-1112
+
+  Walk-Forward Summary:
+    Baseline: 85t, $-276, 5/8 positive windows
+    Filtered: 65t, $652, 4/8 positive windows
+
+  --- Walk-forward with ADX + ATR ratio combined ---
+
+================================================================================
+  WALK-FORWARD WITH BEST FILTER(S)
+  ADX threshold: 27
+  ATR ratio threshold: 1.3
+================================================================================
+  W1 2025-05-10→2025-06-10: Base 12t PF=1.13 $339 | Filt 9t PF=1.07 $144
+  W2 2025-06-10→2025-07-10: Base 7t PF=0.37 $-876 | Filt 7t PF=0.37 $-876
+  W3 2025-07-10→2025-08-10: Base 7t PF=1.56 $611 | Filt 2t PF=0.00 $-532
+  W4 2025-08-10→2025-09-10: Base 8t PF=1.52 $708 | Filt 6t PF=2.49 $1238
+  W5 2025-09-10→2025-10-10: Base 6t PF=4.57 $1918 | Filt 6t PF=4.57 $1918
+  W6 2025-10-10→2025-11-10: Base 22t PF=0.54 $-2048 | Filt 14t PF=0.68 $-811
+  W7 2025-11-10→2025-12-10: Base 15t PF=1.37 $991 | Filt 13t PF=1.68 $1497
+  W8 2025-12-10→2026-01-10: Base 8t PF=0.00 $-1919 | Filt 4t PF=0.00 $-1112
+
+  Walk-Forward Summary:
+    Baseline: 85t, $-276, 5/8 positive windows
+    Filtered: 61t, $1466, 4/8 positive windows
+
+================================================================================
+  PHASE 2.4 COMPLETE — 183s (3.1min)
+================================================================================
