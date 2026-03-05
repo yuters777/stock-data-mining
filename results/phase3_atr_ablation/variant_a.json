@@ -1,0 +1,31 @@
+{
+  "variant": "A",
+  "label": "ATR gate OFF (how Phase 2 ran)",
+  "config": {
+    "enable_atr_filter": false,
+    "atr_block_threshold": 0.2,
+    "atr_entry_threshold": 0.6
+  },
+  "metrics": {
+    "trades": 198,
+    "wr": 0.25252525252525254,
+    "pf": 1.4272350249532235,
+    "pnl": 18569.007031480964,
+    "max_dd": 9314.777204503489,
+    "avg_r": 0.25856880398242227
+  },
+  "funnel": {
+    "total_signals": 1852,
+    "passed": 1783,
+    "blocked_by_direction": 0,
+    "blocked_by_position": 0,
+    "blocked_by_level_score": 0,
+    "blocked_by_time": 69,
+    "blocked_by_earnings": 0,
+    "blocked_by_atr_hard": 0,
+    "blocked_by_atr_threshold": 0,
+    "blocked_by_atr_error": 0,
+    "blocked_by_volume": 0,
+    "blocked_by_squeeze": 0
+  }
+}

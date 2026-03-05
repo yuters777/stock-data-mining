@@ -156,6 +156,9 @@ class Backtester:
             m5_df = m5_df[m5_df['Datetime'] >= pd.Timestamp(start_date)]
         if end_date:
             m5_df = m5_df[m5_df['Datetime'] < pd.Timestamp(end_date)]
+        # Reset index so positional indices match label indices —
+        # needed by filter_chain._calc_atr_ratio which uses .loc[:trigger_bar_idx]
+        m5_df = m5_df.reset_index(drop=True)
 
         if m5_df.empty:
             return self._empty_result()

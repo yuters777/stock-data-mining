@@ -1,0 +1,31 @@
+{
+  "variant": "C",
+  "label": "ATR ON, relaxed (0.40/0.10)",
+  "config": {
+    "enable_atr_filter": true,
+    "atr_block_threshold": 0.1,
+    "atr_entry_threshold": 0.4
+  },
+  "metrics": {
+    "trades": 79,
+    "wr": 0.26582278481012656,
+    "pf": 2.023356779287073,
+    "pnl": 16816.497497982553,
+    "max_dd": 2764.4871838779663,
+    "avg_r": 0.6349253851240773
+  },
+  "funnel": {
+    "total_signals": 2355,
+    "passed": 1164,
+    "blocked_by_direction": 0,
+    "blocked_by_position": 0,
+    "blocked_by_level_score": 0,
+    "blocked_by_time": 69,
+    "blocked_by_earnings": 0,
+    "blocked_by_atr_hard": 597,
+    "blocked_by_atr_threshold": 525,
+    "blocked_by_atr_error": 0,
+    "blocked_by_volume": 0,
+    "blocked_by_squeeze": 0
+  }
+}

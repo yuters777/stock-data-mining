@@ -76,6 +76,7 @@ class FilterChainConfig:
         self.earnings_dates: dict[str, set] = kwargs.get('earnings_dates', {})
 
         # Feature toggles
+        self.enable_atr_filter = kwargs.get('enable_atr_filter', True)
         self.enable_volume_filter = kwargs.get('enable_volume_filter', True)
         self.enable_time_filter = kwargs.get('enable_time_filter', True)
         self.enable_squeeze_filter = kwargs.get('enable_squeeze_filter', True)
@@ -99,9 +100,12 @@ class FilterChain:
     def __init__(self, config: Optional[FilterChainConfig] = None):
         self.config = config or FilterChainConfig()
         self.funnel: list[SignalFunnelEntry] = []
+        self._atr_debug_count = 0
+        self._atr_debug_limit = 10
 
     def reset_funnel(self):
         self.funnel = []
+        self._atr_debug_count = 0
 
     def _check_direction_filter(self, signal: Signal) -> FilterResult:
         """Stage 1: Check if signal direction matches ticker's allowed direction."""
@@ -228,12 +232,18 @@ class FilterChain:
         ]
         day_bars_to_signal = day_bars.loc[:signal.trigger_bar_idx]
 
+        if day_bars_to_signal.empty:
+            return 0.0, "No M5 bars found for signal day/ticker"
+
         if signal.direction == SignalDirection.SHORT:
             day_low = day_bars_to_signal['Low'].min()
             distance = signal.level.price - day_low
         else:
             day_high = day_bars_to_signal['High'].max()
             distance = day_high - signal.level.price
+
+        if pd.isna(distance):
+            return 0.0, "Distance is NaN (data gap)"
 
         distance = max(distance, 0)
         return distance / atr_d1, ""
@@ -246,11 +256,31 @@ class FilterChain:
         Hard block if ratio < atr_block_threshold (0.30).
         Reject if ratio < atr_entry_threshold (0.80).
         """
+        if not self.config.enable_atr_filter:
+            return FilterResult(True, "ATR filter disabled")
+
         atr_ratio, error = self._calc_atr_ratio(signal, m5_bars, daily_df)
         funnel_entry.atr_ratio = atr_ratio
 
+        # Debug: print first N ATR checks
+        if self._atr_debug_count < self._atr_debug_limit:
+            self._atr_debug_count += 1
+            decision = "ERROR" if error else (
+                "HARD_BLOCK" if atr_ratio < self.config.atr_block_threshold else
+                "THRESHOLD_BLOCK" if atr_ratio < self.config.atr_entry_threshold else
+                "PASS")
+            print(f"    [ATR DEBUG {self._atr_debug_count}/{self._atr_debug_limit}] "
+                  f"{signal.ticker} {signal.direction.value} "
+                  f"ratio={atr_ratio:.4f} block={self.config.atr_block_threshold} "
+                  f"entry={self.config.atr_entry_threshold} → {decision}"
+                  f"{' (' + error + ')' if error else ''}")
+
         if error:
-            return FilterResult(False, error)
+            return FilterResult(False, f"ATR error: {error}")
+
+        # Guard: NaN ratios must not silently pass
+        if pd.isna(atr_ratio):
+            return FilterResult(False, "ATR ratio is NaN")
 
         if atr_ratio < self.config.atr_block_threshold:
             return FilterResult(
@@ -398,6 +428,9 @@ class FilterChain:
                                        if e.blocked_by == 'atr' and 'HARD BLOCK' in e.blocked_reason),
             'blocked_by_atr_threshold': sum(1 for e in self.funnel
                                             if e.blocked_by == 'atr' and 'below entry' in e.blocked_reason),
+            'blocked_by_atr_error': sum(1 for e in self.funnel
+                                        if e.blocked_by == 'atr' and ('error' in e.blocked_reason.lower()
+                                                                      or 'NaN' in e.blocked_reason)),
             'blocked_by_volume': sum(1 for e in self.funnel if e.blocked_by == 'volume'),
             'blocked_by_squeeze': sum(1 for e in self.funnel if e.blocked_by == 'squeeze'),
         }
