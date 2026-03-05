@@ -39,7 +39,7 @@ FULL_START = '2025-02-10'
 FULL_END = '2026-01-31'
 
 RESULTS_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-                           'results', 'phase3_d4_resolution')
+                           'results', 'phase3_25ticker_full')
 os.makedirs(RESULTS_DIR, exist_ok=True)
 
 
