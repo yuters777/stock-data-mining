@@ -19,6 +19,7 @@ from backtester.core.filter_chain import FilterChain, FilterChainConfig, SignalF
 from backtester.core.risk_manager import RiskManager, RiskManagerConfig
 from backtester.core.trade_manager import TradeManager, TradeManagerConfig, Trade, ExitReason
 from backtester.core.intraday_levels import IntradayLevelDetector, IntradayLevelConfig
+from backtester.earnings import EarningsCalendar
 
 # Backwards-compatible alias
 TradeDirection = SignalDirection
@@ -41,6 +42,9 @@ class BacktestConfig:
     # Direction filter: None = both, "long" = long only, "short" = short only
     # Can also be a dict mapping ticker -> direction, e.g. {"TSLA": "long", "DEFAULT": "short"}
     direction_filter: object = None
+
+    # Earnings calendar: pre-loaded EarningsCalendar instance, or None to skip
+    earnings_calendar: Optional[EarningsCalendar] = None
 
     # Data split
     in_sample_end: str = '2025-10-01'  # 70% IS
@@ -155,6 +159,14 @@ class Backtester:
 
         if m5_df.empty:
             return self._empty_result()
+
+        # Inject earnings dates into filter chain if calendar is provided
+        if self.config.earnings_calendar is not None:
+            tickers_in_data = list(m5_df['Ticker'].unique())
+            self.config.earnings_calendar.load(tickers_in_data)
+            self.filter_chain.config.earnings_dates = (
+                self.config.earnings_calendar.as_filter_config()
+            )
 
         ticker = m5_df['Ticker'].iloc[0]
         tol_func = self.config.level_config.get_tolerance
