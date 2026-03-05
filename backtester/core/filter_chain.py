@@ -76,6 +76,7 @@ class FilterChainConfig:
         self.earnings_dates: dict[str, set] = kwargs.get('earnings_dates', {})
 
         # Feature toggles
+        self.enable_atr_filter = kwargs.get('enable_atr_filter', True)
         self.enable_volume_filter = kwargs.get('enable_volume_filter', True)
         self.enable_time_filter = kwargs.get('enable_time_filter', True)
         self.enable_squeeze_filter = kwargs.get('enable_squeeze_filter', True)
@@ -255,6 +256,9 @@ class FilterChain:
         Hard block if ratio < atr_block_threshold (0.30).
         Reject if ratio < atr_entry_threshold (0.80).
         """
+        if not self.config.enable_atr_filter:
+            return FilterResult(True, "ATR filter disabled")
+
         atr_ratio, error = self._calc_atr_ratio(signal, m5_bars, daily_df)
         funnel_entry.atr_ratio = atr_ratio
 
