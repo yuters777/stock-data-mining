@@ -1,0 +1,143 @@
+
+================================================================================
+  DSR / MinTRL / PSR DIAGNOSTICS
+================================================================================
+  Daily equity returns: T=255 days (113 with trades)
+  Raw Sharpe (annualized): 0.8658
+  Skewness: 4.5043
+  Kurtosis (raw): 30.1139
+
+  PSR (vs SR=0 benchmark): 100.0% (p=0.0000)
+  DSR (vs 50 trials): 100.0% (benchmark SR=0.1434)
+
+  MinTRL (95% conf vs SR=0): 9 days
+  Actual track record: 255 days
+  MinTRL reached? YES (sufficient)
+  Trades: 202 (1.79/trading day)
+
+================================================================================
+  CSCV / PBO ANALYSIS — 25-ticker universe
+  Bailey, Borwein, López de Prado, Zhu (2015)
+================================================================================
+  Tickers: 25  |  Period: 2025-02-10 -> 2026-01-31
+  CSCV blocks: S=16  |  Splits: C(16,8)
+
+  Step 1: Loading data and computing daily indicators...
+    AAPL: 272 days
+    AMD: 272 days
+    AMZN: 272 days
+    AVGO: 272 days
+    BA: 272 days
+    BABA: 271 days
+    BIDU: 272 days
+    C: 272 days
+    COIN: 271 days
+    COST: 272 days
+    GOOGL: 272 days
+    GS: 271 days
+    IBIT: 271 days
+    JPM: 272 days
+    MARA: 272 days
+    META: 272 days
+    MSFT: 272 days
+    MU: 272 days
+    NVDA: 272 days
+    PLTR: 272 days
+    SNOW: 271 days
+    TSLA: 272 days
+    TSM: 272 days
+    TXN: 270 days
+    V: 272 days
+
+  Step 2: Running 16 strategy variants on 25 tickers...
+    [ 0] S00_ConfigA_Simplified         P&L=$    -384  trade_days= 63  [151.2s]
+    [ 1] S01_Baseline_AllFilters        P&L=$   5,938  trade_days= 15  [129.5s]
+    [ 2] S02_ConfigC_Minimal            P&L=$  83,987  trade_days=128  [157.9s]
+    [ 3] S03_Nuclear                    P&L=$  76,971  trade_days=140  [195.3s]
+    [ 4] S04_FD3                        P&L=$  12,856  trade_days= 43  [362.3s]
+    [ 5] S05_FD5                        P&L=$  13,568  trade_days= 29  [231.1s]
+    [ 6] S06_FD7                        P&L=$  13,522  trade_days= 20  [171.5s]
+    [ 7] S07_ATR_high                   P&L=$   7,272  trade_days=  9  [109.6s]
+    [ 8] S08_ATR_low                    P&L=$   5,874  trade_days= 19  [139.2s]
+    [ 9] S09_RR3                        P&L=$   5,938  trade_days= 15  [132.8s]
+    [10] S10_Stop010                    P&L=$  10,699  trade_days= 15  [127.9s]
+    [11] S11_Stop020                    P&L=$    -771  trade_days= 14  [123.2s]
+    [12] S12_Saw_3_20                   P&L=$   1,123  trade_days= 15  [118.2s]
+    [13] S13_Tail010                    P&L=$   5,938  trade_days= 15  [134.0s]
+    [14] S14_Tail020                    P&L=$   5,203  trade_days= 14  [123.3s]
+    [15] S15_NoRegime                   P&L=$   6,568  trade_days= 37  [133.4s]
+
+  Step 3: Building trials matrix...
+    Total trading days: 156
+
+       # Strategy                             SR   Total%
+    ──────────────────────────────────────────────────────
+       0 S00_ConfigA_Simplified          -0.004  -0.384%
+       1 S01_Baseline_AllFilters          0.084   5.938%
+       2 S02_ConfigC_Minimal              0.110  83.987%
+       3 S03_Nuclear                      0.101  76.971%
+       4 S04_FD3                          0.122  12.856%
+       5 S05_FD5                          0.128  13.568%
+       6 S06_FD7                          0.129  13.522%
+       7 S07_ATR_high                     0.103   7.272%
+       8 S08_ATR_low                      0.081   5.874%
+       9 S09_RR3                          0.084   5.938%
+      10 S10_Stop010                      0.105  10.699%
+      11 S11_Stop020                     -0.031  -0.771%
+      12 S12_Saw_3_20                     0.041   1.123%
+      13 S13_Tail010                      0.084   5.938%
+      14 S14_Tail020                      0.069   5.203%
+      15 S15_NoRegime                     0.081   6.568%
+
+  Step 4: Running CSCV (S=16)...
+
+================================================================================
+  CSCV / PBO RESULTS
+================================================================================
+
+  PBO = 0.1418 (14.2%)
+  OOS-negative splits: 1825 / 12870
+
+  Logit distribution:
+    Mean:   0.0935
+    Median: 0.2513
+    Std:    1.3130
+
+  IS→OOS degradation:
+    IS Sharpe mean:  0.1831
+    OOS Sharpe mean: 0.0740
+    Degradation: 59.6%
+
+  IS-OOS correlation: r=-0.2923 (p=0.0000)
+
+  Config A focus:
+    Selected as IS-best: 0/12870 (0.0%)
+    Full-sample SR: -0.0045
+    Config A was NEVER selected as IS-best
+
+  Most frequent IS-best strategies:
+    S02_ConfigC_Minimal: 4623/12870 (35.9%)
+    S04_FD3: 3325/12870 (25.8%)
+    S05_FD5: 1689/12870 (13.1%)
+    S06_FD7: 1626/12870 (12.6%)
+    S10_Stop010: 1016/12870 (7.9%)
+
+================================================================================
+  COMPARISON: 54 trades (prev) vs 202 trades (new)
+================================================================================
+  Metric                        54 trades (prev)     202 trades (new)
+  ─────────────────────────────────────────────────────────────────
+  PBO                                      18.6%                14.2%
+  Logit mean                               -0.51               0.0935
+  IS→OOS degrad                            60.6%                59.6%
+  IS-OOS corr                              -0.42              -0.2923
+  PSR                             78.6% (p=0.21)          100.0% (p=0.00)
+  MinTRL reached?                    No (54<202)                  Yes
+  Sharpe (ann.)                                                0.8658
+  DSR (50 trials)                                              100.0%
+
+  Generating plots...
+  Saved: /home/user/stock-data-mining/results/phase3_cscv_pbo_25ticker/logit_distribution.png
+  Saved: /home/user/stock-data-mining/results/phase3_cscv_pbo_25ticker/is_oos_scatter.png
+
+  Summary saved: /home/user/stock-data-mining/results/phase3_cscv_pbo_25ticker/summary.json
