@@ -1,0 +1,74 @@
+{
+  "all_pass": false,
+  "diagnostics": {
+    "D1_counterfactual": {
+      "verdict": "SUPPRESSIVE",
+      "pass": false
+    },
+    "D2_remove_top5": {
+      "verdict": "TAIL-ONLY STRATEGY",
+      "pass": false
+    },
+    "D3_quarterly": {
+      "verdict": "DISTRIBUTED",
+      "pass": true
+    },
+    "D4_audit": {
+      "verdict": "ISSUES FOUND",
+      "pass": false,
+      "details": [
+        {
+          "trade": 1,
+          "ticker": "TXN",
+          "pnl": 6545.406237737807,
+          "verdict": "SUSPICIOUS",
+          "issues": [
+            "Trade spans overnight",
+            "Zero slippage \u2014 may be unrealistic",
+            "Extreme R-multiple (21.8R)"
+          ]
+        },
+        {
+          "trade": 2,
+          "ticker": "V",
+          "pnl": 5218.129500230058,
+          "verdict": "VALID (minor notes)",
+          "issues": [
+            "Zero slippage \u2014 may be unrealistic"
+          ]
+        },
+        {
+          "trade": 3,
+          "ticker": "IBIT",
+          "pnl": 4191.627522167991,
+          "verdict": "VALID (minor notes)",
+          "issues": [
+            "Zero slippage \u2014 may be unrealistic",
+            "ATR ratio 0.3721 < 0.40 threshold"
+          ]
+        },
+        {
+          "trade": 4,
+          "ticker": "BABA",
+          "pnl": 4052.2149980933273,
+          "verdict": "SUSPICIOUS",
+          "issues": [
+            "Trade spans overnight",
+            "Zero slippage \u2014 may be unrealistic"
+          ]
+        },
+        {
+          "trade": 5,
+          "ticker": "BA",
+          "pnl": 2061.6379757521686,
+          "verdict": "VALID (minor notes)",
+          "issues": [
+            "Zero slippage \u2014 may be unrealistic",
+            "ATR ratio 0.0000 < 0.40 threshold"
+          ]
+        }
+      ]
+    }
+  },
+  "recommendation": "DO NOT FREEZE"
+}

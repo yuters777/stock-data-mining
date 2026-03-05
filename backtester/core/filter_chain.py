@@ -101,7 +101,7 @@ class FilterChain:
         self.config = config or FilterChainConfig()
         self.funnel: list[SignalFunnelEntry] = []
         self._atr_debug_count = 0
-        self._atr_debug_limit = 10
+        self._atr_debug_limit = getattr(self.config, '_atr_debug_limit', 10)
 
     def reset_funnel(self):
         self.funnel = []

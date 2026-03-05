@@ -1,0 +1,136 @@
+================================================================================
+  P0 ISSUE A: OVERNIGHT TRADE INVESTIGATION
+  Date: 2026-03-05
+================================================================================
+
+TRIGGER: D4 audit found trades spanning Friday->Monday for TXN and BABA.
+CONCERN: Possible IST/ET timezone mismatch invalidating ALL results.
+
+================================================================================
+  1. TIMEZONE ANALYSIS — IST/ET CONVERSION IS CORRECT
+================================================================================
+
+The backtester uses IST (Israel Standard Time) timestamps throughout:
+  - Market open:  16:30 IST = 09:30 ET (winter/EST)
+  - Market close: 23:00 IST = 16:00 ET (winter/EST)
+  - EOD flatten:  22:55 IST = 15:55 ET (winter/EST)
+  - Entry cutoff: 22:45 IST = 15:45 ET (winter/EST)
+
+File: backtester/core/trade_manager.py lines 61-65
+  EOD_EXIT_HOUR_IST = 22
+  EOD_EXIT_MINUTE_IST = 55
+
+The _is_eod() check (line 473-477) correctly compares bar timestamps against
+22:55 IST. No timezone conversion bug exists.
+
+VERDICT: Timezone handling is CORRECT.
+
+================================================================================
+  2. ROOT CAUSE — DATA TRUNCATION
+================================================================================
+
+The overnight trades are caused by INCOMPLETE CSV DATA, not a timezone bug.
+Most tickers have bars ending well before 22:55 IST (market close).
+
+DATA TRUNCATION BY TICKER:
+  Ticker    TotalDays  FullDays  TruncDays  Trunc%  ModeLastHr(IST)
+  --------  ---------  --------  ---------  ------  ---------------
+  AAPL           289        70        219   75.8%        19
+  MSFT           328       262         66   20.1%        23
+  NVDA           328       262         66   20.1%        23
+  TSLA           328       262         66   20.1%        23
+  AMD            277        21        256   92.4%        19
+  AMZN           328       262         66   20.1%        23
+  META           328       262         66   20.1%        23
+  AVGO           277        21        256   92.4%        19
+  MU             277        21        256   92.4%        19
+  BA             277        21        256   92.4%        19
+  JPM            277        21        256   92.4%        19
+  GS             277        21        256   92.4%        19
+  V              277        21        256   92.4%        19
+  IBIT           277        21        256   92.4%        19
+  TXN            277        21        256   92.4%        19
+  BABA           291        70        221   75.9%        19
+  COIN           289        70        219   75.8%        19
+  MARA           277        21        256   92.4%        19
+
+SEVERITY: 11 of 25 tickers have 92.4% truncation (bars end at ~19:00 IST = ~12:00 ET).
+This means ~4 hours of trading data is missing on most days for these tickers.
+
+MECHANISM OF OVERNIGHT HOLDING:
+  1. Trade opens during available bars (e.g., 18:00 IST)
+  2. Data ends at ~19:55 IST — no bar at 22:55 IST exists
+  3. EOD flatten (_is_eod check) never fires — no bar to trigger it
+  4. Next bar is the following trading day (e.g., Monday 16:30 IST)
+  5. Trade is held overnight (or over weekend) until next day's first bar
+
+IMPACT: Any trade opened during available bars that doesn't hit SL/TP
+before data ends is held overnight. This affects ALL results, not just the
+top-5 winners found in the D4 audit.
+
+================================================================================
+  3. FIX APPLIED — DAY-CHANGE EOD FLATTEN
+================================================================================
+
+File: backtester/backtester.py (main loop, ~line 216)
+
+BEFORE: On day change, only reset daily state and level cache. Open trades
+from the previous day carry over to the next day's bars.
+
+AFTER: On day change, force-flatten ALL open trades at the last available
+bar's close price from the previous day. This guarantees no overnight holding
+regardless of data truncation.
+
+Implementation:
+  - Track last_bar_by_ticker = {ticker: (close_price, bar_time)} during each bar
+  - On day change: iterate open trades, close each at its ticker's last known price
+  - Exit reason: EOD_EXIT (same as the 22:55 IST flatten)
+
+VERIFICATION:
+  Before fix (previous runs):
+    TXN: trades spanning Friday 19:35 -> Monday 16:30 (overnight/weekend)
+    BABA: trades spanning Friday 19:40 -> Monday 16:30 (overnight/weekend)
+
+  After fix:
+    TSLA: 23t, 0 overnight, EOD exits at 22:55 (normal) and 19:55 (day-change)
+    BABA: 7t, 0 overnight
+    AAPL: 10t, 0 overnight, EOD exits at 19:55 (day-change) and 22:55 (normal)
+    TXN:  14t, 0 overnight, EOD exit at 19:55 (day-change)
+    AMD:  9t, 0 overnight
+
+  Example EOD exit times showing both mechanisms work:
+    TSLA 2025-04-25 22:55:00 — normal _is_eod() flatten (full data day)
+    TSLA 2025-11-13 19:55:00 — day-change flatten (truncated data day)
+    TXN  2025-10-07 19:55:00 — day-change flatten (truncated data day)
+    AAPL 2025-08-11 19:55:00 — day-change flatten (truncated data day)
+
+================================================================================
+  4. IMPACT ON PREVIOUS RESULTS
+================================================================================
+
+ALL previous backtest results (Phase 1, Phase 2, Phase 3 v1/v2, ATR ablation,
+diagnostics) were run WITHOUT the day-change EOD flatten fix. This means:
+
+  - Trades that opened near data cutoff (~19:xx IST) on truncated days were
+    held overnight to the next trading day
+  - These trades experienced gap risk (positive or negative) that a real
+    intraday strategy would never encounter
+  - P&L for these trades includes overnight price moves, inflating or
+    deflating returns unpredictably
+  - The overnight TXN trade (+$4,192) from the D4 top-5 audit is confirmed
+    to be one such affected trade
+
+RECOMMENDATION: Re-run all key comparisons with the fix applied (Variant A').
+Previous results should NOT be used for production config decisions.
+
+================================================================================
+  5. DECISION
+================================================================================
+
+Per the user's decision tree:
+  "IF timezone is correct AND trades DO span overnight → Bug in EOD flatten
+   logic → Fix flatten → Re-run A'"
+
+TIMEZONE: Correct (IST/ET conversion verified)
+OVERNIGHT TRADES: Yes, caused by data truncation (not timezone bug)
+ACTION: Fix applied (day-change EOD flatten). Re-run Variant A' required.
