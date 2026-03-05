@@ -205,6 +205,9 @@ class Backtester:
         m5_closes = m5_df['Close'].values
         m5_tickers = m5_df['Ticker'].values
 
+        # Track last bar per ticker for EOD flatten on day change
+        last_bar_by_ticker = {}  # ticker -> (close_price, bar_time)
+
         # Process each M5 bar
         for bar_idx in range(len(m5_df)):
             bar = m5_df.iloc[bar_idx]
@@ -212,12 +215,34 @@ class Backtester:
             bar_date = bar_time.normalize()
             bar_ticker = m5_tickers[bar_idx]
 
-            # Reset daily state and level cache on new day
+            # Force-flatten open trades on day change if their last bar
+            # didn't reach EOD (22:55 IST). This prevents overnight holding
+            # when data is truncated (bars end before market close).
             if prev_date is not None and bar_date != prev_date:
+                for trade in list(self.trade_manager.open_trades):
+                    trade_ticker = trade.signal.ticker if trade.signal else None
+                    if trade_ticker and trade_ticker in last_bar_by_ticker:
+                        lclose, ltime = last_bar_by_ticker[trade_ticker]
+                    else:
+                        # Fallback: use previous bar
+                        lclose = m5_closes[bar_idx - 1] if bar_idx > 0 else bar['Close']
+                        ltime = pd.Timestamp(m5_datetimes[bar_idx - 1]) if bar_idx > 0 else bar_time
+                    self.trade_manager._close_trade(
+                        trade, lclose, ltime, ExitReason.EOD_EXIT
+                    )
+                    equity += trade.pnl
+                    equity_curve.append((ltime, equity))
+                    date_str = prev_date.strftime('%Y-%m-%d')
+                    daily_pnl[date_str] = daily_pnl.get(date_str, 0.0) + trade.pnl
+
                 self.risk_manager.cb_state.reset_daily(bar_date)
                 cached_active_levels = {}
                 cached_date = None
+                last_bar_by_ticker = {}
             prev_date = bar_date
+
+            # Track last bar for each ticker (for EOD flatten)
+            last_bar_by_ticker[bar_ticker] = (m5_closes[bar_idx], bar_time)
 
             # Update existing open trades
             closed_trades = self.trade_manager.update_trades(bar, bar_time)

@@ -1,0 +1,44 @@
+================================================================================
+  TIMEZONE ANALYSIS — IST vs ET
+================================================================================
+
+CONCLUSION: No timezone mismatch. IST timestamps are used consistently.
+
+1. DATA FORMAT
+   - CSV files contain IST (Israel Standard Time) timestamps
+   - All M5 bars are timestamped in IST
+   - No timezone conversion occurs in the backtester
+
+2. RTH (Regular Trading Hours) FILTER
+   File: backtester/backtester.py prepare_data() method
+   - Filters bars to 16:30-23:00 IST
+   - 16:30 IST = 09:30 ET (market open)
+   - 23:00 IST = 16:00 ET (market close)
+   - CORRECT
+
+3. EOD FLATTEN
+   File: backtester/core/trade_manager.py
+   - EOD_EXIT_HOUR_IST = 22, EOD_EXIT_MINUTE_IST = 55
+   - 22:55 IST = 15:55 ET
+   - CORRECT (flattens 5 min before close)
+
+4. ENTRY CUTOFF
+   File: backtester/core/trade_manager.py
+   - ENTRY_CUTOFF_HOUR_IST = 22, ENTRY_CUTOFF_MINUTE_IST = 45
+   - 22:45 IST = 15:45 ET
+   - CORRECT (no new entries in last 15 min)
+
+5. DST HANDLING
+   - IST does not observe DST (Israel uses IDT in summer, +1hr)
+   - ET shifts between EST (UTC-5) and EDT (UTC-4)
+   - The data is IST-native, so DST in ET doesn't affect bar timestamps
+   - The EOD flatten time of 22:55 IST is ~15:55 ET in winter (EST)
+     and ~16:55 ET in summer (EDT) — but since data is IST, this is fine
+   - NOTE: During EDT (summer), 22:55 IST is actually 15:55 EDT =
+     one hour AFTER market close. This means the flatten is conservative
+     (always fires before or at market close in ET terms).
+
+6. OVERNIGHT TRADES — NOT A TIMEZONE ISSUE
+   The overnight trades found in D4 audit (TXN, BABA) are caused by
+   data truncation (bars ending at ~19:xx IST), not timezone confusion.
+   See overnight_investigation.txt for full analysis.

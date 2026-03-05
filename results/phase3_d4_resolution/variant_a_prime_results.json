@@ -1,0 +1,193 @@
+{
+  "config": "A_PRIME",
+  "description": "ATR OFF, Squeeze OFF, Day-change EOD flatten, reset_index fix",
+  "period": "2025-02-10 to 2026-01-31",
+  "tickers": [
+    "AAPL",
+    "MSFT",
+    "NVDA",
+    "TSLA",
+    "AMD",
+    "AMZN",
+    "META",
+    "AVGO",
+    "MU",
+    "BA",
+    "JPM",
+    "GS",
+    "V",
+    "IBIT",
+    "TXN",
+    "BABA",
+    "COIN",
+    "MARA"
+  ],
+  "metrics": {
+    "trades": 159,
+    "wr": 0.27672955974842767,
+    "pf": 1.3624883031506423,
+    "pnl": 11451.173050076068,
+    "max_dd": 5201.486877753369,
+    "avg_r": 0.19204633446499622
+  },
+  "funnel": {
+    "total_signals": 1564,
+    "passed": 1505,
+    "blocked_by_direction": 0,
+    "blocked_by_position": 0,
+    "blocked_by_level_score": 0,
+    "blocked_by_time": 59,
+    "blocked_by_earnings": 0,
+    "blocked_by_atr_hard": 0,
+    "blocked_by_atr_threshold": 0,
+    "blocked_by_atr_error": 0,
+    "blocked_by_volume": 0,
+    "blocked_by_squeeze": 0
+  },
+  "per_ticker": {
+    "AAPL": {
+      "trades": 10,
+      "win_rate": 0.4,
+      "profit_factor": 1.1708080538059011,
+      "total_pnl": 327.8968523047635,
+      "eod_exits": 3
+    },
+    "MSFT": {
+      "trades": 2,
+      "win_rate": 0.0,
+      "profit_factor": 0.0,
+      "total_pnl": -247.19872338937216,
+      "eod_exits": 0
+    },
+    "NVDA": {
+      "trades": 2,
+      "win_rate": 0.5,
+      "profit_factor": 3.450622875705277,
+      "total_pnl": 673.7283649204046,
+      "eod_exits": 0
+    },
+    "TSLA": {
+      "trades": 23,
+      "win_rate": 0.4782608695652174,
+      "profit_factor": 4.7095999144656995,
+      "total_pnl": 12497.122105863946,
+      "eod_exits": 2
+    },
+    "AMD": {
+      "trades": 9,
+      "win_rate": 0.1111111111111111,
+      "profit_factor": 0.3448367164052431,
+      "total_pnl": -1622.6138729001611,
+      "eod_exits": 0
+    },
+    "AMZN": {
+      "trades": 10,
+      "win_rate": 0.2,
+      "profit_factor": 0.4040704551957805,
+      "total_pnl": -1428.8858347964679,
+      "eod_exits": 1
+    },
+    "META": {
+      "trades": 4,
+      "win_rate": 0.25,
+      "profit_factor": 0.8097304390856132,
+      "total_pnl": -209.93855727339644,
+      "eod_exits": 0
+    },
+    "AVGO": {
+      "trades": 6,
+      "win_rate": 0.3333333333333333,
+      "profit_factor": 0.49061348811206856,
+      "total_pnl": -552.082429443484,
+      "eod_exits": 1
+    },
+    "MU": {
+      "trades": 3,
+      "win_rate": 0.6666666666666666,
+      "profit_factor": 0.3299824180247375,
+      "total_pnl": -285.79902333089206,
+      "eod_exits": 1
+    },
+    "BA": {
+      "trades": 22,
+      "win_rate": 0.22727272727272727,
+      "profit_factor": 1.4836286820697036,
+      "total_pnl": 2111.7834166718826,
+      "eod_exits": 6
+    },
+    "JPM": {
+      "trades": 12,
+      "win_rate": 0.16666666666666666,
+      "profit_factor": 0.11189282353728232,
+      "total_pnl": -2333.553954310187,
+      "eod_exits": 5
+    },
+    "GS": {
+      "trades": 4,
+      "win_rate": 0.0,
+      "profit_factor": 0.0,
+      "total_pnl": -608.2610505332003,
+      "eod_exits": 1
+    },
+    "V": {
+      "trades": 11,
+      "win_rate": 0.2727272727272727,
+      "profit_factor": 3.6281623130596223,
+      "total_pnl": 4971.323453167934,
+      "eod_exits": 2
+    },
+    "IBIT": {
+      "trades": 7,
+      "win_rate": 0.14285714285714285,
+      "profit_factor": 0.17284517613451608,
+      "total_pnl": -1332.2056531228336,
+      "eod_exits": 1
+    },
+    "TXN": {
+      "trades": 14,
+      "win_rate": 0.2857142857142857,
+      "profit_factor": 0.5089932893936032,
+      "total_pnl": -1377.6139592777592,
+      "eod_exits": 1
+    },
+    "BABA": {
+      "trades": 7,
+      "win_rate": 0.14285714285714285,
+      "profit_factor": 2.5970489909602774,
+      "total_pnl": 2897.0466367865274,
+      "eod_exits": 0
+    },
+    "COIN": {
+      "trades": 8,
+      "win_rate": 0.25,
+      "profit_factor": 0.1817921849473844,
+      "total_pnl": -1453.9319919880613,
+      "eod_exits": 1
+    },
+    "MARA": {
+      "trades": 5,
+      "win_rate": 0.4,
+      "profit_factor": 0.27178688676547,
+      "total_pnl": -575.6427292735764,
+      "eod_exits": 1
+    }
+  },
+  "overnight_trades": 0,
+  "diagnostics": {
+    "d2_remove_top5": {
+      "top5_pnl": 21423.50545420413,
+      "remaining_pnl": -9972.332404128061,
+      "pass": "False"
+    },
+    "d3_quarterly": {
+      "profitable_quarters": 1,
+      "total_quarters": 4,
+      "pass": false
+    },
+    "d4_overnight": {
+      "overnight_count": 0,
+      "pass": true
+    }
+  },
+  "elapsed_seconds": 70.67066502571106
+}

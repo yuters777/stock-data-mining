@@ -1,0 +1,39 @@
+================================================================================
+  P0 ISSUE B: ATR RATIO MISMATCH INVESTIGATION
+  Date: 2026-03-05
+================================================================================
+
+CONTEXT: D4 audit found ATR exhaustion ratio mismatches for IBIT LP2 (+$4,192)
+and BA MODEL4 (+$2,062). The audit used bar.close to approximate ATR distance,
+but the filter chain uses signal.level.price.
+
+ROOT CAUSE OF MISMATCH:
+  The D4 audit approximation uses:
+    distance = bar.close - day_low  (shorts)
+    distance = day_high - bar.close (longs)
+
+  The actual filter chain (_calc_atr_ratio) uses:
+    distance = signal.level.price - day_low  (shorts)
+    distance = day_high - signal.level.price (longs)
+
+  Since bar.close != signal.level.price in general, the ratios differ.
+  This is an audit approximation error, NOT a filter chain bug.
+
+IMPACT: None. The ATR filter is DISABLED for the recommended Variant A'
+config (enable_atr_filter=False). ATR ratios are informational only.
+
+NOTE ON DATA CHANGE:
+  The underlying CSV data has been refreshed (now covers 2025-02-03 to
+  2026-03-05). The specific IBIT +$4,192 and BA +$2,062 trades from the
+  original D4 audit no longer exist in the current dataset. The new top
+  trades for these tickers are:
+
+  IBIT top trade: +$278 (LP2 long, 2025-11-04, breakeven_stop exit)
+  BA top trade: +$2,513 (LP2 short, 2025-12-11, trail_stop exit)
+  BA #2 trade: +$2,062 (MODEL4 long, 2025-07-28, trail_stop exit)
+
+  All trades now exit same-day (no overnight holding) thanks to the
+  day-change EOD flatten fix.
+
+VERDICT: ATR ratio mismatch was an audit approximation error.
+No code fix needed. ATR filter is disabled in production config.
