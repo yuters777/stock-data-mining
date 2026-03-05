@@ -1,0 +1,110 @@
+
+======================================================================
+TRADE #1: TXN LP1 long P&L=$6,545 (+21.8R)
+======================================================================
+  Entry: 2025-05-09 17:20:00  Price: 168.4194
+  Exit:  2025-05-12 16:35:00  Price: 182.6039
+  Stop:  168.4531  Target: 169.3729
+  Position: 641 shares  Slippage: $0.00
+  Exit reason: trail_stop
+  Max favorable: 14.6379  Max adverse: 0.3856
+
+  [1] Entry timing: 17:20 IST (within session)
+  [2] Exit timing:  16:35 IST (within session)
+  [3] Same-day trade: NO — spans overnight
+  [4] Slippage applied: NO — zero slippage ($0.00)
+  [5] Trail stop verification: trail_price=182.6404 (active)
+  [6] R-multiple: 21.8R (EXTREME — verify manually)
+  [7] ATR exhaustion at entry: 0.4039 (threshold=0.40, PASS)
+      ATR_D1=3.5818, distance=1.4467, day_bars_used=9 (not full day → no lookahead)
+
+  ISSUES: ['Trade spans overnight', 'Zero slippage — may be unrealistic', 'Extreme R-multiple (21.8R)']
+  VERDICT: SUSPICIOUS
+
+======================================================================
+TRADE #2: V MODEL4 short P&L=$5,218 (+11.6R)
+======================================================================
+  Entry: 2025-12-01 17:25:00  Price: 330.4521
+  Exit:  2025-12-01 17:50:00  Price: 316.0102
+  Stop:  331.2516  Target: 328.1636
+  Position: 484 shares  Slippage: $0.00
+  Exit reason: trail_stop
+  Max favorable: 15.0648  Max adverse: 0.0831
+
+  [1] Entry timing: 17:25 IST (within session)
+  [2] Exit timing:  17:50 IST (within session)
+  [3] Same-day trade: Yes
+  [4] Slippage applied: NO — zero slippage ($0.00)
+  [5] Trail stop verification: trail_price=315.9470 (active)
+  [6] R-multiple: 11.6R (reasonable)
+  [7] ATR exhaustion at entry: 2.0966 (threshold=0.40, PASS)
+      ATR_D1=6.3113, distance=13.2322, day_bars_used=12 (not full day → no lookahead)
+
+  ISSUES: ['Zero slippage — may be unrealistic']
+  VERDICT: VALID (minor notes)
+
+======================================================================
+TRADE #3: IBIT LP2 short P&L=$4,192 (+14.0R)
+======================================================================
+  Entry: 2025-08-25 18:50:00  Price: 62.6875
+  Exit:  2025-08-25 19:00:00  Price: 59.2172
+  Stop:  62.8475  Target: 62.1475
+  Position: 1620 shares  Slippage: $0.00
+  Exit reason: trail_stop
+  Max favorable: 3.5941  Max adverse: 0.0525
+
+  [1] Entry timing: 18:50 IST (within session)
+  [2] Exit timing:  19:00 IST (within session)
+  [3] Same-day trade: Yes
+  [4] Slippage applied: NO — zero slippage ($0.00)
+  [5] Trail stop verification: trail_price=59.2054 (active)
+  [6] R-multiple: 14.0R (reasonable)
+  [7] ATR exhaustion at entry: 0.3721 (threshold=0.40, FAIL)
+      ATR_D1=1.3439, distance=0.5000, day_bars_used=29 (not full day → no lookahead)
+
+  ISSUES: ['Zero slippage — may be unrealistic', 'ATR ratio 0.3721 < 0.40 threshold']
+  VERDICT: VALID (minor notes)
+
+======================================================================
+TRADE #4: BABA LP1 long P&L=$4,052 (+13.5R)
+======================================================================
+  Entry: 2025-09-05 17:50:00  Price: 135.3171
+  Exit:  2025-09-08 16:35:00  Price: 141.1754
+  Stop:  135.3441  Target: 136.7370
+  Position: 896 shares  Slippage: $0.00
+  Exit reason: trail_stop
+  Max favorable: 6.0829  Max adverse: 0.2655
+
+  [1] Entry timing: 17:50 IST (within session)
+  [2] Exit timing:  16:35 IST (within session)
+  [3] Same-day trade: NO — spans overnight
+  [4] Slippage applied: NO — zero slippage ($0.00)
+  [5] Trail stop verification: trail_price=141.2036 (active)
+  [6] R-multiple: 13.5R (reasonable)
+  [7] ATR exhaustion at entry: 0.5910 (threshold=0.40, PASS)
+      ATR_D1=11.6630, distance=6.8923, day_bars_used=17 (not full day → no lookahead)
+
+  ISSUES: ['Trade spans overnight', 'Zero slippage — may be unrealistic']
+  VERDICT: SUSPICIOUS
+
+======================================================================
+TRADE #5: BA MODEL4 long P&L=$2,062 (+4.6R)
+======================================================================
+  Entry: 2025-07-28 16:45:00  Price: 236.5241
+  Exit:  2025-07-28 16:50:00  Price: 250.7832
+  Stop:  236.5714  Target: 242.1104
+  Position: 177 shares  Slippage: $0.00
+  Exit reason: trail_stop
+  Max favorable: 16.0226  Max adverse: 7.3062
+
+  [1] Entry timing: 16:45 IST (within session)
+  [2] Exit timing:  16:50 IST (within session)
+  [3] Same-day trade: Yes
+  [4] Slippage applied: NO — zero slippage ($0.00)
+  [5] Trail stop verification: trail_price=250.8334 (active)
+  [6] R-multiple: 4.6R (reasonable)
+  [7] ATR exhaustion at entry: 0.0000 (threshold=0.40, FAIL)
+      ATR_D1=13.0218, distance=0.0000, day_bars_used=4 (not full day → no lookahead)
+
+  ISSUES: ['Zero slippage — may be unrealistic', 'ATR ratio 0.0000 < 0.40 threshold']
+  VERDICT: VALID (minor notes)

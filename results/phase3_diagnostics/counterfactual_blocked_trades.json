@@ -1,0 +1,32 @@
+{
+  "all_trades": {
+    "trades": 198,
+    "wr": 0.25252525252525254,
+    "pf": 1.4272350249532235,
+    "pnl": 18569.007031480964,
+    "max_dd": 9314.777204503489,
+    "avg_r": 0.25856880398242227
+  },
+  "kept_trades": {
+    "trades": 59,
+    "wr": 0.288135593220339,
+    "pf": 1.4594372882236961,
+    "pnl": 5737.630297842112,
+    "max_dd": 3562.119132438237,
+    "avg_r": 0.2067486668496239
+  },
+  "blocked_trades": {
+    "trades": 139,
+    "wr": 0.23741007194244604,
+    "pf": 1.4142517627926086,
+    "pnl": 12831.376733638856,
+    "max_dd": 8462.880237086101,
+    "avg_r": 0.28056440175821423
+  },
+  "blocked_winners": 33,
+  "blocked_losers": 106,
+  "blocked_winner_pnl": 43806.20384635478,
+  "blocked_loser_pnl": -30974.827112715917,
+  "verdict": "SUPPRESSIVE",
+  "reason": "Blocked trades are net profitable \u2014 ATR gate kills good trades"
+}
