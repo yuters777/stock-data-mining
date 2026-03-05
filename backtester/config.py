@@ -105,7 +105,11 @@ DEFAULT_CONFIG: dict[str, Any] = {
     "out_of_sample_start": "2025-10-01",
 
     # ── Portfolio ──
-    "tickers": ["TSLA", "AAPL", "AMZN", "GOOGL"],
+    "tickers": [
+        "AAPL", "AMD", "AMZN", "AVGO", "BA", "BABA", "BIDU", "C", "COIN", "COST",
+        "GOOGL", "GS", "IBIT", "JPM", "MARA", "META", "MSFT", "MU", "NVDA",
+        "PLTR", "SNOW", "TSLA", "TSM", "TXN", "V",
+    ],
 }
 
 # All keys that must be present for a valid config
