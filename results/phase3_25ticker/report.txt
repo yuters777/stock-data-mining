@@ -1,0 +1,92 @@
+==========================================================================================
+  PHASE 3 — Frozen Config A Backtest (All Available Tickers)
+==========================================================================================
+  Config: FD=10, ATR_ENTRY=0.60, ATR_BLOCK=0.30, RR=2.0, TAIL=0.15, STOP=0.15
+  Tickers (9): AAPL, AMZN, BABA, COIN, GOOGL, META, MSFT, NVDA, TSLA
+  Period: 2025-02-10 → 2026-01-31
+  NOTE: 25-ticker data not available; running on 9 available tickers
+
+  Running AAPL...
+    AAPL: 2t, WR=0.0%, PF=0.00, P&L=$-511
+  Running AMZN...
+    AMZN: 8t, WR=25.0%, PF=0.68, P&L=$-510
+  Running BABA...
+    BABA: 0t, WR=0.0%, PF=0.00, P&L=$0
+  Running COIN...
+    COIN: 0t, WR=0.0%, PF=0.00, P&L=$0
+  Running GOOGL...
+    GOOGL: 5t, WR=80.0%, PF=15.73, P&L=$4097
+  Running META...
+    META: 4t, WR=25.0%, PF=0.82, P&L=$-153
+  Running MSFT...
+    MSFT: 2t, WR=0.0%, PF=0.00, P&L=$-513
+  Running NVDA...
+    NVDA: 2t, WR=0.0%, PF=0.00, P&L=$-553
+  Running TSLA...
+    TSLA: 1t, WR=0.0%, PF=0.00, P&L=$-269
+
+==========================================================================================
+  AGGREGATE RESULTS
+==========================================================================================
+    24t  WR= 29.2%  PF=  1.35  P&L=$    1588  DD=$   1899  Sh=  0.53  AvgR= 0.22
+
+    Ticker  Trades      WR      PF        P&L    MaxDD   AvgR
+  ------------------------------------------------------------
+      AAPL       2    0.0%   0.00 $     -511 $    276  -0.85
+      AMZN       8   25.0%   0.68 $     -510 $   1054  -0.21
+      BABA       0    0.0%   0.00 $        0 $      0   0.00
+      COIN       0    0.0%   0.00 $        0 $      0   0.00
+     GOOGL       5   80.0%  15.73 $     4097 $      0   2.73
+      META       4   25.0%   0.82 $     -153 $    563  -0.13
+      MSFT       2    0.0%   0.00 $     -513 $    251  -0.86
+      NVDA       2    0.0%   0.00 $     -553 $    276  -0.92
+      TSLA       1    0.0%   0.00 $     -269 $      0  -0.90
+
+  LEVEL DETECTION STATS
+    Ticker   Total  Confirmed  Mirrors  Invalidated  AvgScore
+  ------------------------------------------------------------
+      AAPL      13         13        9            6      29.8
+      AMZN       9          9        7            8      30.8
+      BABA       1          1        0            0      15.0
+      COIN       1          1        0            0       7.0
+     GOOGL       9          9        7            5      28.8
+      META      10         10        5            4      29.4
+      MSFT      11         11        7            5      30.0
+      NVDA       6          6        4            6      31.7
+      TSLA       8          8        6            4      26.9
+
+  SIGNAL FUNNEL SUMMARY
+    Ticker  Total  Passed   Dir   Pos  Score  Time  Earn  ATR_H  ATR_T   Vol   Sqz
+  --------------------------------------------------------------------------------
+      AAPL    219      32     0     0      0    10     0     87     78     0    12
+      AMZN    164      31     0     0      0     7     0     52     61     0    13
+      BABA      0       0     0     0      0     0     0      0      0     0     0
+      COIN     14       0     0     0      0     0     0      0     14     0     0
+     GOOGL    107      21     0     0      0     6     0     52     23     0     5
+      META     73      13     0     0      0     9     0     36     14     0     1
+      MSFT     57       6     0     0      0     1     0     31     17     0     2
+      NVDA     73       9     0     0      0     2     0     44     10     0     8
+      TSLA     68      14     0     0      0     5     0     36     10     0     3
+  --------------------------------------------------------------------------------
+     TOTAL    775     126     0     0      0    40     0    338    227     0    44
+
+  EXIT REASON BREAKDOWN
+      AAPL: EOD=0, Nison=0, Trail=0, BE=0
+      AMZN: EOD=1, Nison=0, Trail=1, BE=0
+      BABA: EOD=0, Nison=0, Trail=0, BE=0
+      COIN: EOD=0, Nison=0, Trail=0, BE=0
+     GOOGL: EOD=0, Nison=0, Trail=3, BE=1
+      META: EOD=0, Nison=0, Trail=0, BE=0
+      MSFT: EOD=0, Nison=0, Trail=0, BE=0
+      NVDA: EOD=0, Nison=0, Trail=0, BE=0
+      TSLA: EOD=0, Nison=0, Trail=0, BE=0
+
+  Trade log: /home/user/stock-data-mining/results/phase3_25ticker/trade_log.csv (24 trades)
+  Equity curve: /home/user/stock-data-mining/results/phase3_25ticker/equity_curve.csv (33 points)
+  Shadow log: /home/user/stock-data-mining/results/phase3_25ticker/shadow_log.csv (649 blocked signals)
+  Signal funnel: /home/user/stock-data-mining/results/phase3_25ticker/signal_funnel.json
+  Results JSON: /home/user/stock-data-mining/results/phase3_25ticker/results.json
+
+==========================================================================================
+  PHASE 3 COMPLETE — 27s (0.5min)
+==========================================================================================

@@ -1,0 +1,337 @@
+{
+  "phase": "3",
+  "config": "ConfigA_frozen",
+  "tickers": [
+    "AAPL",
+    "AMZN",
+    "BABA",
+    "COIN",
+    "GOOGL",
+    "META",
+    "MSFT",
+    "NVDA",
+    "TSLA"
+  ],
+  "period": "2025-02-10 to 2026-01-31",
+  "note": "9 tickers available (25-ticker data not yet fetched)",
+  "aggregate": {
+    "trades": 24,
+    "wr": 0.2916666666666667,
+    "pf": 1.3483328613105692,
+    "pnl": 1587.5292638250219,
+    "max_dd": 1898.7276536874674,
+    "sharpe": 0.5259270897253029,
+    "gross_profit": 6145.035718576653,
+    "gross_loss": 4557.50645475163,
+    "avg_r": 0.2207122204660247
+  },
+  "per_ticker": {
+    "AAPL": {
+      "trades": 2,
+      "wr": 0.0,
+      "pf": 0.0,
+      "pnl": -511.263646731681,
+      "max_dd": 275.85816673185377,
+      "sharpe": 0.0,
+      "gross_profit": 0.0,
+      "gross_loss": 511.263646731681,
+      "avg_r": -0.8529485098009026
+    },
+    "AMZN": {
+      "trades": 8,
+      "wr": 0.25,
+      "pf": 0.6821678387079226,
+      "pnl": -510.3896900327911,
+      "max_dd": 1054.2674274380277,
+      "sharpe": -0.5108041140301312,
+      "gross_profit": 1095.4568925091173,
+      "gross_loss": 1605.8465825419084,
+      "avg_r": -0.2120559380803953
+    },
+    "BABA": {
+      "trades": 0,
+      "wr": 0.0,
+      "pf": 0.0,
+      "pnl": 0.0,
+      "max_dd": 0.0,
+      "sharpe": 0.0,
+      "gross_profit": 0.0,
+      "gross_loss": 0.0,
+      "avg_r": 0.0
+    },
+    "COIN": {
+      "trades": 0,
+      "wr": 0.0,
+      "pf": 0.0,
+      "pnl": 0.0,
+      "max_dd": 0.0,
+      "sharpe": 0.0,
+      "gross_profit": 0.0,
+      "gross_loss": 0.0,
+      "avg_r": 0.0
+    },
+    "GOOGL": {
+      "trades": 5,
+      "wr": 0.8,
+      "pf": 15.731858319175867,
+      "pnl": 4097.3940836847,
+      "max_dd": 0.0,
+      "sharpe": 2.1426873657031513,
+      "gross_profit": 4375.525599404701,
+      "gross_loss": 278.13151572000163,
+      "avg_r": 2.732725239559676
+    },
+    "META": {
+      "trades": 4,
+      "wr": 0.25,
+      "pf": 0.8153278527880059,
+      "pnl": -152.67337706830972,
+      "max_dd": 563.1895476605714,
+      "sharpe": 0.0,
+      "gross_profit": 674.0532266628343,
+      "gross_loss": 826.726603731144,
+      "avg_r": -0.1267089847567152
+    },
+    "MSFT": {
+      "trades": 2,
+      "wr": 0.0,
+      "pf": 0.0,
+      "pnl": -512.9731191652993,
+      "max_dd": 251.14336537726467,
+      "sharpe": 0.0,
+      "gross_profit": 0.0,
+      "gross_loss": 512.9731191652993,
+      "avg_r": -0.8560945011314312
+    },
+    "NVDA": {
+      "trades": 2,
+      "wr": 0.0,
+      "pf": 0.0,
+      "pnl": -553.4671643832173,
+      "max_dd": 276.15871740400723,
+      "sharpe": 0.0,
+      "gross_profit": 0.0,
+      "gross_loss": 553.4671643832173,
+      "avg_r": -0.9228593159989792
+    },
+    "TSLA": {
+      "trades": 1,
+      "wr": 0.0,
+      "pf": 0.0,
+      "pnl": -269.0978224783794,
+      "max_dd": 0.0,
+      "sharpe": 0.0,
+      "gross_profit": 0.0,
+      "gross_loss": 269.0978224783794,
+      "avg_r": -0.8994448090811373
+    }
+  },
+  "level_stats": {
+    "AAPL": {
+      "total_levels": 13,
+      "confirmed_bpu": 13,
+      "mirrors": 9,
+      "invalidated_sawing": 6,
+      "avg_score": 29.846153846153847,
+      "avg_touches": 8.692307692307692
+    },
+    "AMZN": {
+      "total_levels": 9,
+      "confirmed_bpu": 9,
+      "mirrors": 7,
+      "invalidated_sawing": 8,
+      "avg_score": 30.77777777777778,
+      "avg_touches": 12.444444444444445
+    },
+    "BABA": {
+      "total_levels": 1,
+      "confirmed_bpu": 1,
+      "mirrors": 0,
+      "invalidated_sawing": 0,
+      "avg_score": 15.0,
+      "avg_touches": 1.0
+    },
+    "COIN": {
+      "total_levels": 1,
+      "confirmed_bpu": 1,
+      "mirrors": 0,
+      "invalidated_sawing": 0,
+      "avg_score": 7.0,
+      "avg_touches": 2.0
+    },
+    "GOOGL": {
+      "total_levels": 9,
+      "confirmed_bpu": 9,
+      "mirrors": 7,
+      "invalidated_sawing": 5,
+      "avg_score": 28.77777777777778,
+      "avg_touches": 7.666666666666667
+    },
+    "META": {
+      "total_levels": 10,
+      "confirmed_bpu": 10,
+      "mirrors": 5,
+      "invalidated_sawing": 4,
+      "avg_score": 29.4,
+      "avg_touches": 11.1
+    },
+    "MSFT": {
+      "total_levels": 11,
+      "confirmed_bpu": 11,
+      "mirrors": 7,
+      "invalidated_sawing": 5,
+      "avg_score": 30.0,
+      "avg_touches": 7.090909090909091
+    },
+    "NVDA": {
+      "total_levels": 6,
+      "confirmed_bpu": 6,
+      "mirrors": 4,
+      "invalidated_sawing": 6,
+      "avg_score": 31.666666666666668,
+      "avg_touches": 16.333333333333332
+    },
+    "TSLA": {
+      "total_levels": 8,
+      "confirmed_bpu": 8,
+      "mirrors": 6,
+      "invalidated_sawing": 4,
+      "avg_score": 26.875,
+      "avg_touches": 5.875
+    }
+  },
+  "funnel": {
+    "per_ticker": {
+      "AAPL": {
+        "total_signals": 219,
+        "passed": 32,
+        "blocked_by_direction": 0,
+        "blocked_by_position": 0,
+        "blocked_by_level_score": 0,
+        "blocked_by_time": 10,
+        "blocked_by_earnings": 0,
+        "blocked_by_atr_hard": 87,
+        "blocked_by_atr_threshold": 78,
+        "blocked_by_volume": 0,
+        "blocked_by_squeeze": 12
+      },
+      "AMZN": {
+        "total_signals": 164,
+        "passed": 31,
+        "blocked_by_direction": 0,
+        "blocked_by_position": 0,
+        "blocked_by_level_score": 0,
+        "blocked_by_time": 7,
+        "blocked_by_earnings": 0,
+        "blocked_by_atr_hard": 52,
+        "blocked_by_atr_threshold": 61,
+        "blocked_by_volume": 0,
+        "blocked_by_squeeze": 13
+      },
+      "BABA": {
+        "total_signals": 0,
+        "passed": 0,
+        "blocked_by_direction": 0,
+        "blocked_by_position": 0,
+        "blocked_by_level_score": 0,
+        "blocked_by_time": 0,
+        "blocked_by_earnings": 0,
+        "blocked_by_atr_hard": 0,
+        "blocked_by_atr_threshold": 0,
+        "blocked_by_volume": 0,
+        "blocked_by_squeeze": 0
+      },
+      "COIN": {
+        "total_signals": 14,
+        "passed": 0,
+        "blocked_by_direction": 0,
+        "blocked_by_position": 0,
+        "blocked_by_level_score": 0,
+        "blocked_by_time": 0,
+        "blocked_by_earnings": 0,
+        "blocked_by_atr_hard": 0,
+        "blocked_by_atr_threshold": 14,
+        "blocked_by_volume": 0,
+        "blocked_by_squeeze": 0
+      },
+      "GOOGL": {
+        "total_signals": 107,
+        "passed": 21,
+        "blocked_by_direction": 0,
+        "blocked_by_position": 0,
+        "blocked_by_level_score": 0,
+        "blocked_by_time": 6,
+        "blocked_by_earnings": 0,
+        "blocked_by_atr_hard": 52,
+        "blocked_by_atr_threshold": 23,
+        "blocked_by_volume": 0,
+        "blocked_by_squeeze": 5
+      },
+      "META": {
+        "total_signals": 73,
+        "passed": 13,
+        "blocked_by_direction": 0,
+        "blocked_by_position": 0,
+        "blocked_by_level_score": 0,
+        "blocked_by_time": 9,
+        "blocked_by_earnings": 0,
+        "blocked_by_atr_hard": 36,
+        "blocked_by_atr_threshold": 14,
+        "blocked_by_volume": 0,
+        "blocked_by_squeeze": 1
+      },
+      "MSFT": {
+        "total_signals": 57,
+        "passed": 6,
+        "blocked_by_direction": 0,
+        "blocked_by_position": 0,
+        "blocked_by_level_score": 0,
+        "blocked_by_time": 1,
+        "blocked_by_earnings": 0,
+        "blocked_by_atr_hard": 31,
+        "blocked_by_atr_threshold": 17,
+        "blocked_by_volume": 0,
+        "blocked_by_squeeze": 2
+      },
+      "NVDA": {
+        "total_signals": 73,
+        "passed": 9,
+        "blocked_by_direction": 0,
+        "blocked_by_position": 0,
+        "blocked_by_level_score": 0,
+        "blocked_by_time": 2,
+        "blocked_by_earnings": 0,
+        "blocked_by_atr_hard": 44,
+        "blocked_by_atr_threshold": 10,
+        "blocked_by_volume": 0,
+        "blocked_by_squeeze": 8
+      },
+      "TSLA": {
+        "total_signals": 68,
+        "passed": 14,
+        "blocked_by_direction": 0,
+        "blocked_by_position": 0,
+        "blocked_by_level_score": 0,
+        "blocked_by_time": 5,
+        "blocked_by_earnings": 0,
+        "blocked_by_atr_hard": 36,
+        "blocked_by_atr_threshold": 10,
+        "blocked_by_volume": 0,
+        "blocked_by_squeeze": 3
+      }
+    },
+    "aggregate": {
+      "total_signals": 775,
+      "passed": 126,
+      "blocked_by_direction": 0,
+      "blocked_by_position": 0,
+      "blocked_by_level_score": 0,
+      "blocked_by_time": 40,
+      "blocked_by_earnings": 0,
+      "blocked_by_atr_hard": 338,
+      "blocked_by_atr_threshold": 227,
+      "blocked_by_volume": 0,
+      "blocked_by_squeeze": 44
+    }
+  }
+}
