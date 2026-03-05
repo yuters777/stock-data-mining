@@ -29,9 +29,11 @@ from backtester.core.intraday_levels import IntradayLevelConfig
 from backtester.earnings import EarningsCalendar
 from backtester.optimizer import load_ticker_data
 
-TICKERS = ['AAPL', 'MSFT', 'NVDA', 'TSLA', 'AMD', 'AMZN', 'META',
-           'AVGO', 'MU', 'BA', 'JPM', 'GS', 'V',
-           'IBIT', 'TXN', 'BABA', 'COIN', 'MARA']
+TICKERS = [
+    'AAPL', 'AMD', 'AMZN', 'AVGO', 'BA', 'BABA', 'BIDU', 'C', 'COIN', 'COST',
+    'GOOGL', 'GS', 'IBIT', 'JPM', 'MARA', 'META', 'MSFT', 'MU', 'NVDA',
+    'PLTR', 'SNOW', 'TSLA', 'TSM', 'TXN', 'V',
+]
 
 FULL_START = '2025-02-10'
 FULL_END = '2026-01-31'

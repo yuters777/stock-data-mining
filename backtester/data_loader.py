@@ -33,8 +33,32 @@ REGULAR_END_HOUR = 22        # up to 22:55 IST
 CLOSE_BAR_HOUR = 23          # 23:00 IST close bar
 POST_MARKET_START_HOUR = 23  # 23:05+ IST
 
-# All 9 tickers from the spec
-ALL_TICKERS = ["AAPL", "MSFT", "NVDA", "TSLA", "META", "COIN", "BABA", "GOOGL", "AMZN"]
+# All 25 tickers from MarketPatterns-AI pipeline (source of truth)
+ALL_TICKERS = [
+    "AAPL", "AMD", "AMZN", "AVGO", "BA", "BABA", "BIDU", "C", "COIN", "COST",
+    "GOOGL", "GS", "IBIT", "JPM", "MARA", "META", "MSFT", "MU", "NVDA",
+    "PLTR", "SNOW", "TSLA", "TSM", "TXN", "V",
+]
+
+SECTOR_MAP = {
+    # Technology
+    "AAPL": "Technology", "MSFT": "Technology", "GOOGL": "Technology",
+    "META": "Technology", "AMZN": "Technology", "NVDA": "Technology",
+    "AMD": "Technology", "AVGO": "Technology", "MU": "Technology",
+    "TSM": "Technology", "TXN": "Technology", "PLTR": "Technology",
+    "SNOW": "Technology",
+    # Financial
+    "C": "Financial", "GS": "Financial", "JPM": "Financial",
+    "V": "Financial", "COIN": "Financial", "MARA": "Financial",
+    "IBIT": "Financial",
+    # Consumer Discretionary
+    "TSLA": "Consumer Discretionary", "BABA": "Consumer Discretionary",
+    "COST": "Consumer Staples",
+    # Communication
+    "BIDU": "Communication",
+    # Industrials
+    "BA": "Industrials",
+}
 
 
 def load_m5(ticker: str, data_dir: str | Path) -> pd.DataFrame:
