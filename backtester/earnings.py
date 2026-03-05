@@ -1,8 +1,8 @@
 """
 Earnings calendar loader for the False Breakout Strategy Backtester.
 
-Pre-loads earnings dates via yfinance, caches to JSON, and provides
-lookup methods for the filter chain.
+Pre-loads earnings dates from a static JSON file (primary) with yfinance
+fallback, caches to JSON, and provides lookup methods for the filter chain.
 
 Usage:
     cal = EarningsCalendar(cache_dir="cache")
@@ -21,6 +21,26 @@ logger = logging.getLogger(__name__)
 
 # How many days after earnings to also block (post-earnings volatility)
 DEFAULT_POST_EARNINGS_DAYS = 1
+
+# Static earnings calendar — primary source (network-independent)
+_STATIC_CALENDAR_PATH = Path(__file__).resolve().parent / "data" / "earnings_calendar.json"
+
+
+def _load_static_calendar() -> dict[str, list[str]]:
+    """Load the static earnings calendar from backtester/data/earnings_calendar.json."""
+    if not _STATIC_CALENDAR_PATH.exists():
+        logger.info("Static earnings calendar not found at %s", _STATIC_CALENDAR_PATH)
+        return {}
+    try:
+        with open(_STATIC_CALENDAR_PATH, "r") as f:
+            data = json.load(f)
+        if not isinstance(data, dict):
+            return {}
+        # Filter out empty entries
+        return {k: v for k, v in data.items() if v}
+    except (json.JSONDecodeError, OSError) as e:
+        logger.warning("Failed to read static earnings calendar: %s", e)
+        return {}
 
 
 def _fetch_earnings_dates(ticker: str) -> list[date]:
@@ -105,18 +125,35 @@ class EarningsCalendar:
     def load(self, tickers: list[str], force_refresh: bool = False):
         """Load earnings dates for the given tickers.
 
-        Uses cached data when available. Fetches from yfinance for any
-        tickers not in cache (or all if force_refresh=True).
+        Priority:
+          1. Static calendar (backtester/data/earnings_calendar.json)
+          2. Session cache (cache_dir/earnings_cache.json)
+          3. yfinance live fetch (fallback)
 
         Args:
             tickers: List of stock symbols.
             force_refresh: If True, ignore cache and re-fetch everything.
         """
-        cache = {} if force_refresh else self._load_cache()
-        needs_fetch = []
+        # 1. Load static calendar (primary, network-independent source)
+        static = _load_static_calendar()
+        if static:
+            logger.info("Loaded static earnings calendar with %d tickers",
+                        len(static))
 
+        # 2. Load session cache
+        cache = {} if force_refresh else self._load_cache()
+
+        needs_fetch = []
         for ticker in tickers:
-            if ticker in cache and not force_refresh:
+            # Priority 1: static calendar
+            if ticker in static and not force_refresh:
+                self._dates[ticker] = set(
+                    date.fromisoformat(d) for d in static[ticker]
+                )
+                logger.debug(f"{ticker}: loaded {len(self._dates[ticker])} "
+                             f"earnings dates from static calendar")
+            # Priority 2: session cache
+            elif ticker in cache and cache[ticker] and not force_refresh:
                 self._dates[ticker] = set(
                     date.fromisoformat(d) for d in cache[ticker]
                 )
@@ -125,20 +162,15 @@ class EarningsCalendar:
             else:
                 needs_fetch.append(ticker)
 
+        # Priority 3: yfinance fallback (per-ticker, no bail-out)
         if needs_fetch:
             logger.info(f"Fetching earnings dates for: {needs_fetch}")
-            fetch_failed = False
             for ticker in needs_fetch:
-                if fetch_failed:
-                    self._dates.setdefault(ticker, set())
-                    continue
                 fetched = _fetch_earnings_dates(ticker)
-                if not fetched and ticker == needs_fetch[0]:
-                    # First ticker failed — likely a network issue; skip rest
-                    logger.warning("First fetch returned empty; skipping remaining "
-                                   "tickers (network may be unavailable)")
-                    fetch_failed = True
                 self._dates[ticker] = set(fetched)
+                if not fetched:
+                    logger.warning(f"{ticker}: no earnings dates from any "
+                                   f"source — filter will pass all signals")
 
             self._save_cache()
 
