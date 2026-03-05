@@ -30,6 +30,7 @@ from backtester.core.filter_chain import FilterChainConfig
 from backtester.core.risk_manager import RiskManagerConfig
 from backtester.core.trade_manager import TradeManagerConfig
 from backtester.core.intraday_levels import IntradayLevelConfig
+from backtester.earnings import EarningsCalendar
 from backtester.optimizer import load_ticker_data
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -40,8 +41,12 @@ RESULTS_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__fil
                            'results', 'phase3_25ticker')
 os.makedirs(RESULTS_DIR, exist_ok=True)
 
-# All available tickers (9 — 25-ticker data not yet fetched)
-TICKERS = ['AAPL', 'AMZN', 'BABA', 'COIN', 'GOOGL', 'META', 'MSFT', 'NVDA', 'TSLA']
+# All 25 tickers from MarketPatterns-AI
+TICKERS = [
+    'AAPL', 'AMD', 'AMZN', 'AVGO', 'BA', 'BABA', 'BIDU', 'C', 'COIN',
+    'COST', 'GOOGL', 'GS', 'IBIT', 'JPM', 'MARA', 'META', 'MSFT', 'MU',
+    'NVDA', 'PLTR', 'SNOW', 'TSLA', 'TSM', 'TXN', 'V',
+]
 
 FULL_START = '2025-02-10'
 FULL_END = '2026-01-31'
@@ -58,7 +63,7 @@ def log(msg=''):
 # CONFIG A (FROZEN)
 # ═══════════════════════════════════════════════════════════════════════════
 
-def make_config_a() -> BacktestConfig:
+def make_config_a(earnings_calendar=None) -> BacktestConfig:
     """Config A: FD=10, ATR_ENTRY=0.60, RR=2.0, TAIL=0.15, STOP=0.15"""
     return BacktestConfig(
         level_config=LevelDetectorConfig(
@@ -101,6 +106,7 @@ def make_config_a() -> BacktestConfig:
             'trail_factor': 0.7, 'trail_activation_r': 0.0,
         },
         direction_filter=None,
+        earnings_calendar=earnings_calendar,
         name='ConfigA_Phase3',
     )
 
@@ -174,15 +180,22 @@ def main():
     t0 = time.time()
 
     log("=" * 90)
-    log("  PHASE 3 — Frozen Config A Backtest (All Available Tickers)")
+    log("  PHASE 3 — Frozen Config A Backtest (25 Tickers)")
     log("=" * 90)
     log(f"  Config: FD=10, ATR_ENTRY=0.60, ATR_BLOCK=0.30, RR=2.0, TAIL=0.15, STOP=0.15")
     log(f"  Tickers ({len(TICKERS)}): {', '.join(TICKERS)}")
     log(f"  Period: {FULL_START} → {FULL_END}")
-    log(f"  NOTE: 25-ticker data not available; running on {len(TICKERS)} available tickers")
     log()
 
-    config = make_config_a()
+    # ── Load earnings calendar (cached to JSON) ──
+    cache_dir = os.path.join(RESULTS_DIR, 'cache')
+    calendar = EarningsCalendar(cache_dir=cache_dir)
+    calendar.load(TICKERS)
+    earnings_loaded = sum(len(calendar.get_earnings_dates(t)) for t in TICKERS)
+    log(f"  Earnings calendar: {earnings_loaded} total earnings dates loaded across {len(TICKERS)} tickers")
+    log()
+
+    config = make_config_a(earnings_calendar=calendar)
 
     # ══════════════════════════════════════════════════════════════════════
     # RUN BACKTEST PER TICKER
@@ -394,7 +407,7 @@ def main():
         'config': 'ConfigA_frozen',
         'tickers': TICKERS,
         'period': f'{FULL_START} to {FULL_END}',
-        'note': f'{len(TICKERS)} tickers available (25-ticker data not yet fetched)',
+        'note': f'{len(TICKERS)} tickers, earnings filter active',
         'aggregate': agg,
         'per_ticker': {t: ticker_metrics.get(t, {}) for t in TICKERS},
         'level_stats': {t: all_results[t].level_stats for t in TICKERS if t in all_results},

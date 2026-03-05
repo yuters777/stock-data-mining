@@ -127,8 +127,17 @@ class EarningsCalendar:
 
         if needs_fetch:
             logger.info(f"Fetching earnings dates for: {needs_fetch}")
+            fetch_failed = False
             for ticker in needs_fetch:
+                if fetch_failed:
+                    self._dates.setdefault(ticker, set())
+                    continue
                 fetched = _fetch_earnings_dates(ticker)
+                if not fetched and ticker == needs_fetch[0]:
+                    # First ticker failed — likely a network issue; skip rest
+                    logger.warning("First fetch returned empty; skipping remaining "
+                                   "tickers (network may be unavailable)")
+                    fetch_failed = True
                 self._dates[ticker] = set(fetched)
 
             self._save_cache()

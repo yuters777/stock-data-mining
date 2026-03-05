@@ -1,92 +1,189 @@
 ==========================================================================================
-  PHASE 3 — Frozen Config A Backtest (All Available Tickers)
+  PHASE 3 — Frozen Config A Backtest (25 Tickers)
 ==========================================================================================
   Config: FD=10, ATR_ENTRY=0.60, ATR_BLOCK=0.30, RR=2.0, TAIL=0.15, STOP=0.15
-  Tickers (9): AAPL, AMZN, BABA, COIN, GOOGL, META, MSFT, NVDA, TSLA
+  Tickers (25): AAPL, AMD, AMZN, AVGO, BA, BABA, BIDU, C, COIN, COST, GOOGL, GS, IBIT, JPM, MARA, META, MSFT, MU, NVDA, PLTR, SNOW, TSLA, TSM, TXN, V
   Period: 2025-02-10 → 2026-01-31
-  NOTE: 25-ticker data not available; running on 9 available tickers
+
+  Earnings calendar: 0 total earnings dates loaded across 25 tickers
 
   Running AAPL...
-    AAPL: 2t, WR=0.0%, PF=0.00, P&L=$-511
+    AAPL: 7t, WR=28.6%, PF=1.18, P&L=$287
+  Running AMD...
+    AMD: 6t, WR=16.7%, PF=0.50, P&L=$-854
   Running AMZN...
-    AMZN: 8t, WR=25.0%, PF=0.68, P&L=$-510
+    AMZN: 10t, WR=20.0%, PF=0.40, P&L=$-1429
+  Running AVGO...
+    AVGO: 6t, WR=16.7%, PF=0.36, P&L=$-884
+  Running BA...
+    BA: 17t, WR=35.3%, PF=3.04, P&L=$7524
   Running BABA...
-    BABA: 0t, WR=0.0%, PF=0.00, P&L=$0
+    BABA: 7t, WR=14.3%, PF=2.60, P&L=$2897
+  Running BIDU...
+    BIDU: 2t, WR=0.0%, PF=0.00, P&L=$-561
+  Running C...
+    C: 3t, WR=33.3%, PF=1.96, P&L=$467
   Running COIN...
-    COIN: 0t, WR=0.0%, PF=0.00, P&L=$0
+    COIN: 7t, WR=14.3%, PF=0.00, P&L=$-1959
+  Running COST...
+    COST: 4t, WR=0.0%, PF=0.00, P&L=$-1088
   Running GOOGL...
-    GOOGL: 5t, WR=80.0%, PF=15.73, P&L=$4097
+    GOOGL: 6t, WR=33.3%, PF=0.51, P&L=$-789
+  Running GS...
+    GS: 3t, WR=33.3%, PF=4.89, P&L=$1037
+  Running IBIT...
+    IBIT: 7t, WR=14.3%, PF=0.16, P&L=$-1508
+  Running JPM...
+    JPM: 10t, WR=10.0%, PF=0.57, P&L=$-1339
+  Running MARA...
+    MARA: 5t, WR=20.0%, PF=0.27, P&L=$-576
   Running META...
-    META: 4t, WR=25.0%, PF=0.82, P&L=$-153
+    META: 3t, WR=33.3%, PF=1.04, P&L=$35
   Running MSFT...
-    MSFT: 2t, WR=0.0%, PF=0.00, P&L=$-513
+    MSFT: 1t, WR=0.0%, PF=0.00, P&L=$-0
+  Running MU...
+    MU: 1t, WR=0.0%, PF=0.00, P&L=$-427
   Running NVDA...
-    NVDA: 2t, WR=0.0%, PF=0.00, P&L=$-553
+    NVDA: 2t, WR=50.0%, PF=3.45, P&L=$674
+  Running PLTR...
+    PLTR: 3t, WR=33.3%, PF=2.23, P&L=$639
+  Running SNOW...
+    SNOW: 12t, WR=16.7%, PF=0.88, P&L=$-261
   Running TSLA...
-    TSLA: 1t, WR=0.0%, PF=0.00, P&L=$-269
+    TSLA: 21t, WR=47.6%, PF=4.23, P&L=$10805
+  Running TSM...
+    TSM: 6t, WR=33.3%, PF=3.06, P&L=$2583
+  Running TXN...
+    TXN: 14t, WR=28.6%, PF=3.19, P&L=$6298
+  Running V...
+    V: 11t, WR=36.4%, PF=3.91, P&L=$5536
 
 ==========================================================================================
   AGGREGATE RESULTS
 ==========================================================================================
-    24t  WR= 29.2%  PF=  1.35  P&L=$    1588  DD=$   1899  Sh=  0.53  AvgR= 0.22
+   174t  WR= 26.4%  PF=  1.71  P&L=$   27108  DD=$   7023  Sh=  1.82  AvgR= 0.45
 
     Ticker  Trades      WR      PF        P&L    MaxDD   AvgR
   ------------------------------------------------------------
-      AAPL       2    0.0%   0.00 $     -511 $    276  -0.85
-      AMZN       8   25.0%   0.68 $     -510 $   1054  -0.21
-      BABA       0    0.0%   0.00 $        0 $      0   0.00
-      COIN       0    0.0%   0.00 $        0 $      0   0.00
-     GOOGL       5   80.0%  15.73 $     4097 $      0   2.73
-      META       4   25.0%   0.82 $     -153 $    563  -0.13
-      MSFT       2    0.0%   0.00 $     -513 $    251  -0.86
-      NVDA       2    0.0%   0.00 $     -553 $    276  -0.92
-      TSLA       1    0.0%   0.00 $     -269 $      0  -0.90
+      AAPL       7   28.6%   1.18 $      287 $    440   0.04
+       AMD       6   16.7%   0.50 $     -854 $   1019  -0.31
+      AMZN      10   20.0%   0.40 $    -1429 $   1178  -0.44
+      AVGO       6   16.7%   0.36 $     -884 $   1101  -0.49
+        BA      17   35.3%   3.04 $     7524 $   1300   1.23
+      BABA       7   14.3%   2.60 $     2897 $   1250   0.70
+      BIDU       2    0.0%   0.00 $     -561 $    281  -0.94
+         C       3   33.3%   1.96 $      467 $    243   0.52
+      COIN       7   14.3%   0.00 $    -1959 $   1693  -0.80
+      COST       4    0.0%   0.00 $    -1088 $    825  -0.91
+     GOOGL       6   33.3%   0.51 $     -789 $   1316  -0.20
+        GS       3   33.3%   4.89 $     1037 $    266   1.16
+      IBIT       7   14.3%   0.16 $    -1508 $   1247  -0.65
+       JPM      10   10.0%   0.57 $    -1339 $   1693  -0.26
+      MARA       5   20.0%   0.27 $     -576 $    514  -0.38
+      META       3   33.3%   1.04 $       35 $    429   0.03
+      MSFT       1    0.0%   0.00 $       -0 $      0  -0.00
+        MU       1    0.0%   0.00 $     -427 $      0  -0.95
+      NVDA       2   50.0%   3.45 $      674 $    275   1.12
+      PLTR       3   33.3%   2.23 $      639 $    276   0.71
+      SNOW      12   16.7%   0.88 $     -261 $   1674  -0.18
+      TSLA      21   47.6%   4.23 $    10805 $   1397   1.75
+       TSM       6   33.3%   3.06 $     2583 $    688   0.82
+       TXN      14   28.6%   3.19 $     6298 $   1354   1.54
+         V      11   36.4%   3.91 $     5536 $    831   1.15
 
   LEVEL DETECTION STATS
     Ticker   Total  Confirmed  Mirrors  Invalidated  AvgScore
   ------------------------------------------------------------
-      AAPL      13         13        9            6      29.8
-      AMZN       9          9        7            8      30.8
-      BABA       1          1        0            0      15.0
-      COIN       1          1        0            0       7.0
-     GOOGL       9          9        7            5      28.8
-      META      10         10        5            4      29.4
-      MSFT      11         11        7            5      30.0
-      NVDA       6          6        4            6      31.7
-      TSLA       8          8        6            4      26.9
+      AAPL      12         12        7            7      30.7
+       AMD      12         12        9            7      32.8
+      AMZN      15         15        6            5      26.7
+      AVGO      10         10        6            4      26.6
+        BA      14         14       11            6      29.8
+      BABA      12         12        5            7      25.2
+      BIDU      11         11        6            3      27.6
+         C       7          7        4            2      26.7
+      COIN      13         13        7            7      27.2
+      COST      11         11        7            5      30.9
+     GOOGL      13         13        5            5      25.0
+        GS      11         11        3            3      25.1
+      IBIT      15         15       10            6      26.5
+       JPM      17         17       15            3      29.1
+      MARA      12         12        9           10      33.3
+      META      13         13        9            1      26.7
+      MSFT      10         10        3            2      21.8
+        MU      11         11       10            6      32.0
+      NVDA      15         15        1            1      13.4
+      PLTR       7          7        4            3      25.9
+      SNOW       9          9        6            7      33.7
+      TSLA      12         12        1            5      18.6
+       TSM      12         12        9            2      26.9
+       TXN      12         12       10            6      35.7
+         V      15         15       13            4      33.8
 
   SIGNAL FUNNEL SUMMARY
     Ticker  Total  Passed   Dir   Pos  Score  Time  Earn  ATR_H  ATR_T   Vol   Sqz
   --------------------------------------------------------------------------------
-      AAPL    219      32     0     0      0    10     0     87     78     0    12
-      AMZN    164      31     0     0      0     7     0     52     61     0    13
-      BABA      0       0     0     0      0     0     0      0      0     0     0
-      COIN     14       0     0     0      0     0     0      0     14     0     0
-     GOOGL    107      21     0     0      0     6     0     52     23     0     5
-      META     73      13     0     0      0     9     0     36     14     0     1
-      MSFT     57       6     0     0      0     1     0     31     17     0     2
-      NVDA     73       9     0     0      0     2     0     44     10     0     8
-      TSLA     68      14     0     0      0     5     0     36     10     0     3
+      AAPL    110      79     0     0      0     5     0      0      0     0    26
+       AMD     81      57     0     0      0     5     0      0      0     0    19
+      AMZN    187     154     0     0      0     4     0      0      0     0    29
+      AVGO     54      49     0     0      0     1     0      0      0     0     4
+        BA    131      66     0     0      0     8     0      0      0     0    57
+      BABA     76      60     0     0      0     2     0      0      0     0    14
+      BIDU     17      15     0     0      0     2     0      0      0     0     0
+         C     21      18     0     0      0     3     0      0      0     0     0
+      COIN     43      33     0     0      0     2     0      0      0     0     8
+      COST     53      21     0     0      0     2     0      0      0     0    30
+     GOOGL     90      69     0     0      0     0     0      0      0     0    21
+        GS     34      16     0     0      0     3     0      0      0     0    15
+      IBIT     25      23     0     0      0     2     0      0      0     0     0
+       JPM     60      34     0     0      0     7     0      0      0     0    19
+      MARA     47      36     0     0      0     4     0      0      0     0     7
+      META    104      74     0     0      0     2     0      0      0     0    28
+      MSFT    127     113     0     0      0     1     0      0      0     0    13
+        MU     58      52     0     0      0     0     0      0      0     0     6
+      NVDA    195     184     0     0      0     1     0      0      0     0    10
+      PLTR     50      48     0     0      0     1     0      0      0     0     1
+      SNOW     31      29     0     0      0     2     0      0      0     0     0
+      TSLA    160     153     0     0      0     2     0      0      0     0     5
+       TSM     66      52     0     0      0     1     0      0      0     0    13
+       TXN     65      51     0     0      0     4     0      0      0     0    10
+         V     98      82     0     0      0     5     0      0      0     0    11
   --------------------------------------------------------------------------------
-     TOTAL    775     126     0     0      0    40     0    338    227     0    44
+     TOTAL   1983    1568     0     0      0    69     0      0      0     0   346
 
   EXIT REASON BREAKDOWN
-      AAPL: EOD=0, Nison=0, Trail=0, BE=0
-      AMZN: EOD=1, Nison=0, Trail=1, BE=0
-      BABA: EOD=0, Nison=0, Trail=0, BE=0
-      COIN: EOD=0, Nison=0, Trail=0, BE=0
-     GOOGL: EOD=0, Nison=0, Trail=3, BE=1
-      META: EOD=0, Nison=0, Trail=0, BE=0
-      MSFT: EOD=0, Nison=0, Trail=0, BE=0
-      NVDA: EOD=0, Nison=0, Trail=0, BE=0
-      TSLA: EOD=0, Nison=0, Trail=0, BE=0
+      AAPL: EOD=1, Nison=0, Trail=1, BE=1
+       AMD: EOD=0, Nison=0, Trail=0, BE=0
+      AMZN: EOD=1, Nison=0, Trail=0, BE=1
+      AVGO: EOD=0, Nison=0, Trail=1, BE=0
+        BA: EOD=0, Nison=0, Trail=5, BE=1
+      BABA: EOD=0, Nison=0, Trail=1, BE=0
+      BIDU: EOD=0, Nison=0, Trail=0, BE=0
+         C: EOD=0, Nison=0, Trail=1, BE=0
+      COIN: EOD=0, Nison=0, Trail=0, BE=1
+      COST: EOD=0, Nison=0, Trail=0, BE=0
+     GOOGL: EOD=1, Nison=0, Trail=1, BE=0
+        GS: EOD=0, Nison=0, Trail=1, BE=1
+      IBIT: EOD=0, Nison=0, Trail=0, BE=1
+       JPM: EOD=0, Nison=0, Trail=1, BE=0
+      MARA: EOD=0, Nison=0, Trail=0, BE=2
+      META: EOD=0, Nison=0, Trail=1, BE=0
+      MSFT: EOD=0, Nison=0, Trail=0, BE=1
+        MU: EOD=0, Nison=0, Trail=0, BE=0
+      NVDA: EOD=0, Nison=0, Trail=1, BE=0
+      PLTR: EOD=0, Nison=0, Trail=1, BE=0
+      SNOW: EOD=0, Nison=0, Trail=0, BE=2
+      TSLA: EOD=1, Nison=0, Trail=7, BE=3
+       TSM: EOD=0, Nison=0, Trail=1, BE=0
+       TXN: EOD=0, Nison=0, Trail=2, BE=2
+         V: EOD=0, Nison=0, Trail=1, BE=0
 
-  Trade log: /home/user/stock-data-mining/results/phase3_25ticker/trade_log.csv (24 trades)
-  Equity curve: /home/user/stock-data-mining/results/phase3_25ticker/equity_curve.csv (33 points)
-  Shadow log: /home/user/stock-data-mining/results/phase3_25ticker/shadow_log.csv (649 blocked signals)
+  Trade log: /home/user/stock-data-mining/results/phase3_25ticker/trade_log.csv (174 trades)
+  Equity curve: /home/user/stock-data-mining/results/phase3_25ticker/equity_curve.csv (199 points)
+  Shadow log: /home/user/stock-data-mining/results/phase3_25ticker/shadow_log.csv (415 blocked signals)
   Signal funnel: /home/user/stock-data-mining/results/phase3_25ticker/signal_funnel.json
   Results JSON: /home/user/stock-data-mining/results/phase3_25ticker/results.json
 
 ==========================================================================================
-  PHASE 3 COMPLETE — 27s (0.5min)
+  PHASE 3 COMPLETE — 107s (1.8min)
 ==========================================================================================
