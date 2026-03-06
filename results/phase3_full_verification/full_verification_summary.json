@@ -1,0 +1,463 @@
+{
+  "description": "Full statistical verification \u2014 all 6 tasks",
+  "trade_log": "/home/user/stock-data-mining/results/phase3_25ticker_earnings_fix/trades_a_prime.csv",
+  "task1_cscv_pbo": {
+    "cscv_trade": {
+      "n_trades": 195,
+      "S": 8,
+      "n_combos": 70,
+      "pbo": 0.3857,
+      "is_sharpe_mean": 0.0362,
+      "oos_sharpe_mean": 0.0362,
+      "degradation_pct": 0.0,
+      "is_oos_corr": -0.9344,
+      "is_oos_corr_p": 0.0,
+      "logit_mean": 0.2469,
+      "logit_median": 0.5808
+    },
+    "cscv_portfolio": {
+      "T_days": 255,
+      "S": 8,
+      "n_combos": 70,
+      "pbo": 0.2143,
+      "is_sharpe_mean": 0.6479,
+      "oos_sharpe_mean": 0.6479,
+      "degradation_pct": 0.0,
+      "is_oos_corr": -0.8101,
+      "is_oos_corr_p": 0.0
+    }
+  },
+  "task2_earnings": {
+    "funnel": {
+      "total_signals": 1881,
+      "passed": 1715,
+      "blocked_by_direction": 0,
+      "blocked_by_position": 0,
+      "blocked_by_level_score": 0,
+      "blocked_by_time": 70,
+      "blocked_by_earnings": 96,
+      "blocked_by_atr_hard": 0,
+      "blocked_by_atr_threshold": 0,
+      "blocked_by_atr_error": 0,
+      "blocked_by_volume": 0,
+      "blocked_by_squeeze": 0
+    },
+    "blocked_trades": [
+      {
+        "ticker": "AAPL",
+        "entry_time": "2025-10-30 16:40:00",
+        "direction": "long",
+        "pattern": "MODEL4",
+        "pnl": 457.57,
+        "pnl_r": 1.0322,
+        "earnings_date": "2025-10-30 (earnings day)",
+        "verified": true
+      },
+      {
+        "ticker": "AAPL",
+        "entry_time": "2026-01-29 17:25:00",
+        "direction": "long",
+        "pattern": "MODEL4",
+        "pnl": -439.51,
+        "pnl_r": -0.9833,
+        "earnings_date": "2026-01-29 (earnings day)",
+        "verified": true
+      },
+      {
+        "ticker": "AMZN",
+        "entry_time": "2025-10-30 18:30:00",
+        "direction": "long",
+        "pattern": "MODEL4",
+        "pnl": -440.91,
+        "pnl_r": -0.9836,
+        "earnings_date": "2025-10-30 (earnings day)",
+        "verified": true
+      },
+      {
+        "ticker": "AMZN",
+        "entry_time": "2025-10-31 17:05:00",
+        "direction": "short",
+        "pattern": "MODEL4",
+        "pnl": 968.85,
+        "pnl_r": 2.1634,
+        "earnings_date": "2025-10-30 (post-earnings +1d)",
+        "verified": true
+      },
+      {
+        "ticker": "BA",
+        "entry_time": "2026-01-29 17:00:00",
+        "direction": "long",
+        "pattern": "MODEL4",
+        "pnl": -439.94,
+        "pnl_r": -0.9795,
+        "earnings_date": "2026-01-28 (post-earnings +1d)",
+        "verified": true
+      },
+      {
+        "ticker": "JPM",
+        "entry_time": "2026-01-15 17:35:00",
+        "direction": "short",
+        "pattern": "MODEL4",
+        "pnl": -437.39,
+        "pnl_r": -0.9802,
+        "earnings_date": "2026-01-14 (post-earnings +1d)",
+        "verified": true
+      },
+      {
+        "ticker": "TXN",
+        "entry_time": "2025-07-22 19:55:00",
+        "direction": "short",
+        "pattern": "LP2",
+        "pnl": -276.65,
+        "pnl_r": -0.9222,
+        "earnings_date": "2025-07-22 (earnings day)",
+        "verified": true
+      }
+    ],
+    "all_verified": true,
+    "blocked_winners": 2,
+    "blocked_losers": 5,
+    "blocked_net_pnl": -607.98
+  },
+  "task3_distribution": {
+    "n_trades": 195,
+    "mean_r": 0.1371,
+    "median_r": -0.876,
+    "std_r": 2.4222,
+    "skewness": 4.3554,
+    "kurtosis_excess": 24.5136,
+    "top5_trades": [
+      {
+        "ticker": "TSLA",
+        "entry_time": "2025-12-18 16:40:00",
+        "pnl": 5766.53,
+        "pnl_r": 19.25,
+        "pct_of_total": 54.6
+      },
+      {
+        "ticker": "V",
+        "entry_time": "2025-12-01 17:25:00",
+        "pnl": 5218.13,
+        "pnl_r": 11.64,
+        "pct_of_total": 49.4
+      },
+      {
+        "ticker": "BABA",
+        "entry_time": "2025-12-26 16:50:00",
+        "pnl": 4711.05,
+        "pnl_r": 10.47,
+        "pct_of_total": 44.6
+      },
+      {
+        "ticker": "TSLA",
+        "entry_time": "2025-12-23 16:30:00",
+        "pnl": 3215.24,
+        "pnl_r": 10.77,
+        "pct_of_total": 30.4
+      },
+      {
+        "ticker": "BA",
+        "entry_time": "2025-12-11 17:20:00",
+        "pnl": 2512.56,
+        "pnl_r": 8.39,
+        "pct_of_total": 23.8
+      }
+    ],
+    "top5_concentration_pct": 202.8,
+    "bottom5_trades": [
+      {
+        "ticker": "GOOGL",
+        "entry_time": "2025-09-04 16:45:00",
+        "pnl": -438.79,
+        "pnl_r": -0.98
+      },
+      {
+        "ticker": "AMZN",
+        "entry_time": "2026-01-09 17:05:00",
+        "pnl": -440.03,
+        "pnl_r": -0.98
+      },
+      {
+        "ticker": "AMZN",
+        "entry_time": "2025-07-22 16:55:00",
+        "pnl": -441.09,
+        "pnl_r": -0.99
+      },
+      {
+        "ticker": "BA",
+        "entry_time": "2025-07-14 16:45:00",
+        "pnl": -441.29,
+        "pnl_r": -0.98
+      },
+      {
+        "ticker": "BA",
+        "entry_time": "2025-12-12 17:05:00",
+        "pnl": -441.35,
+        "pnl_r": -0.98
+      }
+    ],
+    "pattern_stats": [
+      {
+        "pattern": "CLP",
+        "trades": 12,
+        "wins": 4,
+        "win_rate": 33.3,
+        "mean_r": -0.3649,
+        "total_pnl": -1311.92
+      },
+      {
+        "pattern": "LP1",
+        "trades": 69,
+        "wins": 18,
+        "win_rate": 26.1,
+        "mean_r": 0.1311,
+        "total_pnl": 2638.24
+      },
+      {
+        "pattern": "LP2",
+        "trades": 65,
+        "wins": 19,
+        "win_rate": 29.2,
+        "mean_r": 0.0689,
+        "total_pnl": 1329.35
+      },
+      {
+        "pattern": "MODEL4",
+        "trades": 49,
+        "wins": 12,
+        "win_rate": 24.5,
+        "mean_r": 0.3589,
+        "total_pnl": 7908.89
+      }
+    ],
+    "ticker_stats_top5": [
+      {
+        "ticker": "TSLA",
+        "trades": 23,
+        "wins": 11,
+        "win_rate": 47.8,
+        "total_pnl": 12497.12
+      },
+      {
+        "ticker": "V",
+        "trades": 11,
+        "wins": 3,
+        "win_rate": 27.3,
+        "total_pnl": 4971.32
+      },
+      {
+        "ticker": "BABA",
+        "trades": 7,
+        "wins": 1,
+        "win_rate": 14.3,
+        "total_pnl": 2897.05
+      },
+      {
+        "ticker": "BA",
+        "trades": 21,
+        "wins": 5,
+        "win_rate": 23.8,
+        "total_pnl": 2551.72
+      },
+      {
+        "ticker": "NVDA",
+        "trades": 2,
+        "wins": 1,
+        "win_rate": 50.0,
+        "total_pnl": 673.73
+      }
+    ],
+    "ticker_stats_bottom5": [
+      {
+        "ticker": "IBIT",
+        "trades": 7,
+        "wins": 1,
+        "win_rate": 14.3,
+        "total_pnl": -1332.21
+      },
+      {
+        "ticker": "COIN",
+        "trades": 8,
+        "wins": 2,
+        "win_rate": 25.0,
+        "total_pnl": -1453.93
+      },
+      {
+        "ticker": "AMD",
+        "trades": 9,
+        "wins": 1,
+        "win_rate": 11.1,
+        "total_pnl": -1622.61
+      },
+      {
+        "ticker": "JPM",
+        "trades": 11,
+        "wins": 2,
+        "win_rate": 18.2,
+        "total_pnl": -1896.16
+      },
+      {
+        "ticker": "AMZN",
+        "trades": 8,
+        "wins": 1,
+        "win_rate": 12.5,
+        "total_pnl": -1956.83
+      }
+    ],
+    "longest_losing_streak": 9,
+    "longest_winning_streak": 3
+  },
+  "task4_regime": {
+    "quarterly": [
+      {
+        "quarter": "2025Q2",
+        "trades": 23,
+        "wins": 3,
+        "win_rate": 13.0,
+        "pf": 0.36,
+        "pnl": -3318.56,
+        "pct_of_total": -31.4,
+        "profitable": false
+      },
+      {
+        "quarter": "2025Q3",
+        "trades": 70,
+        "wins": 20,
+        "win_rate": 28.6,
+        "pf": 0.95,
+        "pnl": -699.89,
+        "pct_of_total": -6.6,
+        "profitable": false
+      },
+      {
+        "quarter": "2025Q4",
+        "trades": 78,
+        "wins": 27,
+        "win_rate": 34.6,
+        "pf": 2.29,
+        "pnl": 17652.35,
+        "pct_of_total": 167.1,
+        "profitable": true
+      },
+      {
+        "quarter": "2026Q1",
+        "trades": 24,
+        "wins": 3,
+        "win_rate": 12.5,
+        "pf": 0.36,
+        "pnl": -3069.34,
+        "pct_of_total": -29.1,
+        "profitable": false
+      }
+    ],
+    "profitable_quarters": 1,
+    "total_quarters": 4,
+    "monthly": [
+      {
+        "month": "2025-04",
+        "trades": 5,
+        "pnl": 409.57,
+        "pct_of_total": 3.9
+      },
+      {
+        "month": "2025-05",
+        "trades": 6,
+        "pnl": -184.14,
+        "pct_of_total": -1.7
+      },
+      {
+        "month": "2025-06",
+        "trades": 12,
+        "pnl": -3543.98,
+        "pct_of_total": -33.5
+      },
+      {
+        "month": "2025-07",
+        "trades": 26,
+        "pnl": 2410.62,
+        "pct_of_total": 22.8
+      },
+      {
+        "month": "2025-08",
+        "trades": 16,
+        "pnl": -1467.94,
+        "pct_of_total": -13.9
+      },
+      {
+        "month": "2025-09",
+        "trades": 28,
+        "pnl": -1642.58,
+        "pct_of_total": -15.5
+      },
+      {
+        "month": "2025-10",
+        "trades": 18,
+        "pnl": -1700.46,
+        "pct_of_total": -16.1
+      },
+      {
+        "month": "2025-11",
+        "trades": 30,
+        "pnl": -3111.28,
+        "pct_of_total": -29.5
+      },
+      {
+        "month": "2025-12",
+        "trades": 30,
+        "pnl": 22464.09,
+        "pct_of_total": 212.6
+      },
+      {
+        "month": "2026-01",
+        "trades": 24,
+        "pnl": -3069.34,
+        "pct_of_total": -29.1
+      }
+    ],
+    "concentrated_months": [
+      "2025-06",
+      "2025-12"
+    ]
+  },
+  "task5_tsla": {
+    "tsla_trades": 23,
+    "tsla_pnl": 12497.12,
+    "tsla_pct_of_total": 118.3,
+    "tsla_win_rate": 47.8,
+    "tsla_mean_r": 1.84,
+    "tsla_max_r": 19.25,
+    "scenario_a_no_tsla": {
+      "trades": 172,
+      "pnl": -1932.57,
+      "pf": 0.94,
+      "wr": 24.4,
+      "sharpe_per_trade": -0.0503,
+      "profitable": false
+    },
+    "scenario_b_no_top3_tsla": {
+      "trades": 192,
+      "pnl": -130.14,
+      "pf": 1.0,
+      "sharpe_per_trade": -0.026,
+      "profitable": false
+    }
+  },
+  "task6_dsr": {
+    "per_trade": {
+      "sharpe": 0.0566,
+      "n_trades": 195,
+      "sr_benchmark": 2.2763,
+      "dsr": 0.0,
+      "dsr_p_value": 1.0,
+      "significant": false
+    },
+    "daily_equity": {
+      "sharpe_ann": 0.9319,
+      "T_days": 255,
+      "sr_benchmark": 0.1434,
+      "dsr": 1.0,
+      "dsr_p_value": 0.0,
+      "significant": true
+    }
+  }
+}

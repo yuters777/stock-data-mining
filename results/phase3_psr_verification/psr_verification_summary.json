@@ -1,0 +1,60 @@
+{
+  "description": "PSR/MinTRL verification: daily equity vs per-trade R returns",
+  "trade_log": "/home/user/stock-data-mining/results/phase3_25ticker_earnings_fix/trades_a_prime.csv",
+  "task1_daily_equity": {
+    "T_days": 255,
+    "n_trade_days": 113,
+    "n_zero_days": 142,
+    "zero_pct": 55.7,
+    "mean_daily": 0.0004142963502507462,
+    "std_daily": 0.007057608171498666,
+    "sharpe_annualized": 0.9319,
+    "skewness": 4.7582,
+    "kurtosis_raw": 31.6289,
+    "kurtosis_excess": 28.6289,
+    "psr_old_formula": 1.0,
+    "psr_corrected": 1.0,
+    "mintrl_old": 10.0,
+    "mintrl_corrected": 9.7,
+    "mintrl_reached": 1
+  },
+  "task2_per_trade_r": {
+    "n_trades": 195,
+    "mean_r": 0.1371,
+    "std_r": 2.4222,
+    "sharpe_per_trade": 0.0566,
+    "skewness": 4.3554,
+    "kurtosis_excess": 24.5136,
+    "kurtosis_raw": 27.5136,
+    "psr_vs_zero": 0.815021,
+    "psr_p_value": 0.184979,
+    "mintrl_trades": 654.0,
+    "mintrl_reached": false,
+    "win_rate": 27.2,
+    "max_r": 19.25,
+    "min_r": -1.0
+  },
+  "task3_comparison": {
+    "daily_psr": 1.0,
+    "trade_psr": 0.815021,
+    "daily_mintrl": 9.7,
+    "trade_mintrl": 654.0,
+    "daily_mintrl_reached": 1,
+    "trade_mintrl_reached": false,
+    "zero_days_inflating": 142
+  },
+  "task4_block_bootstrap": {
+    "n_trades": 195,
+    "block_size": 5,
+    "n_resamples": 10000,
+    "original_sharpe": 0.0566,
+    "bootstrap_median": 0.0529,
+    "bootstrap_mean": 0.046,
+    "bootstrap_std": 0.0697,
+    "ci_95_lower": -0.111,
+    "ci_95_upper": 0.1648,
+    "pct_positive": 76.5,
+    "ci_includes_zero": true,
+    "significant_at_5pct": false
+  }
+}
