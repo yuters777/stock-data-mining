@@ -1,0 +1,102 @@
+================================================================================
+  PSR / MinTRL VERIFICATION: Daily vs Per-Trade Returns
+  Trade log: /home/user/stock-data-mining/results/phase3_25ticker_earnings_fix/trades_a_prime.csv
+================================================================================
+================================================================================
+  TASK 1: AUDIT — Daily Equity Returns (old approach)
+================================================================================
+
+  N (business days):      255
+  Days with trades:       113
+  Days with ZERO return:  142 (55.7%)
+  Daily mean return:      0.000414
+  Daily std return:       0.007058
+  Sharpe (annualized):    0.9319
+  Skewness:               4.7582
+  Kurtosis (raw):         31.6289
+  Kurtosis (excess):      28.6289
+
+  PSR (old code, raw kurt):     100.00%
+  PSR (corrected, excess kurt): 100.00%
+  MinTRL (old code):            10.0 days
+  MinTRL (corrected):           9.7 days
+
+  PROBLEM: 142 zero-return days (56% of series)
+  inflate T but not information content → PSR is overstated
+
+================================================================================
+  TASK 2: RECOMPUTE — Per-Trade R-Multiple Returns
+================================================================================
+
+  N trades:               195
+  Mean R:                 0.1371
+  Std R:                  2.4222
+  Sharpe (per-trade):     0.0566
+  Skewness:               4.3554
+  Kurtosis (excess):      24.5136
+  Kurtosis (raw):         27.5136
+
+  PSR vs SR=0:            81.50% (p=0.1850)
+  MinTRL (trades):        654
+  Have:                   195 trades
+  MinTRL reached?         NO
+  Need 459 more trades
+
+  Winners: 53 (mean R = 2.63)
+  Losers:  142 (mean R = -0.79)
+  Win rate: 27.2%
+  Max R: 19.25, Min R: -1.00
+
+================================================================================
+  TASK 3: SIDE-BY-SIDE COMPARISON
+================================================================================
+
+  Metric                      Daily equity (old)    Per-trade R (new)
+  ─────────────────────────────────────────────────────────────────
+  N                                       255 days              195 trades
+  Zero-information obs                    142 days                0 trades
+  Sharpe                                  0.9319               0.0566
+  Skewness                                4.7582               4.3554
+  Kurtosis (excess)                      28.6289              24.5136
+  PSR vs zero                            100.00%               81.50%
+  MinTRL                                   10 days            654.0 trades
+  MinTRL reached?                            YES                   NO
+
+  KEY FINDING:
+  Per-trade PSR (81.5%) is LOWER than daily-equity PSR (100.0%)
+  The 142 zero-return days were inflating the daily PSR
+  CRITICAL: MinTRL NOT reached on per-trade basis!
+  Need 654.0 trades, only have 195
+
+================================================================================
+  TASK 4: STATIONARY BLOCK BOOTSTRAP (trade-level)
+================================================================================
+
+  N trades:         195
+  Block size:       5
+  Resamples:        10,000
+
+  Original Sharpe (per-trade):  0.0566
+  Bootstrap median:             0.0529
+  Bootstrap mean:               0.0460
+  Bootstrap std:                0.0697
+  95% CI:                       [-0.1110, 0.1648]
+  % resamples with SR > 0:      76.5%
+  95% CI includes zero?         YES — not significant
+
+  Bootstrap PSR (empirical):    76.5%
+  (vs analytical PSR above)
+
+================================================================================
+  FINAL VERDICT
+================================================================================
+
+  ChatGPT PRO was CORRECT:
+  Daily-equity PSR (100.0%) > Per-trade PSR (81.5%)
+  MinTRL NOT reached: need 654 trades, have 195
+
+  Bootstrap 95% CI: [-0.1110, 0.1648]
+  Bootstrap DOES NOT CONFIRM significance at 5% level
+  76.5% of bootstrap resamples have positive Sharpe
+
+  Summary saved: /home/user/stock-data-mining/results/phase3_psr_verification/psr_verification_summary.json
