@@ -1,0 +1,235 @@
+================================================================================
+  FULL STATISTICAL VERIFICATION PASS
+  Trade log: /home/user/stock-data-mining/results/phase3_25ticker_earnings_fix/trades_a_prime.csv
+  Date: 2026-03-06
+================================================================================
+================================================================================
+  TASK 1: CSCV/PBO — Per-Trade R Returns vs Daily Equity
+================================================================================
+
+  CSCV-Trade: 195 trades, S=8 subsets, ~24 trades/subset
+    Subset 0: 25 trades, mean_R=-0.384, sum_R=-9.6
+    Subset 1: 25 trades, mean_R=0.189, sum_R=4.7
+    Subset 2: 25 trades, mean_R=-0.122, sum_R=-3.0
+    Subset 3: 24 trades, mean_R=-0.332, sum_R=-8.0
+    Subset 4: 24 trades, mean_R=-0.372, sum_R=-8.9
+    Subset 5: 24 trades, mean_R=0.195, sum_R=4.7
+    Subset 6: 24 trades, mean_R=1.636, sum_R=39.3
+    Subset 7: 24 trades, mean_R=0.317, sum_R=7.6
+
+  Combinations: C(8,4) = 70
+
+  CSCV-Trade Results:
+    PBO (OOS-negative splits):  38.6% (27/70)
+    IS Sharpe mean:             0.0362
+    OOS Sharpe mean:            0.0362
+    IS→OOS degradation:         0.0%
+    IS-OOS correlation:         r=-0.9344 (p=0.0000)
+    Logit mean:                 0.2469
+    Logit median:               0.5808
+
+  CSCV-Portfolio (daily equity, for comparison):
+    PBO (OOS-negative):         21.4% (15/70)
+    IS Sharpe mean:             0.6479
+    OOS Sharpe mean:            0.6479
+    IS→OOS degradation:         0.0%
+    IS-OOS correlation:         r=-0.8101 (p=0.0000)
+
+  Metric                              CSCV-Trade  CSCV-Portfolio
+  ────────────────────────────────────────────────────────────
+  PBO                                      38.6%           21.4%
+  IS→OOS degradation                        0.0%            0.0%
+  IS-OOS correlation                     -0.9344         -0.8101
+  OOS Sharpe mean                         0.0362          0.6479
+
+================================================================================
+  TASK 2: EARNINGS FILTER VERIFICATION
+================================================================================
+
+  Signal Funnel:
+    total_signals                    1881
+    passed                           1715
+    blocked_by_direction                0
+    blocked_by_position                 0
+    blocked_by_level_score              0
+    blocked_by_time                    70
+    blocked_by_earnings                96
+    blocked_by_atr_hard                 0
+    blocked_by_atr_threshold            0
+    blocked_by_atr_error                0
+    blocked_by_volume                   0
+    blocked_by_squeeze                  0
+
+  Trades blocked by earnings filter: 7
+  Ticker Entry Time             Dir    Pattern         PnL Matching Earnings Date
+  ────────────────────────────────────────────────────────────────────────────────
+  AAPL   2025-10-30 16:40:00    long   MODEL4   $      458 2025-10-30 (earnings day) [MATCH]
+  AAPL   2026-01-29 17:25:00    long   MODEL4   $     -440 2026-01-29 (earnings day) [MATCH]
+  AMZN   2025-10-30 18:30:00    long   MODEL4   $     -441 2025-10-30 (earnings day) [MATCH]
+  AMZN   2025-10-31 17:05:00    short  MODEL4   $      969 2025-10-30 (post-earnings +1d) [MATCH]
+  BA     2026-01-29 17:00:00    long   MODEL4   $     -440 2026-01-28 (post-earnings +1d) [MATCH]
+  JPM    2026-01-15 17:35:00    short  MODEL4   $     -437 2026-01-14 (post-earnings +1d) [MATCH]
+  TXN    2025-07-22 19:55:00    short  LP2      $     -277 2025-07-22 (earnings day) [MATCH]
+
+  All blocked trades match earnings calendar? YES
+  Blocked winners: 2, losers: 5
+  Net P&L of blocked trades: $-608
+
+================================================================================
+  TASK 3: PER-TRADE RETURN DISTRIBUTION ANALYSIS
+================================================================================
+
+  Basic Stats (195 trades):
+    Mean R:     0.1371
+    Median R:   -0.8760
+    Std R:      2.4222
+    Skewness:   4.3554
+    Kurtosis:   24.5136 (excess)
+
+  Top-5 Trades:
+    Ticker Entry Date             Dir    Pattern         R        PnL  % Total
+    ──────────────────────────────────────────────────────────────────────
+    TSLA   2025-12-18 16:40:00    short  LP1         19.25 $     5767    54.6%
+    V      2025-12-01 17:25:00    short  MODEL4      11.64 $     5218    49.4%
+    BABA   2025-12-26 16:50:00    short  MODEL4      10.47 $     4711    44.6%
+    TSLA   2025-12-23 16:30:00    short  LP1         10.77 $     3215    30.4%
+    BA     2025-12-11 17:20:00    short  LP2          8.39 $     2513    23.8%
+    Top-5 concentration: $21,424 = 202.8% of total P&L
+
+  Bottom-5 Trades:
+    Ticker Entry Date             Dir    Pattern         R        PnL
+    ────────────────────────────────────────────────────────────
+    GOOGL  2025-09-04 16:45:00    long   MODEL4      -0.98 $     -439
+    AMZN   2026-01-09 17:05:00    long   MODEL4      -0.98 $     -440
+    AMZN   2025-07-22 16:55:00    long   MODEL4      -0.99 $     -441
+    BA     2025-07-14 16:45:00    long   MODEL4      -0.98 $     -441
+    BA     2025-12-12 17:05:00    long   MODEL4      -0.98 $     -441
+
+  Win Rate by Pattern:
+    Pattern      Trades     Wins       WR   Mean R    Total PnL
+    ───────────────────────────────────────────────────────
+    CLP              12        4    33.3%   -0.365 $     -1,312
+    LP1              69       18    26.1%    0.131 $      2,638
+    LP2              65       19    29.2%    0.069 $      1,329
+    MODEL4           49       12    24.5%    0.359 $      7,909
+
+  Win Rate by Ticker (sorted by PnL):
+    Ticker   Trades     Wins       WR    Total PnL
+    ─────────────────────────────────────────────
+    Top 5:
+    TSLA         23       11    47.8% $     12,497
+    V            11        3    27.3% $      4,971
+    BABA          7        1    14.3% $      2,897
+    BA           21        5    23.8% $      2,552
+    NVDA          2        1    50.0% $        674
+    Bottom 5:
+    IBIT          7        1    14.3% $     -1,332
+    COIN          8        2    25.0% $     -1,454
+    AMD           9        1    11.1% $     -1,623
+    JPM          11        2    18.2% $     -1,896
+    AMZN          8        1    12.5% $     -1,957
+
+  Streaks:
+    Longest losing streak:  9
+    Longest winning streak: 3
+
+================================================================================
+  TASK 4: REGIME / QUARTERLY ANALYSIS
+================================================================================
+
+  Quarterly Breakdown:
+    Quarter      Trades     Wins       WR       PF          PnL  % Total
+    ─────────────────────────────────────────────────────────────────
+    2025Q2           23        3    13.0%     0.36 $     -3,319   -31.4%
+    2025Q3           70       20    28.6%     0.95 $       -700    -6.6%
+    2025Q4           78       27    34.6%     2.29 $     17,652   167.1%
+    2026Q1           24        3    12.5%     0.36 $     -3,069   -29.1%
+
+    Profitable quarters: 1/4
+
+  Monthly Breakdown:
+    Month        Trades          PnL  % Total            Flag
+    ───────────────────────────────────────────────────────
+    2025-04           5 $        410     3.9%                
+    2025-05           6 $       -184    -1.7%                
+    2025-06          12 $     -3,544   -33.5%   CONCENTRATED!
+    2025-07          26 $      2,411    22.8%                
+    2025-08          16 $     -1,468   -13.9%                
+    2025-09          28 $     -1,643   -15.5%                
+    2025-10          18 $     -1,700   -16.1%                
+    2025-11          30 $     -3,111   -29.5%                
+    2025-12          30 $     22,464   212.6%   CONCENTRATED!
+    2026-01          24 $     -3,069   -29.1%                
+
+    WARNING: 2 month(s) with >30% of total P&L: ['2025-06', '2025-12']
+
+================================================================================
+  TASK 5: TSLA DEPENDENCY CHECK
+================================================================================
+
+  TSLA trades:    23 / 195 (11.8%)
+  TSLA P&L:       $12,497 / $10,565 (118.3% of total)
+  TSLA WR:        11/23 (47.8%)
+  TSLA mean R:    1.84
+  TSLA max R:     19.25
+
+  Top-3 TSLA Trades:
+    2025-12-18 16:40:00    short  R= 19.25  PnL=$    5,767
+    2025-12-23 16:30:00    short  R= 10.77  PnL=$    3,215
+    2025-12-19 18:30:00    short  R=  5.71  PnL=$    1,713
+    Top-3 TSLA total: $10,695 (101.2% of strategy)
+
+  Scenario A: Remove ALL TSLA trades (23 trades)
+    Trades: 172
+    P&L:    $-1,933
+    PF:     0.94
+    WR:     24.4%
+    Sharpe: -0.0503
+    RESULT: UNPROFITABLE
+
+  Scenario B: Remove top-3 TSLA trades only
+    Trades: 192
+    P&L:    $-130
+    PF:     1.00
+    Sharpe: -0.0260
+    RESULT: UNPROFITABLE
+
+================================================================================
+  TASK 6: DSR RECOMPUTATION — Per-Trade R Returns
+================================================================================
+
+  Per-trade Sharpe:   0.0566
+  N trades:           195
+  N trials:           50
+  E[max SR] benchmark: 2.2763 (per-trade)
+
+  DSR (per-trade, vs 50 trials):
+    DSR value:        0.00%
+    p-value:          1.0000
+    Significant?      NO (p>=0.05)
+
+  DSR (daily equity, for comparison):
+    Annualized SR:    0.9319
+    SR benchmark:     0.1434
+    DSR value:        100.00%
+    p-value:          0.0000
+
+  Metric                          Per-trade    Daily equity
+  ───────────────────────────────────────────────────────
+  Observed SR                        0.0566          0.9319
+  Benchmark SR                       2.2763          0.1434
+  DSR                                 0.00%         100.00%
+  Significant?                           NO             YES
+
+================================================================================
+  CONSOLIDATED VERDICT
+================================================================================
+
+  1. CSCV/PBO (per-trade):      PBO=38.6%, IS→OOS degrad=0%
+  2. Earnings filter:           96 signals blocked, all verified=YES
+  3. Distribution:              Median R=-0.88, Skew=4.4, Top-5=203% of P&L
+  4. Quarterly stability:       1/4 profitable, concentrated months: ['2025-06', '2025-12']
+  5. TSLA dependency:           118% of P&L, w/o TSLA: UNPROFITABLE
+  6. DSR (per-trade):           0.0% (NOT significant)
+
+  Summary saved: /home/user/stock-data-mining/results/phase3_full_verification/full_verification_summary.json
