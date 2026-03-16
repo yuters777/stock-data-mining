@@ -17,8 +17,6 @@ jobs:
     steps:
       - name: Checkout branch
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.ref }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -28,11 +26,6 @@ jobs:
       - name: Install dependencies
         run: pip install requests pandas pytz
 
-      - name: Create output directories
-        run: |
-          mkdir -p Fetched_Data
-          mkdir -p MarketPatterns_AI/Fetched_Data
-
       - name: Run crypto backfill (Binance)
         run: |
           python backfill_crypto.py \
@@ -41,26 +34,25 @@ jobs:
             --also-update-fetched-data \
             2>&1 | tee backfill_output.log
 
-      - name: Show results
+      - name: Show results and list generated files
         run: |
-          echo "=== Backfill Results ==="
+          echo "=== Backfill Summary ==="
           tail -80 backfill_output.log
           echo ""
-          echo "=== File listing ==="
-          ls -lh Fetched_Data/*crypto* 2>/dev/null || echo "No crypto files in Fetched_Data"
-          ls -lh MarketPatterns_AI/Fetched_Data/*crypto* 2>/dev/null || echo "No crypto files in MarketPatterns_AI"
+          echo "=== All generated files ==="
+          find . -name "*crypto*" -type f | sort
           echo ""
           echo "=== Row counts ==="
-          for f in Fetched_Data/*crypto*.csv MarketPatterns_AI/Fetched_Data/*crypto*.csv; do
-            if [ -f "$f" ]; then
-              lines=$(wc -l < "$f")
-              echo "$f: $lines lines"
-              head -2 "$f"
-              echo "..."
-              tail -2 "$f"
-              echo ""
-            fi
+          find . -name "*crypto*.csv" -type f | while read f; do
+            lines=$(wc -l < "$f")
+            echo "$f: $lines lines"
+            head -2 "$f"
+            echo "..."
+            tail -2 "$f"
+            echo ""
           done
+          echo "=== Git status ==="
+          git status
 
       - name: Upload backfill log
         uses: actions/upload-artifact@v4
@@ -71,13 +63,35 @@ jobs:
 
       - name: Upload CSV data as artifact
         uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: crypto-csv-data
-          path: Fetched_Data/*crypto*.csv
+          path: |
+            Fetched_Data/
+            MarketPatterns_AI/Fetched_Data/
           if-no-files-found: warn
 
       - name: Commit and push CSV data
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "Add 12-month M5 historical data for ETH and BTC (Binance backfill)"
-          file_pattern: "Fetched_Data/*crypto*.csv MarketPatterns_AI/Fetched_Data/*crypto*.csv"
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # Add all CSV files explicitly by finding them
+          find Fetched_Data -name "*crypto*.csv" -exec git add {} \; 2>/dev/null || true
+          find MarketPatterns_AI/Fetched_Data -name "*crypto*.csv" -exec git add {} \; 2>/dev/null || true
+
+          echo "=== Staged files ==="
+          git diff --cached --name-only
+
+          if git diff --cached --quiet; then
+            echo "WARNING: No files staged for commit"
+            echo "Checking if files exist..."
+            find . -name "*crypto*.csv" -type f -ls
+            exit 0
+          fi
+
+          git commit -m "Add 12-month M5 historical data for ETH and BTC (Binance backfill)"
+
+          echo "=== Pushing to branch ==="
+          git push
+          echo "=== Push successful ==="
