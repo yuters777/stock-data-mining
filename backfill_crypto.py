@@ -369,11 +369,12 @@ def fetch_all_vision(tickers, months):
             df = fetch_vision_month(symbol, month)
             if df.empty:
                 continue
+            # Convert open_time (milliseconds) to Eastern datetime in bulk
+            df["Datetime_utc"] = pd.to_datetime(df["open_time"], unit="ms", utc=True)
+            df["Datetime_et"] = df["Datetime_utc"].dt.tz_convert("America/New_York")
             for _, row in df.iterrows():
-                open_time_utc = datetime.fromtimestamp(row["open_time"] / 1000, tz=timezone.utc)
-                et_time = utc_to_eastern(open_time_utc)
                 all_records.append({
-                    "Datetime": et_time.strftime("%Y-%m-%d %H:%M:%S"),
+                    "Datetime": row["Datetime_et"].strftime("%Y-%m-%d %H:%M:%S"),
                     "Open": float(row["Open"]),
                     "High": float(row["High"]),
                     "Low": float(row["Low"]),
