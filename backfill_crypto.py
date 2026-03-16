@@ -369,8 +369,16 @@ def fetch_all_vision(tickers, months):
             df = fetch_vision_month(symbol, month)
             if df.empty:
                 continue
-            # Convert open_time (milliseconds) to Eastern datetime in bulk
-            df["Datetime_utc"] = pd.to_datetime(df["open_time"], unit="ms", utc=True)
+            # Auto-detect timestamp unit: ms (13 digits) vs us (16 digits)
+            sample_ts = df["open_time"].iloc[0]
+            if sample_ts > 1e15:  # microseconds
+                ts_unit = "us"
+            elif sample_ts > 1e12:  # milliseconds
+                ts_unit = "ms"
+            else:  # seconds
+                ts_unit = "s"
+            logger.info(f"Vision {symbol} {month}: open_time sample={sample_ts}, unit={ts_unit}")
+            df["Datetime_utc"] = pd.to_datetime(df["open_time"], unit=ts_unit, utc=True)
             df["Datetime_et"] = df["Datetime_utc"].dt.tz_convert("America/New_York")
             for _, row in df.iterrows():
                 all_records.append({
