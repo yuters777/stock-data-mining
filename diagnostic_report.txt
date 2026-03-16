@@ -1,0 +1,482 @@
+=== NETWORK DIAGNOSTICS ===
+Date: Mon Mar 16 22:34:47 UTC 2026
+
+--- Binance API ping ---
+{
+  "code": 0,
+  "msg": "Service unavailable from a restricted location according to 'b. Eligibility' in https://www.binance.com/en/terms. Please contact customer service if you believe you received this message in error."
+}
+HTTP_CODE: 451
+
+--- Binance klines (2 bars) ---
+{
+  "code": 0,
+  "msg": "Service unavailable from a restricted location according to 'b. Eligibility' in https://www.binance.com/en/terms. Please contact customer service if you believe you received this message in error."
+}
+HTTP_CODE: 451
+
+--- data.binance.vision (HEAD) ---
+HTTP/2 200 
+content-type: application/zip
+content-length: 456750
+date: Mon, 16 Mar 2026 22:34:49 GMT
+last-modified: Tue, 06 May 2025 11:08:50 GMT
+etag: "60baf2f36830293605253cb29f5068d5"
+x-amz-server-side-encryption: AES256
+accept-ranges: bytes
+server: AmazonS3
+x-cache: Miss from cloudfront
+
+--- CryptoCompare (2 bars) ---
+{"Response":"Success","Message":"","HasWarning":false,"Type":100,"RateLimit":{},"Data":{"Aggregated":false,"TimeFrom":1773700320,"TimeTo":1773700440,"Data":[{"time":1773700320,"high":74689.15,"low":74653.68,"open":74670.91,"volumefrom":35.64,"volumeto":2661448.8,"close":74661.63,"conversionType":"direct","conversionSymbol":""},{"time":1773700380,"high":74664.37,"low":74620.71,"open":74661.63,"volumefrom":28.65,"volumeto":2138215.56,"close":74636.43,"conversionType":"direct","conversionSymbol":""},{"time":1773700440,"high":74636.43,"low":74630.36,"open":74636.43,"volumefrom":0,"volumeto":0,"close":74630.36,"conversionType":"direct","conversionSymbol":""}]}}
+HTTP_CODE: 200
+
+--- Python test: Binance klines ---
+Status: 451
+Body: {
+  "code": 0,
+  "msg": "Service unavailable from a restricted location according to 'b. Eligibility' in https://www.binance.com/en/terms. Please contact customer service if you believe you received this message in error."
+}
+
+=== END DIAGNOSTICS ===
+
+=== FILE REPORT ===
+
+--- All files (excluding .git) ---
+./.github/workflows/backfill-crypto.yml
+./.gitignore
+./.idea/Market Pattern Analysis AI Agent.iml
+./.idea/inspectionProfiles/profiles_settings.xml
+./.idea/modules.xml
+./MarketPatterns_AI/Combined_Data.csv
+./MarketPatterns_AI/DataCleaningNormalization.py
+./MarketPatterns_AI/Documents/! - Project files Location/1.webp
+./MarketPatterns_AI/Documents/! - Project files Location/2.webp
+./MarketPatterns_AI/Documents/! - Project files Location/3.webp
+./MarketPatterns_AI/Documents/! - Project files Location/4.webp
+./MarketPatterns_AI/Documents/! - Project files Location/5.webp
+./MarketPatterns_AI/Documents/! - Project files Location/6.webp
+./MarketPatterns_AI/Documents/!- DeepR_Comparative Evaluation of LLMs for RT Financial Analysis.docx
+./MarketPatterns_AI/Documents/!- DeepR_TradingView’s 26 Indicator Technical Summary.docx
+./MarketPatterns_AI/Documents/Data Processor/Stock Data Processor - Technical Documentation.docx
+./MarketPatterns_AI/Documents/Market Pattern Analysis AI Agent - Pipeline Execution Sequence.docx
+./MarketPatterns_AI/Documents/Market Pattern Analysis AI Agent.docx
+./MarketPatterns_AI/Documents/Pattern Detector/Pattern Detector Configuration Documentation.docx
+./MarketPatterns_AI/Documents/Pattern Detector/optimization-explanation.md
+./MarketPatterns_AI/Documents/SP500_Data_Script_Operation_Document.docx
+./MarketPatterns_AI/Documents/Stock_Fetcher/! - Enhanced Alpha Vantage Stock Data Fetcher.docx
+./MarketPatterns_AI/Documents/Stock_Fetcher/Enhanced Alpha Vantage Stock Fetcher Usage Guide.docx
+./MarketPatterns_AI/Documents/Stock_Fetcher/Enhanced_AlphaVantage_Stock_Fetcher_Documentation.docx
+./MarketPatterns_AI/Fetched_Data/AAPL_data.csv
+./MarketPatterns_AI/Fetched_Data/AAPL_schema.json
+./MarketPatterns_AI/Fetched_Data/AMZN_data.csv
+./MarketPatterns_AI/Fetched_Data/AMZN_schema.json
+./MarketPatterns_AI/Fetched_Data/BABA_data.csv
+./MarketPatterns_AI/Fetched_Data/COIN_data.csv
+./MarketPatterns_AI/Fetched_Data/GOOGL_data.csv
+./MarketPatterns_AI/Fetched_Data/GOOGL_schema.json
+./MarketPatterns_AI/Fetched_Data/META_data.csv
+./MarketPatterns_AI/Fetched_Data/META_schema.json
+./MarketPatterns_AI/Fetched_Data/MSFT_data.csv
+./MarketPatterns_AI/Fetched_Data/MSFT_schema.json
+./MarketPatterns_AI/Fetched_Data/NVDA_data.csv
+./MarketPatterns_AI/Fetched_Data/NVDA_schema.json
+./MarketPatterns_AI/Fetched_Data/TEMP/-11.03-new/AAPL_data.csv
+./MarketPatterns_AI/Fetched_Data/TEMP/-11.03-new/AAPL_schema.json
+./MarketPatterns_AI/Fetched_Data/TEMP/-11.03-new/AMZN_data.csv
+./MarketPatterns_AI/Fetched_Data/TEMP/-11.03-new/AMZN_schema.json
+./MarketPatterns_AI/Fetched_Data/TEMP/-11.03-new/GOOGL_data.csv
+./MarketPatterns_AI/Fetched_Data/TEMP/-11.03-new/GOOGL_schema.json
+./MarketPatterns_AI/Fetched_Data/TEMP/-11.03-new/META_data.csv
+./MarketPatterns_AI/Fetched_Data/TEMP/-11.03-new/META_schema.json
+./MarketPatterns_AI/Fetched_Data/TEMP/-11.03-new/MSFT_data.csv
+./MarketPatterns_AI/Fetched_Data/TEMP/-11.03-new/MSFT_schema.json
+./MarketPatterns_AI/Fetched_Data/TEMP/-11.03-new/NVDA_data.csv
+./MarketPatterns_AI/Fetched_Data/TEMP/-11.03-new/NVDA_schema.json
+./MarketPatterns_AI/Fetched_Data/TEMP/-11.03-new/TSLA_data.csv
+./MarketPatterns_AI/Fetched_Data/TEMP/-11.03-new/TSLA_schema.json
+./MarketPatterns_AI/Fetched_Data/TEMP/-11.03-new/combined_sp500_all_data_5min.csv
+./MarketPatterns_AI/Fetched_Data/TEMP/-11.03-new/summary_report.json
+./MarketPatterns_AI/Fetched_Data/TEMP/06.03/AAPL_all_data_5min.csv
+./MarketPatterns_AI/Fetched_Data/TEMP/06.03/AMZN_all_data_5min.csv
+./MarketPatterns_AI/Fetched_Data/TEMP/06.03/GOOGL_all_data_5min.csv
+./MarketPatterns_AI/Fetched_Data/TEMP/06.03/META_all_data_5min.csv
+./MarketPatterns_AI/Fetched_Data/TEMP/06.03/MSFT_all_data_5min.csv
+./MarketPatterns_AI/Fetched_Data/TEMP/06.03/NVDA_all_data_5min.csv
+./MarketPatterns_AI/Fetched_Data/TEMP/06.03/TSLA_all_data_5min.csv
+./MarketPatterns_AI/Fetched_Data/TEMP/06.03/combined_sp500_all_data_5min.csv
+./MarketPatterns_AI/Fetched_Data/TEMP/06.03/summary_report.csv
+./MarketPatterns_AI/Fetched_Data/TEMP/20.01/AAPL_all_data_5min.csv
+./MarketPatterns_AI/Fetched_Data/TEMP/20.01/AMZN_all_data_5min.csv
+./MarketPatterns_AI/Fetched_Data/TEMP/20.01/GOOGL_all_data_5min.csv
+./MarketPatterns_AI/Fetched_Data/TEMP/20.01/META_all_data_5min.csv
+./MarketPatterns_AI/Fetched_Data/TEMP/20.01/MSFT_all_data_5min.csv
+./MarketPatterns_AI/Fetched_Data/TEMP/20.01/NVDA_all_data_5min.csv
+./MarketPatterns_AI/Fetched_Data/TEMP/20.01/TSLA_all_data_5min.csv
+./MarketPatterns_AI/Fetched_Data/TEMP/20.01/^GSPC_all_data_5min.csv
+./MarketPatterns_AI/Fetched_Data/TEMP/20.01/combined_sp500_all_data_5min.csv
+./MarketPatterns_AI/Fetched_Data/TEMP/21.01/AAPL_all_data_5min.csv
+./MarketPatterns_AI/Fetched_Data/TEMP/21.01/AMZN_all_data_5min.csv
+./MarketPatterns_AI/Fetched_Data/TEMP/21.01/GOOGL_all_data_5min.csv
+./MarketPatterns_AI/Fetched_Data/TEMP/21.01/META_all_data_5min.csv
+./MarketPatterns_AI/Fetched_Data/TEMP/21.01/MSFT_all_data_5min.csv
+./MarketPatterns_AI/Fetched_Data/TEMP/21.01/NVDA_all_data_5min.csv
+./MarketPatterns_AI/Fetched_Data/TEMP/21.01/TSLA_all_data_5min.csv
+./MarketPatterns_AI/Fetched_Data/TEMP/21.01/^GSPC_all_data_5min.csv
+./MarketPatterns_AI/Fetched_Data/TEMP/21.01/combined_sp500_all_data_5min.csv
+./MarketPatterns_AI/Fetched_Data/TEMP/21.01/summary_report.csv
+./MarketPatterns_AI/Fetched_Data/TEMP/24.01/AAPL_all_data_5min.csv
+./MarketPatterns_AI/Fetched_Data/TEMP/24.01/AMZN_all_data_5min.csv
+./MarketPatterns_AI/Fetched_Data/TEMP/24.01/GOOGL_all_data_5min.csv
+./MarketPatterns_AI/Fetched_Data/TEMP/24.01/META_all_data_5min.csv
+./MarketPatterns_AI/Fetched_Data/TEMP/24.01/MSFT_all_data_5min.csv
+./MarketPatterns_AI/Fetched_Data/TEMP/24.01/NVDA_all_data_5min.csv
+./MarketPatterns_AI/Fetched_Data/TEMP/24.01/TSLA_all_data_5min.csv
+./MarketPatterns_AI/Fetched_Data/TEMP/24.01/^GSPC_all_data_5min.csv
+./MarketPatterns_AI/Fetched_Data/TEMP/24.01/combined_sp500_all_data_5min.csv
+./MarketPatterns_AI/Fetched_Data/TEMP/24.01/config.json
+./MarketPatterns_AI/Fetched_Data/TEMP/24.01/summary_report.csv
+./MarketPatterns_AI/Fetched_Data/TSLA_data.csv
+./MarketPatterns_AI/Fetched_Data/TSLA_schema.json
+./MarketPatterns_AI/Fetched_Data/api_call_counter.json
+./MarketPatterns_AI/Fetched_Data/cache/AAPL_TIME_SERIES_INTRADAY_5min_cache.json
+./MarketPatterns_AI/Fetched_Data/cache/AAPL_cache.csv
+./MarketPatterns_AI/Fetched_Data/cache/AMZN_TIME_SERIES_INTRADAY_5min_cache.json
+./MarketPatterns_AI/Fetched_Data/cache/AMZN_cache.csv
+./MarketPatterns_AI/Fetched_Data/cache/GOOGL_TIME_SERIES_INTRADAY_5min_cache.json
+./MarketPatterns_AI/Fetched_Data/cache/GOOGL_cache.csv
+./MarketPatterns_AI/Fetched_Data/cache/META_TIME_SERIES_INTRADAY_5min_cache.json
+./MarketPatterns_AI/Fetched_Data/cache/META_cache.csv
+./MarketPatterns_AI/Fetched_Data/cache/MSFT_TIME_SERIES_INTRADAY_5min_cache.json
+./MarketPatterns_AI/Fetched_Data/cache/MSFT_cache.csv
+./MarketPatterns_AI/Fetched_Data/cache/NVDA_TIME_SERIES_INTRADAY_5min_cache.json
+./MarketPatterns_AI/Fetched_Data/cache/TSLA_TIME_SERIES_INTRADAY_5min_cache.json
+./MarketPatterns_AI/Fetched_Data/cache/TSLA_cache.csv
+./MarketPatterns_AI/Fetched_Data/combined_sp500_all_data_5min.csv
+./MarketPatterns_AI/Fetched_Data/summary_report.json
+./MarketPatterns_AI/Processed_Data/.cache/115a81b5feb0f6ebd5545705923ab0198c08ab98829293106ce004d0d9da2e97_AAPL.json
+./MarketPatterns_AI/Processed_Data/.cache/115a81b5feb0f6ebd5545705923ab0198c08ab98829293106ce004d0d9da2e97_AMZN.json
+./MarketPatterns_AI/Processed_Data/.cache/115a81b5feb0f6ebd5545705923ab0198c08ab98829293106ce004d0d9da2e97_GOOGL.json
+./MarketPatterns_AI/Processed_Data/.cache/115a81b5feb0f6ebd5545705923ab0198c08ab98829293106ce004d0d9da2e97_META.json
+./MarketPatterns_AI/Processed_Data/.cache/115a81b5feb0f6ebd5545705923ab0198c08ab98829293106ce004d0d9da2e97_MSFT.json
+./MarketPatterns_AI/Processed_Data/.cache/115a81b5feb0f6ebd5545705923ab0198c08ab98829293106ce004d0d9da2e97_NVDA.json
+./MarketPatterns_AI/Processed_Data/.cache/115a81b5feb0f6ebd5545705923ab0198c08ab98829293106ce004d0d9da2e97_TSLA.json
+./MarketPatterns_AI/Processed_Data/.cache/4f90fa548790150248627b18f7cf1281b3ae630430134e5abe1bc1289817b156_AAPL.json
+./MarketPatterns_AI/Processed_Data/.cache/4f90fa548790150248627b18f7cf1281b3ae630430134e5abe1bc1289817b156_AMZN.json
+./MarketPatterns_AI/Processed_Data/.cache/4f90fa548790150248627b18f7cf1281b3ae630430134e5abe1bc1289817b156_GOOGL.json
+./MarketPatterns_AI/Processed_Data/.cache/4f90fa548790150248627b18f7cf1281b3ae630430134e5abe1bc1289817b156_META.json
+./MarketPatterns_AI/Processed_Data/.cache/4f90fa548790150248627b18f7cf1281b3ae630430134e5abe1bc1289817b156_MSFT.json
+./MarketPatterns_AI/Processed_Data/.cache/4f90fa548790150248627b18f7cf1281b3ae630430134e5abe1bc1289817b156_NVDA.json
+./MarketPatterns_AI/Processed_Data/.cache/4f90fa548790150248627b18f7cf1281b3ae630430134e5abe1bc1289817b156_TSLA.json
+./MarketPatterns_AI/Processed_Data/.cache/cache_keys.json
+./MarketPatterns_AI/Processed_Data/Documents/! - Notes.docx
+./MarketPatterns_AI/Processed_Data/Documents/Clipboard01.bmp
+./MarketPatterns_AI/Processed_Data/Documents/PatternAnalysisPipelane - Running LOG.JPG
+./MarketPatterns_AI/Processed_Data/Interactive_Pattern_Analysis_Dashboard.py
+./MarketPatterns_AI/Processed_Data/Market_Pattern_Analysis.py
+./MarketPatterns_AI/Processed_Data/Pattern_Detection_Module.py
+./MarketPatterns_AI/Processed_Data/cache-directory/1413ecdc9765edb83c1641f369c50d46
+./MarketPatterns_AI/Processed_Data/cache-directory/19d128c885e8c1148b3f03c1eaa36870
+./MarketPatterns_AI/Processed_Data/cache-directory/2029240f6d1128be89ddc32729463129
+./MarketPatterns_AI/Processed_Data/cache-directory/59dc353ad99015177c6bc936fe98f2ca
+./MarketPatterns_AI/Processed_Data/cache-directory/5d98ceaed97985726013afc8a9b086b1
+./MarketPatterns_AI/Processed_Data/cache-directory/66303b20da42248736faff36b8003808
+./MarketPatterns_AI/Processed_Data/cache-directory/73917b8870e550bba5c91278df398bf8
+./MarketPatterns_AI/Processed_Data/cache-directory/a0759c6f4f6bc67a2626cabea7b4e5a2
+./MarketPatterns_AI/Processed_Data/cache-directory/c64abe11dc90d6099ef4ae33e58fff89
+./MarketPatterns_AI/Processed_Data/cache-directory/d18852e2b86be50d5e0766eb7347425c
+./MarketPatterns_AI/Processed_Data/cache-directory/d883167a151b6902f9d3d3b803c2f01a
+./MarketPatterns_AI/Processed_Data/cache-directory/f0c5fd74b03fc252747c69263076463f
+./MarketPatterns_AI/Processed_Data/cache-directory/ff56d6ae7cc34b7506002054185e821d
+./MarketPatterns_AI/Processed_Data/cache-directory/ff8c2e99c6a437135d817bfe0f5a9456
+./MarketPatterns_AI/Processed_Data/cleaned_normalized_data.csv
+./MarketPatterns_AI/Processed_Data/cleaned_normalized_data_stats.json
+./MarketPatterns_AI/Processed_Data/json_encoder_fix.py
+./MarketPatterns_AI/Processed_Data/pattern_analysis_results/error_report_20250317_192134.txt
+./MarketPatterns_AI/Processed_Data/pattern_analysis_results/error_report_20250317_232817.txt
+./MarketPatterns_AI/Processed_Data/pattern_analysis_results/error_report_20250318_003744.txt
+./MarketPatterns_AI/Processed_Data/pattern_analysis_results/error_summary.png
+./MarketPatterns_AI/Processed_Data/pattern_analysis_results/pattern_analysis_report.html
+./MarketPatterns_AI/Processed_Data/pattern_analysis_results/pattern_summary.json
+./MarketPatterns_AI/Processed_Data/pattern_analysis_results/processing_stats.json
+./MarketPatterns_AI/Processed_Data/pattern_analysis_results/recurring_patterns.json
+./MarketPatterns_AI/Processed_Data/pattern_analysis_results/temporal_clusters.json
+./MarketPatterns_AI/Processed_Data/pattern_analysis_results/time_correlations.json
+./MarketPatterns_AI/Processed_Data/pattern_analysis_results/time_shifts.json
+./MarketPatterns_AI/Processed_Data/pattern_analysis_results/trend_reversals.json
+./MarketPatterns_AI/Processed_Data/pattern_annotations.db
+./MarketPatterns_AI/Processed_Data/pattern_dashboard/pattern_analysis_results/error_report_20250318_230111.txt
+./MarketPatterns_AI/Processed_Data/pattern_dashboard/pattern_analysis_results/error_report_20250318_232257.txt
+./MarketPatterns_AI/Processed_Data/pattern_dashboard/pattern_analysis_results/error_report_20250319_061732.txt
+./MarketPatterns_AI/Processed_Data/pattern_dashboard/pattern_analysis_results/error_report_20250319_112941.txt
+./MarketPatterns_AI/Processed_Data/pattern_dashboard/pattern_analysis_results/error_report_20250319_113342.txt
+./MarketPatterns_AI/Processed_Data/pattern_dashboard/pattern_analysis_results/error_report_20250319_113524.txt
+./MarketPatterns_AI/Processed_Data/pattern_dashboard/pattern_analysis_results/error_report_20250319_115648.txt
+./MarketPatterns_AI/Processed_Data/pattern_dashboard/pattern_analysis_results/error_report_20250319_115729.txt
+./MarketPatterns_AI/Processed_Data/pattern_dashboard/pattern_analysis_results/error_summary.png
+./MarketPatterns_AI/Processed_Data/pattern_dashboard/pattern_analysis_results/pattern_analysis_report.html
+./MarketPatterns_AI/Processed_Data/pattern_dashboard/pattern_analysis_results/pattern_summary.json
+./MarketPatterns_AI/Processed_Data/pattern_dashboard/pattern_analysis_results/processing_stats.json
+./MarketPatterns_AI/Processed_Data/pattern_dashboard/pattern_analysis_results/recurring_patterns.json
+./MarketPatterns_AI/Processed_Data/pattern_dashboard/pattern_analysis_results/temporal_clusters.json
+./MarketPatterns_AI/Processed_Data/pattern_dashboard/pattern_analysis_results/time_correlations.json
+./MarketPatterns_AI/Processed_Data/pattern_dashboard/pattern_analysis_results/time_shifts.json
+./MarketPatterns_AI/Processed_Data/pattern_dashboard/pattern_analysis_results/trend_reversals.json
+./MarketPatterns_AI/Processed_Data/test_dashboard.py
+./MarketPatterns_AI/cleaning_config.json
+./MarketPatterns_AI/config.json
+./MarketPatterns_AI/fetch_SP500_Data.py
+./README.md
+./backfill_crypto.log
+./backfill_crypto.py
+./backfill_output.log
+./backtester/__init__.py
+./backtester/analyzer.py
+./backtester/atr.py
+./backtester/backtester.py
+./backtester/config.py
+./backtester/core/__init__.py
+./backtester/core/filter_chain.py
+./backtester/core/intraday_levels.py
+./backtester/core/level_detector.py
+./backtester/core/pattern_engine.py
+./backtester/core/risk_manager.py
+./backtester/core/trade_manager.py
+./backtester/data/earnings_calendar.json
+./backtester/data_loader.py
+./backtester/data_types.py
+./backtester/diagnose_breakeven.py
+./backtester/diagnose_clp.py
+./backtester/diagnose_w6.py
+./backtester/dsr_mintrl.py
+./backtester/earnings.py
+./backtester/optimizer.py
+./backtester/run_ablation_filters.py
+./backtester/run_ablation_validation.py
+./backtester/run_cscv_pbo.py
+./backtester/run_cscv_pbo_25ticker.py
+./backtester/run_experiments.py
+./backtester/run_full_audit_backtest.py
+./backtester/run_nison_fix_test.py
+./backtester/run_phase22_redo.py
+./backtester/run_phase24_regime_filters.py
+./backtester/run_phase24b_walkforward.py
+./backtester/run_phase25_fd_sweep.py
+./backtester/run_phase3_25ticker.py
+./backtester/run_phase3_25ticker_v2.py
+./backtester/run_phase3_atr_ablation.py
+./backtester/run_phase3_diagnostics.py
+./backtester/run_phase3_earnings_fix.py
+./backtester/run_phase3_variant_a_prime.py
+./backtester/run_struct_experiments.py
+./backtester/run_v41_experiments.py
+./backtester/run_v4_experiments.py
+./backtester/run_v5_regime_analysis.py
+./backtester/run_v6_direction.py
+./backtester/run_v6b_perticker.py
+./backtester/run_v7_optimization.py
+./backtester/run_walkforward.py
+./backtester/run_walkforward_fd5.py
+./backtester/tests/__init__.py
+./backtester/tests/test_atr.py
+./backtester/tests/test_config.py
+./backtester/tests/test_data_loader.py
+./backtester/tests/test_data_types.py
+./backtester/tests/test_earnings.py
+./backtester/tests/test_filter_chain.py
+./backtester/tests/test_level_detector.py
+./backtester/tests/test_pattern_engine.py
+./backtester/tests/test_risk_manager.py
+./backtester/tests/test_trade_manager.py
+./backtester/verify_30days.py
+./data/AMZN_data.csv
+./data/GOOGL_data.csv
+./data/META_data.csv
+./data/MSFT_data.csv
+./data/NVDA_data.csv
+./data/TSLA_data.csv
+./diagnostic_report.txt
+./docs/S15-CC_Blind_Spot_Discovery.md
+./docs/S15-CC_Blind_Spot_Discovery_v2.md
+./docs/specs/An In-Depth Study of the False Breakout Strategy.docx
+./docs/specs/ClaudeCode_EarningsFilter_Fix.md
+./docs/specs/ClaudeCode_Task3_2_25Ticker_Backtest.md
+./docs/specs/Gemeni Deep Research - Gerchik_FalseBreakout.docx
+./docs/specs/Gerchik_FalseBreakout_TZ_v3.4_YOUTUBE.docx
+./docs/specs/Technical Task_False Breakout Strategy_.docx
+./experiments/EXPERIMENT_LOG.md
+./experiments/EXPERIMENT_LOG_v3.md
+./experiments/EXPERIMENT_LOG_v4.1.md
+./experiments/EXPERIMENT_LOG_v4.md
+./level_detection/README_TRADINGVIEW.md
+./level_detection/__init__.py
+./level_detection/batch_processor.py
+./level_detection/bsu_detector.py
+./level_detection/config.py
+./level_detection/data_aggregator.py
+./level_detection/earnings_filter.py
+./level_detection/main.py
+./level_detection/market_data_fetcher.py
+./level_detection/output/charts/AAPL_levels.png
+./level_detection/output/charts/AMZN_levels.png
+./level_detection/output/charts/GOOGL_levels.png
+./level_detection/output/charts/META_levels.png
+./level_detection/output/charts/MSFT_levels.png
+./level_detection/output/charts/NVDA_levels.png
+./level_detection/output/charts/TSLA_levels.png
+./level_detection/output/charts/level_statistics.png
+./level_detection/output/levels_AAPL_tradingview.txt
+./level_detection/output/levels_detected.csv
+./level_detection/requirements.txt
+./level_detection/tests/__init__.py
+./level_detection/tests/test_bsu_detector.py
+./level_detection/tests/test_earnings_filter.py
+./level_detection/tests/test_market_fetcher.py
+./level_detection/tests/test_serializer.py
+./level_detection/tradingview_serializer.py
+./level_detection/visualizer.py
+./results/OPTIMIZATION_REPORT.md
+./results/S11_hypothesis_validation_batch.md
+./results/S12_day4_hypothesis_validation.md
+./results/S13_CC_alphax_cross_validation.md
+./results/S13_architecture_cross_validation.md
+./results/cscv_pbo_analysis.json
+./results/cscv_pbo_analysis.txt
+./results/direction_analysis.md
+./results/direction_analysis_v6b.md
+./results/phase24_regime_filters.txt
+./results/phase24b_walkforward.txt
+./results/phase25_fd_sweep.json
+./results/phase25_fd_sweep.txt
+./results/phase26_ablation_study.json
+./results/phase26_ablation_study.txt
+./results/phase26b_ablation_validation.json
+./results/phase26b_ablation_validation.txt
+./results/phase3_25ticker/cache/earnings_cache.json
+./results/phase3_25ticker/equity_curve.csv
+./results/phase3_25ticker/report.txt
+./results/phase3_25ticker/results.json
+./results/phase3_25ticker/shadow_log.csv
+./results/phase3_25ticker/signal_funnel.json
+./results/phase3_25ticker/trade_log.csv
+./results/phase3_25ticker_earnings_fix/cache/earnings_cache.json
+./results/phase3_25ticker_earnings_fix/trades_a_prime.csv
+./results/phase3_25ticker_earnings_fix/variant_a_prime_results.json
+./results/phase3_25ticker_full/cache/earnings_cache.json
+./results/phase3_25ticker_full/trades_a_prime.csv
+./results/phase3_25ticker_full/variant_a_prime_results.json
+./results/phase3_25ticker_v2/cache/earnings_cache.json
+./results/phase3_25ticker_v2/equity_curve.csv
+./results/phase3_25ticker_v2/report.txt
+./results/phase3_25ticker_v2/results.json
+./results/phase3_25ticker_v2/shadow_log.csv
+./results/phase3_25ticker_v2/signal_funnel.json
+./results/phase3_25ticker_v2/trade_log.csv
+./results/phase3_atr_ablation/cache/earnings_cache.json
+./results/phase3_atr_ablation/comparison.json
+./results/phase3_atr_ablation/trades_a.csv
+./results/phase3_atr_ablation/trades_b.csv
+./results/phase3_atr_ablation/trades_c.csv
+./results/phase3_atr_ablation/variant_a.json
+./results/phase3_atr_ablation/variant_b.json
+./results/phase3_atr_ablation/variant_c.json
+./results/phase3_cscv_pbo_25ticker/analysis_log.txt
+./results/phase3_cscv_pbo_25ticker/is_oos_scatter.png
+./results/phase3_cscv_pbo_25ticker/logit_distribution.png
+./results/phase3_cscv_pbo_25ticker/summary.json
+./results/phase3_d4_resolution/atr_telemetry_top5.txt
+./results/phase3_d4_resolution/cache/earnings_cache.json
+./results/phase3_d4_resolution/overnight_investigation.txt
+./results/phase3_d4_resolution/timezone_analysis.txt
+./results/phase3_d4_resolution/trades_a_prime.csv
+./results/phase3_d4_resolution/variant_a_prime_results.json
+./results/phase3_diagnostics/cache/earnings_cache.json
+./results/phase3_diagnostics/counterfactual_blocked_trades.json
+./results/phase3_diagnostics/diagnostics_summary.json
+./results/phase3_diagnostics/quarterly_stability.json
+./results/phase3_diagnostics/remove_top5_stress_test.json
+./results/phase3_diagnostics/top5_audit.txt
+./results/phase3_full_verification/full_verification_log.txt
+./results/phase3_full_verification/full_verification_summary.json
+./results/phase3_psr_verification/psr_verification_log.txt
+./results/phase3_psr_verification/psr_verification_summary.json
+./results/regime_analysis.md
+./results/v7_experiment_log.txt
+./results/v7_optimization_report.md
+./results/walkforward_fd5_test.txt
+./results/walkforward_phase23.json
+./scripts/fetch_earnings_av.py
+./scripts/full_verification.py
+./scripts/verify_psr_mintrl.py
+
+--- Crypto files specifically ---
+  8137799      4 -rw-r--r--   1 runner   runner       3748 Mar 16 22:34 ./.github/workflows/backfill-crypto.yml
+  8138539      4 -rw-r--r--   1 runner   runner       1156 Mar 16 22:35 ./backfill_crypto.log
+  8137794      4 -rw-r--r--   1 runner   runner        353 Mar 16 22:34 ./.git/logs/refs/remotes/origin/claude/expand-crypto-data-DwV6r
+  8138506      4 -rw-r--r--   1 runner   runner        254 Mar 16 22:34 ./.git/logs/refs/heads/claude/expand-crypto-data-DwV6r
+  8137788      4 -rw-r--r--   1 runner   runner         41 Mar 16 22:34 ./.git/refs/remotes/origin/claude/expand-crypto-data-DwV6r
+  8138503      4 -rw-r--r--   1 runner   runner         41 Mar 16 22:34 ./.git/refs/heads/claude/expand-crypto-data-DwV6r
+  8138293     32 -rw-r--r--   1 runner   runner      31098 Mar 16 22:34 ./backfill_crypto.py
+
+--- Fetched_Data/ ---
+total 8
+drwxr-xr-x  2 runner runner 4096 Mar 16 22:34 .
+drwxr-xr-x 14 runner runner 4096 Mar 16 22:34 ..
+
+--- MarketPatterns_AI/Fetched_Data/ ---
+total 36060
+drwxr-xr-x 4 runner runner     4096 Mar 16 22:34 .
+drwxr-xr-x 5 runner runner     4096 Mar 16 22:34 ..
+-rw-r--r-- 1 runner runner  2895372 Mar 16 22:34 AAPL_data.csv
+-rw-r--r-- 1 runner runner     1607 Mar 16 22:34 AAPL_schema.json
+-rw-r--r-- 1 runner runner  2890945 Mar 16 22:34 AMZN_data.csv
+-rw-r--r-- 1 runner runner     1640 Mar 16 22:34 AMZN_schema.json
+-rw-r--r-- 1 runner runner   736732 Mar 16 22:34 BABA_data.csv
+-rw-r--r-- 1 runner runner   735446 Mar 16 22:34 COIN_data.csv
+-rw-r--r-- 1 runner runner  2940979 Mar 16 22:34 GOOGL_data.csv
+-rw-r--r-- 1 runner runner     1617 Mar 16 22:34 GOOGL_schema.json
+-rw-r--r-- 1 runner runner  2859720 Mar 16 22:34 META_data.csv
+-rw-r--r-- 1 runner runner     1607 Mar 16 22:34 META_schema.json
+-rw-r--r-- 1 runner runner  2869599 Mar 16 22:34 MSFT_data.csv
+-rw-r--r-- 1 runner runner     1604 Mar 16 22:34 MSFT_schema.json
+-rw-r--r-- 1 runner runner  2941480 Mar 16 22:34 NVDA_data.csv
+-rw-r--r-- 1 runner runner     1630 Mar 16 22:34 NVDA_schema.json
+drwxr-xr-x 7 runner runner     4096 Mar 16 22:34 TEMP
+-rw-r--r-- 1 runner runner  2908543 Mar 16 22:34 TSLA_data.csv
+-rw-r--r-- 1 runner runner     1614 Mar 16 22:34 TSLA_schema.json
+-rw-r--r-- 1 runner runner       81 Mar 16 22:34 api_call_counter.json
+drwxr-xr-x 2 runner runner     4096 Mar 16 22:34 cache
+-rw-r--r-- 1 runner runner 15072399 Mar 16 22:34 combined_sp500_all_data_5min.csv
+-rw-r--r-- 1 runner runner      936 Mar 16 22:34 summary_report.json
+
+--- backfill_output.log (last 120 lines) ---
+2026-03-16 22:34:50,070 [INFO] Backfill plan: tickers=['ETH', 'BTC'], months=2025-04..2026-03 (12 months)
+2026-03-16 22:34:50,070 [INFO] Output directory: Fetched_Data
+2026-03-16 22:34:50,070 [INFO] Using data source: binance
+2026-03-16 22:34:50,070 [INFO] Testing Binance API connectivity with a single request...
+2026-03-16 22:34:50,185 [ERROR] Binance fetch error (attempt 1): 451 Client Error:  for url: https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=5m&startTime=1743465600000&endTime=1743465900000&limit=1000
+2026-03-16 22:34:52,266 [ERROR] Binance fetch error (attempt 2): 451 Client Error:  for url: https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=5m&startTime=1743465600000&endTime=1743465900000&limit=1000
+2026-03-16 22:34:56,367 [ERROR] Binance fetch error (attempt 3): 451 Client Error:  for url: https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=5m&startTime=1743465600000&endTime=1743465900000&limit=1000
+2026-03-16 22:35:02,368 [WARNING] Binance API not accessible (likely geo-blocked). Trying data.binance.vision bulk downloads...
+2026-03-16 22:35:03,600 [INFO] Vision: ETHUSDT 2025-04 -> 8640 bars
+Traceback (most recent call last):
+  File "/home/runner/work/stock-data-mining/stock-data-mining/backfill_crypto.py", line 814, in <module>
+    main()
+  File "/home/runner/work/stock-data-mining/stock-data-mining/backfill_crypto.py", line 702, in main
+    results = fetch_all_vision(args.tickers, months)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/stock-data-mining/stock-data-mining/backfill_crypto.py", line 373, in fetch_all_vision
+    open_time_utc = datetime.fromtimestamp(row["open_time"] / 1000, tz=timezone.utc)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: year 57218 is out of range
+
+--- backfill_crypto.log (last 120 lines) ---
+2026-03-16 22:34:50,070 [INFO] Backfill plan: tickers=['ETH', 'BTC'], months=2025-04..2026-03 (12 months)
+2026-03-16 22:34:50,070 [INFO] Output directory: Fetched_Data
+2026-03-16 22:34:50,070 [INFO] Using data source: binance
+2026-03-16 22:34:50,070 [INFO] Testing Binance API connectivity with a single request...
+2026-03-16 22:34:50,185 [ERROR] Binance fetch error (attempt 1): 451 Client Error:  for url: https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=5m&startTime=1743465600000&endTime=1743465900000&limit=1000
+2026-03-16 22:34:52,266 [ERROR] Binance fetch error (attempt 2): 451 Client Error:  for url: https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=5m&startTime=1743465600000&endTime=1743465900000&limit=1000
+2026-03-16 22:34:56,367 [ERROR] Binance fetch error (attempt 3): 451 Client Error:  for url: https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=5m&startTime=1743465600000&endTime=1743465900000&limit=1000
+2026-03-16 22:35:02,368 [WARNING] Binance API not accessible (likely geo-blocked). Trying data.binance.vision bulk downloads...
+2026-03-16 22:35:03,600 [INFO] Vision: ETHUSDT 2025-04 -> 8640 bars
