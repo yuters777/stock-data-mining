@@ -1,5 +1,5 @@
 === NETWORK DIAGNOSTICS ===
-Date: Mon Mar 16 22:34:47 UTC 2026
+Date: Mon Mar 16 22:55:51 UTC 2026
 
 --- Binance API ping ---
 {
@@ -19,7 +19,7 @@ HTTP_CODE: 451
 HTTP/2 200 
 content-type: application/zip
 content-length: 456750
-date: Mon, 16 Mar 2026 22:34:49 GMT
+date: Mon, 16 Mar 2026 22:55:53 GMT
 last-modified: Tue, 06 May 2025 11:08:50 GMT
 etag: "60baf2f36830293605253cb29f5068d5"
 x-amz-server-side-encryption: AES256
@@ -28,7 +28,7 @@ server: AmazonS3
 x-cache: Miss from cloudfront
 
 --- CryptoCompare (2 bars) ---
-{"Response":"Success","Message":"","HasWarning":false,"Type":100,"RateLimit":{},"Data":{"Aggregated":false,"TimeFrom":1773700320,"TimeTo":1773700440,"Data":[{"time":1773700320,"high":74689.15,"low":74653.68,"open":74670.91,"volumefrom":35.64,"volumeto":2661448.8,"close":74661.63,"conversionType":"direct","conversionSymbol":""},{"time":1773700380,"high":74664.37,"low":74620.71,"open":74661.63,"volumefrom":28.65,"volumeto":2138215.56,"close":74636.43,"conversionType":"direct","conversionSymbol":""},{"time":1773700440,"high":74636.43,"low":74630.36,"open":74636.43,"volumefrom":0,"volumeto":0,"close":74630.36,"conversionType":"direct","conversionSymbol":""}]}}
+{"Response":"Success","Message":"","HasWarning":false,"Type":100,"RateLimit":{},"Data":{"Aggregated":false,"TimeFrom":1773701580,"TimeTo":1773701700,"Data":[{"time":1773701580,"high":74840.55,"low":74796.74,"open":74838.53,"volumefrom":19.63,"volumeto":1468914.99,"close":74796.74,"conversionType":"direct","conversionSymbol":""},{"time":1773701640,"high":74797.15,"low":74697.29,"open":74796.74,"volumefrom":87.08,"volumeto":6510786.64,"close":74711.5,"conversionType":"direct","conversionSymbol":""},{"time":1773701700,"high":74711.5,"low":74708.24,"open":74711.5,"volumefrom":0,"volumeto":0,"close":74708.24,"conversionType":"direct","conversionSymbol":""}]}}
 HTTP_CODE: 200
 
 --- Python test: Binance klines ---
@@ -410,73 +410,98 @@ Body: {
 ./scripts/verify_psr_mintrl.py
 
 --- Crypto files specifically ---
-  8137799      4 -rw-r--r--   1 runner   runner       3748 Mar 16 22:34 ./.github/workflows/backfill-crypto.yml
-  8138539      4 -rw-r--r--   1 runner   runner       1156 Mar 16 22:35 ./backfill_crypto.log
-  8137794      4 -rw-r--r--   1 runner   runner        353 Mar 16 22:34 ./.git/logs/refs/remotes/origin/claude/expand-crypto-data-DwV6r
-  8138506      4 -rw-r--r--   1 runner   runner        254 Mar 16 22:34 ./.git/logs/refs/heads/claude/expand-crypto-data-DwV6r
-  8137788      4 -rw-r--r--   1 runner   runner         41 Mar 16 22:34 ./.git/refs/remotes/origin/claude/expand-crypto-data-DwV6r
-  8138503      4 -rw-r--r--   1 runner   runner         41 Mar 16 22:34 ./.git/refs/heads/claude/expand-crypto-data-DwV6r
-  8138293     32 -rw-r--r--   1 runner   runner      31098 Mar 16 22:34 ./backfill_crypto.py
+  8149463      4 -rw-r--r--   1 runner   runner       3748 Mar 16 22:55 ./.github/workflows/backfill-crypto.yml
+  8150204      4 -rw-r--r--   1 runner   runner       1156 Mar 16 22:56 ./backfill_crypto.log
+  8149458      4 -rw-r--r--   1 runner   runner        353 Mar 16 22:55 ./.git/logs/refs/remotes/origin/claude/expand-crypto-data-DwV6r
+  8150171      4 -rw-r--r--   1 runner   runner        254 Mar 16 22:55 ./.git/logs/refs/heads/claude/expand-crypto-data-DwV6r
+  8149452      4 -rw-r--r--   1 runner   runner         41 Mar 16 22:55 ./.git/refs/remotes/origin/claude/expand-crypto-data-DwV6r
+  8150168      4 -rw-r--r--   1 runner   runner         41 Mar 16 22:55 ./.git/refs/heads/claude/expand-crypto-data-DwV6r
+  8149957     32 -rw-r--r--   1 runner   runner      31202 Mar 16 22:55 ./backfill_crypto.py
 
 --- Fetched_Data/ ---
 total 8
-drwxr-xr-x  2 runner runner 4096 Mar 16 22:34 .
-drwxr-xr-x 14 runner runner 4096 Mar 16 22:34 ..
+drwxr-xr-x  2 runner runner 4096 Mar 16 22:55 .
+drwxr-xr-x 14 runner runner 4096 Mar 16 22:55 ..
 
 --- MarketPatterns_AI/Fetched_Data/ ---
 total 36060
-drwxr-xr-x 4 runner runner     4096 Mar 16 22:34 .
-drwxr-xr-x 5 runner runner     4096 Mar 16 22:34 ..
--rw-r--r-- 1 runner runner  2895372 Mar 16 22:34 AAPL_data.csv
--rw-r--r-- 1 runner runner     1607 Mar 16 22:34 AAPL_schema.json
--rw-r--r-- 1 runner runner  2890945 Mar 16 22:34 AMZN_data.csv
--rw-r--r-- 1 runner runner     1640 Mar 16 22:34 AMZN_schema.json
--rw-r--r-- 1 runner runner   736732 Mar 16 22:34 BABA_data.csv
--rw-r--r-- 1 runner runner   735446 Mar 16 22:34 COIN_data.csv
--rw-r--r-- 1 runner runner  2940979 Mar 16 22:34 GOOGL_data.csv
--rw-r--r-- 1 runner runner     1617 Mar 16 22:34 GOOGL_schema.json
--rw-r--r-- 1 runner runner  2859720 Mar 16 22:34 META_data.csv
--rw-r--r-- 1 runner runner     1607 Mar 16 22:34 META_schema.json
--rw-r--r-- 1 runner runner  2869599 Mar 16 22:34 MSFT_data.csv
--rw-r--r-- 1 runner runner     1604 Mar 16 22:34 MSFT_schema.json
--rw-r--r-- 1 runner runner  2941480 Mar 16 22:34 NVDA_data.csv
--rw-r--r-- 1 runner runner     1630 Mar 16 22:34 NVDA_schema.json
-drwxr-xr-x 7 runner runner     4096 Mar 16 22:34 TEMP
--rw-r--r-- 1 runner runner  2908543 Mar 16 22:34 TSLA_data.csv
--rw-r--r-- 1 runner runner     1614 Mar 16 22:34 TSLA_schema.json
--rw-r--r-- 1 runner runner       81 Mar 16 22:34 api_call_counter.json
-drwxr-xr-x 2 runner runner     4096 Mar 16 22:34 cache
--rw-r--r-- 1 runner runner 15072399 Mar 16 22:34 combined_sp500_all_data_5min.csv
--rw-r--r-- 1 runner runner      936 Mar 16 22:34 summary_report.json
+drwxr-xr-x 4 runner runner     4096 Mar 16 22:55 .
+drwxr-xr-x 5 runner runner     4096 Mar 16 22:55 ..
+-rw-r--r-- 1 runner runner  2895372 Mar 16 22:55 AAPL_data.csv
+-rw-r--r-- 1 runner runner     1607 Mar 16 22:55 AAPL_schema.json
+-rw-r--r-- 1 runner runner  2890945 Mar 16 22:55 AMZN_data.csv
+-rw-r--r-- 1 runner runner     1640 Mar 16 22:55 AMZN_schema.json
+-rw-r--r-- 1 runner runner   736732 Mar 16 22:55 BABA_data.csv
+-rw-r--r-- 1 runner runner   735446 Mar 16 22:55 COIN_data.csv
+-rw-r--r-- 1 runner runner  2940979 Mar 16 22:55 GOOGL_data.csv
+-rw-r--r-- 1 runner runner     1617 Mar 16 22:55 GOOGL_schema.json
+-rw-r--r-- 1 runner runner  2859720 Mar 16 22:55 META_data.csv
+-rw-r--r-- 1 runner runner     1607 Mar 16 22:55 META_schema.json
+-rw-r--r-- 1 runner runner  2869599 Mar 16 22:55 MSFT_data.csv
+-rw-r--r-- 1 runner runner     1604 Mar 16 22:55 MSFT_schema.json
+-rw-r--r-- 1 runner runner  2941480 Mar 16 22:55 NVDA_data.csv
+-rw-r--r-- 1 runner runner     1630 Mar 16 22:55 NVDA_schema.json
+drwxr-xr-x 7 runner runner     4096 Mar 16 22:55 TEMP
+-rw-r--r-- 1 runner runner  2908543 Mar 16 22:55 TSLA_data.csv
+-rw-r--r-- 1 runner runner     1614 Mar 16 22:55 TSLA_schema.json
+-rw-r--r-- 1 runner runner       81 Mar 16 22:55 api_call_counter.json
+drwxr-xr-x 2 runner runner     4096 Mar 16 22:55 cache
+-rw-r--r-- 1 runner runner 15072399 Mar 16 22:55 combined_sp500_all_data_5min.csv
+-rw-r--r-- 1 runner runner      936 Mar 16 22:55 summary_report.json
 
 --- backfill_output.log (last 120 lines) ---
-2026-03-16 22:34:50,070 [INFO] Backfill plan: tickers=['ETH', 'BTC'], months=2025-04..2026-03 (12 months)
-2026-03-16 22:34:50,070 [INFO] Output directory: Fetched_Data
-2026-03-16 22:34:50,070 [INFO] Using data source: binance
-2026-03-16 22:34:50,070 [INFO] Testing Binance API connectivity with a single request...
-2026-03-16 22:34:50,185 [ERROR] Binance fetch error (attempt 1): 451 Client Error:  for url: https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=5m&startTime=1743465600000&endTime=1743465900000&limit=1000
-2026-03-16 22:34:52,266 [ERROR] Binance fetch error (attempt 2): 451 Client Error:  for url: https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=5m&startTime=1743465600000&endTime=1743465900000&limit=1000
-2026-03-16 22:34:56,367 [ERROR] Binance fetch error (attempt 3): 451 Client Error:  for url: https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=5m&startTime=1743465600000&endTime=1743465900000&limit=1000
-2026-03-16 22:35:02,368 [WARNING] Binance API not accessible (likely geo-blocked). Trying data.binance.vision bulk downloads...
-2026-03-16 22:35:03,600 [INFO] Vision: ETHUSDT 2025-04 -> 8640 bars
+2026-03-16 22:55:53,995 [INFO] Backfill plan: tickers=['ETH', 'BTC'], months=2025-04..2026-03 (12 months)
+2026-03-16 22:55:53,995 [INFO] Output directory: Fetched_Data
+2026-03-16 22:55:53,995 [INFO] Using data source: binance
+2026-03-16 22:55:53,995 [INFO] Testing Binance API connectivity with a single request...
+2026-03-16 22:55:54,099 [ERROR] Binance fetch error (attempt 1): 451 Client Error:  for url: https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=5m&startTime=1743465600000&endTime=1743465900000&limit=1000
+2026-03-16 22:55:56,207 [ERROR] Binance fetch error (attempt 2): 451 Client Error:  for url: https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=5m&startTime=1743465600000&endTime=1743465900000&limit=1000
+2026-03-16 22:56:00,333 [ERROR] Binance fetch error (attempt 3): 451 Client Error:  for url: https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=5m&startTime=1743465600000&endTime=1743465900000&limit=1000
+2026-03-16 22:56:06,334 [WARNING] Binance API not accessible (likely geo-blocked). Trying data.binance.vision bulk downloads...
+2026-03-16 22:56:07,680 [INFO] Vision: ETHUSDT 2025-04 -> 8640 bars
 Traceback (most recent call last):
-  File "/home/runner/work/stock-data-mining/stock-data-mining/backfill_crypto.py", line 814, in <module>
+  File "/home/runner/work/stock-data-mining/stock-data-mining/backfill_crypto.py", line 815, in <module>
     main()
-  File "/home/runner/work/stock-data-mining/stock-data-mining/backfill_crypto.py", line 702, in main
+  File "/home/runner/work/stock-data-mining/stock-data-mining/backfill_crypto.py", line 703, in main
     results = fetch_all_vision(args.tickers, months)
               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/runner/work/stock-data-mining/stock-data-mining/backfill_crypto.py", line 373, in fetch_all_vision
-    open_time_utc = datetime.fromtimestamp(row["open_time"] / 1000, tz=timezone.utc)
-                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/stock-data-mining/stock-data-mining/backfill_crypto.py", line 375, in fetch_all_vision
+    for _, row in df.iterrows():
+  File "/opt/hostedtoolcache/Python/3.11.15/x64/lib/python3.11/site-packages/pandas/core/frame.py", line 1585, in iterrows
+    for k, v in zip(self.index, self.values, strict=True):
+                                ^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.15/x64/lib/python3.11/site-packages/pandas/core/frame.py", line 16673, in values
+    return self._mgr.as_array()
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.15/x64/lib/python3.11/site-packages/pandas/core/internals/managers.py", line 1864, in as_array
+    arr = self._interleave(dtype=dtype, na_value=na_value)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.15/x64/lib/python3.11/site-packages/pandas/core/internals/managers.py", line 1905, in _interleave
+    arr = blk.get_values(dtype)
+          ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.15/x64/lib/python3.11/site-packages/pandas/core/internals/blocks.py", line 1836, in get_values
+    values = values.astype(object)
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.15/x64/lib/python3.11/site-packages/pandas/core/arrays/datetimes.py", line 764, in astype
+    return dtl.DatetimeLikeArrayMixin.astype(self, dtype, copy)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.15/x64/lib/python3.11/site-packages/pandas/core/arrays/datetimelike.py", line 474, in astype
+    converted = ints_to_pydatetime(
+                ^^^^^^^^^^^^^^^^^^^
+  File "pandas/_libs/tslibs/vectorized.pyx", line 166, in pandas._libs.tslibs.vectorized.ints_to_pydatetime
+  File "pandas/_libs/tslibs/tzconversion.pyx", line 128, in pandas._libs.tslibs.tzconversion.Localizer.utc_val_to_local_val
+  File "pandas/_libs/tslibs/tzconversion.pyx", line 759, in pandas._libs.tslibs.tzconversion._tz_localize_using_tzinfo_api
+  File "pandas/_libs/tslibs/tzconversion.pyx", line 789, in pandas._libs.tslibs.tzconversion._astimezone
+  File "cpython/datetime.pxd", line 271, in cpython.datetime.datetime_new
 ValueError: year 57218 is out of range
 
 --- backfill_crypto.log (last 120 lines) ---
-2026-03-16 22:34:50,070 [INFO] Backfill plan: tickers=['ETH', 'BTC'], months=2025-04..2026-03 (12 months)
-2026-03-16 22:34:50,070 [INFO] Output directory: Fetched_Data
-2026-03-16 22:34:50,070 [INFO] Using data source: binance
-2026-03-16 22:34:50,070 [INFO] Testing Binance API connectivity with a single request...
-2026-03-16 22:34:50,185 [ERROR] Binance fetch error (attempt 1): 451 Client Error:  for url: https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=5m&startTime=1743465600000&endTime=1743465900000&limit=1000
-2026-03-16 22:34:52,266 [ERROR] Binance fetch error (attempt 2): 451 Client Error:  for url: https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=5m&startTime=1743465600000&endTime=1743465900000&limit=1000
-2026-03-16 22:34:56,367 [ERROR] Binance fetch error (attempt 3): 451 Client Error:  for url: https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=5m&startTime=1743465600000&endTime=1743465900000&limit=1000
-2026-03-16 22:35:02,368 [WARNING] Binance API not accessible (likely geo-blocked). Trying data.binance.vision bulk downloads...
-2026-03-16 22:35:03,600 [INFO] Vision: ETHUSDT 2025-04 -> 8640 bars
+2026-03-16 22:55:53,995 [INFO] Backfill plan: tickers=['ETH', 'BTC'], months=2025-04..2026-03 (12 months)
+2026-03-16 22:55:53,995 [INFO] Output directory: Fetched_Data
+2026-03-16 22:55:53,995 [INFO] Using data source: binance
+2026-03-16 22:55:53,995 [INFO] Testing Binance API connectivity with a single request...
+2026-03-16 22:55:54,099 [ERROR] Binance fetch error (attempt 1): 451 Client Error:  for url: https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=5m&startTime=1743465600000&endTime=1743465900000&limit=1000
+2026-03-16 22:55:56,207 [ERROR] Binance fetch error (attempt 2): 451 Client Error:  for url: https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=5m&startTime=1743465600000&endTime=1743465900000&limit=1000
+2026-03-16 22:56:00,333 [ERROR] Binance fetch error (attempt 3): 451 Client Error:  for url: https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=5m&startTime=1743465600000&endTime=1743465900000&limit=1000
+2026-03-16 22:56:06,334 [WARNING] Binance API not accessible (likely geo-blocked). Trying data.binance.vision bulk downloads...
+2026-03-16 22:56:07,680 [INFO] Vision: ETHUSDT 2025-04 -> 8640 bars
