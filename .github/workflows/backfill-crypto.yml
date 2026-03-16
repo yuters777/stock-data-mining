@@ -2,6 +2,11 @@ name: Backfill Crypto M5 Data
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - 'claude/expand-crypto-data-DwV6r'
+    paths:
+      - '.github/workflows/backfill-crypto.yml'
 
 jobs:
   backfill:
