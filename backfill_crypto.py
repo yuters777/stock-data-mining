@@ -29,6 +29,9 @@ import argparse
 import shutil
 from datetime import datetime, timedelta, timezone
 
+import io
+import zipfile
+
 import requests
 import pandas as pd
 import pytz
@@ -310,11 +313,82 @@ def fetch_binance_ticker(ticker, start_dt, end_dt):
 
 
 def fetch_all_binance(tickers, start_dt, end_dt):
-    """Fetch all tickers via Binance."""
+    """Fetch all tickers via Binance API."""
     results = {}
     for ticker in tickers:
         df = fetch_binance_ticker(ticker, start_dt, end_dt)
         results[ticker] = df
+    return results
+
+
+# ---------------------------------------------------------------------------
+# Binance Vision bulk download (geo-unrestricted)
+# ---------------------------------------------------------------------------
+
+VISION_BASE = "https://data.binance.vision/data/spot/monthly/klines"
+
+
+def fetch_vision_month(symbol, year_month):
+    """Download a single monthly klines ZIP from data.binance.vision."""
+    url = f"{VISION_BASE}/{symbol}/5m/{symbol}-5m-{year_month}.zip"
+    for attempt in range(3):
+        try:
+            resp = requests.get(url, timeout=60)
+            if resp.status_code == 404:
+                logger.warning(f"Vision: {url} not found (month may not be available yet)")
+                return pd.DataFrame()
+            resp.raise_for_status()
+            with zipfile.ZipFile(io.BytesIO(resp.content)) as zf:
+                csv_name = zf.namelist()[0]
+                with zf.open(csv_name) as f:
+                    df = pd.read_csv(f, header=None, names=[
+                        "open_time", "Open", "High", "Low", "Close", "Volume",
+                        "close_time", "quote_volume", "count",
+                        "taker_buy_volume", "taker_buy_quote_volume", "ignore"
+                    ])
+            logger.info(f"Vision: {symbol} {year_month} -> {len(df)} bars")
+            return df
+        except Exception as e:
+            logger.error(f"Vision fetch error {symbol} {year_month} (attempt {attempt+1}): {e}")
+            time.sleep(2 * (attempt + 1))
+    return pd.DataFrame()
+
+
+def fetch_all_vision(tickers, months):
+    """Fetch all tickers using Binance Vision bulk downloads."""
+    results = {}
+    for ticker in tickers:
+        symbol = BINANCE_SYMBOL_MAP.get(ticker)
+        if not symbol:
+            logger.error(f"No Binance symbol mapping for {ticker}")
+            results[ticker] = pd.DataFrame()
+            continue
+
+        all_records = []
+        for month in months:
+            df = fetch_vision_month(symbol, month)
+            if df.empty:
+                continue
+            for _, row in df.iterrows():
+                open_time_utc = datetime.fromtimestamp(row["open_time"] / 1000, tz=timezone.utc)
+                et_time = utc_to_eastern(open_time_utc)
+                all_records.append({
+                    "Datetime": et_time.strftime("%Y-%m-%d %H:%M:%S"),
+                    "Open": float(row["Open"]),
+                    "High": float(row["High"]),
+                    "Low": float(row["Low"]),
+                    "Close": float(row["Close"]),
+                    "Volume": float(row["Volume"]),
+                    "Ticker": ticker,
+                })
+
+        result_df = pd.DataFrame(all_records)
+        if not result_df.empty:
+            result_df["Datetime"] = pd.to_datetime(result_df["Datetime"])
+            result_df = result_df.sort_values("Datetime").reset_index(drop=True)
+
+        logger.info(f"Vision total for {ticker}: {len(result_df)} bars from {len(months)} months")
+        results[ticker] = result_df
     return results
 
 
@@ -499,7 +573,14 @@ def main():
         now_utc = datetime.now(timezone.utc)
         if end_dt > now_utc:
             end_dt = now_utc
+
+        # Try Binance API first; if geo-blocked (US IPs), fall back to Vision bulk downloads
         results = fetch_all_binance(args.tickers, start_dt, end_dt)
+        empty_count = sum(1 for df in results.values() if df.empty)
+        if empty_count == len(args.tickers):
+            logger.warning("Binance API returned no data (likely geo-blocked). "
+                           "Falling back to data.binance.vision bulk downloads...")
+            results = fetch_all_vision(args.tickers, months)
 
     # Process each ticker: merge, validate, save
     output_dirs = [args.data_dir]

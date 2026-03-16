@@ -7,6 +7,7 @@ on:
       - 'claude/expand-crypto-data-DwV6r'
     paths:
       - '.github/workflows/backfill-crypto.yml'
+      - 'backfill_crypto.py'
 
 jobs:
   backfill:
@@ -26,7 +27,16 @@ jobs:
       - name: Install dependencies
         run: pip install requests pandas pytz
 
-      - name: Run crypto backfill (Binance)
+      - name: Test Binance API connectivity
+        run: |
+          echo "Testing api.binance.com..."
+          curl -s -o /dev/null -w "HTTP %{http_code}" "https://api.binance.com/api/v3/ping" || true
+          echo ""
+          echo "Testing data.binance.vision..."
+          curl -s -o /dev/null -w "HTTP %{http_code}" "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2025-04.zip" || true
+          echo ""
+
+      - name: Run crypto backfill
         run: |
           python backfill_crypto.py \
             --source binance \
@@ -34,25 +44,33 @@ jobs:
             --also-update-fetched-data \
             2>&1 | tee backfill_output.log
 
-      - name: Show results and list generated files
+      - name: Show results
         run: |
-          echo "=== Backfill Summary ==="
-          tail -80 backfill_output.log
+          echo "=== Last 100 lines of backfill log ==="
+          tail -100 backfill_output.log
           echo ""
-          echo "=== All generated files ==="
-          find . -name "*crypto*" -type f | sort
+          echo "=== All crypto files ==="
+          find . -name "*crypto*" -type f -ls 2>/dev/null | sort
           echo ""
-          echo "=== Row counts ==="
+          echo "=== Row counts and date ranges ==="
           find . -name "*crypto*.csv" -type f | while read f; do
             lines=$(wc -l < "$f")
-            echo "$f: $lines lines"
+            echo "FILE: $f ($lines lines)"
             head -2 "$f"
             echo "..."
             tail -2 "$f"
             echo ""
           done
-          echo "=== Git status ==="
-          git status
+
+      - name: Fail if no crypto data generated
+        run: |
+          count=$(find . -name "*crypto*.csv" -type f | wc -l)
+          if [ "$count" -eq 0 ]; then
+            echo "ERROR: No crypto CSV files were generated!"
+            echo "Check the backfill log above for errors."
+            exit 1
+          fi
+          echo "Found $count crypto CSV files"
 
       - name: Upload backfill log
         uses: actions/upload-artifact@v4
@@ -61,37 +79,32 @@ jobs:
           name: backfill-log
           path: backfill_output.log
 
-      - name: Upload CSV data as artifact
+      - name: Upload CSV data
         uses: actions/upload-artifact@v4
-        if: always()
         with:
           name: crypto-csv-data
           path: |
-            Fetched_Data/
-            MarketPatterns_AI/Fetched_Data/
-          if-no-files-found: warn
+            Fetched_Data/*crypto*.csv
+            MarketPatterns_AI/Fetched_Data/*crypto*.csv
+          if-no-files-found: error
 
       - name: Commit and push CSV data
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          # Add all CSV files explicitly by finding them
-          find Fetched_Data -name "*crypto*.csv" -exec git add {} \; 2>/dev/null || true
-          find MarketPatterns_AI/Fetched_Data -name "*crypto*.csv" -exec git add {} \; 2>/dev/null || true
+          # Stage all crypto CSV files
+          git add -f Fetched_Data/*crypto*.csv 2>/dev/null || true
+          git add -f MarketPatterns_AI/Fetched_Data/*crypto*.csv 2>/dev/null || true
 
           echo "=== Staged files ==="
-          git diff --cached --name-only
+          git diff --cached --stat
 
           if git diff --cached --quiet; then
-            echo "WARNING: No files staged for commit"
-            echo "Checking if files exist..."
+            echo "ERROR: No files staged despite crypto CSVs existing!"
             find . -name "*crypto*.csv" -type f -ls
-            exit 0
+            exit 1
           fi
 
           git commit -m "Add 12-month M5 historical data for ETH and BTC (Binance backfill)"
-
-          echo "=== Pushing to branch ==="
           git push
-          echo "=== Push successful ==="
