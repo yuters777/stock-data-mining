@@ -505,8 +505,8 @@ def main():
     output_dirs = [args.data_dir]
     if args.also_update_fetched_data:
         fetched_dir = os.path.join("MarketPatterns_AI", "Fetched_Data")
-        if os.path.isdir(fetched_dir):
-            output_dirs.append(fetched_dir)
+        os.makedirs(fetched_dir, exist_ok=True)
+        output_dirs.append(fetched_dir)
 
     summary = {}
 

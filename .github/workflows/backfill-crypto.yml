@@ -1,0 +1,72 @@
+name: Backfill Crypto M5 Data
+
+on:
+  workflow_dispatch:
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests pandas pytz
+
+      - name: Create Fetched_Data directory
+        run: mkdir -p Fetched_Data
+
+      - name: Run crypto backfill (Binance)
+        run: |
+          python backfill_crypto.py \
+            --source binance \
+            --data-dir Fetched_Data \
+            --also-update-fetched-data \
+            2>&1 | tee backfill_output.log
+
+      - name: Show results
+        run: |
+          echo "=== Backfill Results ==="
+          tail -50 backfill_output.log
+          echo ""
+          echo "=== File listing ==="
+          ls -lh Fetched_Data/*crypto* 2>/dev/null || echo "No crypto files found"
+          echo ""
+          echo "=== Row counts ==="
+          for f in Fetched_Data/*crypto*.csv; do
+            if [ -f "$f" ]; then
+              echo "$f: $(wc -l < "$f") lines"
+              head -2 "$f"
+              echo "..."
+              tail -2 "$f"
+              echo ""
+            fi
+          done
+
+      - name: Upload backfill log as artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: backfill-log
+          path: backfill_output.log
+
+      - name: Commit and push CSV data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Fetched_Data/*crypto*.csv
+          git add MarketPatterns_AI/Fetched_Data/*crypto*.csv 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "No new CSV data to commit"
+            exit 1
+          fi
+          git commit -m "Add 12-month M5 historical data for ETH and BTC (Binance backfill)"
+          git push
