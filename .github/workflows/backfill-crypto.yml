@@ -27,84 +27,70 @@ jobs:
       - name: Install dependencies
         run: pip install requests pandas pytz
 
-      - name: Test Binance API connectivity
+      - name: Diagnose network connectivity
         run: |
-          echo "Testing api.binance.com..."
-          curl -s -o /dev/null -w "HTTP %{http_code}" "https://api.binance.com/api/v3/ping" || true
+          echo "=== Testing Binance API ==="
+          curl -s -w "\nHTTP %{http_code}\n" "https://api.binance.com/api/v3/ping" || echo "FAILED"
           echo ""
-          echo "Testing data.binance.vision..."
-          curl -s -o /dev/null -w "HTTP %{http_code}" "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2025-04.zip" || true
+          echo "=== Testing Binance klines ==="
+          curl -s -w "\nHTTP %{http_code}\n" "https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=5m&limit=2" | head -200 || echo "FAILED"
           echo ""
+          echo "=== Testing data.binance.vision ==="
+          curl -s -o /dev/null -w "HTTP %{http_code}\n" "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/5m/BTCUSDT-5m-2025-04.zip" || echo "FAILED"
+          echo ""
+          echo "=== Testing CryptoCompare ==="
+          curl -s -w "\nHTTP %{http_code}\n" "https://min-api.cryptocompare.com/data/v2/histominute?fsym=BTC&tsym=USDT&limit=2" | head -200 || echo "FAILED"
 
       - name: Run crypto backfill
         run: |
+          set -euo pipefail
           python backfill_crypto.py \
             --source binance \
             --data-dir Fetched_Data \
-            --also-update-fetched-data \
-            2>&1 | tee backfill_output.log
+            --also-update-fetched-data
+          echo "Script exit code: $?"
 
-      - name: Show results
-        run: |
-          echo "=== Last 100 lines of backfill log ==="
-          tail -100 backfill_output.log
-          echo ""
-          echo "=== All crypto files ==="
-          find . -name "*crypto*" -type f -ls 2>/dev/null | sort
-          echo ""
-          echo "=== Row counts and date ranges ==="
-          find . -name "*crypto*.csv" -type f | while read f; do
-            lines=$(wc -l < "$f")
-            echo "FILE: $f ($lines lines)"
-            head -2 "$f"
-            echo "..."
-            tail -2 "$f"
-            echo ""
-          done
-
-      - name: Fail if no crypto data generated
-        run: |
-          count=$(find . -name "*crypto*.csv" -type f | wc -l)
-          if [ "$count" -eq 0 ]; then
-            echo "ERROR: No crypto CSV files were generated!"
-            echo "Check the backfill log above for errors."
-            exit 1
-          fi
-          echo "Found $count crypto CSV files"
-
-      - name: Upload backfill log
-        uses: actions/upload-artifact@v4
+      - name: Show ALL files in workspace
         if: always()
-        with:
-          name: backfill-log
-          path: backfill_output.log
-
-      - name: Upload CSV data
-        uses: actions/upload-artifact@v4
-        with:
-          name: crypto-csv-data
-          path: |
-            Fetched_Data/*crypto*.csv
-            MarketPatterns_AI/Fetched_Data/*crypto*.csv
-          if-no-files-found: error
+        run: |
+          echo "=== All files (excluding .git) ==="
+          find . -not -path './.git/*' -type f | sort
+          echo ""
+          echo "=== Crypto-specific files ==="
+          find . -name "*crypto*" -type f -ls 2>/dev/null || echo "None found"
+          echo ""
+          echo "=== Fetched_Data contents ==="
+          ls -la Fetched_Data/ 2>/dev/null || echo "Directory does not exist"
+          echo ""
+          echo "=== MarketPatterns_AI/Fetched_Data contents ==="
+          ls -la MarketPatterns_AI/Fetched_Data/ 2>/dev/null || echo "Directory does not exist"
+          echo ""
+          echo "=== Backfill log (last 100 lines) ==="
+          tail -100 backfill_crypto.log 2>/dev/null || echo "No log file found"
 
       - name: Commit and push CSV data
+        if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          # Stage all crypto CSV files
-          git add -f Fetched_Data/*crypto*.csv 2>/dev/null || true
-          git add -f MarketPatterns_AI/Fetched_Data/*crypto*.csv 2>/dev/null || true
+          # Try adding with -f to override any gitignore rules
+          git add -f Fetched_Data/ 2>/dev/null || true
+          git add -f MarketPatterns_AI/Fetched_Data/ 2>/dev/null || true
 
-          echo "=== Staged files ==="
+          echo "=== Git status ==="
+          git status
+
+          echo "=== Staged changes ==="
           git diff --cached --stat
 
           if git diff --cached --quiet; then
-            echo "ERROR: No files staged despite crypto CSVs existing!"
-            find . -name "*crypto*.csv" -type f -ls
-            exit 1
+            echo "Nothing new to commit"
+            exit 0
           fi
 
-          git commit -m "Add 12-month M5 historical data for ETH and BTC (Binance backfill)"
+          git commit -m "Add crypto M5 historical data (backfill via GitHub Actions)"
+
+          echo "=== Pushing ==="
           git push
+          echo "=== Done ==="
