@@ -574,12 +574,16 @@ def main():
         if end_dt > now_utc:
             end_dt = now_utc
 
-        # Try Binance API first; if geo-blocked (US IPs), fall back to Vision bulk downloads
-        results = fetch_all_binance(args.tickers, start_dt, end_dt)
-        empty_count = sum(1 for df in results.values() if df.empty)
-        if empty_count == len(args.tickers):
-            logger.warning("Binance API returned no data (likely geo-blocked). "
-                           "Falling back to data.binance.vision bulk downloads...")
+        # Quick connectivity test: try a single API call before committing to full fetch
+        logger.info("Testing Binance API connectivity with a single request...")
+        test_data = fetch_binance_chunk("BTCUSDT", int(start_dt.timestamp() * 1000),
+                                         int(start_dt.timestamp() * 1000) + 300000)
+        if test_data:
+            logger.info(f"Binance API accessible ({len(test_data)} bars from test). Using API.")
+            results = fetch_all_binance(args.tickers, start_dt, end_dt)
+        else:
+            logger.warning("Binance API not accessible (likely geo-blocked). "
+                           "Using data.binance.vision bulk downloads instead.")
             results = fetch_all_vision(args.tickers, months)
 
     # Process each ticker: merge, validate, save
