@@ -1,0 +1,96 @@
+name: Fetch Mar 1-9 2026 Crypto Data
+
+on:
+  push:
+    branches:
+      - claude/expand-crypto-data-DwV6r
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests pandas pytz
+
+      - name: Fetch Mar 2026 data and merge
+        run: |
+          python backfill_crypto.py \
+            --source binance \
+            --data-dir Fetched_Data \
+            --also-update-fetched-data \
+            --start-month 2026-03 \
+            --end-month 2026-03
+
+      - name: Verify data integrity
+        run: |
+          python3 << 'PYEOF'
+          import pandas as pd
+          import sys
+
+          for ticker in ["BTC", "ETH"]:
+              for prefix in ["Fetched_Data", "MarketPatterns_AI/Fetched_Data"]:
+                  path = f"{prefix}/{ticker}_crypto_data.csv"
+                  df = pd.read_csv(path)
+                  df["Datetime"] = pd.to_datetime(df["Datetime"])
+
+                  print(f"\n{'='*60}")
+                  print(f"{path}")
+                  print(f"  Rows: {len(df)}")
+                  print(f"  Range: {df['Datetime'].min()} to {df['Datetime'].max()}")
+
+                  # Check nulls
+                  nulls = df.isnull().sum()
+                  null_cols = {k: v for k, v in nulls.items() if v > 0}
+                  print(f"  Nulls: {null_cols if null_cols else 'None'}")
+
+                  # Check duplicates
+                  dupes = df["Datetime"].duplicated().sum()
+                  print(f"  Duplicates: {dupes}")
+
+                  # Check sorted
+                  is_sorted = df["Datetime"].is_monotonic_increasing
+                  print(f"  Sorted ascending: {is_sorted}")
+
+                  # Check Mar 1-9 coverage
+                  mar_data = df[(df["Datetime"] >= "2026-03-01") & (df["Datetime"] < "2026-03-10")]
+                  print(f"  Mar 1-9 rows: {len(mar_data)}")
+
+                  # Gaps in Mar 1-9 range
+                  if len(mar_data) > 1:
+                      gaps = mar_data["Datetime"].diff()
+                      big_gaps = gaps[gaps > pd.Timedelta(minutes=10)]
+                      print(f"  Mar 1-9 gaps > 10min: {len(big_gaps)}")
+
+                  if dupes > 0 or not is_sorted or null_cols:
+                      print("  STATUS: FAILED")
+                      sys.exit(1)
+                  else:
+                      print("  STATUS: PASSED")
+
+          print(f"\n{'='*60}")
+          print("All verifications passed!")
+          PYEOF
+
+      - name: Commit and push updated CSVs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f Fetched_Data/*crypto*.csv 2>/dev/null || true
+          git add -f MarketPatterns_AI/Fetched_Data/*crypto*.csv 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "No new data to commit"
+            exit 0
+          fi
+          git commit -m "Add Mar 1-9 2026 crypto M5 data for BTC and ETH"
+          git push
