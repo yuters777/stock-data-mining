@@ -281,12 +281,13 @@ def main():
 
         new_df["Datetime"] = pd.to_datetime(new_df["Datetime"])
 
-        # Filter to only Mar 1-9 range (Eastern time)
-        mar1_et = pd.Timestamp("2026-02-28 19:00:00")  # Mar 1 00:00 UTC in ET
-        mar10_et = pd.Timestamp("2026-03-09 20:00:00")  # Mar 10 00:00 UTC in ET (after DST)
-        # Actually, be generous - keep all March data up to Mar 10
-        new_df = new_df[(new_df["Datetime"] >= "2026-03-01") & (new_df["Datetime"] < "2026-03-10")]
-        logger.info(f"{ticker} filtered to Mar 1-9 ET: {len(new_df)} rows")
+        # Filter to Mar 1-9 range: keep all data from the UTC fetch window.
+        # The fetch window is Mar 1 00:00 UTC to Mar 10 00:00 UTC.
+        # In ET, Mar 1 00:00 UTC = Feb 28 19:00 ET, and Mar 10 00:00 UTC = Mar 9 19:00/20:00 ET.
+        # Keep everything - the merge/deduplicate will handle overlaps with existing data.
+        new_df = new_df[(new_df["Datetime"] >= "2026-02-28 19:00:00") &
+                        (new_df["Datetime"] <= "2026-03-09 19:55:00")]
+        logger.info(f"{ticker} filtered: {len(new_df)} rows")
 
         if new_df.empty:
             logger.error(f"No Mar 1-9 data after filtering for {ticker}")
