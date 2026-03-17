@@ -29,6 +29,9 @@ import argparse
 import shutil
 from datetime import datetime, timedelta, timezone
 
+import io
+import zipfile
+
 import requests
 import pandas as pd
 import pytz
@@ -310,11 +313,206 @@ def fetch_binance_ticker(ticker, start_dt, end_dt):
 
 
 def fetch_all_binance(tickers, start_dt, end_dt):
-    """Fetch all tickers via Binance."""
+    """Fetch all tickers via Binance API."""
     results = {}
     for ticker in tickers:
         df = fetch_binance_ticker(ticker, start_dt, end_dt)
         results[ticker] = df
+    return results
+
+
+# ---------------------------------------------------------------------------
+# Binance Vision bulk download (geo-unrestricted)
+# ---------------------------------------------------------------------------
+
+VISION_BASE = "https://data.binance.vision/data/spot/monthly/klines"
+
+
+def fetch_vision_month(symbol, year_month):
+    """Download a single monthly klines ZIP from data.binance.vision."""
+    url = f"{VISION_BASE}/{symbol}/5m/{symbol}-5m-{year_month}.zip"
+    for attempt in range(3):
+        try:
+            resp = requests.get(url, timeout=60)
+            if resp.status_code == 404:
+                logger.warning(f"Vision: {url} not found (month may not be available yet)")
+                return pd.DataFrame()
+            resp.raise_for_status()
+            with zipfile.ZipFile(io.BytesIO(resp.content)) as zf:
+                csv_name = zf.namelist()[0]
+                with zf.open(csv_name) as f:
+                    df = pd.read_csv(f, header=None, names=[
+                        "open_time", "Open", "High", "Low", "Close", "Volume",
+                        "close_time", "quote_volume", "count",
+                        "taker_buy_volume", "taker_buy_quote_volume", "ignore"
+                    ])
+            logger.info(f"Vision: {symbol} {year_month} -> {len(df)} bars")
+            return df
+        except Exception as e:
+            logger.error(f"Vision fetch error {symbol} {year_month} (attempt {attempt+1}): {e}")
+            time.sleep(2 * (attempt + 1))
+    return pd.DataFrame()
+
+
+def fetch_all_vision(tickers, months):
+    """Fetch all tickers using Binance Vision bulk downloads."""
+    results = {}
+    for ticker in tickers:
+        symbol = BINANCE_SYMBOL_MAP.get(ticker)
+        if not symbol:
+            logger.error(f"No Binance symbol mapping for {ticker}")
+            results[ticker] = pd.DataFrame()
+            continue
+
+        all_records = []
+        for month in months:
+            df = fetch_vision_month(symbol, month)
+            if df.empty:
+                continue
+            # Auto-detect timestamp unit: ms (13 digits) vs us (16 digits)
+            sample_ts = df["open_time"].iloc[0]
+            if sample_ts > 1e15:  # microseconds
+                ts_unit = "us"
+            elif sample_ts > 1e12:  # milliseconds
+                ts_unit = "ms"
+            else:  # seconds
+                ts_unit = "s"
+            logger.info(f"Vision {symbol} {month}: open_time sample={sample_ts}, unit={ts_unit}")
+            df["Datetime_utc"] = pd.to_datetime(df["open_time"], unit=ts_unit, utc=True)
+            df["Datetime_et"] = df["Datetime_utc"].dt.tz_convert("America/New_York")
+            for _, row in df.iterrows():
+                all_records.append({
+                    "Datetime": row["Datetime_et"].strftime("%Y-%m-%d %H:%M:%S"),
+                    "Open": float(row["Open"]),
+                    "High": float(row["High"]),
+                    "Low": float(row["Low"]),
+                    "Close": float(row["Close"]),
+                    "Volume": float(row["Volume"]),
+                    "Ticker": ticker,
+                })
+
+        result_df = pd.DataFrame(all_records)
+        if not result_df.empty:
+            result_df["Datetime"] = pd.to_datetime(result_df["Datetime"])
+            result_df = result_df.sort_values("Datetime").reset_index(drop=True)
+
+        logger.info(f"Vision total for {ticker}: {len(result_df)} bars from {len(months)} months")
+        results[ticker] = result_df
+    return results
+
+
+# ---------------------------------------------------------------------------
+# CryptoCompare fetcher (US-accessible, no API key for basic usage)
+# ---------------------------------------------------------------------------
+
+CRYPTOCOMPARE_BASE = "https://min-api.cryptocompare.com/data/v2/histominute"
+
+
+def fetch_cryptocompare_chunk(fsym, toTs, limit=2000):
+    """Fetch a chunk of minute-level OHLCV from CryptoCompare."""
+    params = {"fsym": fsym, "tsym": "USDT", "limit": limit, "toTs": toTs}
+    for attempt in range(3):
+        try:
+            resp = requests.get(CRYPTOCOMPARE_BASE, params=params, timeout=30)
+            resp.raise_for_status()
+            data = resp.json()
+            if data.get("Response") == "Error":
+                logger.error(f"CryptoCompare error: {data.get('Message', 'unknown')}")
+                return []
+            return data.get("Data", {}).get("Data", [])
+        except Exception as e:
+            logger.error(f"CryptoCompare fetch error (attempt {attempt+1}): {e}")
+            time.sleep(2 * (attempt + 1))
+    return []
+
+
+def fetch_all_cryptocompare(tickers, months):
+    """Fetch all tickers using CryptoCompare histominute API.
+
+    CryptoCompare provides 1-minute data. We resample to 5-minute bars.
+    Each call returns up to 2000 minutes (~33 hours). For 12 months we need ~265 calls per ticker.
+    """
+    results = {}
+    for ticker in tickers:
+        logger.info(f"CryptoCompare: fetching {ticker}...")
+
+        # Parse month range to get timestamps
+        start_dt = datetime(int(months[0][:4]), int(months[0][5:]), 1, tzinfo=timezone.utc)
+        end_year, end_month_num = int(months[-1][:4]), int(months[-1][5:])
+        if end_month_num == 12:
+            end_dt = datetime(end_year + 1, 1, 1, tzinfo=timezone.utc)
+        else:
+            end_dt = datetime(end_year, end_month_num + 1, 1, tzinfo=timezone.utc)
+        now_utc = datetime.now(timezone.utc)
+        if end_dt > now_utc:
+            end_dt = now_utc
+
+        start_ts = int(start_dt.timestamp())
+        end_ts = int(end_dt.timestamp())
+        current_to = end_ts
+
+        all_records = []
+        call_count = 0
+
+        while current_to > start_ts:
+            data = fetch_cryptocompare_chunk(ticker, current_to, limit=2000)
+            call_count += 1
+
+            if not data:
+                logger.warning(f"CryptoCompare: no data for {ticker} at ts={current_to}")
+                break
+
+            for bar in data:
+                ts = bar.get("time", 0)
+                if ts < start_ts or ts > end_ts:
+                    continue
+                if bar.get("volumeto", 0) == 0 and bar.get("close", 0) == 0:
+                    continue
+                open_time_utc = datetime.fromtimestamp(ts, tz=timezone.utc)
+                et_time = utc_to_eastern(open_time_utc)
+                all_records.append({
+                    "Datetime": et_time,
+                    "Open": float(bar["open"]),
+                    "High": float(bar["high"]),
+                    "Low": float(bar["low"]),
+                    "Close": float(bar["close"]),
+                    "Volume": float(bar.get("volumeto", 0)),
+                    "Ticker": ticker,
+                })
+
+            # Move backward
+            earliest_ts = min(bar.get("time", current_to) for bar in data)
+            if earliest_ts >= current_to:
+                break
+            current_to = earliest_ts - 1
+
+            if call_count % 20 == 0:
+                logger.info(f"CryptoCompare {ticker}: {call_count} calls, {len(all_records)} bars")
+                time.sleep(1)
+
+        # Resample 1-min bars to 5-min
+        if all_records:
+            df_1m = pd.DataFrame(all_records)
+            df_1m["Datetime"] = pd.to_datetime(df_1m["Datetime"])
+            df_1m = df_1m.set_index("Datetime").sort_index()
+
+            df_5m = df_1m.resample("5min").agg({
+                "Open": "first",
+                "High": "max",
+                "Low": "min",
+                "Close": "last",
+                "Volume": "sum",
+                "Ticker": "first",
+            }).dropna(subset=["Open"])
+
+            df_5m = df_5m.reset_index()
+            logger.info(f"CryptoCompare {ticker}: {len(df_1m)} 1m bars -> {len(df_5m)} 5m bars "
+                        f"from {call_count} API calls")
+            results[ticker] = df_5m
+        else:
+            logger.warning(f"CryptoCompare: no data for {ticker}")
+            results[ticker] = pd.DataFrame()
+
     return results
 
 
@@ -499,7 +697,25 @@ def main():
         now_utc = datetime.now(timezone.utc)
         if end_dt > now_utc:
             end_dt = now_utc
-        results = fetch_all_binance(args.tickers, start_dt, end_dt)
+
+        # Quick connectivity test: try a single API call before committing to full fetch
+        logger.info("Testing Binance API connectivity with a single request...")
+        test_data = fetch_binance_chunk("BTCUSDT", int(start_dt.timestamp() * 1000),
+                                         int(start_dt.timestamp() * 1000) + 300000)
+        if test_data:
+            logger.info(f"Binance API accessible ({len(test_data)} bars from test). Using API.")
+            results = fetch_all_binance(args.tickers, start_dt, end_dt)
+        else:
+            logger.warning("Binance API not accessible (likely geo-blocked). "
+                           "Trying data.binance.vision bulk downloads...")
+            results = fetch_all_vision(args.tickers, months)
+
+            # If Vision also fails, try CryptoCompare as last resort
+            empty_count = sum(1 for df in results.values() if df.empty)
+            if empty_count == len(args.tickers):
+                logger.warning("Vision also returned no data. "
+                               "Trying CryptoCompare API as final fallback...")
+                results = fetch_all_cryptocompare(args.tickers, months)
 
     # Process each ticker: merge, validate, save
     output_dirs = [args.data_dir]
@@ -592,6 +808,15 @@ def main():
     )
     print(f"Ready for Chandelier Exit backtest? {'YES' if ready else 'NO - check issues above'}")
     print("=" * 70)
+
+    # Exit with error if no data was generated at all
+    all_empty = all(
+        isinstance(r, dict) and r.get("status") == "NO DATA"
+        for r in summary.values()
+    )
+    if all_empty:
+        logger.error("FATAL: No data was generated for any ticker!")
+        sys.exit(1)
 
 
 if __name__ == "__main__":
