@@ -2,6 +2,15 @@ name: Backfill Crypto M5 Data
 
 on:
   workflow_dispatch:
+    inputs:
+      start_month:
+        description: 'Start month (YYYY-MM)'
+        required: false
+        default: '2025-04'
+      end_month:
+        description: 'End month (YYYY-MM)'
+        required: false
+        default: '2026-03'
 
 jobs:
   backfill:
@@ -26,7 +35,9 @@ jobs:
           python backfill_crypto.py \
             --source binance \
             --data-dir Fetched_Data \
-            --also-update-fetched-data
+            --also-update-fetched-data \
+            --start-month "${{ github.event.inputs.start_month }}" \
+            --end-month "${{ github.event.inputs.end_month }}"
 
       - name: Commit and push CSV data
         run: |
@@ -38,5 +49,5 @@ jobs:
             echo "No new data to commit"
             exit 0
           fi
-          git commit -m "Update crypto M5 historical data (backfill)"
+          git commit -m "Update crypto M5 data (${{ github.event.inputs.start_month }} to ${{ github.event.inputs.end_month }})"
           git push
