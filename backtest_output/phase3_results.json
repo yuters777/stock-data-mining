@@ -1,0 +1,27 @@
+{
+  "test5": {
+    "avg_spearman": 0.8201258741258739,
+    "pct_top5_change": 89.0909090909091
+  },
+  "test6": {
+    "defense_avg_pm": -0.25431049701949693,
+    "close_avg_pm": -1.0372228933967607,
+    "rank_corr": -0.29100699300699306
+  },
+  "test7": {
+    "n_stress_days": 55,
+    "sufficient": true
+  },
+  "test8": {
+    "raw_spread": -1.2128738893391897,
+    "excess_spread": -1.2128738893391897,
+    "raw_better": 0.0
+  },
+  "test9": {
+    "avg_crush_minutes": 171.63636363636363,
+    "n_crush_confirmed": 7,
+    "crush_entry_avg": -1.3798469209803856,
+    "noon_entry_avg": -1.0158771356754697,
+    "t1400_entry_avg": -0.585362983755724
+  }
+}
