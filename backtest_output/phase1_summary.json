@@ -1,0 +1,17 @@
+{
+  "n_tickers": 27,
+  "trade_universe": 25,
+  "date_range": "2025-02-04 to 2026-03-18",
+  "n_trading_days": 337,
+  "n_stress_days_D": 66,
+  "stress_counts": {
+    "LevelA_VIX_gt25": 23,
+    "LevelB_VIX_chg_gt10": 31,
+    "LevelC_VIX_chg_gt15": 16,
+    "LevelD_median_lt_neg1": 66,
+    "LevelE_median_lt_neg1p5": 44,
+    "LevelF_median_lt_neg2": 27
+  },
+  "crush_pairs": 28,
+  "vix_range": "2025-02-10 to 2026-03-12"
+}
