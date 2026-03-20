@@ -1,0 +1,73 @@
+========================================================================
+AUDIT A2: POWER HOUR (ZONE 5) RETURN ANALYSIS
+========================================================================
+N = 7359 ticker-days, 27 tickers, ~272 days each
+
+ZONE DEFINITIONS:
+  Zone1: 09:30 → 10:30  (open drive, 60 min)
+  Zone2: 10:00 → 12:00  (mid-morning, 120 min)
+  Zone3: 12:00 → 13:30  (lunch, 90 min)
+  Zone5: 14:45 → 15:55  (closing drive / power hour, 70 min)
+
+ABSOLUTE RETURN STATISTICS (%):
+  Zone         Mean   Median      Std   Duration
+  ----------------------------------------------
+  Zone1      1.049%   0.692%   1.164%     60 min
+  Zone2      1.112%   0.750%   1.221%    120 min
+  Zone3      0.417%   0.206%   0.710%     90 min
+  Zone5      0.390%   0.226%   0.522%     70 min
+
+PAIRED T-TEST: Zone5 vs Zone3 (|ret| difference)
+  Mean diff (Z5 - Z3):  -0.0266%
+  Std of diffs:          0.7834%
+  t-statistic:           -2.9108
+  p-value (two-tailed):  3.61e-03
+  N:                     7359
+  Result: Zone5 < Zone3 SIGNIFICANT
+
+PAIRED T-TEST: Zone5 vs Zone2 (|ret| difference)
+  Mean diff (Z5 - Z2):  -0.7213%
+  t-statistic:           -53.4860
+  p-value (two-tailed):  0.00e+00
+  Result: Zone5 < Zone2 SIGNIFICANT
+
+ZONE1 → ZONE5 CONTINUATION ANALYSIS:
+  Ticker-days with nonzero direction in both zones: 7286
+  Continuation (same dir): 3687 (50.6%)
+  Reversal (opposite dir): 3599 (49.4%)
+  Interpretation: near 50% = no predictive relationship
+  Binomial test vs 50%: z=1.031, p=0.3026
+  NOT statistically significant at α=0.05
+
+PER-TICKER ZONE5 vs ZONE3 MEAN ABSOLUTE RETURN (%):
+  Ticker    Z5 Mean  Z3 Mean    Z5-Z3   Z5>Z3?
+  --------------------------------------------
+  AAPL       0.222%   0.199%  +0.023%      YES
+  AMD        0.504%   0.409%  +0.095%      YES
+  AMZN       0.292%   0.236%  +0.056%      YES
+  AVGO       0.409%   0.359%  +0.051%      YES
+  BA         0.302%   0.457%  -0.155%       no
+  BABA       0.320%   0.349%  -0.028%       no
+  BIDU       0.367%   0.557%  -0.189%       no
+  C          0.434%   0.700%  -0.266%       no
+  COIN       0.553%   0.446%  +0.108%      YES
+  COST       0.200%   0.327%  -0.127%       no
+  GOOGL      0.297%   0.247%  +0.050%      YES
+  GS         0.426%   0.641%  -0.215%       no
+  IBIT       0.379%   0.325%  +0.054%      YES
+  JPM        0.242%   0.300%  -0.058%       no
+  MARA       0.590%   0.556%  +0.034%      YES
+  META       0.298%   0.246%  +0.052%      YES
+  MSFT       0.206%   0.193%  +0.013%      YES
+  MU         0.558%   0.499%  +0.059%      YES
+  NVDA       0.366%   0.351%  +0.015%      YES
+  PLTR       0.475%   0.409%  +0.067%      YES
+  SNOW       0.452%   0.552%  -0.100%       no
+  SPY        0.214%   0.239%  -0.024%       no
+  TSLA       0.415%   0.391%  +0.024%      YES
+  TSM        0.346%   0.272%  +0.074%      YES
+  TXN        0.532%   0.709%  -0.177%       no
+  V          0.238%   0.309%  -0.071%       no
+  VIXY       0.899%   0.980%  -0.081%       no
+
+  Zone5 > Zone3 in 15/27 tickers
