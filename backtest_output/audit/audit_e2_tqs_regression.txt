@@ -1,0 +1,80 @@
+================================================================================
+AUDIT E2: TQS COMPONENT REGRESSION ON FORWARD M5 RETURNS
+================================================================================
+Forward return: Close[i+12]/Close[i] - 1  (12 bars = 60 min)
+Same-day only. Volume excluded (single-exchange data quality).
+
+DATA SUMMARY:
+  Total obs:  92,053
+    NVDA    :   18,428
+    TSLA    :   18,428
+    GOOGL   :   18,428
+    IBIT    :   18,428
+    GS      :   18,341
+
+  Y (fwd_ret):   mean=0.96 bps  std=99.13 bps
+  DMI_score:     mean=0.534  std=0.245
+  RSI_score:     mean=0.206  std=0.183
+  Squeeze_score: mean=0.652  std=0.476
+
+CORRELATION MATRIX:
+                fwd_ret        DMI        RSI    Squeeze
+     fwd_ret     1.0000     0.0248     0.0426    -0.0137
+         DMI     0.0248     1.0000     0.5405    -0.3772
+         RSI     0.0426     0.5405     1.0000    -0.3719
+     Squeeze    -0.0137    -0.3772    -0.3719     1.0000
+
+────────────────────────────────────────────────────────────────────────────────
+REGRESSION 1: fwd_ret ~ DMI_score + RSI_score + Squeeze_score
+────────────────────────────────────────────────────────────────────────────────
+  R²       = 0.001830
+  Adj R²   = 0.001797
+  N        = 92,053
+  σ(resid) = 99.04 bps
+
+  Variable               Coef      Std Err     t-stat      p-value   Std Beta
+  ----------------------------------------------------------------------
+  (intercept)       -0.000488     0.000111      -4.40   1.0736e-05          — ***
+  DMI_score          0.000132     0.000163       0.81   4.1612e-01     0.0033
+  RSI_score          0.002279     0.000217      10.49   9.9051e-26     0.0420 ***
+  Squeeze_score      0.000066     0.000076       0.87   3.8623e-01     0.0032
+
+────────────────────────────────────────────────────────────────────────────────
+REGRESSION 2: |fwd_ret| ~ DMI_score + RSI_score + Squeeze_score
+  (Tests whether scores predict MAGNITUDE of move, not direction)
+────────────────────────────────────────────────────────────────────────────────
+  R²       = 0.130633
+  Adj R²   = 0.130605
+
+  Variable               Coef      Std Err     t-stat      p-value   Std Beta
+  ----------------------------------------------------------------------
+  (intercept)        0.002028     0.000086      23.66  1.0258e-123          — ***
+  DMI_score          0.001858     0.000126      14.79   1.7728e-49     0.0554 ***
+  RSI_score          0.014093     0.000168      83.89   0.0000e+00     0.3138 ***
+  Squeeze_score     -0.000574     0.000059      -9.80   1.1053e-22    -0.0333 ***
+
+================================================================================
+FRAMEWORK WEIGHT COMPARISON
+================================================================================
+
+  Component     FW Weight   FW Norm  FW Rank      |Std β|  Emp Norm  Emp Rank
+  ---------------------------------------------------------------------------
+  DMI                0.35     0.538       #1       0.0554     0.138        #2
+  RSI                0.15     0.231       #2       0.3138     0.780        #1
+  Squeeze            0.15     0.231       #3       0.0333     0.083        #3
+
+  Rank order match: NO
+    Framework rank: DMI > RSI > Squeeze
+    Empirical rank: RSI > DMI > Squeeze
+
+  Is DMI dominant (highest |std β|)? NO
+
+SIGNIFICANCE SUMMARY (|fwd_ret| regression):
+  DMI         : *** (p < 0.001)
+  RSI         : *** (p < 0.001)
+  Squeeze     : *** (p < 0.001)
+
+NOTE: R² is expected to be very low for M5 return prediction.
+The key question is RELATIVE importance (rank order), not absolute fit.
+Volume (0.10 weight), Structure (0.15), CandlePA (0.10) are not testable
+on raw M5 data — they account for 0.35 of framework weight.
