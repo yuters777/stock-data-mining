@@ -1,0 +1,209 @@
+{
+  "ticker_freq": {
+    "TSLA": 2,
+    "BIDU": 2,
+    "SNOW": 1,
+    "BABA": 1,
+    "MARA": 4,
+    "PLTR": 6,
+    "AVGO": 7,
+    "TXN": 1,
+    "MU": 6,
+    "COIN": 3,
+    "NVDA": 1,
+    "AMZN": 1,
+    "TSM": 1,
+    "AMD": 2
+  },
+  "n_unique": 14,
+  "top3_pct": 50.0,
+  "loto": [
+    {
+      "ticker": "AAPL",
+      "pnl": 5186.37,
+      "wr": 94.7,
+      "delta": 0.0,
+      "delta_pct": 0.0
+    },
+    {
+      "ticker": "AMD",
+      "pnl": 5106.84,
+      "wr": 92.1,
+      "delta": -79.54,
+      "delta_pct": -1.5
+    },
+    {
+      "ticker": "AMZN",
+      "pnl": 5268.91,
+      "wr": 94.7,
+      "delta": 82.54,
+      "delta_pct": 1.6
+    },
+    {
+      "ticker": "AVGO",
+      "pnl": 4940.86,
+      "wr": 94.7,
+      "delta": -245.52,
+      "delta_pct": -4.7
+    },
+    {
+      "ticker": "BA",
+      "pnl": 5186.37,
+      "wr": 94.7,
+      "delta": 0.0,
+      "delta_pct": 0.0
+    },
+    {
+      "ticker": "BABA",
+      "pnl": 5196.22,
+      "wr": 94.7,
+      "delta": 9.85,
+      "delta_pct": 0.2
+    },
+    {
+      "ticker": "BIDU",
+      "pnl": 5192.66,
+      "wr": 94.7,
+      "delta": 6.28,
+      "delta_pct": 0.1
+    },
+    {
+      "ticker": "C",
+      "pnl": 5186.37,
+      "wr": 94.7,
+      "delta": 0.0,
+      "delta_pct": 0.0
+    },
+    {
+      "ticker": "COIN",
+      "pnl": 5270.21,
+      "wr": 97.4,
+      "delta": 83.84,
+      "delta_pct": 1.6
+    },
+    {
+      "ticker": "COST",
+      "pnl": 5186.37,
+      "wr": 94.7,
+      "delta": 0.0,
+      "delta_pct": 0.0
+    },
+    {
+      "ticker": "GOOGL",
+      "pnl": 5186.37,
+      "wr": 94.7,
+      "delta": 0.0,
+      "delta_pct": 0.0
+    },
+    {
+      "ticker": "GS",
+      "pnl": 5186.37,
+      "wr": 94.7,
+      "delta": 0.0,
+      "delta_pct": 0.0
+    },
+    {
+      "ticker": "IBIT",
+      "pnl": 5186.37,
+      "wr": 94.7,
+      "delta": 0.0,
+      "delta_pct": 0.0
+    },
+    {
+      "ticker": "JPM",
+      "pnl": 5186.37,
+      "wr": 94.7,
+      "delta": 0.0,
+      "delta_pct": 0.0
+    },
+    {
+      "ticker": "MARA",
+      "pnl": 5192.34,
+      "wr": 92.1,
+      "delta": 5.96,
+      "delta_pct": 0.1
+    },
+    {
+      "ticker": "META",
+      "pnl": 5186.37,
+      "wr": 94.7,
+      "delta": 0.0,
+      "delta_pct": 0.0
+    },
+    {
+      "ticker": "MSFT",
+      "pnl": 5186.37,
+      "wr": 94.7,
+      "delta": 0.0,
+      "delta_pct": 0.0
+    },
+    {
+      "ticker": "MU",
+      "pnl": 4816.46,
+      "wr": 92.1,
+      "delta": -369.91,
+      "delta_pct": -7.1
+    },
+    {
+      "ticker": "NVDA",
+      "pnl": 5185.58,
+      "wr": 94.7,
+      "delta": -0.79,
+      "delta_pct": -0.0
+    },
+    {
+      "ticker": "PLTR",
+      "pnl": 4628.11,
+      "wr": 94.7,
+      "delta": -558.26,
+      "delta_pct": -10.8
+    },
+    {
+      "ticker": "SNOW",
+      "pnl": 5192.54,
+      "wr": 94.7,
+      "delta": 6.16,
+      "delta_pct": 0.1
+    },
+    {
+      "ticker": "TSLA",
+      "pnl": 5121.35,
+      "wr": 94.7,
+      "delta": -65.02,
+      "delta_pct": -1.3
+    },
+    {
+      "ticker": "TSM",
+      "pnl": 5205.85,
+      "wr": 94.7,
+      "delta": 19.47,
+      "delta_pct": 0.4
+    },
+    {
+      "ticker": "TXN",
+      "pnl": 5231.5,
+      "wr": 94.7,
+      "delta": 45.12,
+      "delta_pct": 0.9
+    },
+    {
+      "ticker": "V",
+      "pnl": 5186.37,
+      "wr": 94.7,
+      "delta": 0.0,
+      "delta_pct": 0.0
+    }
+  ],
+  "critical_deps": [],
+  "sector_freq": {
+    "ConsDisc": 3,
+    "Communication": 2,
+    "Tech": 26,
+    "Financial": 7
+  },
+  "max_sector_pct": 68.4,
+  "same_sector_days": 9,
+  "n_isolated": 11,
+  "n_clustered": 8,
+  "edge_decay": false
+}
