@@ -1,0 +1,67 @@
+========================================================================
+AUDIT C2: FIRST-HOUR WIDTH RATIO & BREAKOUT CLASSIFICATION
+========================================================================
+Tickers: 27 | Ticker-days: 7454
+First hour: 09:30–10:30 ET (12 M5 bars)
+Breakout detection: bars from 10:30 onward
+
+WIDTH RATIO DISTRIBUTION:
+  Mean:   0.635
+  Median: 0.642
+  Std:    0.226
+
+WIDTH CLASS DISTRIBUTION:
+  Class           N       %  MeanRatio
+  ------------------------------------
+  Narrow        596    8.0%      0.193
+  Medium       2647   35.5%      0.475
+  Wide         4211   56.5%      0.798
+
+BREAKOUT RATES BY WIDTH CLASS:
+  Class           N     None   Single   Double
+  ----------------------------------------------
+  Narrow        596     0.0%    26.3%    73.7%
+  Medium       2647     0.0%    38.8%    61.2%
+  Wide         4211     9.8%    60.2%    30.0%
+
+CLAIM: Wide days have ~4.8% double breakout
+ACTUAL: 1264/4211 = 30.0%
+MATCH: NO (Δ=+25.2pp)
+
+BREAKOUT DIRECTION DETAIL:
+  Class        UpOnly   DnOnly     Both  Neither
+  ----------------------------------------------
+  Narrow        11.6%    14.8%    73.7%     0.0%
+  Medium        18.4%    20.4%    61.2%     0.0%
+  Wide          29.4%    30.7%    30.0%     9.8%
+
+PER-TICKER WIDE-DAY DOUBLE BREAKOUT RATE:
+  Ticker    WideN  Double    Rate
+  --------------------------------
+  AAPL        170      42   24.7%
+  AMD         166      42   25.3%
+  AMZN        156      49   31.4%
+  AVGO        178      48   27.0%
+  BA          190      71   37.4%
+  BABA        126      28   22.2%
+  BIDU        125      39   31.2%
+  C           140      64   45.7%
+  COIN        215      56   26.0%
+  COST        105      43   41.0%
+  GOOGL       167      56   33.5%
+  GS          126      49   38.9%
+  IBIT        134      51   38.1%
+  JPM         153      55   35.9%
+  MARA        228      47   20.6%
+  META        180      52   28.9%
+  MSFT        167      33   19.8%
+  MU          167      36   21.6%
+  NVDA        133      44   33.1%
+  PLTR        205      54   26.3%
+  SNOW        198      66   33.3%
+  SPY         118      19   16.1%
+  TSLA        169      65   38.5%
+  TSM         145      44   30.3%
+  TXN          88      36   40.9%
+  V           125      48   38.4%
+  VIXY        137      27   19.7%
