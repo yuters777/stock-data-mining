@@ -1,0 +1,56 @@
+{
+  "in_sample": {
+    "n_days": 11,
+    "n_trades": 22,
+    "win_rate": 90.9,
+    "avg_ret": 1.198,
+    "total_pnl": 2636.44,
+    "max_dd": -51.2,
+    "pf": 52.5,
+    "best": "$+333.74 (PLTR 2025-04-08)",
+    "worst": "$-43.13 (AVGO 2025-05-19)"
+  },
+  "out_of_sample": {
+    "n_days": 8,
+    "n_trades": 16,
+    "win_rate": 100.0,
+    "avg_ret": 1.594,
+    "total_pnl": 2549.93,
+    "max_dd": 0.0,
+    "pf": Infinity,
+    "best": "$+341.16 (MU 2025-11-21)",
+    "worst": "$+38.16 (AVGO 2026-01-12)"
+  },
+  "t_test": {
+    "t": -1.322,
+    "p": 0.1948,
+    "verdict": "PERSISTS"
+  },
+  "rolling_windows": [
+    {
+      "train": "2025-02\u21922025-08",
+      "test": "2025-08\u21922025-10",
+      "stress_days": 0,
+      "trades": 0,
+      "avg_ret": 0,
+      "total_pnl": 0
+    },
+    {
+      "train": "2025-04\u21922025-10",
+      "test": "2025-10\u21922025-12",
+      "stress_days": 3,
+      "trades": 6,
+      "avg_ret": 2.188,
+      "total_pnl": 1313.01
+    },
+    {
+      "train": "2025-06\u21922025-12",
+      "test": "2025-12\u21922026-02",
+      "stress_days": 4,
+      "trades": 8,
+      "avg_ret": 1.133,
+      "total_pnl": 906.66
+    }
+  ],
+  "any_negative_window": false
+}
