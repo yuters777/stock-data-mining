@@ -1,0 +1,79 @@
+========================================================================
+AUDIT A3: PHANTOM LUNCH-CRUNCH (11:30 ET SELL-OFF)
+========================================================================
+Claim: systematic sell-off around 11:30 ET (based on N=3 live obs)
+Test: 30-min returns for 6 liquid tickers × ~282 days = 1642 obs
+
+WINDOWS (30 min each, open-to-open of boundary M5 bars):
+  ret_control: 10:45 → 11:15  (pre-phantom baseline)
+  ret_phantom: 11:15 → 11:45  (the claimed sell-off window)
+  ret_post:    11:45 → 12:15  (post-phantom)
+
+DESCRIPTIVE STATISTICS (% return):
+  Window              Mean    Median       Std      N
+  --------------------------------------------------
+  ret_control     +0.0523%  +0.0111%   1.5848%   1642
+  ret_phantom     -0.0043%  -0.0082%   0.3086%   1642
+  ret_post        -0.0045%  +0.0000%   0.2237%   1642
+
+ret_phantom direction: 842 negative (51.3%), 783 positive (47.7%), 17 zero
+Mean phantom return: -0.0043% — NEGATIVE as claimed
+
+ONE-SAMPLE t-test: is mean(ret_phantom) < 0?
+  t = -0.5653, p (one-tailed, left) = 0.7141
+  NOT significant: no evidence of systematic negative return
+
+WILCOXON SIGNED-RANK TEST: ret_phantom vs ret_control
+  H0: ret_phantom and ret_control have the same distribution
+  H1: ret_phantom is more negative than ret_control
+  W = 653261
+  z = -1.1027 (normal approx, continuity-corrected)
+  p (two-sided) = 2.7015e-01
+  n (nonzero diffs) = 1642
+  Mean(phantom) - Mean(control) = -0.0566%
+  NOT significant at α=0.05: no difference between phantom and control
+
+WILCOXON SIGNED-RANK TEST: ret_phantom vs ret_post
+  W = 669915, z = -0.1935, p = 8.4656e-01, n = 1641
+  Mean(phantom) - Mean(post) = +0.0002%
+  NOT significant
+
+PER-TICKER BREAKDOWN:
+  Ticker      Phantom    Control       Post     %Neg     N
+  -------------------------------------------------------
+  SPY        -0.0041%   -0.0179%   +0.0090%    52.1%   282
+  NVDA       +0.0009%   +0.0279%   -0.0006%    48.5%   272
+  AAPL       -0.0202%   -0.0888%   -0.0121%    58.5%   272
+  GOOGL      -0.0080%   +0.1141%   -0.0003%    49.3%   272
+  TSLA       -0.0021%   +0.1568%   -0.0148%    49.3%   272
+  META       +0.0076%   +0.1241%   -0.0086%    50.0%   272
+
+PER-TICKER WILCOXON (phantom vs control):
+  Ticker          z          p      Δmean   Sig?
+  ----------------------------------------------
+  SPY       -0.151     0.8800   +0.0138%     no
+  NVDA      -0.023     0.9819   -0.0270%     no
+  AAPL      +1.259     0.2081   +0.0686%     no
+  GOOGL     -1.568     0.1170   -0.1221%     no
+  TSLA      -1.038     0.2991   -0.1589%     no
+  META      -1.098     0.2723   -0.1165%     no
+
+DAY-OF-WEEK: MEAN PHANTOM RETURN (%):
+  Day               Mean    Median     N
+  --------------------------------------
+  Monday        -0.0075%  -0.0362%   314
+  Tuesday       +0.0063%  +0.0106%   344
+  Wednesday     +0.0484%  +0.0155%   344
+  Thursday      -0.0123%  +0.0000%   314
+  Friday        -0.0604%  -0.0252%   326
+
+========================================================================
+VERDICT
+========================================================================
+  Claim: systematic sell-off at 11:30 ET (N=3 live observations)
+  Data:  1642 ticker-days across 6 liquid names
+  Mean phantom return (11:15→11:45): -0.0043%
+  Wilcoxon phantom vs control: p = 2.7015e-01
+  WEAK: phantom return is slightly negative but NOT significantly
+  different from the adjacent control window. The N=3 observation
+  was likely coincidence or market-regime-specific.

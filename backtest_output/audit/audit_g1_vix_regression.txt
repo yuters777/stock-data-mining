@@ -1,0 +1,105 @@
+===========================================================================
+  AUDIT G1: VIX REGRESSION ANALYSIS
+  SPY daily return ~ VIX level, VIX change
+===========================================================================
+
+  Date range: 2025-02-11 to 2026-03-12
+  N observations: 272
+
+  Descriptive statistics:
+  Variable                   Mean          Std          Min          Max
+  ------------------------------------------------------------
+  SPY_ret                 0.00040      0.01022     -0.04814      0.10119
+  VIX_level              19.13974      5.20355     13.47000     52.33000
+  VIX_change              0.01879      2.25957    -18.71000     15.29000
+
+  Correlation matrix:
+                      SPY_ret    VIX_level   VIX_change
+         SPY_ret       1.0000       0.2175      -0.7236
+       VIX_level       0.2175       1.0000      -0.2048
+      VIX_change      -0.7236      -0.2048       1.0000
+
+===========================================================================
+  Model (a): SPY_ret ~ VIX_level
+===========================================================================
+  Dep. variable: SPY_daily_return
+  Observations:  272
+  R²:            0.047308
+  Adj R²:        0.043779
+  F-statistic:   13.4074
+  Residual SE:   0.010016
+
+  Variable                  Coeff      Std Err     t-stat      p-value   Sig
+  ------------------------------------------------------------------------
+  intercept             -0.007777     0.002315     -3.359     0.000781   ***
+  VIX_level              0.000427     0.000117      3.662     0.000251   ***
+
+
+===========================================================================
+  Model (b): SPY_ret ~ VIX_change
+===========================================================================
+  Dep. variable: SPY_daily_return
+  Observations:  272
+  R²:            0.523562
+  Adj R²:        0.521798
+  F-statistic:   296.7058
+  Residual SE:   0.007083
+
+  Variable                  Coeff      Std Err     t-stat      p-value   Sig
+  ------------------------------------------------------------------------
+  intercept              0.000464     0.000429      1.081     0.279604      
+  VIX_change            -0.003274     0.000190    -17.225     0.000000   ***
+
+
+===========================================================================
+  Model (c): SPY_ret ~ VIX_level + VIX_change
+===========================================================================
+  Dep. variable: SPY_daily_return
+  Observations:  272
+  R²:            0.528572
+  Adj R²:        0.525067
+  F-statistic:   150.8036
+  Residual SE:   0.007059
+
+  Variable                  Coeff      Std Err     t-stat      p-value   Sig
+  ------------------------------------------------------------------------
+  intercept             -0.002256     0.001665     -1.355     0.175389      
+  VIX_level              0.000142     0.000084      1.691     0.090877      
+  VIX_change            -0.003207     0.000194    -16.571     0.000000   ***
+
+  Partial correlations (model c):
+    VIX_level  | controlling for VIX_change: +0.10255
+    VIX_change | controlling for VIX_level:  -0.71075
+
+  Standardized betas (model c):
+    VIX_level:  +0.07232
+    VIX_change: -0.70876
+
+===========================================================================
+  R² COMPARISON
+===========================================================================
+  Model (a) VIX_level only:           R² = 0.047308
+  Model (b) VIX_change only:          R² = 0.523562
+  Model (c) VIX_level + VIX_change:   R² = 0.528572
+
+  Incremental R² of adding VIX_change to VIX_level: 0.481265
+  Incremental R² of adding VIX_level to VIX_change: 0.005010
+
+  R² ratio (change / level): 11.07x
+
+===========================================================================
+  CLAIM ASSESSMENT
+===========================================================================
+
+  Claim: VIX change predicts returns better than VIX level
+         (Override philosophy: direction of change > absolute level)
+
+  → CONFIRMED: VIX_change R² (0.523562) > VIX_level R² (0.047308)
+    VIX_change explains 11.1x more variance than VIX_level
+  → VIX_change t-stat (-17.225) stronger than VIX_level t-stat (3.662)
+  → Partial corr of VIX_change (-0.7107) > VIX_level (+0.1025) in combined model
+
+  Economic interpretation:
+    VIX_level beta (model a):  +0.000427 → higher VIX = higher return
+    VIX_change beta (model b): -0.003274 → VIX spike = lower return
+    Combined model: both effects differ in direction

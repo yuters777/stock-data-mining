@@ -1,0 +1,65 @@
+==============================================================================
+AUDIT D2: CLOCK-STOP VARIANTS (CE 2.0×, 4H EMA CROSS-UP ENTRIES)
+==============================================================================
+Clock check: bar 6 after entry | CE: 2.0× ATR(14), HH(22)
+
+  Variant         PF     AvgR  WinRate     N  CS_exits  Disaster     CE    EOD
+  ---------------------------------------------------------------------------
+  NO_CS         1.13    0.149    38.6%   295         0       140    104     51
+  +0.25R        1.11    0.113    36.3%   295       104        96     83     12
+  +0.50R        1.11    0.116    36.6%   295       111        95     82      7
+  +0.75R        1.10    0.106    36.9%   295       120        95     76      4
+  +1.00R        1.12    0.129    38.0%   295       131        95     66      3
+
+SAVED vs KILLED ANALYSIS
+  'saved'  = clock stop fired AND would have hit disaster within next 20 bars
+  'killed' = clock stop fired AND baseline (NO_CS) trade was profitable
+
+  +0.50R:
+    Clock-stop exits: 111
+    Saved (avoided disaster):      61  (55.0%)
+    Killed (would have profited):  24  (21.6%)
+    Neutral (neither):             26  (23.4%)
+    Saved:Killed ratio:          61:24  (2.5:1)
+
+  +1.00R:
+    Clock-stop exits: 131
+    Saved (avoided disaster):      72  (55.0%)
+    Killed (would have profited):  31  (23.7%)
+    Neutral (neither):             28  (21.4%)
+    Saved:Killed ratio:          72:31  (2.3:1)
+
+CLAIM CHECK:
+  Prior claim: +0.5R clock stop saved:killed = 14:1
+  Actual: 61:24 = 2.5:1
+  Match: NO
+
+PER-TICKER: NO_CS vs +1.00R
+  Ticker    NO_CS_PF  NO_CS_AvgR  +1.00R_PF  +1.00R_AvgR     N
+  ------------------------------------------------------------
+  AAPL          0.91      -0.045       1.27        0.127    15
+  AMD           0.03      -3.712       0.07       -3.549    10
+  AMZN          0.44      -0.433       0.28       -0.526    16
+  AVGO          2.13       1.041       2.36        1.129    13
+  BA            0.03      -3.944       0.03       -3.905    11
+  BABA          0.10      -2.304       0.09       -2.394    11
+  BIDU          7.29       2.178       8.30        2.081    14
+  C             0.92      -0.061       0.91       -0.075    11
+  COIN          0.61      -0.355       0.33       -0.555    14
+  COST          0.00      -1.455       0.00       -1.457    16
+  GOOGL         0.82      -0.140       0.87       -0.102    10
+  GS            5.15       2.944       5.36        2.976     9
+  JPM           5.90       2.008       5.73        1.921    10
+  MARA          0.58      -0.583       0.12       -1.144    16
+  META          5.07       3.640       3.20        3.105    10
+  MSFT          0.11      -1.017       0.10       -0.956    10
+  MU            1.75       0.407       1.78        0.424     9
+  NVDA          1.51       0.435       1.13        0.109    12
+  PLTR          0.93      -0.061       0.86       -0.106    11
+  SNOW          5.12       2.358      24.81        2.869    11
+  SPY           1.12       0.075       2.28        0.421    13
+  TSLA          3.97       1.944       3.95        1.941    13
+  TSM           9.35       4.986      14.94        5.210     8
+  TXN           0.16      -2.139       0.16       -1.998     7
+  V             0.43      -0.344       0.37       -0.304    15
+Saved: /home/user/stock-data-mining/backtest_output/audit/audit_d2_clock_stop.csv
