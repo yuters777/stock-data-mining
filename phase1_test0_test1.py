@@ -32,14 +32,26 @@ for tk in TICKERS_27:
     df = raw_data[tk]
     print(f"{tk:<8} {len(df):>8} {str(df['Datetime'].min().date()):<12} {str(df['Datetime'].max().date()):<12}")
 
-# Filter to regular session: 09:30-15:55 ET (bar start times)
-# Data timestamps are already in ET based on empirical check
+# Filter to regular session: 09:30-15:55 ET.
+# RAW DATA STRUCTURE: Alpha Vantage CSVs contain TWO overlapping blocks:
+#   ET block  (04:00-10:55): original US/Eastern timestamps
+#   IST block (11:00-23:55): same bars shifted +7h by fetch_SP500_Data.py
+# The IST regular session (16:30-22:55 IST = 09:30-15:55 ET) has the
+# CORRECT high-volume bars. We select those and convert back to ET.
+#
+# BUG FIXED 2026-03-24: Previous filter used 09:30-15:55 directly on raw
+# timestamps, which captured ET bars for 09:30-10:55 (correct) but IST
+# pre-market bars for 11:00-15:55 (wrong). See I8/I9 audit for details.
 filtered = {}
 for tk in TICKERS_27:
     df = raw_data[tk].copy()
-    t = df["Datetime"].dt.time
-    mask = (t >= pd.Timestamp("09:30").time()) & (t <= pd.Timestamp("15:55").time())
-    filtered[tk] = df[mask].copy()
+    hm = df["Datetime"].dt.hour * 60 + df["Datetime"].dt.minute
+    # Select IST regular session block: 16:30-22:55 IST = 09:30-15:55 ET
+    mask = (hm >= 16 * 60 + 30) & (hm <= 22 * 60 + 55)
+    filt = df[mask].copy()
+    # Convert IST timestamps to ET (subtract 7 hours)
+    filt["Datetime"] = filt["Datetime"] - pd.Timedelta(hours=7)
+    filtered[tk] = filt
 
 print(f"\n{'Ticker':<8} {'RegSess':>8} {'TradingDays':>12}")
 print("-" * 32)
