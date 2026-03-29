@@ -1,0 +1,17 @@
+DAY-OF-WEEK — OVERNIGHT V5
+==================================================
+Full sample: 2025-02-26 → 2026-03-12, N=978
+
+Monday    (Mon close→Tue open)            : N= 192 | Mean=-0.0534% | Std=1.4277% | WR=49.5% | t=-0.518 | p=0.6049
+Tuesday   (Tue close→Wed open)            : N= 196 | Mean=+0.1442% | Std=1.3134% | WR=56.6% | t=+1.538 | p=0.1258
+Wednesday (Wed close→Thu open)            : N= 203 | Mean=+0.0888% | Std=1.7870% | WR=52.7% | t=+0.708 | p=0.4798
+Thursday  (Thu close→Fri open)            : N= 193 | Mean=+0.1725% | Std=1.9375% | WR=51.3% | t=+1.237 | p=0.2177
+--------------------------------------------------
+Friday→Monday (weekend)                   : N= 194 | Mean=+0.5218% | Std=3.3311% | WR=55.7% | t=+2.182 | p=0.0303
+
+Kruskal-Wallis (Mon-Thu): H=5.504, p=0.1384
+
+CONCLUSION: FRIDAY ANOMALY
+- Best weekday:  Thursday (+0.1725%)
+- Worst weekday: Monday (-0.0534%)
+- Friday→Monday: +0.5218% vs weekday avg +0.0880%
