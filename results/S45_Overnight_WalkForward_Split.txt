@@ -1,0 +1,13 @@
+WALK-FORWARD SPLIT — OVERNIGHT V5
+==================================================
+Full sample: 2025-02-26 → 2026-03-12, N=784
+  Mean=0.0884% | Std=1.6367% | Sharpe=0.86 | WR=52.6% | t=1.513 | p=0.1307
+
+Period 1 (early)    : 2025-02-26 → 2025-07-09 | N=261 | Mean=0.1842% | Sharpe=1.78 | WR=54.4% | t=1.814 | p=0.0708
+Period 2 (mid)      : 2025-07-09 → 2025-10-21 | N=261 | Mean=0.2271% | Sharpe=2.34 | WR=56.3% | t=2.384 | p=0.0178
+Period 3 (recent)   : 2025-10-21 → 2026-03-12 | N=262 | Mean=-0.1450% | Sharpe=-1.35 | WR=46.9% | t=-1.375 | p=0.1703
+
+STABILITY: UNSTABLE
+- Period-to-period sign consistency: mixed
+- Max drawdown period: Period 3 (recent)
+- Sharpe range: -1.35 to 2.34
