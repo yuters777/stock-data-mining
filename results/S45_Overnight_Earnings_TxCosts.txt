@@ -1,0 +1,23 @@
+EARNINGS FILTER — OVERNIGHT V5
+==================================================
+Earnings calendar: earnings_calendar.json (143 dates across 25 tickers)
+
+V5 full sample           : N= 784 | Mean=+0.0884% | Sharpe=0.86 | WR=52.6% | p=0.1307
+V5 ex-earnings           : N= 758 | Mean=+0.0779% | Sharpe=0.88 | WR=52.8% | p=0.1295
+Earnings-only nights     : N=  26 | Mean=+0.3959% | Sharpe=1.30 | WR=46.2% | p=0.6796
+
+Proxy check (|ret| > 3%): 40 big moves, 8 overlap with earnings
+V5 ex-big-moves (|ret|>3%): N= 744 | Mean=+0.0340% | Sharpe=0.54 | p=0.3534
+
+CONCLUSION: Earnings DRIVE the edge (higher mean on earnings nights)
+
+
+TRANSACTION COSTS — OVERNIGHT V5
+==================================================
+Gross                    : Mean=+0.0884% | Sharpe=0.86 | WR=52.6% | p=0.1307
+Net (5 bps)              : Mean=+0.0384% | Sharpe=0.37 | WR=50.4% | p=0.5109
+Net (10 bps)             : Mean=-0.0116% | Sharpe=-0.11 | WR=48.2% | p=0.8433
+
+Break-even cost: 8.8 bps
+
+CONCLUSION: MARGINAL (positive at 5 bps but not significant)
