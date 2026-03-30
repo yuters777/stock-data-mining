@@ -1,0 +1,566 @@
+{
+  "generated_at": "2026-03-30T19:35:44.934662Z",
+  "data_range": {
+    "start": "2025-02-03",
+    "end": "2026-03-18"
+  },
+  "tickers_used": [
+    "AAPL",
+    "AMD",
+    "AMZN",
+    "AVGO",
+    "BA",
+    "BABA",
+    "BIDU",
+    "C",
+    "COIN",
+    "COST",
+    "GOOGL",
+    "GS",
+    "IBIT",
+    "JPM",
+    "MARA",
+    "META",
+    "MSFT",
+    "MU",
+    "NVDA",
+    "PLTR",
+    "SNOW",
+    "TSLA",
+    "TSM",
+    "TXN",
+    "V"
+  ],
+  "vix_source": "/home/user/stock-data-mining/Fetched_Data/VIXCLS_FRED_real.csv",
+  "v0_sweep": [
+    {
+      "n": 29,
+      "mean_pct": 8.480950555936442,
+      "median_pct": 8.95692735212385,
+      "wr_pct": 93.10344827586206,
+      "profit_factor": 72.75191682395547,
+      "sharpe": 1.546820123679945,
+      "worst_pct": -2.5304735242535505,
+      "p_value": 4.609241126584431e-09,
+      "rsi_gate": 30
+    },
+    {
+      "n": 33,
+      "mean_pct": 8.221955867733906,
+      "median_pct": 8.766346087317503,
+      "wr_pct": 93.93939393939394,
+      "profit_factor": 80.15531100455188,
+      "sharpe": 1.4657464605128825,
+      "worst_pct": -2.5304735242535505,
+      "p_value": 1.2740242027074718e-09,
+      "rsi_gate": 32
+    },
+    {
+      "n": 35,
+      "mean_pct": 8.15241814332544,
+      "median_pct": 8.766346087317503,
+      "wr_pct": 94.28571428571428,
+      "profit_factor": 84.24256800541417,
+      "sharpe": 1.4841335678332297,
+      "worst_pct": -2.5304735242535505,
+      "p_value": 2.921776663277295e-10,
+      "rsi_gate": 33
+    },
+    {
+      "n": 39,
+      "mean_pct": 7.929074159366166,
+      "median_pct": 8.278331392088347,
+      "wr_pct": 92.3076923076923,
+      "profit_factor": 90.66653623487574,
+      "sharpe": 1.392385482643348,
+      "worst_pct": -2.5304735242535505,
+      "p_value": 1.429633514830529e-10,
+      "rsi_gate": 34
+    },
+    {
+      "n": 41,
+      "mean_pct": 7.703446962796143,
+      "median_pct": 6.606019384458425,
+      "wr_pct": 92.6829268292683,
+      "profit_factor": 85.42144777136878,
+      "sharpe": 1.3670299319601926,
+      "worst_pct": -2.5304735242535505,
+      "p_value": 7.761265699541762e-11,
+      "rsi_gate": 35
+    },
+    {
+      "n": 46,
+      "mean_pct": 7.554851024710166,
+      "median_pct": 6.445332755269048,
+      "wr_pct": 93.47826086956522,
+      "profit_factor": 93.88970393994688,
+      "sharpe": 1.3773939305288372,
+      "worst_pct": -2.5304735242535505,
+      "p_value": 4.196010516268186e-12,
+      "rsi_gate": 36
+    },
+    {
+      "n": 49,
+      "mean_pct": 7.074004226223094,
+      "median_pct": 6.284646126079671,
+      "wr_pct": 89.79591836734694,
+      "profit_factor": 30.038212769686147,
+      "sharpe": 1.2198943700080531,
+      "worst_pct": -4.137392661982835,
+      "p_value": 3.413969478603976e-11,
+      "rsi_gate": 37
+    },
+    {
+      "n": 51,
+      "mean_pct": 6.920652093027035,
+      "median_pct": 6.284646126079671,
+      "wr_pct": 90.19607843137256,
+      "profit_factor": 30.568254095068053,
+      "sharpe": 1.2000666750165165,
+      "worst_pct": -4.137392661982835,
+      "p_value": 2.211324930463818e-11,
+      "rsi_gate": 38
+    },
+    {
+      "n": 55,
+      "mean_pct": 7.010404712665893,
+      "median_pct": 6.284646126079671,
+      "wr_pct": 90.9090909090909,
+      "profit_factor": 33.30087359752571,
+      "sharpe": 1.2324654700778408,
+      "worst_pct": -4.137392661982835,
+      "p_value": 1.4923565378582653e-12,
+      "rsi_gate": 39
+    },
+    {
+      "n": 60,
+      "mean_pct": 6.743774318738597,
+      "median_pct": 5.75020384103591,
+      "wr_pct": 90.0,
+      "profit_factor": 32.28071784194803,
+      "sharpe": 1.202839172170722,
+      "worst_pct": -4.137392661982835,
+      "p_value": 3.3965346554379984e-13,
+      "rsi_gate": 40
+    },
+    {
+      "n": 68,
+      "mean_pct": 6.177157253071968,
+      "median_pct": 4.665539851882047,
+      "wr_pct": 89.70588235294117,
+      "profit_factor": 30.8024376520988,
+      "sharpe": 1.106946142782683,
+      "worst_pct": -4.137392661982835,
+      "p_value": 2.2578595553911968e-13,
+      "rsi_gate": 42
+    },
+    {
+      "n": 78,
+      "mean_pct": 5.558198638991821,
+      "median_pct": 4.117958311228281,
+      "wr_pct": 85.8974358974359,
+      "profit_factor": 22.970303180609957,
+      "sharpe": 0.9983677364425129,
+      "worst_pct": -4.137392661982835,
+      "p_value": 2.6981038635907015e-13,
+      "rsi_gate": 45
+    },
+    {
+      "n": 86,
+      "mean_pct": 5.135982424886507,
+      "median_pct": 3.659345845466628,
+      "wr_pct": 84.88372093023256,
+      "profit_factor": 20.00931943570287,
+      "sharpe": 0.9289316635416166,
+      "worst_pct": -4.137392661982835,
+      "p_value": 3.25578524904268e-13,
+      "rsi_gate": 50
+    },
+    {
+      "n": 104,
+      "mean_pct": 4.2592213264798495,
+      "median_pct": 2.872137164415175,
+      "wr_pct": 79.8076923076923,
+      "profit_factor": 15.372498644929747,
+      "sharpe": 0.7870411528365314,
+      "worst_pct": -5.047193451386572,
+      "p_value": 1.6996745871751908e-12,
+      "rsi_gate": null
+    }
+  ],
+  "v2_sweep": [
+    {
+      "n": 31,
+      "mean_pct": 7.584618138952127,
+      "median_pct": 8.278331392088347,
+      "wr_pct": 93.54838709677419,
+      "profit_factor": 55.449942449285565,
+      "sharpe": 1.335045825688841,
+      "worst_pct": -2.5304735242535505,
+      "p_value": 2.7735238951593013e-08,
+      "rsi_gate": 30
+    },
+    {
+      "n": 37,
+      "mean_pct": 7.464754274574122,
+      "median_pct": 7.3983574289010905,
+      "wr_pct": 94.5945945945946,
+      "profit_factor": 64.96158998716471,
+      "sharpe": 1.2947007351967434,
+      "worst_pct": -2.5304735242535505,
+      "p_value": 2.4178731508762202e-09,
+      "rsi_gate": 32
+    },
+    {
+      "n": 39,
+      "mean_pct": 7.53045664649053,
+      "median_pct": 7.639208467556374,
+      "wr_pct": 94.87179487179486,
+      "profit_factor": 69.0123733994222,
+      "sharpe": 1.338777563898734,
+      "worst_pct": -2.5304735242535505,
+      "p_value": 3.8562672420159347e-10,
+      "rsi_gate": 33
+    },
+    {
+      "n": 42,
+      "mean_pct": 7.562095892305783,
+      "median_pct": 7.518782948228733,
+      "wr_pct": 95.23809523809523,
+      "profit_factor": 74.55182980623086,
+      "sharpe": 1.3206640458022514,
+      "worst_pct": -2.5304735242535505,
+      "p_value": 1.147101693545529e-10,
+      "rsi_gate": 34
+    },
+    {
+      "n": 45,
+      "mean_pct": 7.34381790443686,
+      "median_pct": 7.004089979550112,
+      "wr_pct": 95.55555555555556,
+      "profit_factor": 77.53083016093264,
+      "sharpe": 1.3134241627041856,
+      "worst_pct": -2.5304735242535505,
+      "p_value": 2.8524172517259957e-11,
+      "rsi_gate": 35
+    },
+    {
+      "n": 51,
+      "mean_pct": 6.948912041113281,
+      "median_pct": 5.146004890250415,
+      "wr_pct": 96.07843137254902,
+      "profit_factor": 83.07086323411197,
+      "sharpe": 1.3348873331713547,
+      "worst_pct": -2.5304735242535505,
+      "p_value": 7.837039366387422e-13,
+      "rsi_gate": 36
+    },
+    {
+      "n": 56,
+      "mean_pct": 6.687111033085311,
+      "median_pct": 5.095628056276778,
+      "wr_pct": 92.85714285714286,
+      "profit_factor": 30.925204783239344,
+      "sharpe": 1.204112002681106,
+      "worst_pct": -4.137392661982835,
+      "p_value": 2.0311658730137517e-12,
+      "rsi_gate": 37
+    },
+    {
+      "n": 58,
+      "mean_pct": 6.590354237869602,
+      "median_pct": 5.095628056276778,
+      "wr_pct": 93.10344827586206,
+      "profit_factor": 31.545505890846062,
+      "sharpe": 1.191632855020419,
+      "worst_pct": -4.137392661982835,
+      "p_value": 1.1638721810596491e-12,
+      "rsi_gate": 38
+    },
+    {
+      "n": 61,
+      "mean_pct": 6.403700632593989,
+      "median_pct": 5.045251222303141,
+      "wr_pct": 93.44262295081968,
+      "profit_factor": 32.21558121026051,
+      "sharpe": 1.1964874396312506,
+      "worst_pct": -4.137392661982835,
+      "p_value": 2.6064051388086593e-13,
+      "rsi_gate": 39
+    },
+    {
+      "n": 64,
+      "mean_pct": 6.16746893601054,
+      "median_pct": 4.978896753085801,
+      "wr_pct": 92.1875,
+      "profit_factor": 30.21188754580921,
+      "sharpe": 1.1595598188589844,
+      "worst_pct": -4.137392661982835,
+      "p_value": 2.158033501402023e-13,
+      "rsi_gate": 40
+    },
+    {
+      "n": 70,
+      "mean_pct": 5.914768063704315,
+      "median_pct": 4.3823671650911935,
+      "wr_pct": 91.42857142857143,
+      "profit_factor": 29.220695748788906,
+      "sharpe": 1.1286077931674217,
+      "worst_pct": -4.137392661982835,
+      "p_value": 4.698647531961594e-14,
+      "rsi_gate": 42
+    },
+    {
+      "n": 79,
+      "mean_pct": 5.235303666403453,
+      "median_pct": 3.994802609753397,
+      "wr_pct": 89.87341772151899,
+      "profit_factor": 16.045546817093108,
+      "sharpe": 0.9634636264406733,
+      "worst_pct": -10.071204891142266,
+      "p_value": 7.595033619783848e-13,
+      "rsi_gate": 45
+    },
+    {
+      "n": 87,
+      "mean_pct": 4.871109571591313,
+      "median_pct": 3.686280558340411,
+      "wr_pct": 88.50574712643679,
+      "profit_factor": 15.570606496579597,
+      "sharpe": 0.9096126829444604,
+      "worst_pct": -10.071204891142266,
+      "p_value": 5.515027971350368e-13,
+      "rsi_gate": 50
+    },
+    {
+      "n": 94,
+      "mean_pct": 4.5224475592443785,
+      "median_pct": 3.330436738830872,
+      "wr_pct": 86.17021276595744,
+      "profit_factor": 13.400383587627658,
+      "sharpe": 0.8469164366332642,
+      "worst_pct": -10.071204891142266,
+      "p_value": 1.2251935470919979e-12,
+      "rsi_gate": null
+    }
+  ],
+  "marginal_trades_v2": [
+    {
+      "ticker": "MARA",
+      "time": "2025-03-11 09:30:00",
+      "rsi": 36.87,
+      "return_pct": -4.1374,
+      "hold_bars": 10,
+      "exit_reason": "hard_max",
+      "vix": 27.86,
+      "streak": 3
+    },
+    {
+      "ticker": "MARA",
+      "time": "2025-04-04 09:30:00",
+      "rsi": 35.13,
+      "return_pct": 11.9308,
+      "hold_bars": 7,
+      "exit_reason": "ema21_touch",
+      "vix": 30.02,
+      "streak": 4
+    },
+    {
+      "ticker": "TSLA",
+      "time": "2025-04-04 09:30:00",
+      "rsi": 39.36,
+      "return_pct": 12.8537,
+      "hold_bars": 7,
+      "exit_reason": "ema21_touch",
+      "vix": 30.02,
+      "streak": 4
+    },
+    {
+      "ticker": "COST",
+      "time": "2025-04-04 13:30:00",
+      "rsi": 39.77,
+      "return_pct": 3.1269,
+      "hold_bars": 5,
+      "exit_reason": "ema21_touch",
+      "vix": 30.02,
+      "streak": 3
+    },
+    {
+      "ticker": "BABA",
+      "time": "2025-04-16 09:30:00",
+      "rsi": 37.91,
+      "return_pct": 6.4166,
+      "hold_bars": 6,
+      "exit_reason": "ema21_touch",
+      "vix": 30.12,
+      "streak": 4
+    },
+    {
+      "ticker": "AMZN",
+      "time": "2025-04-17 09:30:00",
+      "rsi": 38.66,
+      "return_pct": 5.1184,
+      "hold_bars": 6,
+      "exit_reason": "ema21_touch",
+      "vix": 32.64,
+      "streak": 3
+    },
+    {
+      "ticker": "META",
+      "time": "2025-04-17 09:30:00",
+      "rsi": 35.09,
+      "return_pct": 4.3604,
+      "hold_bars": 6,
+      "exit_reason": "ema21_touch",
+      "vix": 32.64,
+      "streak": 3
+    },
+    {
+      "ticker": "MU",
+      "time": "2025-04-17 09:30:00",
+      "rsi": 37.59,
+      "return_pct": 8.611,
+      "hold_bars": 6,
+      "exit_reason": "ema21_touch",
+      "vix": 32.64,
+      "streak": 3
+    },
+    {
+      "ticker": "MSFT",
+      "time": "2025-04-21 09:30:00",
+      "rsi": 35.95,
+      "return_pct": 5.146,
+      "hold_bars": 4,
+      "exit_reason": "ema21_touch",
+      "vix": NaN,
+      "streak": 5
+    },
+    {
+      "ticker": "SNOW",
+      "time": "2025-04-21 09:30:00",
+      "rsi": 38.12,
+      "return_pct": 10.0029,
+      "hold_bars": 4,
+      "exit_reason": "ema21_touch",
+      "vix": NaN,
+      "streak": 4
+    },
+    {
+      "ticker": "AMZN",
+      "time": "2025-10-17 09:30:00",
+      "rsi": 35.8,
+      "return_pct": 4.3226,
+      "hold_bars": 4,
+      "exit_reason": "ema21_touch",
+      "vix": 25.31,
+      "streak": 3
+    },
+    {
+      "ticker": "COIN",
+      "time": "2025-10-17 09:30:00",
+      "rsi": 35.98,
+      "return_pct": 6.0199,
+      "hold_bars": 2,
+      "exit_reason": "ema21_touch",
+      "vix": 25.31,
+      "streak": 3
+    },
+    {
+      "ticker": "JPM",
+      "time": "2025-10-17 09:30:00",
+      "rsi": 35.87,
+      "return_pct": 1.729,
+      "hold_bars": 10,
+      "exit_reason": "ema21_touch",
+      "vix": 25.31,
+      "streak": 4
+    },
+    {
+      "ticker": "NVDA",
+      "time": "2025-11-21 09:30:00",
+      "rsi": 37.91,
+      "return_pct": 0.0335,
+      "hold_bars": 10,
+      "exit_reason": "hard_max",
+      "vix": 26.42,
+      "streak": 3
+    },
+    {
+      "ticker": "COIN",
+      "time": "2025-12-26 09:30:00",
+      "rsi": 35.13,
+      "return_pct": 7.239,
+      "hold_bars": 10,
+      "exit_reason": "ema21_touch",
+      "vix": NaN,
+      "streak": 3
+    },
+    {
+      "ticker": "AAPL",
+      "time": "2026-01-02 09:30:00",
+      "rsi": 36.99,
+      "return_pct": -4.0583,
+      "hold_bars": 10,
+      "exit_reason": "hard_max",
+      "vix": NaN,
+      "streak": 5
+    },
+    {
+      "ticker": "AMZN",
+      "time": "2026-01-02 09:30:00",
+      "rsi": 39.07,
+      "return_pct": 3.107,
+      "hold_bars": 2,
+      "exit_reason": "ema21_touch",
+      "vix": NaN,
+      "streak": 3
+    },
+    {
+      "ticker": "COST",
+      "time": "2026-01-02 09:30:00",
+      "rsi": 38.83,
+      "return_pct": 2.4375,
+      "hold_bars": 2,
+      "exit_reason": "ema21_touch",
+      "vix": NaN,
+      "streak": 3
+    },
+    {
+      "ticker": "META",
+      "time": "2026-03-09 09:30:00",
+      "rsi": 39.27,
+      "return_pct": 3.9766,
+      "hold_bars": 2,
+      "exit_reason": "ema21_touch",
+      "vix": 29.49,
+      "streak": 3
+    },
+    {
+      "ticker": "TSLA",
+      "time": "2026-03-09 09:30:00",
+      "rsi": 38.62,
+      "return_pct": 3.6863,
+      "hold_bars": 2,
+      "exit_reason": "ema21_touch",
+      "vix": 29.49,
+      "streak": 3
+    },
+    {
+      "ticker": "MSFT",
+      "time": "2026-03-13 13:30:00",
+      "rsi": 39.21,
+      "return_pct": -0.9984,
+      "hold_bars": 6,
+      "exit_reason": "data_end",
+      "vix": 27.29,
+      "streak": 4
+    }
+  ],
+  "marginal_vs_core": {
+    "core_n": 45,
+    "core_mean_pct": 7.34381790443686,
+    "marginal_n": 21,
+    "marginal_mean_pct": 4.329713992780085,
+    "mann_whitney_p": 0.07131463436224172
+  }
+}
