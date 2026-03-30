@@ -1,0 +1,326 @@
+{
+  "generated_at": "2026-03-30T19:41:56.927579Z",
+  "data_range": {
+    "start": "2025-02-03",
+    "end": "2026-03-18"
+  },
+  "data_span_years": 1.12,
+  "walk_forward_60_40": {
+    "split_date": "2025-10-03",
+    "results": {
+      "30": {
+        "train": {
+          "n": 22,
+          "mean_pct": 8.0156,
+          "median_pct": 8.0824,
+          "wr_pct": 95.4545,
+          "profit_factor": 70.6874,
+          "sharpe": 1.333,
+          "worst_pct": -2.5305,
+          "p_value": 0.0
+        },
+        "test": {
+          "n": 9,
+          "mean_pct": 6.5312,
+          "median_pct": 8.2783,
+          "wr_pct": 88.8889,
+          "profit_factor": 33.8812,
+          "sharpe": 1.3231,
+          "worst_pct": -1.7877,
+          "p_value": 0.0041
+        },
+        "degradation": 0.9926
+      },
+      "33": {
+        "train": {
+          "n": 27,
+          "mean_pct": 8.3924,
+          "median_pct": 8.7663,
+          "wr_pct": 96.2963,
+          "profit_factor": 90.5467,
+          "sharpe": 1.42,
+          "worst_pct": -2.5305,
+          "p_value": 0.0
+        },
+        "test": {
+          "n": 12,
+          "mean_pct": 5.591,
+          "median_pct": 4.0963,
+          "wr_pct": 91.6667,
+          "profit_factor": 38.5303,
+          "sharpe": 1.2257,
+          "worst_pct": -1.7877,
+          "p_value": 0.0014
+        },
+        "degradation": 0.8632
+      },
+      "35": {
+        "train": {
+          "n": 28,
+          "mean_pct": 8.6936,
+          "median_pct": 9.0027,
+          "wr_pct": 96.4286,
+          "profit_factor": 97.1957,
+          "sharpe": 1.4454,
+          "worst_pct": -2.5305,
+          "p_value": 0.0
+        },
+        "test": {
+          "n": 17,
+          "mean_pct": 5.1207,
+          "median_pct": 4.1141,
+          "wr_pct": 94.1176,
+          "profit_factor": 49.695,
+          "sharpe": 1.2612,
+          "worst_pct": -1.7877,
+          "p_value": 0.0001
+        },
+        "degradation": 0.8726
+      },
+      "36": {
+        "train": {
+          "n": 30,
+          "mean_pct": 8.2678,
+          "median_pct": 8.2028,
+          "wr_pct": 96.6667,
+          "profit_factor": 99.0183,
+          "sharpe": 1.4468,
+          "worst_pct": -2.5305,
+          "p_value": 0.0
+        },
+        "test": {
+          "n": 21,
+          "mean_pct": 5.0648,
+          "median_pct": 4.3226,
+          "wr_pct": 95.2381,
+          "profit_factor": 60.4971,
+          "sharpe": 1.3509,
+          "worst_pct": -1.7877,
+          "p_value": 0.0
+        },
+        "degradation": 0.9337
+      },
+      "37": {
+        "train": {
+          "n": 34,
+          "mean_pct": 8.0051,
+          "median_pct": 7.5188,
+          "wr_pct": 94.1176,
+          "profit_factor": 41.8189,
+          "sharpe": 1.3357,
+          "worst_pct": -4.1374,
+          "p_value": 0.0
+        },
+        "test": {
+          "n": 22,
+          "mean_pct": 4.6502,
+          "median_pct": 4.2184,
+          "wr_pct": 90.9091,
+          "profit_factor": 18.4999,
+          "sharpe": 1.1222,
+          "worst_pct": -4.0583,
+          "p_value": 0.0
+        },
+        "degradation": 0.8402
+      },
+      "38": {
+        "train": {
+          "n": 35,
+          "mean_pct": 7.9972,
+          "median_pct": 7.6392,
+          "wr_pct": 94.2857,
+          "profit_factor": 42.978,
+          "sharpe": 1.353,
+          "worst_pct": -4.1374,
+          "p_value": 0.0
+        },
+        "test": {
+          "n": 23,
+          "mean_pct": 4.4494,
+          "median_pct": 4.1141,
+          "wr_pct": 91.3043,
+          "profit_factor": 18.5056,
+          "sharpe": 1.0692,
+          "worst_pct": -4.0583,
+          "p_value": 0.0
+        },
+        "degradation": 0.7902
+      },
+      "40": {
+        "train": {
+          "n": 36,
+          "mean_pct": 7.7826,
+          "median_pct": 7.5188,
+          "wr_pct": 94.4444,
+          "profit_factor": 43.0183,
+          "sharpe": 1.3554,
+          "worst_pct": -4.1374,
+          "p_value": 0.0
+        },
+        "test": {
+          "n": 28,
+          "mean_pct": 4.0909,
+          "median_pct": 3.8314,
+          "wr_pct": 89.2857,
+          "profit_factor": 17.7358,
+          "sharpe": 1.0451,
+          "worst_pct": -4.0583,
+          "p_value": 0.0
+        },
+        "degradation": 0.7711
+      },
+      "45": {
+        "train": {
+          "n": 42,
+          "mean_pct": 6.8408,
+          "median_pct": 6.0334,
+          "wr_pct": 92.8571,
+          "profit_factor": 18.1642,
+          "sharpe": 1.1039,
+          "worst_pct": -10.0712,
+          "p_value": 0.0
+        },
+        "test": {
+          "n": 37,
+          "mean_pct": 3.4129,
+          "median_pct": 3.107,
+          "wr_pct": 86.4865,
+          "profit_factor": 12.7466,
+          "sharpe": 0.918,
+          "worst_pct": -4.0583,
+          "p_value": 0.0
+        },
+        "degradation": 0.8316
+      },
+      "None": {
+        "train": {
+          "n": 48,
+          "mean_pct": 6.0639,
+          "median_pct": 4.2156,
+          "wr_pct": 93.75,
+          "profit_factor": 18.3884,
+          "sharpe": 1.0033,
+          "worst_pct": -10.0712,
+          "p_value": 0.0
+        },
+        "test": {
+          "n": 46,
+          "mean_pct": 2.914,
+          "median_pct": 2.399,
+          "wr_pct": 78.2609,
+          "profit_factor": 8.641,
+          "sharpe": 0.7378,
+          "worst_pct": -5.0472,
+          "p_value": 0.0
+        },
+        "degradation": 0.7353
+      }
+    }
+  },
+  "rolling_walk_forward": null,
+  "rolling_walk_forward_note": "Skipped: data span 1.1y < 3y minimum",
+  "n_sensitivity": [
+    {
+      "rsi_gate": 30,
+      "n": 31,
+      "mean_pct": 7.5846,
+      "std_pct": 5.6812,
+      "ci_95_lower": 5.5847,
+      "ci_95_upper": 9.5845,
+      "p_value": 0.0,
+      "sufficient_n": true,
+      "significant": true
+    },
+    {
+      "rsi_gate": 33,
+      "n": 39,
+      "mean_pct": 7.5305,
+      "std_pct": 5.6249,
+      "ci_95_lower": 5.7651,
+      "ci_95_upper": 9.2958,
+      "p_value": 0.0,
+      "sufficient_n": true,
+      "significant": true
+    },
+    {
+      "rsi_gate": 35,
+      "n": 45,
+      "mean_pct": 7.3438,
+      "std_pct": 5.5914,
+      "ci_95_lower": 5.7101,
+      "ci_95_upper": 8.9775,
+      "p_value": 0.0,
+      "sufficient_n": true,
+      "significant": true
+    },
+    {
+      "rsi_gate": 36,
+      "n": 51,
+      "mean_pct": 6.9489,
+      "std_pct": 5.2056,
+      "ci_95_lower": 5.5202,
+      "ci_95_upper": 8.3776,
+      "p_value": 0.0,
+      "sufficient_n": true,
+      "significant": true
+    },
+    {
+      "rsi_gate": 37,
+      "n": 56,
+      "mean_pct": 6.6871,
+      "std_pct": 5.5536,
+      "ci_95_lower": 5.2325,
+      "ci_95_upper": 8.1417,
+      "p_value": 0.0,
+      "sufficient_n": true,
+      "significant": true
+    },
+    {
+      "rsi_gate": 38,
+      "n": 58,
+      "mean_pct": 6.5904,
+      "std_pct": 5.5305,
+      "ci_95_lower": 5.167,
+      "ci_95_upper": 8.0137,
+      "p_value": 0.0,
+      "sufficient_n": true,
+      "significant": true
+    },
+    {
+      "rsi_gate": 40,
+      "n": 64,
+      "mean_pct": 6.1675,
+      "std_pct": 5.3188,
+      "ci_95_lower": 4.8644,
+      "ci_95_upper": 7.4706,
+      "p_value": 0.0,
+      "sufficient_n": true,
+      "significant": true
+    },
+    {
+      "rsi_gate": 45,
+      "n": 79,
+      "mean_pct": 5.2353,
+      "std_pct": 5.4338,
+      "ci_95_lower": 4.037,
+      "ci_95_upper": 6.4336,
+      "p_value": 0.0,
+      "sufficient_n": true,
+      "significant": true
+    },
+    {
+      "rsi_gate": null,
+      "n": 94,
+      "mean_pct": 4.5224,
+      "std_pct": 5.3399,
+      "ci_95_lower": 3.4429,
+      "ci_95_upper": 5.602,
+      "p_value": 0.0,
+      "sufficient_n": true,
+      "significant": true
+    }
+  ],
+  "robustness_pattern": "plateau",
+  "recommendation": "RAISE_37",
+  "evidence_summary": "RAISE to RSI < 37. Passes all criteria: Sharpe retention >=80%, WF stable, marginal trades positive with N>=10, p<0.01. Requires external DR validation before engine parameter change (S44-FU2 principle)."
+}
