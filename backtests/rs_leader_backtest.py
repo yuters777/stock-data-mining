@@ -1,12 +1,20 @@
 """
-RS Leader Pullback Backtest — Part 1: Data Preparation (FRESH START).
+RS Leader Pullback Backtest — Data Preparation + Signal Detection + Baseline.
 
-Prepares data infrastructure for the RS Leader Pullback strategy:
+Strategy: Buy RS leaders pulling back to EMA support in low-VIX regimes.
+
+Data prep:
   - 4H bars with EMA9/EMA21 for equity tickers (excludes SPY, VIXY, BTC, ETH)
   - Daily VIX from FRED VIXCLS (backtester/data/vix_daily.csv)
   - Daily relative-strength rankings (20-day returns, top 30% = leaders)
   - 60-day rolling high proximity
   - Earnings calendar for exclusion
+
+Signal detection:
+  - Filters: VIX<20, RS leader, near 60d high, EMA9>EMA21, no earnings
+  - Pullback: 1-2 consecutive 4H bars with close<open, all above EMA21
+  - Bounce entry: next 4H bar closes above EMA9
+  - Exit: EMA9 break, EMA21 break (stop), or hard max 8 bars
 
 VIX SOURCE: backtester/data/vix_daily.csv (FRED VIXCLS spot daily close).
             DO NOT use VIXY. DO NOT derive VIX from VIXY M5 bars.
@@ -18,7 +26,8 @@ Reads:
 
 Produces:
   - backtest_output/rs_leader_prepared_data.pkl
-  - Console output with data prep summary
+  - backtest_output/rs_leader_trades.csv
+  - Console output with data prep summary and baseline results
 
 Usage:
     python backtests/rs_leader_backtest.py
@@ -44,12 +53,37 @@ _VIX_CSV = _REPO_ROOT / "backtester" / "data" / "vix_daily.csv"
 _EARNINGS_CSV = _REPO_ROOT / "backtester" / "data" / "fmp_earnings.csv"
 _OUTPUT_DIR = _REPO_ROOT / "backtest_output"
 _OUTPUT_PKL = _OUTPUT_DIR / "rs_leader_prepared_data.pkl"
+_TRADES_CSV = _OUTPUT_DIR / "rs_leader_trades.csv"
 
 # Tickers to exclude from equity universe
 _EXCLUDE_TICKERS = {"SPY", "VIXY", "BTC", "ETH", "BTC_crypto", "ETH_crypto"}
 
 # Warmup: skip first 60 trading days
 _WARMUP_DAYS = 60
+
+# --- Default baseline parameters ---
+_VIX_THRESHOLD = 20        # FRED VIXCLS, NOT VIXY
+_RS_PERCENTILE = 0.30      # top 30%
+_RS_LOOKBACK = 20          # trading days
+_NEAR_HIGH_PCT = 0.05      # within 5% of 60d high
+_MAX_BARS = 8              # hard max hold (8 4H bars ≈ 4 trading days)
+_PULLBACK_MAX = 2          # max consecutive pullback bars
+
+# --- Sector mapping ---
+SECTORS = {
+    "mega_tech": ["AAPL", "MSFT", "GOOGL", "AMZN", "META", "NVDA"],
+    "growth_semi": ["TSLA", "AMD", "SMCI", "PLTR", "AVGO", "ARM", "TSM", "MU", "INTC"],
+    "crypto_proxy": ["COIN", "MSTR", "MARA"],
+    "finance": ["C", "GS", "V", "BA", "JPM"],
+    "china_adr": ["BABA", "JD", "BIDU"],
+    "consumer": ["COST"],
+}
+
+def _ticker_to_sector(ticker: str) -> str:
+    for sector, tickers in SECTORS.items():
+        if ticker in tickers:
+            return sector
+    return "other"
 
 
 # ---------------------------------------------------------------------------
@@ -459,6 +493,344 @@ def print_summary(bars_4h, equity_tickers, vix_daily, rs_rankings,
 
 
 # ---------------------------------------------------------------------------
+# Part B: Signal Detection + Trade Simulation
+# ---------------------------------------------------------------------------
+
+def _build_vix_by_date(vix_daily: dict) -> dict:
+    """Convert VIX dict keys from string to datetime.date."""
+    vix_by_date = {}
+    for k, v in vix_daily.items():
+        if isinstance(k, str):
+            vix_by_date[datetime.date.fromisoformat(k)] = v
+        else:
+            vix_by_date[k] = v
+    return vix_by_date
+
+
+def _get_prior_day_vix(day, trading_days: list, vix_by_date: dict):
+    """Get VIX close for the trading day before `day`."""
+    idx = None
+    for i, td in enumerate(trading_days):
+        if td == day:
+            idx = i
+            break
+    if idx is None or idx == 0:
+        return None
+    prev_day = trading_days[idx - 1]
+    return vix_by_date.get(prev_day)
+
+
+def detect_signals_and_trade(bars_4h, equity_tickers, vix_daily, rs_rankings,
+                             daily_highs, gate_up, earnings_exclusions):
+    """Detect pullback signals and simulate trades.
+
+    Signal conditions (ALL must be true on the pullback day):
+      1. Prior-day VIX < 20 (FRED VIXCLS)
+      2. Ticker is RS leader (top 30%)
+      3. Close within 5% of 60d high
+      4. EMA9 > EMA21 (gate_UP)
+      5. No earnings today or tomorrow
+
+    Pullback: 1-2 consecutive 4H bars with close < open, all closing above EMA21.
+    Bounce entry: next 4H bar closes above EMA9 → ENTRY at that close.
+
+    Exit (first to trigger):
+      1. EMA9 break: 4H close < EMA9
+      2. EMA21 break: 4H close < EMA21 (stop)
+      3. Hard max: 8 4H bars
+
+    Returns list of trade dicts.
+    """
+    vix_by_date = _build_vix_by_date(vix_daily)
+
+    # Build per-ticker bar sequences (sorted chronologically)
+    ticker_bars = {}
+    for ticker in equity_tickers:
+        t = bars_4h[bars_4h["Ticker"] == ticker].sort_values(
+            ["trading_day", "bar_num"]).reset_index(drop=True)
+        ticker_bars[ticker] = t
+
+    # All trading days (sorted)
+    all_trading_days = sorted(bars_4h["trading_day"].unique())
+
+    # Build earnings exclusion set with next-day logic:
+    # Exclude earnings day + day before (already in earnings_exclusions).
+    # We also need to check "no earnings tomorrow" — add (ticker, day_before_earnings).
+    # The existing set already has day_before, so we just check membership.
+    # For "no earnings today or tomorrow", we check both (ticker, day) and
+    # look for (ticker, next_day) in the raw earnings dates.
+    raw_earnings_dates = set()
+    if _EARNINGS_CSV.exists():
+        edf = pd.read_csv(_EARNINGS_CSV)
+        for _, row in edf.iterrows():
+            try:
+                edate = datetime.date.fromisoformat(str(row["earnings_date"]))
+                raw_earnings_dates.add((row["ticker"], edate))
+            except (ValueError, TypeError):
+                continue
+
+    trades = []
+    # Track active trade end bar index per ticker to prevent overlaps
+    ticker_trade_end = {}  # {ticker: last_bar_index_of_active_trade}
+
+    for ticker in equity_tickers:
+        t_bars = ticker_bars[ticker]
+        n_bars = len(t_bars)
+        if n_bars < _WARMUP_DAYS * 2 + 5:
+            continue
+
+        for i in range(1, n_bars):
+            # Skip if still in an active trade for this ticker
+            if ticker in ticker_trade_end and i <= ticker_trade_end[ticker]:
+                continue
+
+            bar = t_bars.iloc[i]
+            day = bar["trading_day"]
+
+            # Need valid EMAs
+            if pd.isna(bar["ema9"]) or pd.isna(bar["ema21"]):
+                continue
+
+            # --- Filter 1: Prior-day VIX < threshold ---
+            prior_vix = _get_prior_day_vix(day, all_trading_days, vix_by_date)
+            if prior_vix is None or prior_vix >= _VIX_THRESHOLD:
+                continue
+
+            # --- Filter 2: RS leader ---
+            rs_info = rs_rankings.get(day, {}).get(ticker)
+            if rs_info is None or not rs_info["is_leader"]:
+                continue
+
+            # --- Filter 3: Near 60d high ---
+            high_info = daily_highs.get(ticker, {}).get(day)
+            if high_info is None or not high_info["near_high"]:
+                continue
+
+            # --- Filter 4: gate_UP (EMA9 > EMA21) ---
+            if not gate_up.get(ticker, {}).get(day, False):
+                continue
+
+            # --- Filter 5: No earnings today or tomorrow ---
+            if (ticker, day) in earnings_exclusions:
+                continue
+            # Check if tomorrow has earnings
+            day_idx_in_all = None
+            for j, td in enumerate(all_trading_days):
+                if td == day:
+                    day_idx_in_all = j
+                    break
+            if day_idx_in_all is not None and day_idx_in_all + 1 < len(all_trading_days):
+                next_day = all_trading_days[day_idx_in_all + 1]
+                if (ticker, next_day) in raw_earnings_dates:
+                    continue
+
+            # --- Pullback detection: close < open, close > EMA21 ---
+            if bar["Close"] >= bar["Open"]:
+                continue
+            if bar["Close"] <= bar["ema21"]:
+                continue
+
+            # Check for 1-2 bar pullback
+            pullback_bars = [i]
+            # Check if prior bar was also a pullback bar
+            if i >= 2:
+                prev_bar = t_bars.iloc[i - 1]
+                if (pd.notna(prev_bar["ema21"]) and
+                        prev_bar["Close"] < prev_bar["Open"] and
+                        prev_bar["Close"] > prev_bar["ema21"]):
+                    pullback_bars = [i - 1, i]
+
+            # The bar before the pullback should NOT be a pullback bar
+            # (otherwise we'd be in a longer downtrend, not a brief pullback)
+            first_pb = pullback_bars[0]
+            if first_pb >= 1:
+                pre_pb = t_bars.iloc[first_pb - 1]
+                if (pd.notna(pre_pb["ema21"]) and
+                        pre_pb["Close"] < pre_pb["Open"] and
+                        pre_pb["Close"] > pre_pb["ema21"]):
+                    # This is bar 3+ of a pullback; skip
+                    if len(pullback_bars) >= _PULLBACK_MAX:
+                        continue
+
+            # --- Bounce detection: next bar closes above EMA9 ---
+            bounce_idx = i + 1
+            if bounce_idx >= n_bars:
+                continue
+            bounce_bar = t_bars.iloc[bounce_idx]
+            if pd.isna(bounce_bar["ema9"]):
+                continue
+            if bounce_bar["Close"] <= bounce_bar["ema9"]:
+                continue
+
+            # ENTRY
+            entry_price = bounce_bar["Close"]
+            entry_day = bounce_bar["trading_day"]
+            entry_bar_num = bounce_bar["bar_num"]
+            pullback_depth = len(pullback_bars)
+
+            # --- Trade management: exit logic ---
+            exit_price = None
+            exit_reason = None
+            exit_day = None
+            exit_bar_num = None
+            bars_held = 0
+
+            for k in range(bounce_idx + 1, min(bounce_idx + 1 + _MAX_BARS, n_bars)):
+                hold_bar = t_bars.iloc[k]
+                bars_held += 1
+
+                if pd.isna(hold_bar["ema9"]) or pd.isna(hold_bar["ema21"]):
+                    continue
+
+                # Exit check: EMA21 break (stop) — check first (worse)
+                if hold_bar["Close"] < hold_bar["ema21"]:
+                    exit_price = hold_bar["Close"]
+                    exit_reason = "EMA21_BREAK"
+                    exit_day = hold_bar["trading_day"]
+                    exit_bar_num = hold_bar["bar_num"]
+                    ticker_trade_end[ticker] = k
+                    break
+
+                # Exit check: EMA9 break
+                if hold_bar["Close"] < hold_bar["ema9"]:
+                    exit_price = hold_bar["Close"]
+                    exit_reason = "EMA9_BREAK"
+                    exit_day = hold_bar["trading_day"]
+                    exit_bar_num = hold_bar["bar_num"]
+                    ticker_trade_end[ticker] = k
+                    break
+
+            # Hard max exit
+            if exit_price is None and bars_held > 0:
+                last_k = min(bounce_idx + _MAX_BARS, n_bars - 1)
+                last_bar = t_bars.iloc[last_k]
+                exit_price = last_bar["Close"]
+                exit_reason = "HARD_MAX"
+                exit_day = last_bar["trading_day"]
+                exit_bar_num = last_bar["bar_num"]
+                ticker_trade_end[ticker] = last_k
+
+            if exit_price is None:
+                continue
+
+            return_pct = (exit_price - entry_price) / entry_price * 100
+            rs_rank = rs_info["rs_rank"]
+
+            trades.append({
+                "ticker": ticker,
+                "sector": _ticker_to_sector(ticker),
+                "entry_day": entry_day,
+                "entry_bar": entry_bar_num,
+                "entry_price": round(entry_price, 4),
+                "exit_day": exit_day,
+                "exit_bar": exit_bar_num,
+                "exit_price": round(exit_price, 4),
+                "return_pct": round(return_pct, 4),
+                "bars_held": bars_held,
+                "exit_reason": exit_reason,
+                "pullback_depth": pullback_depth,
+                "rs_rank": rs_rank,
+                "vix_at_entry": round(prior_vix, 2),
+            })
+
+            # Mark trade end to prevent overlap
+            ticker_trade_end[ticker] = max(
+                ticker_trade_end.get(ticker, 0),
+                bounce_idx + bars_held
+            )
+
+    return trades
+
+
+def print_baseline_results(trades: list):
+    """Print TEST 0 baseline results."""
+    print("\n" + "=" * 60)
+    print(f"=== TEST 0: RS Leader Baseline (VIX<{_VIX_THRESHOLD}, FRED VIXCLS) ===")
+    print("=" * 60)
+
+    n = len(trades)
+    if n == 0:
+        print("N trades: 0")
+        print("VERDICT: NO_EDGE (no trades generated)")
+        return
+
+    returns = [t["return_pct"] for t in trades]
+    mean_ret = np.mean(returns)
+    wins = [r for r in returns if r > 0]
+    losses = [r for r in returns if r <= 0]
+    win_rate = len(wins) / n * 100
+    avg_hold = np.mean([t["bars_held"] for t in trades])
+
+    gross_profit = sum(wins) if wins else 0
+    gross_loss = abs(sum(losses)) if losses else 0.001
+    profit_factor = gross_profit / gross_loss
+
+    print(f"N trades: {n}")
+    print(f"Mean return: {mean_ret:.2f}%")
+    print(f"Win rate: {win_rate:.1f}%")
+    print(f"Profit factor: {profit_factor:.2f}")
+    print(f"Avg hold: {avg_hold:.1f} bars")
+
+    # Exit reasons
+    print(f"\nExit reasons:")
+    exit_counts = {}
+    for t in trades:
+        exit_counts[t["exit_reason"]] = exit_counts.get(t["exit_reason"], 0) + 1
+    for reason in ["EMA9_BREAK", "EMA21_BREAK", "HARD_MAX"]:
+        cnt = exit_counts.get(reason, 0)
+        pct = cnt / n * 100
+        print(f"  {reason}: {cnt} ({pct:.1f}%)")
+
+    # By sector
+    print(f"\nBy sector:")
+    sector_trades = {}
+    for t in trades:
+        sector_trades.setdefault(t["sector"], []).append(t)
+    for sector in ["mega_tech", "growth_semi", "finance", "china_adr",
+                    "crypto_proxy", "consumer", "other"]:
+        st = sector_trades.get(sector, [])
+        if not st:
+            continue
+        sr = [t["return_pct"] for t in st]
+        sw = sum(1 for r in sr if r > 0) / len(sr) * 100
+        print(f"  {sector}: N={len(st)}, mean={np.mean(sr):.2f}%, WR={sw:.1f}%")
+
+    # By RS rank
+    print(f"\nBy RS rank:")
+    top3 = [t for t in trades if t["rs_rank"] <= 3]
+    top4p = [t for t in trades if t["rs_rank"] > 3]
+    if top3:
+        r3 = [t["return_pct"] for t in top3]
+        w3 = sum(1 for r in r3 if r > 0) / len(r3) * 100
+        print(f"  Top 3: N={len(top3)}, mean={np.mean(r3):.2f}%, WR={w3:.1f}%")
+    if top4p:
+        r4 = [t["return_pct"] for t in top4p]
+        w4 = sum(1 for r in r4 if r > 0) / len(r4) * 100
+        print(f"  Top 4+: N={len(top4p)}, mean={np.mean(r4):.2f}%, WR={w4:.1f}%")
+
+    # By pullback depth
+    print(f"\nBy pullback depth:")
+    for depth in [1, 2]:
+        dt = [t for t in trades if t["pullback_depth"] == depth]
+        if not dt:
+            continue
+        dr = [t["return_pct"] for t in dt]
+        dw = sum(1 for r in dr if r > 0) / len(dr) * 100
+        print(f"  {depth} bar{'s' if depth > 1 else ''}: N={len(dt)}, "
+              f"mean={np.mean(dr):.2f}%, WR={dw:.1f}%")
+
+    # Verdict
+    if mean_ret > 0.3 and win_rate > 55 and profit_factor > 1.3:
+        verdict = "PROMISING"
+    elif mean_ret > 0 and win_rate > 50:
+        verdict = "MARGINAL"
+    else:
+        verdict = "NO_EDGE"
+    print(f"\nVERDICT: {verdict}")
+    print("=" * 60)
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 
@@ -519,9 +891,30 @@ def main():
 
     with open(_OUTPUT_PKL, "wb") as f:
         pickle.dump(prepared_data, f)
-
     print(f"\nPrepared data saved to: {_OUTPUT_PKL}")
-    print("Data prep complete. Ready for Part 2 (signal detection).")
+
+    # ---------------------------------------------------------------
+    # Part B: Signal Detection + Baseline
+    # ---------------------------------------------------------------
+    print("\n" + "=" * 60)
+    print("Part B: Signal Detection + Trade Simulation")
+    print("=" * 60)
+
+    trades = detect_signals_and_trade(
+        bars_4h, equity_tickers, vix_daily, rs_rankings,
+        daily_highs, gate_up, earnings_exclusions,
+    )
+    print(f"\nTotal trades detected: {len(trades)}")
+
+    # Save trades CSV
+    if trades:
+        trades_df = pd.DataFrame(trades)
+        trades_df = trades_df.sort_values(["entry_day", "ticker"]).reset_index(drop=True)
+        trades_df.to_csv(_TRADES_CSV, index=False)
+        print(f"Trades saved to: {_TRADES_CSV}")
+
+    # Print baseline results
+    print_baseline_results(trades)
 
 
 if __name__ == "__main__":
