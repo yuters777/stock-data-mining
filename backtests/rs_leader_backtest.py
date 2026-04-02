@@ -3,13 +3,14 @@ RS Leader Pullback Backtest — Part 1: Data Preparation.
 
 Builds the data infrastructure for the RS Leader Pullback strategy:
   - 4H bars with EMA9/EMA21 for 27 equity tickers
-  - Daily VIX proxy from VIXY
+  - Daily VIX data from FRED VIXCLS (backtester/data/vix_daily.csv)
   - Daily relative-strength rankings (20-day returns, top 30% = leaders)
   - 60-day rolling high for each ticker
   - Earnings calendar for exclusion zones
 
 Reads:
   - Fetched_Data/{TICKER}_data.csv (M5 OHLCV bars, IST-encoded)
+  - backtester/data/vix_daily.csv (FRED VIXCLS daily close)
   - backtester/data/fmp_earnings.csv
 
 Produces:
@@ -36,6 +37,7 @@ from utils.data_loader import load_m5_regsess
 
 # --- Paths ---
 _EARNINGS_CSV = _REPO_ROOT / "backtester" / "data" / "fmp_earnings.csv"
+_VIX_CSV = _REPO_ROOT / "backtester" / "data" / "vix_daily.csv"
 _OUTPUT_DIR = _REPO_ROOT / "backtest_output"
 _OUTPUT_PKL = _OUTPUT_DIR / "rs_leader_prepared_data.pkl"
 
@@ -142,38 +144,36 @@ def add_emas(ticker_4h):
 
 
 # ---------------------------------------------------------------------------
-# Step 3: Build daily VIX proxy from VIXY
+# Step 3: Load daily VIX data (FRED VIXCLS)
 # ---------------------------------------------------------------------------
 
-def build_vix_proxy():
-    """Build daily VIX proxy from VIXY's last 4H bar close each day."""
-    print("\n--- Step 3: Building daily VIX proxy from VIXY ---")
-    try:
-        m5 = load_m5_regsess("VIXY")
-    except (FileNotFoundError, ValueError) as e:
-        print(f"  ERROR: Could not load VIXY data: {e}")
+def load_vix_daily():
+    """Load daily VIX close from backtester/data/vix_daily.csv (FRED VIXCLS)."""
+    print("\n--- Step 3: Loading daily VIX data (FRED VIXCLS) ---")
+
+    if not _VIX_CSV.exists():
+        print(f"  ERROR: VIX file not found: {_VIX_CSV}")
         return {}
 
-    bars = synthesize_4h_bars(m5)
-    # Daily VIX proxy = last 4H bar close each day
-    # Prefer Bar 2 (afternoon close ~16:00 ET); fall back to Bar 1 if unavailable
-    vix_proxy = {}
-    for day, grp in bars.groupby("trading_day"):
-        last_bar = grp.sort_values("bar_num").iloc[-1]
-        vix_proxy[day] = last_bar["Close"]
+    df = pd.read_csv(_VIX_CSV)
+    df["date"] = pd.to_datetime(df["date"]).dt.date
 
-    vixy_values = list(vix_proxy.values())
-    print(f"  Days with VIXY data: {len(vix_proxy)}")
-    if vixy_values:
-        print(f"  VIXY range: {min(vixy_values):.2f} to {max(vixy_values):.2f}")
+    vix_daily = {}
+    for _, row in df.iterrows():
+        vix_daily[row["date"]] = row["vix_close"]
+
+    vix_values = list(vix_daily.values())
+    print(f"  Days with VIX data: {len(vix_daily)}")
+    if vix_values:
+        print(f"  VIX range: {min(vix_values):.2f} to {max(vix_values):.2f}")
         for thresh in [20, 22, 25]:
-            count = sum(1 for v in vixy_values if v < thresh)
-            pct = count / len(vixy_values) * 100
-            print(f"  Days VIXY < {thresh}: {count} ({pct:.1f}%)")
+            count = sum(1 for v in vix_values if v < thresh)
+            pct = count / len(vix_values) * 100
+            print(f"  Days VIX < {thresh}: {count} ({pct:.1f}%)")
             if thresh == 20 and count < 50:
                 print(f"  *** NOTE: VIX<20 regime rare in this period ({count} days)")
 
-    return vix_proxy
+    return vix_daily
 
 
 # ---------------------------------------------------------------------------
@@ -353,7 +353,7 @@ def load_earnings_calendar():
 # Step 7: Print comprehensive data prep summary
 # ---------------------------------------------------------------------------
 
-def print_summary(ticker_4h, vix_proxy, rs_data, high_60d_data, earnings_exclusions):
+def print_summary(ticker_4h, vix_daily, rs_data, high_60d_data, earnings_exclusions):
     """Print comprehensive data prep summary."""
     print("\n" + "=" * 60)
     print("=== RS Leader Data Prep Summary ===")
@@ -373,23 +373,20 @@ def print_summary(ticker_4h, vix_proxy, rs_data, high_60d_data, earnings_exclusi
     print(f"  Total 4H bars: {total_bars}")
     print(f"  Bars after EMA warmup: {bars_after_warmup}")
 
-    # VIX proxy
-    print(f"\nVIX Proxy (VIXY daily close):")
-    if vix_proxy:
-        vixy_values = list(vix_proxy.values())
-        print(f"  Days with VIXY data: {len(vix_proxy)}")
-        print(f"  VIXY range: {min(vixy_values):.2f} to {max(vixy_values):.2f}")
+    # VIX (FRED VIXCLS)
+    print(f"\nVIX (FRED VIXCLS daily close):")
+    if vix_daily:
+        vix_values = list(vix_daily.values())
+        print(f"  Days with VIX data: {len(vix_daily)}")
+        print(f"  VIX range: {min(vix_values):.2f} to {max(vix_values):.2f}")
         for thresh in [20, 22, 25]:
-            count = sum(1 for v in vixy_values if v < thresh)
-            pct = count / len(vixy_values) * 100
-            print(f"  Days VIXY < {thresh}: {count} ({pct:.1f}%)")
-        if sum(1 for v in vixy_values if v < 20) < 50:
+            count = sum(1 for v in vix_values if v < thresh)
+            pct = count / len(vix_values) * 100
+            print(f"  Days VIX < {thresh}: {count} ({pct:.1f}%)")
+        if sum(1 for v in vix_values if v < 20) < 50:
             print(f"  *** NOTE: VIX<20 regime rare in this period")
-        if sum(1 for v in vixy_values if v < 25) < 30:
-            print(f"  *** WARNING: VIXY stays above 25 nearly entire period. "
-                  f"VIX filter thresholds may need adjustment for this dataset.")
     else:
-        print(f"  NO VIXY DATA AVAILABLE")
+        print(f"  NO VIX DATA AVAILABLE")
 
     # Relative Strength
     print(f"\nRelative Strength:")
@@ -465,13 +462,13 @@ def print_summary(ticker_4h, vix_proxy, rs_data, high_60d_data, earnings_exclusi
     print(f"  Unique tickers: {len(no_vix_tickers)}/{len(ticker_4h)}")
 
     # With VIX filter at multiple thresholds
-    for vix_thresh in [22, 25, 30]:
+    for vix_thresh in [20, 22, 25]:
         combined_count = 0
         combined_tickers = set()
-        if vix_proxy and rs_data and high_60d_data:
+        if vix_daily and rs_data and high_60d_data:
             for day in rs_data:
-                vixy_val = vix_proxy.get(day)
-                if vixy_val is None or vixy_val >= vix_thresh:
+                vix_val = vix_daily.get(day)
+                if vix_val is None or vix_val >= vix_thresh:
                     continue
                 day_rs = rs_data[day]
                 for ticker, rs_info in day_rs.items():
@@ -492,13 +489,13 @@ def print_summary(ticker_4h, vix_proxy, rs_data, high_60d_data, earnings_exclusi
 # Step 8: Save prepared data
 # ---------------------------------------------------------------------------
 
-def save_data(ticker_4h, vix_proxy, rs_data, high_60d_data, earnings_exclusions):
+def save_data(ticker_4h, vix_daily, rs_data, high_60d_data, earnings_exclusions):
     """Save all prepared data to pickle for Part 2."""
     _OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
     data = {
         "ticker_4h": ticker_4h,
-        "vix_proxy": vix_proxy,
+        "vix_daily": vix_daily,
         "rs_data": rs_data,
         "high_60d_data": high_60d_data,
         "earnings_exclusions": earnings_exclusions,
@@ -529,8 +526,8 @@ def main():
     # Step 2: Add EMAs
     ticker_4h = add_emas(ticker_4h)
 
-    # Step 3: VIX proxy
-    vix_proxy = build_vix_proxy()
+    # Step 3: VIX daily (FRED VIXCLS)
+    vix_daily = load_vix_daily()
 
     # Step 4: RS rankings
     rs_data = compute_rs_rankings(ticker_4h)
@@ -542,10 +539,10 @@ def main():
     earnings_exclusions = load_earnings_calendar()
 
     # Step 7: Print summary
-    print_summary(ticker_4h, vix_proxy, rs_data, high_60d_data, earnings_exclusions)
+    print_summary(ticker_4h, vix_daily, rs_data, high_60d_data, earnings_exclusions)
 
     # Step 8: Save
-    save_data(ticker_4h, vix_proxy, rs_data, high_60d_data, earnings_exclusions)
+    save_data(ticker_4h, vix_daily, rs_data, high_60d_data, earnings_exclusions)
 
     print("\n--- Data preparation complete. Ready for Part 2 (signal detection). ---")
 
