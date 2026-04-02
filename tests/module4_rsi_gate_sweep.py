@@ -31,9 +31,9 @@ HARD_MAX_BARS = 10
 RSI_THRESHOLDS = [30, 32, 33, 34, 35, 36, 37, 38, 39, 40, 42, 45, 50, None]
 
 EQUITY_TICKERS = [
-    "AAPL", "AMD", "AMZN", "AVGO", "BA", "BABA", "BIDU", "C", "COIN",
-    "COST", "GOOGL", "GS", "IBIT", "JPM", "MARA", "META", "MSFT", "MU",
-    "NVDA", "PLTR", "SNOW", "TSLA", "TSM", "TXN", "V",
+    "AAPL", "AMD", "AMZN", "ARM", "AVGO", "BA", "BABA", "BIDU", "C",
+    "COIN", "COST", "GOOGL", "GS", "INTC", "JPM", "MARA", "META", "MSFT",
+    "MSTR", "MU", "NVDA", "PLTR", "SMCI", "TSLA", "TSM", "V",
 ]
 
 

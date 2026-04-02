@@ -29,9 +29,9 @@ HARD_MAX_BARS = 10
 WF_THRESHOLDS = [30, 33, 35, 36, 37, 38, 40, 45, None]
 
 EQUITY_TICKERS = [
-    "AAPL", "AMD", "AMZN", "AVGO", "BA", "BABA", "BIDU", "C", "COIN",
-    "COST", "GOOGL", "GS", "IBIT", "JPM", "MARA", "META", "MSFT", "MU",
-    "NVDA", "PLTR", "SNOW", "TSLA", "TSM", "TXN", "V",
+    "AAPL", "AMD", "AMZN", "ARM", "AVGO", "BA", "BABA", "BIDU", "C",
+    "COIN", "COST", "GOOGL", "GS", "INTC", "JPM", "MARA", "META", "MSFT",
+    "MSTR", "MU", "NVDA", "PLTR", "SMCI", "TSLA", "TSM", "V",
 ]
 
 # ── Indicator functions (copied from Part 1) ────────────────────────────
