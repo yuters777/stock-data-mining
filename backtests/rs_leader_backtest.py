@@ -19,13 +19,15 @@ Produces:
   - backtest_output/rs_leader_prepared_data.pkl
 
 Usage:
-    python backtests/rs_leader_backtest.py            # baseline only
-    python backtests/rs_leader_backtest.py --sweep     # baseline + parameter sweeps
+    python backtests/rs_leader_backtest.py                # baseline only
+    python backtests/rs_leader_backtest.py --sweep        # baseline + parameter sweeps
+    python backtests/rs_leader_backtest.py --robustness   # baseline + robustness checks
 """
 
 import argparse
 import datetime
 import pickle
+import random
 import sys
 from pathlib import Path
 
@@ -989,6 +991,373 @@ def run_sweep(ticker_4h, ticker_trading_days, equity_tickers,
 
 
 # ---------------------------------------------------------------------------
+# Best Config from Sweeps (Combo C)
+# ---------------------------------------------------------------------------
+
+BEST_CONFIG = {
+    "vix_threshold": 18,
+    "rs_pct": 10,
+    "pullback_max": 1,
+    "max_bars": 20,
+    "exit_strategy": "max_only",
+    "near_high_pct": 5,
+}
+
+SECTORS = {
+    "mega_tech": ["AAPL", "MSFT", "GOOGL", "AMZN", "META", "NVDA"],
+    "growth_semi": ["TSLA", "AMD", "SMCI", "PLTR", "AVGO", "ARM", "TSM", "MU", "INTC"],
+    "crypto_proxy": ["COIN", "MSTR", "MARA"],
+    "finance": ["C", "GS", "V", "BA", "JPM"],
+    "china_adr": ["BABA", "JD", "BIDU"],
+    "consumer": ["COST"],
+}
+
+
+# ---------------------------------------------------------------------------
+# Robustness Checks
+# ---------------------------------------------------------------------------
+
+def run_robustness(ticker_4h, ticker_trading_days, equity_tickers,
+                   vix_data, rs_rankings, daily_highs, earnings_exclusions):
+    """Run robustness checks R1-R5 on the best config, then print final verdict."""
+
+    cfg = BEST_CONFIG
+    cfg_str = (f"VIX<{cfg['vix_threshold']} RS{cfg['rs_pct']}% "
+               f"PB{cfg['pullback_max']} MB{cfg['max_bars']} {cfg['exit_strategy']}")
+
+    print("\n" + "=" * 60)
+    print("=== Robustness Checks on Best Config ===")
+    print(f"=== {cfg_str} ===")
+    print("=" * 60)
+
+    # Run best config to get baseline trades
+    best_trades = run_rs_backtest(
+        ticker_4h, ticker_trading_days, equity_tickers,
+        vix_data, rs_rankings, daily_highs, earnings_exclusions,
+        **cfg)
+    best_m = compute_metrics(best_trades)
+    best_pf = best_m["pf"]
+
+    print(f"\nBest config: N={best_m['N']}, Mean={best_m['mean_pct']:.3f}%, "
+          f"WR={best_m['wr_pct']:.1f}%, PF={best_pf:.2f}, "
+          f"AvgHold={best_m['avg_hold']:.1f} bars")
+
+    if best_m["N"] == 0:
+        print("\nNo trades — cannot run robustness checks.")
+        return
+
+    # =========================================================
+    # R1: Leave-One-Ticker-Out
+    # =========================================================
+    print("\n" + "#" * 60)
+    print("# R1: Leave-One-Ticker-Out")
+    print("#" * 60)
+
+    # Only test tickers that appear in trades
+    trade_tickers = sorted(set(t["ticker"] for t in best_trades))
+    loto_rows = []
+    for excl in trade_tickers:
+        reduced_tickers = [t for t in equity_tickers if t != excl]
+        trades_excl = run_rs_backtest(
+            ticker_4h, ticker_trading_days, reduced_tickers,
+            vix_data, rs_rankings, daily_highs, earnings_exclusions,
+            **cfg)
+        m = compute_metrics(trades_excl)
+        pf_change = ((m["pf"] - best_pf) / best_pf * 100) if best_pf > 0 else 0
+        loto_rows.append({
+            "ticker": excl, "N": m["N"], "mean_pct": m["mean_pct"],
+            "pf": m["pf"], "pf_change": pf_change,
+        })
+
+    print(f"\n{'Excluded':>10} | {'N':>5} | {'Mean%':>8} | {'PF':>6} | {'PF_Chg%':>8}")
+    print("-" * 50)
+    for row in loto_rows:
+        flag = " ***" if abs(row["pf_change"]) > 20 else ""
+        print(f"{row['ticker']:>10} | {row['N']:>5} | {row['mean_pct']:>8.3f} | "
+              f"{row['pf']:>6.2f} | {row['pf_change']:>+7.1f}%{flag}")
+
+    max_impact_row = max(loto_rows, key=lambda r: abs(r["pf_change"]))
+    loto_max_impact = abs(max_impact_row["pf_change"])
+    print(f"\nMax PF impact: excluding {max_impact_row['ticker']} "
+          f"({max_impact_row['pf_change']:+.1f}%)")
+    if loto_max_impact > 20:
+        print("  *** WARNING: Single ticker moves PF by >20%")
+
+    # =========================================================
+    # R2: Monthly Returns
+    # =========================================================
+    print("\n" + "#" * 60)
+    print("# R2: Monthly Returns")
+    print("#" * 60)
+
+    monthly = {}
+    for t in best_trades:
+        d = t["entry_day"]
+        key = f"{d.year}-{d.month:02d}"
+        monthly.setdefault(key, []).append(t["return_pct"])
+
+    total_pnl = sum(t["return_pct"] for t in best_trades)
+    print(f"\n{'Month':>8} | {'N':>5} | {'Mean%':>8} | {'WR%':>6} | {'Total%':>8} | {'%ofPnL':>7}")
+    print("-" * 58)
+    monthly_max_conc = 0.0
+    for month in sorted(monthly.keys()):
+        rets = monthly[month]
+        n = len(rets)
+        mean = np.mean(rets)
+        wr = sum(1 for r in rets if r > 0) / n * 100
+        total = sum(rets)
+        pct_of_pnl = (total / total_pnl * 100) if total_pnl != 0 else 0
+        flag = " ***" if abs(pct_of_pnl) > 30 else ""
+        print(f"{month:>8} | {n:>5} | {mean:>8.3f} | {wr:>5.1f}% | {total:>8.3f} | {pct_of_pnl:>6.1f}%{flag}")
+        if abs(pct_of_pnl) > monthly_max_conc:
+            monthly_max_conc = abs(pct_of_pnl)
+
+    if monthly_max_conc > 30:
+        print(f"\n  *** WARNING: Single month accounts for {monthly_max_conc:.1f}% of total P&L")
+
+    # =========================================================
+    # R3: Sector Breakdown
+    # =========================================================
+    print("\n" + "#" * 60)
+    print("# R3: Sector Breakdown")
+    print("#" * 60)
+
+    # Map tickers to sectors
+    ticker_to_sector = {}
+    for sector, tickers in SECTORS.items():
+        for t in tickers:
+            ticker_to_sector[t] = sector
+
+    sector_trades = {}
+    for t in best_trades:
+        sector = ticker_to_sector.get(t["ticker"], "other")
+        sector_trades.setdefault(sector, []).append(t)
+
+    print(f"\n{'Sector':>14} | {'N':>5} | {'Mean%':>8} | {'WR%':>6} | {'PF':>6}")
+    print("-" * 50)
+    sector_results = {}
+    for sector in sorted(sector_trades.keys()):
+        trades = sector_trades[sector]
+        m = compute_metrics(trades)
+        sector_results[sector] = m
+        print(f"{sector:>14} | {m['N']:>5} | {m['mean_pct']:>8.3f} | "
+              f"{m['wr_pct']:>5.1f}% | {m['pf']:>6.2f}")
+
+    best_sector = max(sector_results.items(), key=lambda x: x[1]["pf"] if x[1]["N"] > 0 else 0)
+    worst_sector = min(sector_results.items(), key=lambda x: x[1]["pf"] if x[1]["N"] > 0 else float("inf"))
+    print(f"\nBest sector: {best_sector[0]} (PF={best_sector[1]['pf']:.2f})")
+    print(f"Worst sector: {worst_sector[0]} (PF={worst_sector[1]['pf']:.2f})")
+
+    # =========================================================
+    # R4: Random Entry Comparison
+    # =========================================================
+    print("\n" + "#" * 60)
+    print("# R4: Random Entry Comparison (1000 iterations)")
+    print("#" * 60)
+
+    rng = random.Random(42)
+    max_bars = cfg["max_bars"]
+
+    # Collect signal days: days where VIX < threshold AND there are RS leaders
+    vix_thresh = cfg["vix_threshold"]
+    rs_pct = cfg["rs_pct"]
+    if rs_pct != 30:
+        active_rs = compute_rs_rankings(ticker_4h, equity_tickers, rs_pct=rs_pct)
+    else:
+        active_rs = rs_rankings
+
+    signal_day_leaders = {}  # {day: [leader tickers]}
+    for day in sorted(active_rs.keys()):
+        vix_val = vix_data.get(day)
+        if vix_val is None or vix_val >= vix_thresh:
+            continue
+        day_rs = active_rs.get(day, {})
+        leaders = [t for t, info in day_rs.items() if info["is_leader"]
+                   and t in set(equity_tickers)]
+        if leaders:
+            signal_day_leaders[day] = leaders
+
+    signal_days = sorted(signal_day_leaders.keys())
+    n_random_trades = best_m["N"]
+
+    random_pfs = []
+    random_wrs = []
+    for iteration in range(1000):
+        rand_trades = []
+        # Sample n_random_trades (day, ticker) pairs
+        for _ in range(n_random_trades):
+            day = rng.choice(signal_days)
+            ticker = rng.choice(signal_day_leaders[day])
+            bars = ticker_4h.get(ticker)
+            tdays = ticker_trading_days.get(ticker)
+            if bars is None or tdays is None:
+                continue
+
+            # Random entry: bar 1 or bar 2 close
+            day_bars = bars[bars["trading_day"] == day].sort_values("bar_num")
+            if day_bars.empty:
+                continue
+            bar_choice = rng.choice([1, 2])
+            entry_bar = day_bars[day_bars["bar_num"] == bar_choice]
+            if entry_bar.empty:
+                entry_bar = day_bars.iloc[[0]]
+            else:
+                entry_bar = entry_bar.iloc[[0]]
+            entry_price = entry_bar["Close"].iloc[0]
+            if entry_price <= 0 or np.isnan(entry_price):
+                continue
+
+            fwd = get_forward_4h_bars(bars, ticker, day, tdays, max_bars)
+            if not fwd:
+                continue
+            exit_price = fwd[-1]["Close"]
+            ret = (exit_price - entry_price) / entry_price * 100
+            rand_trades.append(ret)
+
+        if not rand_trades:
+            continue
+        wins = sum(1 for r in rand_trades if r > 0)
+        wr = wins / len(rand_trades) * 100
+        gp = sum(r for r in rand_trades if r > 0)
+        gl = abs(sum(r for r in rand_trades if r <= 0))
+        pf = gp / gl if gl > 0 else float("inf")
+        random_pfs.append(pf)
+        random_wrs.append(wr)
+
+    random_pfs.sort()
+    random_wrs.sort()
+    rand_mean_pf = np.mean(random_pfs)
+    rand_mean_wr = np.mean(random_wrs)
+    ci_lo = random_pfs[int(len(random_pfs) * 0.025)]
+    ci_hi = random_pfs[int(len(random_pfs) * 0.975)]
+    beats_random = best_pf > ci_hi
+
+    print(f"\n  Strategy PF: {best_pf:.2f}")
+    print(f"  Random mean PF: {rand_mean_pf:.2f} (95% CI: {ci_lo:.2f} - {ci_hi:.2f})")
+    print(f"  Random mean WR: {rand_mean_wr:.1f}%")
+    if beats_random:
+        print(f"  Strategy PF BEATS random 95% CI upper bound")
+    else:
+        print(f"  Strategy PF within random 95% CI — edge may come from stock selection timing")
+
+    # =========================================================
+    # R5: Win/Loss Distribution
+    # =========================================================
+    print("\n" + "#" * 60)
+    print("# R5: Win/Loss Distribution")
+    print("#" * 60)
+
+    returns = [t["return_pct"] for t in best_trades]
+    buckets = [
+        ("<-5%", lambda r: r < -5),
+        ("-5 to -3%", lambda r: -5 <= r < -3),
+        ("-3 to -1%", lambda r: -3 <= r < -1),
+        ("-1 to 0%", lambda r: -1 <= r < 0),
+        ("0 to 1%", lambda r: 0 <= r < 1),
+        ("1 to 3%", lambda r: 1 <= r < 3),
+        ("3 to 5%", lambda r: 3 <= r < 5),
+        (">5%", lambda r: r >= 5),
+    ]
+
+    print(f"\n{'Bucket':>12} | {'Count':>6} | {'Pct':>6}")
+    print("-" * 32)
+    for label, fn in buckets:
+        count = sum(1 for r in returns if fn(r))
+        pct = count / len(returns) * 100
+        bar = "#" * int(pct / 2)
+        print(f"{label:>12} | {count:>6} | {pct:>5.1f}% {bar}")
+
+    winners = [r for r in returns if r > 0]
+    losers = [r for r in returns if r <= 0]
+    mean_win = np.mean(winners) if winners else 0
+    mean_loss = np.mean(losers) if losers else 0
+    print(f"\n  Mean winner: +{mean_win:.3f}%")
+    print(f"  Mean loser:  {mean_loss:.3f}%")
+    print(f"  Win/Loss ratio: {abs(mean_win / mean_loss):.2f}" if mean_loss != 0 else "  Win/Loss ratio: inf")
+    print(f"  Largest win:  +{max(returns):.3f}%")
+    print(f"  Largest loss: {min(returns):.3f}%")
+
+    # Compute max drawdown (cumulative)
+    cum = np.cumsum(returns)
+    peak = np.maximum.accumulate(cum)
+    dd = cum - peak
+    max_dd = dd.min()
+
+    # p-value via t-test
+    p_value = None
+    try:
+        from scipy import stats
+        t_stat, p_value = stats.ttest_1samp(returns, 0)
+    except ImportError:
+        pass
+
+    # =========================================================
+    # Save trades CSV
+    # =========================================================
+    _OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    csv_path = _OUTPUT_DIR / "rs_leader_sweep_trades.csv"
+    trades_df = pd.DataFrame(best_trades)
+    trades_df.to_csv(csv_path, index=False)
+    print(f"\nTrades saved to: {csv_path}")
+
+    # =========================================================
+    # FINAL VERDICT
+    # =========================================================
+    print("\n" + "=" * 60)
+    print("=== RS Leader FINAL Verdict ===")
+    print("=" * 60)
+
+    print(f"\nBest config: {cfg_str}")
+    print(f"  N={best_m['N']}, Mean={best_m['mean_pct']:.3f}%, "
+          f"WR={best_m['wr_pct']:.1f}%, PF={best_pf:.2f}, "
+          f"MaxDD={max_dd:.2f}%")
+    if p_value is not None:
+        print(f"  p-value={p_value:.4f}")
+
+    print(f"\nRobustness:")
+    print(f"  LOTO max impact: {loto_max_impact:.1f}% "
+          f"({'PASS' if loto_max_impact <= 20 else 'FAIL'})")
+    print(f"  Monthly concentration: {monthly_max_conc:.1f}% "
+          f"({'PASS' if monthly_max_conc <= 30 else 'WARN'})")
+    print(f"  Best sector: {best_sector[0]} (PF={best_sector[1]['pf']:.2f})")
+    print(f"  Worst sector: {worst_sector[0]} (PF={worst_sector[1]['pf']:.2f})")
+    print(f"  Random comparison: strategy PF {best_pf:.2f} vs "
+          f"random PF {rand_mean_pf:.2f} (95% CI: {ci_lo:.2f}-{ci_hi:.2f})")
+
+    # Verdict logic
+    n_ok = best_m["N"] >= 80
+    wr_ok = best_m["wr_pct"] >= 55
+    pf_ok = best_pf >= 1.5
+    p_ok = (p_value is not None and p_value < 0.05) if p_value is not None else True
+    loto_ok = loto_max_impact <= 20
+    random_ok = beats_random
+
+    checks = [n_ok, wr_ok, pf_ok, p_ok, loto_ok, random_ok]
+    passed = sum(checks)
+
+    print(f"\n  Checks passed: {passed}/6")
+    print(f"    N>=80: {'PASS' if n_ok else 'FAIL'} (N={best_m['N']})")
+    print(f"    WR>=55%: {'PASS' if wr_ok else 'FAIL'} (WR={best_m['wr_pct']:.1f}%)")
+    print(f"    PF>=1.5: {'PASS' if pf_ok else 'FAIL'} (PF={best_pf:.2f})")
+    if p_value is not None:
+        print(f"    p<0.05: {'PASS' if p_ok else 'FAIL'} (p={p_value:.4f})")
+    else:
+        print(f"    p<0.05: SKIP (scipy not installed)")
+    print(f"    LOTO<20%: {'PASS' if loto_ok else 'FAIL'} ({loto_max_impact:.1f}%)")
+    print(f"    Beats random: {'PASS' if random_ok else 'FAIL'}")
+
+    if passed >= 5 and pf_ok and random_ok:
+        verdict = "VALIDATED"
+    elif passed >= 3:
+        verdict = "MARGINAL"
+    else:
+        verdict = "REJECTED"
+
+    print(f"\n  VERDICT: {verdict}")
+    print("=" * 60)
+
+
+# ---------------------------------------------------------------------------
 # Data Preparation (load or reuse pickle)
 # ---------------------------------------------------------------------------
 
@@ -1075,6 +1444,8 @@ def main():
     parser = argparse.ArgumentParser(description="RS Leader Pullback Backtest")
     parser.add_argument("--sweep", action="store_true",
                         help="Run parameter sweep tests after baseline")
+    parser.add_argument("--robustness", action="store_true",
+                        help="Run robustness checks on best config")
     parser.add_argument("--prep", action="store_true",
                         help="Force re-run data preparation")
     args = parser.parse_args()
@@ -1121,6 +1492,11 @@ def main():
     if args.sweep:
         run_sweep(ticker_4h, ticker_trading_days, equity_tickers,
                   vix_data, rs_rankings, daily_highs, earnings_exclusions)
+
+    # --- Robustness ---
+    if args.robustness:
+        run_robustness(ticker_4h, ticker_trading_days, equity_tickers,
+                       vix_data, rs_rankings, daily_highs, earnings_exclusions)
 
     print("\nDone.")
 
