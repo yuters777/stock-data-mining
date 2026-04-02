@@ -530,10 +530,60 @@ def detect_pullback(bars_4h, ticker, day, trading_days, pullback_max):
     return consec_down
 
 
+def apply_exit_strategy(entry_price, fwd_bars, exit_strategy):
+    """Apply an exit strategy to forward bars and return (exit_price, bars_held, exit_reason).
+
+    Exit strategies:
+      "max_only"        — hold until max_bars (pure time-based)
+      "ema9_ema21_max"  — exit on EMA9 break OR EMA21 break OR max bars
+      "ema21_max_only"  — exit on EMA21 break OR max bars
+      "trailing_50pct"  — exit if gives back >50% of max unrealized gain
+      "fixed_stop_2pct" — exit if return drops to -2% from entry
+    """
+    if not fwd_bars:
+        return None, 0, "no_bars"
+
+    max_unrealized = 0.0
+
+    for i, bar in enumerate(fwd_bars):
+        bar_close = bar["Close"]
+        ret = (bar_close - entry_price) / entry_price * 100
+
+        if exit_strategy == "ema9_ema21_max":
+            ema9 = bar.get("ema9")
+            ema21 = bar.get("ema21")
+            if ema9 is not None and not np.isnan(ema9) and bar_close < ema9:
+                return bar_close, i + 1, "ema9_break"
+            if ema21 is not None and not np.isnan(ema21) and bar_close < ema21:
+                return bar_close, i + 1, "ema21_break"
+
+        elif exit_strategy == "ema21_max_only":
+            ema21 = bar.get("ema21")
+            if ema21 is not None and not np.isnan(ema21) and bar_close < ema21:
+                return bar_close, i + 1, "ema21_break"
+
+        elif exit_strategy == "trailing_50pct":
+            if ret > max_unrealized:
+                max_unrealized = ret
+            if max_unrealized > 0 and ret < max_unrealized * 0.5:
+                return bar_close, i + 1, "trailing_50pct"
+
+        elif exit_strategy == "fixed_stop_2pct":
+            if ret <= -2.0:
+                return bar_close, i + 1, "fixed_stop_2pct"
+
+        # "max_only" falls through to end
+
+    # Max bars reached
+    last = fwd_bars[-1]
+    return last["Close"], len(fwd_bars), "max_bars"
+
+
 def run_rs_backtest(ticker_4h, ticker_trading_days, equity_tickers,
                     vix_data, rs_rankings, daily_highs, earnings_exclusions,
                     vix_threshold=20, rs_pct=30, near_high_pct=5,
-                    max_bars=8, pullback_max=2, verbose=False):
+                    max_bars=8, pullback_max=2, exit_strategy="max_only",
+                    verbose=False):
     """Run the RS Leader Pullback backtest with given parameters.
 
     Signal (LONG only):
@@ -545,7 +595,7 @@ def run_rs_backtest(ticker_4h, ticker_trading_days, equity_tickers,
       6. Not near earnings
 
     Entry: Close of the signal bar (last down bar).
-    Exit: Close after max_bars 4H bars.
+    Exit: per exit_strategy, up to max_bars 4H bars.
 
     Returns list of trade dicts.
     """
@@ -554,6 +604,8 @@ def run_rs_backtest(ticker_4h, ticker_trading_days, equity_tickers,
         active_rs = compute_rs_rankings(ticker_4h, equity_tickers, rs_pct=rs_pct)
     else:
         active_rs = rs_rankings
+
+    near_high_factor = 1.0 - (near_high_pct / 100.0)  # e.g. 5% -> 0.95
 
     trades = []
     rs_days = sorted(active_rs.keys())
@@ -572,23 +624,27 @@ def run_rs_backtest(ticker_4h, ticker_trading_days, equity_tickers,
             if rs_info is None or not rs_info["is_leader"]:
                 continue
 
-            # Near 60d high check
+            # Near 60d high check (use raw high_60d with variable threshold)
             high_info = daily_highs.get(ticker, {}).get(day)
-            if high_info is None or not high_info["near_high"]:
+            if high_info is None:
+                continue
+            high_60d = high_info["high_60d"]
+            # Get today's close for near-high comparison
+            bars = ticker_4h[ticker]
+            tdays = ticker_trading_days[ticker]
+            day_bars = bars[bars["trading_day"] == day].sort_values("bar_num")
+            if day_bars.empty:
+                continue
+            last_bar = day_bars.iloc[-1]
+            today_close = last_bar["Close"]
+            if today_close < high_60d * near_high_factor:
                 continue
 
             # Earnings exclusion
             if (ticker, day) in earnings_exclusions:
                 continue
 
-            bars = ticker_4h[ticker]
-            tdays = ticker_trading_days[ticker]
-
             # EMA filter: last bar of this day should have EMA9 > EMA21
-            day_bars = bars[bars["trading_day"] == day].sort_values("bar_num")
-            if day_bars.empty:
-                continue
-            last_bar = day_bars.iloc[-1]
             if pd.isna(last_bar["ema9"]) or pd.isna(last_bar["ema21"]):
                 continue
             if last_bar["ema9"] <= last_bar["ema21"]:
@@ -609,10 +665,11 @@ def run_rs_backtest(ticker_4h, ticker_trading_days, equity_tickers,
             if not fwd_bars:
                 continue
 
-            # Exit at the last available forward bar
-            exit_bar = fwd_bars[-1]
-            exit_price = exit_bar["Close"]
-            bars_held = len(fwd_bars)
+            # Apply exit strategy
+            exit_price, bars_held, exit_reason = apply_exit_strategy(
+                entry_price, fwd_bars, exit_strategy)
+            if exit_price is None:
+                continue
 
             ret_pct = (exit_price - entry_price) / entry_price * 100
 
@@ -623,6 +680,7 @@ def run_rs_backtest(ticker_4h, ticker_trading_days, equity_tickers,
                 "exit_price": exit_price,
                 "return_pct": ret_pct,
                 "bars_held": bars_held,
+                "exit_reason": exit_reason,
                 "vix": vix_val,
                 "rs_rank": rs_info["rs_rank"],
                 "pullback_bars": pb_count,
@@ -793,7 +851,7 @@ def run_sweep(ticker_4h, ticker_trading_days, equity_tickers,
     if best:
         sweep_winners["pullback"] = best
 
-    # --- Summary ---
+    # --- Part 1 Summary ---
     print("\n" + "=" * 60)
     print("=== Part 1 Sweep Winners ===")
     print("=" * 60)
@@ -809,6 +867,125 @@ def run_sweep(ticker_4h, ticker_trading_days, equity_tickers,
     if "pullback" in sweep_winners:
         w = sweep_winners["pullback"]
         print(f"Best pullback depth: {w['param']} (PF={w['pf']:.2f}, N={w['N']})")
+
+    # --- TEST 5: Exit Strategy Comparison ---
+    print("\n" + "#" * 60)
+    print("# TEST 5: Exit Strategy Comparison")
+    print("#" * 60)
+    EXIT_STRATEGIES = [
+        ("max_only",        "Max bars ONLY (pure time-based)"),
+        ("ema9_ema21_max",  "EMA9 break OR EMA21 break OR max bars"),
+        ("ema21_max_only",  "EMA21 break OR max bars"),
+        ("trailing_50pct",  "Trailing 50% giveback"),
+        ("fixed_stop_2pct", "Fixed -2% stop"),
+    ]
+    rows = []
+    for es_key, es_label in EXIT_STRATEGIES:
+        trades = run_rs_backtest(
+            ticker_4h, ticker_trading_days, equity_tickers,
+            vix_data, rs_rankings, daily_highs, earnings_exclusions,
+            vix_threshold=DEF_VIX, rs_pct=DEF_RS, near_high_pct=DEF_NEAR_HIGH,
+            max_bars=DEF_MAX_BARS, pullback_max=DEF_PB, exit_strategy=es_key)
+        m = compute_metrics(trades)
+        m["param"] = es_key
+        rows.append(m)
+
+    cols = [("Exit", "param", "{}"), ("N", "N", "{:d}"),
+            ("Mean%", "mean_pct", "{:.3f}"), ("WR%", "wr_pct", "{:.1f}"),
+            ("PF", "pf", "{:.2f}"), ("AvgBars", "avg_hold", "{:.1f}")]
+    print_metrics_table(rows, cols, "Exit Strategy Comparison")
+
+    best = max([r for r in rows if r["N"] > 0], key=lambda r: r["pf"], default=None)
+    if best:
+        sweep_winners["exit"] = best
+
+    # --- TEST 6: Near-High Threshold ---
+    print("\n" + "#" * 60)
+    print("# TEST 6: Near-High Threshold Sweep")
+    print("#" * 60)
+    NEAR_HIGH_VALUES = [3, 5, 7, 10, 15]
+    rows = []
+    for nh in NEAR_HIGH_VALUES:
+        trades = run_rs_backtest(
+            ticker_4h, ticker_trading_days, equity_tickers,
+            vix_data, rs_rankings, daily_highs, earnings_exclusions,
+            vix_threshold=DEF_VIX, rs_pct=DEF_RS, near_high_pct=nh,
+            max_bars=DEF_MAX_BARS, pullback_max=DEF_PB)
+        m = compute_metrics(trades)
+        m["param"] = f"{nh}%"
+        rows.append(m)
+
+    cols = [("NrHigh%", "param", "{}"), ("N", "N", "{:d}"),
+            ("Mean%", "mean_pct", "{:.3f}"), ("WR%", "wr_pct", "{:.1f}"),
+            ("PF", "pf", "{:.2f}")]
+    print_metrics_table(rows, cols, "Near-High Threshold")
+
+    best = max([r for r in rows if r["N"] > 0], key=lambda r: r["pf"], default=None)
+    if best:
+        sweep_winners["near_high"] = best
+
+    # --- TEST 7: Combined Best Configs ---
+    print("\n" + "#" * 60)
+    print("# TEST 7: Combined Best Configs")
+    print("#" * 60)
+
+    COMBOS = {
+        "A": {"vix": 20, "rs_pct": 10, "pullback_max": 1, "max_bars": 12,
+               "exit": "ema21_max_only", "near_high_pct": DEF_NEAR_HIGH},
+        "B": {"vix": 20, "rs_pct": 20, "pullback_max": 2, "max_bars": 16,
+               "exit": "ema21_max_only", "near_high_pct": DEF_NEAR_HIGH},
+        "C": {"vix": 18, "rs_pct": 10, "pullback_max": 1, "max_bars": 20,
+               "exit": "max_only", "near_high_pct": DEF_NEAR_HIGH},
+    }
+
+    rows = []
+    for combo_name, cfg in COMBOS.items():
+        params_str = (f"VIX<{cfg['vix']} RS{cfg['rs_pct']}% "
+                      f"PB{cfg['pullback_max']} MB{cfg['max_bars']} "
+                      f"{cfg['exit']}")
+        trades = run_rs_backtest(
+            ticker_4h, ticker_trading_days, equity_tickers,
+            vix_data, rs_rankings, daily_highs, earnings_exclusions,
+            vix_threshold=cfg["vix"], rs_pct=cfg["rs_pct"],
+            near_high_pct=cfg["near_high_pct"],
+            max_bars=cfg["max_bars"], pullback_max=cfg["pullback_max"],
+            exit_strategy=cfg["exit"])
+        m = compute_metrics(trades)
+        m["param"] = combo_name
+        m["params_str"] = params_str
+        rows.append(m)
+
+    # Print combo table
+    print(f"\n{'=' * 60}")
+    print(f"  Combined Best Configs")
+    print(f"{'=' * 60}")
+    print(f"{'Combo':>6} | {'Params':<40} | {'N':>5} | {'Mean%':>7} | {'WR%':>6} | {'PF':>6} | {'AvgBars':>7}")
+    print("-" * 90)
+    for row in rows:
+        n = row["N"]
+        mean = f"{row['mean_pct']:.3f}" if n > 0 else "N/A"
+        wr = f"{row['wr_pct']:.1f}" if n > 0 else "N/A"
+        pf = f"{row['pf']:.2f}" if n > 0 else "N/A"
+        ah = f"{row['avg_hold']:.1f}" if n > 0 else "N/A"
+        print(f"{row['param']:>6} | {row['params_str']:<40} | {n:>5} | {mean:>7} | {wr:>6} | {pf:>6} | {ah:>7}")
+
+    best_combo = max([r for r in rows if r["N"] > 0], key=lambda r: r["pf"], default=None)
+    if best_combo:
+        sweep_winners["combo"] = best_combo
+
+    # --- Part 2 Summary ---
+    print("\n" + "=" * 60)
+    print("=== Part 2 Sweep Winners ===")
+    print("=" * 60)
+    if "exit" in sweep_winners:
+        w = sweep_winners["exit"]
+        print(f"Best exit strategy: {w['param']} (PF={w['pf']:.2f}, N={w['N']})")
+    if "near_high" in sweep_winners:
+        w = sweep_winners["near_high"]
+        print(f"Best near-high: {w['param']} (PF={w['pf']:.2f}, N={w['N']})")
+    if "combo" in sweep_winners:
+        w = sweep_winners["combo"]
+        print(f"Best combined combo: {w['param']} (PF={w['pf']:.2f}, N={w['N']}, WR={w['wr_pct']:.1f}%)")
 
 
 # ---------------------------------------------------------------------------
