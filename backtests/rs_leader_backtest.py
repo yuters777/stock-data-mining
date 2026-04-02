@@ -30,9 +30,11 @@ Produces:
   - Console output with data prep summary and baseline results
 
 Usage:
-    python backtests/rs_leader_backtest.py
+    python backtests/rs_leader_backtest.py            # baseline only
+    python backtests/rs_leader_backtest.py --sweep     # baseline + parameter sweeps
 """
 
+import argparse
 import csv
 import datetime
 import pickle
@@ -521,26 +523,33 @@ def _get_prior_day_vix(day, trading_days: list, vix_by_date: dict):
 
 
 def detect_signals_and_trade(bars_4h, equity_tickers, vix_daily, rs_rankings,
-                             daily_highs, gate_up, earnings_exclusions):
+                             daily_highs, gate_up, earnings_exclusions,
+                             *,
+                             vix_threshold=None,
+                             rs_percentile=None,
+                             near_high_pct=None,
+                             max_bars=None,
+                             pullback_max=None,
+                             exit_strategy="ema9_ema21_max"):
     """Detect pullback signals and simulate trades.
 
-    Signal conditions (ALL must be true on the pullback day):
-      1. Prior-day VIX < 20 (FRED VIXCLS)
-      2. Ticker is RS leader (top 30%)
-      3. Close within 5% of 60d high
-      4. EMA9 > EMA21 (gate_UP)
-      5. No earnings today or tomorrow
+    All filter/exit parameters default to module-level constants if not provided.
 
-    Pullback: 1-2 consecutive 4H bars with close < open, all closing above EMA21.
-    Bounce entry: next 4H bar closes above EMA9 → ENTRY at that close.
-
-    Exit (first to trigger):
-      1. EMA9 break: 4H close < EMA9
-      2. EMA21 break: 4H close < EMA21 (stop)
-      3. Hard max: 8 4H bars
+    Exit strategies:
+      ema9_ema21_max — EMA9 break or EMA21 break (stop) or hard max
+      ema21_max_only — EMA21 break (stop) or hard max (no EMA9 exit)
+      max_only       — pure time-based hold to hard max
+      trailing_50pct — exit if gives back >50% of max unrealized gain
+      fixed_stop_2pct — exit if -2% from entry
 
     Returns list of trade dicts.
     """
+    vix_thresh = vix_threshold if vix_threshold is not None else _VIX_THRESHOLD
+    rs_pct = rs_percentile if rs_percentile is not None else _RS_PERCENTILE
+    nh_pct = near_high_pct if near_high_pct is not None else _NEAR_HIGH_PCT
+    mb = max_bars if max_bars is not None else _MAX_BARS
+    pb_max = pullback_max if pullback_max is not None else _PULLBACK_MAX
+
     vix_by_date = _build_vix_by_date(vix_daily)
 
     # Build per-ticker bar sequences (sorted chronologically)
@@ -553,12 +562,7 @@ def detect_signals_and_trade(bars_4h, equity_tickers, vix_daily, rs_rankings,
     # All trading days (sorted)
     all_trading_days = sorted(bars_4h["trading_day"].unique())
 
-    # Build earnings exclusion set with next-day logic:
-    # Exclude earnings day + day before (already in earnings_exclusions).
-    # We also need to check "no earnings tomorrow" — add (ticker, day_before_earnings).
-    # The existing set already has day_before, so we just check membership.
-    # For "no earnings today or tomorrow", we check both (ticker, day) and
-    # look for (ticker, next_day) in the raw earnings dates.
+    # Raw earnings dates for next-day check
     raw_earnings_dates = set()
     if _EARNINGS_CSV.exists():
         edf = pd.read_csv(_EARNINGS_CSV)
@@ -570,8 +574,7 @@ def detect_signals_and_trade(bars_4h, equity_tickers, vix_daily, rs_rankings,
                 continue
 
     trades = []
-    # Track active trade end bar index per ticker to prevent overlaps
-    ticker_trade_end = {}  # {ticker: last_bar_index_of_active_trade}
+    ticker_trade_end = {}
 
     for ticker in equity_tickers:
         t_bars = ticker_bars[ticker]
@@ -580,30 +583,46 @@ def detect_signals_and_trade(bars_4h, equity_tickers, vix_daily, rs_rankings,
             continue
 
         for i in range(1, n_bars):
-            # Skip if still in an active trade for this ticker
             if ticker in ticker_trade_end and i <= ticker_trade_end[ticker]:
                 continue
 
             bar = t_bars.iloc[i]
             day = bar["trading_day"]
 
-            # Need valid EMAs
             if pd.isna(bar["ema9"]) or pd.isna(bar["ema21"]):
                 continue
 
             # --- Filter 1: Prior-day VIX < threshold ---
             prior_vix = _get_prior_day_vix(day, all_trading_days, vix_by_date)
-            if prior_vix is None or prior_vix >= _VIX_THRESHOLD:
+            if prior_vix is None or prior_vix >= vix_thresh:
                 continue
 
-            # --- Filter 2: RS leader ---
-            rs_info = rs_rankings.get(day, {}).get(ticker)
-            if rs_info is None or not rs_info["is_leader"]:
+            # --- Filter 2: RS leader (dynamic percentile) ---
+            day_rs = rs_rankings.get(day, {})
+            rs_info = day_rs.get(ticker)
+            if rs_info is None:
+                continue
+            n_ranked = len(day_rs)
+            n_leaders = max(1, int(n_ranked * rs_pct))
+            if rs_info["rs_rank"] > n_leaders:
                 continue
 
-            # --- Filter 3: Near 60d high ---
+            # --- Filter 3: Near 60d high (dynamic threshold) ---
             high_info = daily_highs.get(ticker, {}).get(day)
-            if high_info is None or not high_info["near_high"]:
+            if high_info is None:
+                continue
+            if high_info["high_60d"] == 0:
+                continue
+            # Recompute near_high with the parameter
+            bar2_close = None
+            bar2_rows = bars_4h[(bars_4h["Ticker"] == ticker) &
+                                (bars_4h["trading_day"] == day) &
+                                (bars_4h["bar_num"] == 2)]
+            if not bar2_rows.empty:
+                bar2_close = bar2_rows.iloc[0]["Close"]
+            if bar2_close is None:
+                continue
+            if bar2_close < high_info["high_60d"] * (1 - nh_pct):
                 continue
 
             # --- Filter 4: gate_UP (EMA9 > EMA21) ---
@@ -613,7 +632,6 @@ def detect_signals_and_trade(bars_4h, equity_tickers, vix_daily, rs_rankings,
             # --- Filter 5: No earnings today or tomorrow ---
             if (ticker, day) in earnings_exclusions:
                 continue
-            # Check if tomorrow has earnings
             day_idx_in_all = None
             for j, td in enumerate(all_trading_days):
                 if td == day:
@@ -624,15 +642,13 @@ def detect_signals_and_trade(bars_4h, equity_tickers, vix_daily, rs_rankings,
                 if (ticker, next_day) in raw_earnings_dates:
                     continue
 
-            # --- Pullback detection: close < open, close > EMA21 ---
+            # --- Pullback detection ---
             if bar["Close"] >= bar["Open"]:
                 continue
             if bar["Close"] <= bar["ema21"]:
                 continue
 
-            # Check for 1-2 bar pullback
             pullback_bars = [i]
-            # Check if prior bar was also a pullback bar
             if i >= 2:
                 prev_bar = t_bars.iloc[i - 1]
                 if (pd.notna(prev_bar["ema21"]) and
@@ -640,19 +656,19 @@ def detect_signals_and_trade(bars_4h, equity_tickers, vix_daily, rs_rankings,
                         prev_bar["Close"] > prev_bar["ema21"]):
                     pullback_bars = [i - 1, i]
 
-            # The bar before the pullback should NOT be a pullback bar
-            # (otherwise we'd be in a longer downtrend, not a brief pullback)
+            if len(pullback_bars) > pb_max:
+                continue
+
             first_pb = pullback_bars[0]
             if first_pb >= 1:
                 pre_pb = t_bars.iloc[first_pb - 1]
                 if (pd.notna(pre_pb["ema21"]) and
                         pre_pb["Close"] < pre_pb["Open"] and
                         pre_pb["Close"] > pre_pb["ema21"]):
-                    # This is bar 3+ of a pullback; skip
-                    if len(pullback_bars) >= _PULLBACK_MAX:
+                    if len(pullback_bars) >= pb_max:
                         continue
 
-            # --- Bounce detection: next bar closes above EMA9 ---
+            # --- Bounce detection ---
             bounce_idx = i + 1
             if bounce_idx >= n_bars:
                 continue
@@ -674,35 +690,68 @@ def detect_signals_and_trade(bars_4h, equity_tickers, vix_daily, rs_rankings,
             exit_day = None
             exit_bar_num = None
             bars_held = 0
+            max_unrealized = 0.0
 
-            for k in range(bounce_idx + 1, min(bounce_idx + 1 + _MAX_BARS, n_bars)):
+            for k in range(bounce_idx + 1, min(bounce_idx + 1 + mb, n_bars)):
                 hold_bar = t_bars.iloc[k]
                 bars_held += 1
 
                 if pd.isna(hold_bar["ema9"]) or pd.isna(hold_bar["ema21"]):
                     continue
 
-                # Exit check: EMA21 break (stop) — check first (worse)
-                if hold_bar["Close"] < hold_bar["ema21"]:
-                    exit_price = hold_bar["Close"]
-                    exit_reason = "EMA21_BREAK"
-                    exit_day = hold_bar["trading_day"]
-                    exit_bar_num = hold_bar["bar_num"]
-                    ticker_trade_end[ticker] = k
-                    break
+                unrealized = (hold_bar["Close"] - entry_price) / entry_price * 100
+                if unrealized > max_unrealized:
+                    max_unrealized = unrealized
 
-                # Exit check: EMA9 break
-                if hold_bar["Close"] < hold_bar["ema9"]:
-                    exit_price = hold_bar["Close"]
-                    exit_reason = "EMA9_BREAK"
-                    exit_day = hold_bar["trading_day"]
-                    exit_bar_num = hold_bar["bar_num"]
-                    ticker_trade_end[ticker] = k
-                    break
+                if exit_strategy == "ema9_ema21_max":
+                    if hold_bar["Close"] < hold_bar["ema21"]:
+                        exit_price = hold_bar["Close"]
+                        exit_reason = "EMA21_BREAK"
+                        exit_day = hold_bar["trading_day"]
+                        exit_bar_num = hold_bar["bar_num"]
+                        ticker_trade_end[ticker] = k
+                        break
+                    if hold_bar["Close"] < hold_bar["ema9"]:
+                        exit_price = hold_bar["Close"]
+                        exit_reason = "EMA9_BREAK"
+                        exit_day = hold_bar["trading_day"]
+                        exit_bar_num = hold_bar["bar_num"]
+                        ticker_trade_end[ticker] = k
+                        break
+
+                elif exit_strategy == "ema21_max_only":
+                    if hold_bar["Close"] < hold_bar["ema21"]:
+                        exit_price = hold_bar["Close"]
+                        exit_reason = "EMA21_BREAK"
+                        exit_day = hold_bar["trading_day"]
+                        exit_bar_num = hold_bar["bar_num"]
+                        ticker_trade_end[ticker] = k
+                        break
+
+                elif exit_strategy == "max_only":
+                    pass  # no early exit, just hold to hard max
+
+                elif exit_strategy == "trailing_50pct":
+                    if max_unrealized > 0.5 and unrealized < max_unrealized * 0.5:
+                        exit_price = hold_bar["Close"]
+                        exit_reason = "TRAILING_50PCT"
+                        exit_day = hold_bar["trading_day"]
+                        exit_bar_num = hold_bar["bar_num"]
+                        ticker_trade_end[ticker] = k
+                        break
+
+                elif exit_strategy == "fixed_stop_2pct":
+                    if unrealized <= -2.0:
+                        exit_price = hold_bar["Close"]
+                        exit_reason = "FIXED_STOP"
+                        exit_day = hold_bar["trading_day"]
+                        exit_bar_num = hold_bar["bar_num"]
+                        ticker_trade_end[ticker] = k
+                        break
 
             # Hard max exit
             if exit_price is None and bars_held > 0:
-                last_k = min(bounce_idx + _MAX_BARS, n_bars - 1)
+                last_k = min(bounce_idx + mb, n_bars - 1)
                 last_bar = t_bars.iloc[last_k]
                 exit_price = last_bar["Close"]
                 exit_reason = "HARD_MAX"
@@ -733,7 +782,6 @@ def detect_signals_and_trade(bars_4h, equity_tickers, vix_daily, rs_rankings,
                 "vix_at_entry": round(prior_vix, 2),
             })
 
-            # Mark trade end to prevent overlap
             ticker_trade_end[ticker] = max(
                 ticker_trade_end.get(ticker, 0),
                 bounce_idx + bars_held
@@ -831,10 +879,227 @@ def print_baseline_results(trades: list):
 
 
 # ---------------------------------------------------------------------------
+# Part C: Parameter Sweeps
+# ---------------------------------------------------------------------------
+
+def _compute_stats(trades):
+    """Compute N, mean%, WR%, PF from a list of trades. Returns dict."""
+    n = len(trades)
+    if n == 0:
+        return {"N": 0, "mean": 0.0, "WR": 0.0, "PF": 0.0, "avg_hold": 0.0}
+    returns = [t["return_pct"] for t in trades]
+    wins = [r for r in returns if r > 0]
+    losses = [r for r in returns if r <= 0]
+    gross_profit = sum(wins) if wins else 0
+    gross_loss = abs(sum(losses)) if losses else 0.001
+    return {
+        "N": n,
+        "mean": np.mean(returns),
+        "WR": len(wins) / n * 100,
+        "PF": gross_profit / gross_loss,
+        "avg_hold": np.mean([t["bars_held"] for t in trades]),
+    }
+
+
+def _print_row(label, stats, extra_cols=None):
+    """Print a formatted table row."""
+    extra = ""
+    if extra_cols:
+        extra = " | " + " | ".join(f"{v}" for v in extra_cols)
+    print(f"  {label:<12s} | N={stats['N']:<4d} | Mean={stats['mean']:>+6.2f}% "
+          f"| WR={stats['WR']:>5.1f}% | PF={stats['PF']:>5.2f}{extra}")
+
+
+def run_sweep_test1(bars_4h, equity_tickers, vix_daily, rs_rankings,
+                    daily_highs, gate_up, earnings_exclusions):
+    """TEST 1: VIX Threshold sweep."""
+    print("\n" + "=" * 60)
+    print("=== TEST 1: VIX Threshold Sweep (FRED VIXCLS) ===")
+    print("=" * 60)
+    results = {}
+    for vix_t in [18, 19, 20, 22, 25]:
+        trades = detect_signals_and_trade(
+            bars_4h, equity_tickers, vix_daily, rs_rankings,
+            daily_highs, gate_up, earnings_exclusions,
+            vix_threshold=vix_t)
+        s = _compute_stats(trades)
+        results[f"VIX<{vix_t}"] = s
+        _print_row(f"VIX<{vix_t}", s)
+    return results
+
+
+def run_sweep_test2(bars_4h, equity_tickers, vix_daily, rs_rankings,
+                    daily_highs, gate_up, earnings_exclusions):
+    """TEST 2: RS Percentile sweep."""
+    print("\n" + "=" * 60)
+    print("=== TEST 2: RS Percentile Sweep ===")
+    print("=" * 60)
+    results = {}
+    for rs_pct in [10, 20, 30, 40, 50]:
+        trades = detect_signals_and_trade(
+            bars_4h, equity_tickers, vix_daily, rs_rankings,
+            daily_highs, gate_up, earnings_exclusions,
+            rs_percentile=rs_pct / 100.0)
+        s = _compute_stats(trades)
+        results[f"RS{rs_pct}%"] = s
+        _print_row(f"RS {rs_pct}%", s)
+    return results
+
+
+def run_sweep_test3(bars_4h, equity_tickers, vix_daily, rs_rankings,
+                    daily_highs, gate_up, earnings_exclusions):
+    """TEST 3: Max Bars sweep."""
+    print("\n" + "=" * 60)
+    print("=== TEST 3: Max Bars Sweep ===")
+    print("=" * 60)
+    results = {}
+    for mb in [4, 6, 8, 10, 12, 16, 20]:
+        trades = detect_signals_and_trade(
+            bars_4h, equity_tickers, vix_daily, rs_rankings,
+            daily_highs, gate_up, earnings_exclusions,
+            max_bars=mb)
+        s = _compute_stats(trades)
+        results[f"MB={mb}"] = s
+        _print_row(f"MaxBars={mb}", s, [f"AvgHold={s['avg_hold']:.1f}"])
+    return results
+
+
+def run_sweep_test4(bars_4h, equity_tickers, vix_daily, rs_rankings,
+                    daily_highs, gate_up, earnings_exclusions):
+    """TEST 4: Pullback Depth sweep."""
+    print("\n" + "=" * 60)
+    print("=== TEST 4: Pullback Depth Sweep ===")
+    print("=" * 60)
+    results = {}
+    for pb in [1, 2, 3]:
+        trades = detect_signals_and_trade(
+            bars_4h, equity_tickers, vix_daily, rs_rankings,
+            daily_highs, gate_up, earnings_exclusions,
+            pullback_max=pb)
+        s = _compute_stats(trades)
+        results[f"PB<={pb}"] = s
+        _print_row(f"PB_Max={pb}", s)
+    return results
+
+
+def run_sweep_test5(bars_4h, equity_tickers, vix_daily, rs_rankings,
+                    daily_highs, gate_up, earnings_exclusions):
+    """TEST 5: Exit Strategy sweep."""
+    print("\n" + "=" * 60)
+    print("=== TEST 5: Exit Strategy Sweep ===")
+    print("=" * 60)
+    strategies = [
+        ("ema9_ema21_max", "EMA9+21+Max"),
+        ("ema21_max_only", "EMA21+Max"),
+        ("max_only",       "MaxOnly"),
+        ("trailing_50pct", "Trail50%"),
+        ("fixed_stop_2pct", "FixStop2%"),
+    ]
+    results = {}
+    for strat_key, strat_label in strategies:
+        trades = detect_signals_and_trade(
+            bars_4h, equity_tickers, vix_daily, rs_rankings,
+            daily_highs, gate_up, earnings_exclusions,
+            exit_strategy=strat_key)
+        s = _compute_stats(trades)
+        results[strat_label] = s
+        _print_row(strat_label, s, [f"AvgBars={s['avg_hold']:.1f}"])
+    return results
+
+
+def run_sweep_test6(bars_4h, equity_tickers, vix_daily, rs_rankings,
+                    daily_highs, gate_up, earnings_exclusions):
+    """TEST 6: Near-High Threshold sweep."""
+    print("\n" + "=" * 60)
+    print("=== TEST 6: Near-High Threshold Sweep ===")
+    print("=" * 60)
+    results = {}
+    for nh in [3, 5, 7, 10, 15]:
+        trades = detect_signals_and_trade(
+            bars_4h, equity_tickers, vix_daily, rs_rankings,
+            daily_highs, gate_up, earnings_exclusions,
+            near_high_pct=nh / 100.0)
+        s = _compute_stats(trades)
+        results[f"NH{nh}%"] = s
+        _print_row(f"NearHigh={nh}%", s)
+    return results
+
+
+def run_sweep_test7(bars_4h, equity_tickers, vix_daily, rs_rankings,
+                    daily_highs, gate_up, earnings_exclusions):
+    """TEST 7: Combined Best + 3 Specific Combos."""
+    print("\n" + "=" * 60)
+    print("=== TEST 7: Combined Combos ===")
+    print("=" * 60)
+
+    combos = [
+        ("Combo A", dict(vix_threshold=20, rs_percentile=0.10, pullback_max=1,
+                         max_bars=12, exit_strategy="ema21_max_only")),
+        ("Combo B", dict(vix_threshold=20, rs_percentile=0.20, pullback_max=2,
+                         max_bars=16, exit_strategy="ema21_max_only")),
+        ("Combo C", dict(vix_threshold=18, rs_percentile=0.10, pullback_max=1,
+                         max_bars=20, exit_strategy="max_only")),
+    ]
+    results = {}
+    for label, params in combos:
+        desc = (f"VIX<{params['vix_threshold']}, RS{int(params['rs_percentile']*100)}%, "
+                f"PB{params['pullback_max']}, MB{params['max_bars']}, "
+                f"{params['exit_strategy']}")
+        trades = detect_signals_and_trade(
+            bars_4h, equity_tickers, vix_daily, rs_rankings,
+            daily_highs, gate_up, earnings_exclusions,
+            **params)
+        s = _compute_stats(trades)
+        results[label] = s
+        print(f"  {label} ({desc}):")
+        print(f"    N={s['N']}, Mean={s['mean']:+.2f}%, WR={s['WR']:.1f}%, "
+              f"PF={s['PF']:.2f}, AvgHold={s['avg_hold']:.1f}")
+    return results
+
+
+def run_all_sweeps(bars_4h, equity_tickers, vix_daily, rs_rankings,
+                   daily_highs, gate_up, earnings_exclusions):
+    """Run all 7 sweep tests and print summary of winners."""
+    args = (bars_4h, equity_tickers, vix_daily, rs_rankings,
+            daily_highs, gate_up, earnings_exclusions)
+
+    all_results = {}
+    all_results["T1_VIX"] = run_sweep_test1(*args)
+    all_results["T2_RS"] = run_sweep_test2(*args)
+    all_results["T3_MaxBars"] = run_sweep_test3(*args)
+    all_results["T4_PB"] = run_sweep_test4(*args)
+    all_results["T5_Exit"] = run_sweep_test5(*args)
+    all_results["T6_NearHigh"] = run_sweep_test6(*args)
+    all_results["T7_Combos"] = run_sweep_test7(*args)
+
+    # Summary of winners
+    print("\n" + "=" * 60)
+    print("=== SWEEP SUMMARY: Best per Test ===")
+    print("=" * 60)
+    for test_name, results in all_results.items():
+        # Best by PF among configs with N >= 10
+        viable = {k: v for k, v in results.items() if v["N"] >= 10}
+        if not viable:
+            print(f"  {test_name}: No configs with N>=10")
+            continue
+        best_key = max(viable, key=lambda k: viable[k]["PF"])
+        s = viable[best_key]
+        print(f"  {test_name}: BEST = {best_key} "
+              f"(N={s['N']}, Mean={s['mean']:+.2f}%, WR={s['WR']:.1f}%, PF={s['PF']:.2f})")
+
+    print("=" * 60)
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 
 def main():
+    parser = argparse.ArgumentParser(description="RS Leader Pullback Backtest")
+    parser.add_argument("--sweep", action="store_true",
+                        help="Run parameter sweeps after baseline")
+    args = parser.parse_args()
+
     print("=" * 60)
     print("RS Leader Pullback Backtest — Data Preparation (FRESH START)")
     print("=" * 60)
@@ -915,6 +1180,16 @@ def main():
 
     # Print baseline results
     print_baseline_results(trades)
+
+    # ---------------------------------------------------------------
+    # Part C: Parameter Sweeps (if --sweep)
+    # ---------------------------------------------------------------
+    if args.sweep:
+        print("\n" + "#" * 60)
+        print("# Part C: Parameter Sweeps")
+        print("#" * 60)
+        run_all_sweeps(bars_4h, equity_tickers, vix_daily, rs_rankings,
+                       daily_highs, gate_up, earnings_exclusions)
 
 
 if __name__ == "__main__":
