@@ -7,12 +7,13 @@ DATA_DIR = "Fetched_Data"
 OUT_DIR = "backtest_output"
 os.makedirs(OUT_DIR, exist_ok=True)
 
-TICKERS_27 = [
-    "AAPL","AMD","AMZN","AVGO","BA","BABA","BIDU","C","COIN","COST",
-    "GOOGL","GS","IBIT","JPM","MARA","META","MSFT","MU","NVDA",
-    "PLTR","SNOW","SPY","TSLA","TSM","TXN","V","VIXY"
+TICKERS_31 = [
+    "AAPL", "AMD", "AMZN", "ARM", "AVGO", "BA", "BABA", "BIDU", "BTC",
+    "C", "COIN", "COST", "ETH", "GOOGL", "GS", "INTC", "JPM", "MARA",
+    "META", "MSFT", "MSTR", "MU", "NVDA", "PLTR", "SMCI", "SPY", "TSLA",
+    "TSM", "V", "VIXY",
 ]
-TRADE_UNIVERSE = [t for t in TICKERS_27 if t not in ("SPY", "VIXY")]
+TRADE_UNIVERSE = [t for t in TICKERS_31 if t not in ("SPY", "VIXY")]
 
 # ── Test 0: Load & filter ──────────────────────────────────────────────
 print("=" * 60)
@@ -20,7 +21,7 @@ print("TEST 0: DATA INVENTORY & QUALITY CHECK")
 print("=" * 60)
 
 raw_data = {}
-for tk in TICKERS_27:
+for tk in TICKERS_31:
     fp = os.path.join(DATA_DIR, f"{tk}_data.csv")
     df = pd.read_csv(fp, parse_dates=["Datetime"])
     raw_data[tk] = df
@@ -28,7 +29,7 @@ for tk in TICKERS_27:
 # Report raw row counts and date ranges
 print(f"\n{'Ticker':<8} {'Rows':>8} {'Start':<12} {'End':<12}")
 print("-" * 44)
-for tk in TICKERS_27:
+for tk in TICKERS_31:
     df = raw_data[tk]
     print(f"{tk:<8} {len(df):>8} {str(df['Datetime'].min().date()):<12} {str(df['Datetime'].max().date()):<12}")
 
@@ -43,7 +44,7 @@ for tk in TICKERS_27:
 # timestamps, which captured ET bars for 09:30-10:55 (correct) but IST
 # pre-market bars for 11:00-15:55 (wrong). See I8/I9 audit for details.
 filtered = {}
-for tk in TICKERS_27:
+for tk in TICKERS_31:
     df = raw_data[tk].copy()
     hm = df["Datetime"].dt.hour * 60 + df["Datetime"].dt.minute
     # Select IST regular session block: 16:30-22:55 IST = 09:30-15:55 ET
@@ -55,7 +56,7 @@ for tk in TICKERS_27:
 
 print(f"\n{'Ticker':<8} {'RegSess':>8} {'TradingDays':>12}")
 print("-" * 32)
-for tk in TICKERS_27:
+for tk in TICKERS_31:
     df = filtered[tk]
     ndays = df["Datetime"].dt.date.nunique()
     print(f"{tk:<8} {len(df):>8} {ndays:>12}")
@@ -70,7 +71,7 @@ print(f"\nVIX daily: {len(vix)} rows, {vix['Date'].min().date()} to {vix['Date']
 
 # Compute daily returns (close-to-close using first and last regular session bar)
 daily_prices = {}
-for tk in TICKERS_27:
+for tk in TICKERS_31:
     df = filtered[tk].copy()
     df["date"] = df["Datetime"].dt.date
     # Open = first bar close, Close = last bar close (per spec)
@@ -85,7 +86,7 @@ for tk in TICKERS_27:
     daily_prices[tk] = day_ohlc
 
 # Build daily returns matrix
-all_dates = sorted(set().union(*(set(daily_prices[tk]["date"]) for tk in TICKERS_27)))
+all_dates = sorted(set().union(*(set(daily_prices[tk]["date"]) for tk in TICKERS_31)))
 ret_tickers = TRADE_UNIVERSE + ["SPY"]
 returns_dict = {}
 for tk in ret_tickers:
@@ -101,11 +102,11 @@ print(f"Date range: {daily_returns.index[0].date()} to {daily_returns.index[-1].
 daily_returns.to_csv(os.path.join(OUT_DIR, "daily_returns.csv"))
 
 # Save daily prices for later phases
-for tk in TICKERS_27:
+for tk in TICKERS_31:
     daily_prices[tk].to_csv(os.path.join(OUT_DIR, f"{tk}_daily.csv"), index=False)
 
 # Save filtered M5 data for later phases
-for tk in TICKERS_27:
+for tk in TICKERS_31:
     filtered[tk].to_csv(os.path.join(OUT_DIR, f"{tk}_m5_regsess.csv"), index=False)
 
 # ── Test 1: Stress Event Identification ─────────────────────────────────

@@ -33,9 +33,10 @@ _SESSION_END_MINUTES = 16 * 60         # 16:00
 _MAX_DAY_GAP_BUSINESS_DAYS = 3
 
 ALL_TICKERS = [
-    "AAPL", "AMD", "AMZN", "AVGO", "BA", "BABA", "BIDU", "C", "COIN",
-    "COST", "GOOGL", "GS", "IBIT", "JPM", "MARA", "META", "MSFT", "MU",
-    "NVDA", "PLTR", "SNOW", "SPY", "TSLA", "TSM", "TXN", "V", "VIXY",
+    "AAPL", "AMD", "AMZN", "ARM", "AVGO", "BA", "BABA", "BIDU", "BTC",
+    "C", "COIN", "COST", "ETH", "GOOGL", "GS", "INTC", "JPM", "MARA",
+    "META", "MSFT", "MSTR", "MU", "NVDA", "PLTR", "SMCI", "SPY", "TSLA",
+    "TSM", "V", "VIXY",
 ]
 
 
