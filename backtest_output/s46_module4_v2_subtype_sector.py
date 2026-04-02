@@ -26,9 +26,9 @@ sys.path.insert(0, str(ROOT))
 # ── Config ───────────────────────────────────────────────────────────────────
 
 TICKERS = [
-    "AAPL", "AMD", "AMZN", "AVGO", "BA", "BABA", "BIDU", "C", "COIN",
-    "COST", "GOOGL", "GS", "IBIT", "JPM", "MARA", "META", "MSFT", "MU",
-    "NVDA", "PLTR", "SNOW", "TSLA", "TSM", "TXN", "V",
+    "AAPL", "AMD", "AMZN", "ARM", "AVGO", "BA", "BABA", "BIDU", "C",
+    "COIN", "COST", "GOOGL", "GS", "INTC", "JPM", "MARA", "META", "MSFT",
+    "MSTR", "MU", "NVDA", "PLTR", "SMCI", "TSLA", "TSM", "V",
 ]
 
 VIX_THRESHOLD = 25.0
@@ -53,7 +53,7 @@ SECTOR_MAP = {
     "AMZN": "Tech", "META": "Tech", "AVGO": "Tech", "AMD": "Tech",
     "PLTR": "Tech",
     # Crypto-proxy
-    "COIN": "Crypto-proxy", "MARA": "Crypto-proxy", "IBIT": "Crypto-proxy",
+    "COIN": "Crypto-proxy", "MARA": "Crypto-proxy", "MSTR": "Crypto-proxy",
     # China ADR
     "BABA": "China ADR", "BIDU": "China ADR",
     # Finance
@@ -65,10 +65,9 @@ SECTOR_MAP = {
     # Consumer
     "COST": "Consumer",
     # Cloud/SaaS
-    "SNOW": "Cloud/SaaS",
+    "ARM": "Semi", "INTC": "Semi", "SMCI": "Semi",
     # Crypto-equity (also crypto-adjacent but equity-like)
     "TSLA": "Consumer Disc.",
-    "TXN": "Semi",
 }
 
 SECTOR_ORDER = ["Tech", "Crypto-proxy", "China ADR", "Finance", "Semi",

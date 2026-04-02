@@ -19,7 +19,7 @@ BACKTEST_DIR = os.path.join(os.path.dirname(__file__), "..")
 AUDIT_DIR = os.path.dirname(__file__)
 
 # Exclude non-equity tickers
-EXCLUDE = {"IBIT", "VIXY"}
+EXCLUDE = {"VIXY"}
 
 TICKERS = sorted(
     f.replace("_m5_regsess.csv", "")

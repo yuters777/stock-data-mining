@@ -46,7 +46,7 @@ def load_m5(ticker):
 # ═══════════════════════════════════════════════════════════════════════════
 
 EQUITY_GROUP = ["NVDA", "AAPL", "GOOGL", "TSLA", "META"]
-CRYPTO_GROUP = ["IBIT", "COIN", "MARA"]
+CRYPTO_GROUP = ["MSTR", "COIN", "MARA"]
 ALL_TICKERS = EQUITY_GROUP + CRYPTO_GROUP
 
 DEAD_START = dtime(12, 0)

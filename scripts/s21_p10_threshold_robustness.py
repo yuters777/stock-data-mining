@@ -17,9 +17,9 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 OUT  = ROOT / "backtest_output"
 
 TICKERS = [
-    "AAPL", "AMD", "AMZN", "AVGO", "BA", "BABA", "BIDU", "C", "COIN", "COST",
-    "GOOGL", "GS", "IBIT", "JPM", "MARA", "META", "MSFT", "MU", "NVDA",
-    "PLTR", "SNOW", "TSLA", "TSM", "TXN", "V",
+    "AAPL", "AMD", "AMZN", "ARM", "AVGO", "BA", "BABA", "BIDU", "C", "COIN",
+    "COST", "GOOGL", "GS", "INTC", "JPM", "MARA", "META", "MSFT", "MSTR",
+    "MU", "NVDA", "PLTR", "SMCI", "TSLA", "TSM", "V",
 ]
 PICK_N = 2
 CAPITAL = 10_000

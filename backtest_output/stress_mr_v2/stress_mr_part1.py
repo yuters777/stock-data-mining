@@ -22,9 +22,9 @@ DATA_DIR = Path(__file__).parent.parent  # backtest_output/
 OUTPUT_DIR = Path(__file__).parent       # backtest_output/stress_mr_v2/
 
 ALL_TICKERS = [
-    "AAPL", "AMD", "AMZN", "AVGO", "BA", "BABA", "BIDU", "C", "COIN", "COST",
-    "GOOGL", "GS", "IBIT", "JPM", "MARA", "META", "MSFT", "MU", "NVDA",
-    "PLTR", "SNOW", "TSLA", "TSM", "TXN", "V",
+    "AAPL", "AMD", "AMZN", "ARM", "AVGO", "BA", "BABA", "BIDU", "C", "COIN",
+    "COST", "GOOGL", "GS", "INTC", "JPM", "MARA", "META", "MSFT", "MSTR",
+    "MU", "NVDA", "PLTR", "SMCI", "TSLA", "TSM", "V",
 ]
 
 STRESS_THRESHOLD = -0.75  # percent

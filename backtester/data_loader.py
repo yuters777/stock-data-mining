@@ -33,11 +33,11 @@ REGULAR_END_HOUR = 22        # up to 22:55 IST
 CLOSE_BAR_HOUR = 23          # 23:00 IST close bar
 POST_MARKET_START_HOUR = 23  # 23:05+ IST
 
-# All 25 tickers from MarketPatterns-AI pipeline (source of truth)
+# All 26 equity tickers (excl SPY/VIXY) from MarketPatterns-AI pipeline (source of truth)
 ALL_TICKERS = [
-    "AAPL", "AMD", "AMZN", "AVGO", "BA", "BABA", "BIDU", "C", "COIN", "COST",
-    "GOOGL", "GS", "IBIT", "JPM", "MARA", "META", "MSFT", "MU", "NVDA",
-    "PLTR", "SNOW", "TSLA", "TSM", "TXN", "V",
+    "AAPL", "AMD", "AMZN", "ARM", "AVGO", "BA", "BABA", "BIDU", "C", "COIN",
+    "COST", "GOOGL", "GS", "INTC", "JPM", "MARA", "META", "MSFT", "MSTR",
+    "MU", "NVDA", "PLTR", "SMCI", "TSLA", "TSM", "V",
 ]
 
 SECTOR_MAP = {
@@ -45,12 +45,12 @@ SECTOR_MAP = {
     "AAPL": "Technology", "MSFT": "Technology", "GOOGL": "Technology",
     "META": "Technology", "AMZN": "Technology", "NVDA": "Technology",
     "AMD": "Technology", "AVGO": "Technology", "MU": "Technology",
-    "TSM": "Technology", "TXN": "Technology", "PLTR": "Technology",
-    "SNOW": "Technology",
+    "TSM": "Technology", "PLTR": "Technology",
+    "ARM": "Technology", "INTC": "Technology", "SMCI": "Technology",
     # Financial
     "C": "Financial", "GS": "Financial", "JPM": "Financial",
     "V": "Financial", "COIN": "Financial", "MARA": "Financial",
-    "IBIT": "Financial",
+    "MSTR": "Financial",
     # Consumer Discretionary
     "TSLA": "Consumer Discretionary", "BABA": "Consumer Discretionary",
     "COST": "Consumer Staples",

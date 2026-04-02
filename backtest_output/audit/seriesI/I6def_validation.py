@@ -19,7 +19,7 @@ I6BC_DATA = OUT_DIR / "I6bc_trades_with_mae_mfe.csv"
 
 # Cost tiers (round-trip)
 MEGA_CAP = {"AAPL", "AMZN", "GOOGL", "META", "MSFT", "NVDA", "SPY", "TSLA"}
-HIGH_BETA = {"MARA", "PLTR", "COIN", "IBIT"}
+HIGH_BETA = {"MARA", "PLTR", "COIN", "MSTR"}
 # Everything else = mid-vol
 
 COST_MAP = {}

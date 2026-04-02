@@ -7,13 +7,13 @@ from datetime import time as dtime
 
 OUT_DIR = "backtest_output"
 TRADE_UNIVERSE = [
-    "AAPL","AMD","AMZN","AVGO","BA","BABA","BIDU","C","COIN","COST",
-    "GOOGL","GS","IBIT","JPM","MARA","META","MSFT","MU","NVDA",
-    "PLTR","SNOW","TSLA","TSM","TXN","V"
+    "AAPL","AMD","AMZN","ARM","AVGO","BA","BABA","BIDU","C","COIN",
+    "COST","GOOGL","GS","INTC","JPM","MARA","META","MSFT","MSTR",
+    "MU","NVDA","PLTR","SMCI","TSLA","TSM","V"
 ]
 SECTOR_MAP = {
-    "Tech": ["AAPL","AMD","AMZN","AVGO","GOOGL","META","MSFT","MU","NVDA","PLTR","SNOW","TSM","TXN"],
-    "Financial": ["C","COIN","GS","IBIT","JPM","MARA","V"],
+    "Tech": ["AAPL","AMD","AMZN","ARM","AVGO","GOOGL","INTC","META","MSFT","MU","NVDA","PLTR","SMCI","TSM"],
+    "Financial": ["C","COIN","GS","JPM","MARA","MSTR","V"],
     "ConsumerDisc": ["BABA","TSLA"],
     "Communication": ["BIDU"],
     "Industrials": ["BA"],

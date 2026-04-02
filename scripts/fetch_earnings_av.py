@@ -8,9 +8,9 @@ from pathlib import Path
 API_KEY = "E4T2VQPX8FU6BI17"
 
 TICKERS = [
-    "AAPL", "AMD", "AMZN", "AVGO", "BA", "BABA", "BIDU", "C", "COIN", "COST",
-    "GOOGL", "GS", "IBIT", "JPM", "MARA", "META", "MSFT", "MU", "NVDA",
-    "PLTR", "SNOW", "TSLA", "TSM", "TXN", "V"
+    "AAPL", "AMD", "AMZN", "ARM", "AVGO", "BA", "BABA", "BIDU", "C", "COIN",
+    "COST", "GOOGL", "GS", "INTC", "JPM", "MARA", "META", "MSFT", "MSTR",
+    "MU", "NVDA", "PLTR", "SMCI", "TSLA", "TSM", "V"
 ]
 
 calendar = {}

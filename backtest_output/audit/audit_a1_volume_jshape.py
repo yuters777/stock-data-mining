@@ -22,7 +22,7 @@ BACKTEST_DIR = os.path.join(os.path.dirname(__file__), "..")
 AUDIT_DIR = os.path.dirname(__file__)
 
 EXCLUDE = {"BTC", "ETH"}
-CRYPTO_ADJACENT = {"IBIT", "COIN", "MARA"}
+CRYPTO_ADJACENT = {"MSTR", "COIN", "MARA"}
 
 # 13 half-hour windows (minutes since midnight)
 WINDOWS = []

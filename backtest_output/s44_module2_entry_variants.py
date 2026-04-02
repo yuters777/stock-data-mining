@@ -36,9 +36,9 @@ from utils.data_loader import load_m5_regsess
 # ── Config ────────────────────────────────────────────────────────────────────
 
 TICKERS = [
-    "AAPL", "AMD", "AMZN", "AVGO", "BA", "BABA", "BIDU", "C", "COIN",
-    "COST", "GOOGL", "GS", "IBIT", "JPM", "MARA", "META", "MSFT", "MU",
-    "NVDA", "PLTR", "SNOW", "TSLA", "TSM", "TXN", "V",
+    "AAPL", "AMD", "AMZN", "ARM", "AVGO", "BA", "BABA", "BIDU", "C",
+    "COIN", "COST", "GOOGL", "GS", "INTC", "JPM", "MARA", "META", "MSFT",
+    "MSTR", "MU", "NVDA", "PLTR", "SMCI", "TSLA", "TSM", "V",
 ]
 
 INDICATORS_4H_DIR = ROOT / "data" / "indicators_4h"

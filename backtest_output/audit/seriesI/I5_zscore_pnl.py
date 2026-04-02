@@ -26,9 +26,9 @@ OUT_DIR = Path(__file__).resolve().parent
 I4_DATA = OUT_DIR / "I4_depth_zscore_data.csv"
 
 EQUITY_TICKERS = [
-    "AAPL", "AMD", "AMZN", "AVGO", "BA", "BABA", "BIDU", "C", "COIN",
-    "COST", "GOOGL", "GS", "IBIT", "JPM", "MARA", "META", "MSFT", "MU",
-    "NVDA", "PLTR", "SNOW", "SPY", "TSLA", "TSM", "TXN", "V",
+    "AAPL", "AMD", "AMZN", "ARM", "AVGO", "BA", "BABA", "BIDU", "C",
+    "COIN", "COST", "GOOGL", "GS", "INTC", "JPM", "MARA", "META", "MSFT",
+    "MSTR", "MU", "NVDA", "PLTR", "SMCI", "SPY", "TSLA", "TSM", "V",
 ]
 
 # 15:30 ET = 22:30 IST

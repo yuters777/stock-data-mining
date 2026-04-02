@@ -32,9 +32,9 @@ VIX_PATH = DATA_DIR / "VIXCLS_FRED_real.csv"
 I2_DATA = OUT_DIR / "I2_recovery_outcome_data.csv"
 
 EQUITY_TICKERS = [
-    "AAPL", "AMD", "AMZN", "AVGO", "BA", "BABA", "BIDU", "C", "COIN",
-    "COST", "GOOGL", "GS", "IBIT", "JPM", "MARA", "META", "MSFT", "MU",
-    "NVDA", "PLTR", "SNOW", "SPY", "TSLA", "TSM", "TXN", "V",
+    "AAPL", "AMD", "AMZN", "ARM", "AVGO", "BA", "BABA", "BIDU", "C",
+    "COIN", "COST", "GOOGL", "GS", "INTC", "JPM", "MARA", "META", "MSFT",
+    "MSTR", "MU", "NVDA", "PLTR", "SMCI", "SPY", "TSLA", "TSM", "V",
 ]
 
 # IST zone boundaries for Dead Zone: 12:00-13:30 ET = 19:00-20:30 IST

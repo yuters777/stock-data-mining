@@ -22,9 +22,9 @@ OUT_DIR = os.path.join(BACKTEST_DIR, "audit_rerun")
 
 TICKERS_5 = ["NVDA", "TSLA", "GOOGL", "IBIT", "GS"]
 ALL_TICKERS = [
-    "AAPL", "AMD", "AMZN", "AVGO", "BA", "BABA", "BIDU", "C", "COIN",
-    "COST", "GOOGL", "GS", "IBIT", "JPM", "MARA", "META", "MSFT", "MU",
-    "NVDA", "PLTR", "SNOW", "SPY", "TSLA", "TSM", "TXN", "V", "VIXY",
+    "AAPL", "AMD", "AMZN", "ARM", "AVGO", "BA", "BABA", "BIDU", "C",
+    "COIN", "COST", "GOOGL", "GS", "INTC", "JPM", "MARA", "META", "MSFT",
+    "MSTR", "MU", "NVDA", "PLTR", "SMCI", "SPY", "TSLA", "TSM", "V", "VIXY",
 ]
 
 

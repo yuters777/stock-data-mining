@@ -21,9 +21,9 @@ RESULTS_DIR.mkdir(exist_ok=True)
 
 # 25 equity tickers — exclude SPY, VIXY
 TICKERS = [
-    "AAPL", "AMD", "AMZN", "AVGO", "BA", "BABA", "BIDU", "C", "COIN", "COST",
-    "GOOGL", "GS", "IBIT", "JPM", "MARA", "META", "MSFT", "MU", "NVDA", "PLTR",
-    "SNOW", "TSLA", "TSM", "TXN", "V",
+    "AAPL", "AMD", "AMZN", "ARM", "AVGO", "BA", "BABA", "BIDU", "C", "COIN",
+    "COST", "GOOGL", "GS", "INTC", "JPM", "MARA", "META", "MSFT", "MSTR",
+    "MU", "NVDA", "PLTR", "SMCI", "TSLA", "TSM", "V",
 ]
 
 
