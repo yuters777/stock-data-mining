@@ -1,5 +1,5 @@
 """
-PEAD Lite Backtest — Part 1: Data Preparation + Baseline Test (TEST 0).
+PEAD Lite Backtest — Data Preparation, Baseline Test, and Parameter Sweeps.
 
 Tests the Post-Earnings Announcement Drift hypothesis:
 stocks that gap on earnings and hold the gap tend to drift further.
@@ -10,12 +10,15 @@ Reads:
 
 Produces:
   - backtest_output/pead_lite_events.csv (enriched earnings event table)
-  - Console output with data prep summary and baseline test results
+  - backtest_output/pead_lite_sweep_trades.csv (all sweep trade details)
+  - Console output with data prep summary, baseline, and sweep results
 
 Usage:
-    python backtests/pead_lite_backtest.py
+    python backtests/pead_lite_backtest.py            # baseline only
+    python backtests/pead_lite_backtest.py --sweep     # full parameter sweep
 """
 
+import argparse
 import sys
 from pathlib import Path
 
@@ -32,6 +35,7 @@ from utils.data_loader import load_m5_regsess
 _EARNINGS_CSV = _REPO_ROOT / "backtester" / "data" / "fmp_earnings.csv"
 _OUTPUT_DIR = _REPO_ROOT / "backtest_output"
 _OUTPUT_CSV = _OUTPUT_DIR / "pead_lite_events.csv"
+_SWEEP_CSV = _OUTPUT_DIR / "pead_lite_sweep_trades.csv"
 
 
 # ---------------------------------------------------------------------------
@@ -541,32 +545,758 @@ def run_baseline_test(events_df: pd.DataFrame, ticker_4h: dict, ticker_trading_d
 
 
 # ---------------------------------------------------------------------------
+# Part C: Sweep Engine — core trade simulator used by all sweep tests
+# ---------------------------------------------------------------------------
+
+def get_subsequent_bars(bars_4h: pd.DataFrame, ticker: str,
+                        entry_day, trading_days: list, max_bars: int):
+    """Return list of 4H bar rows starting from bar 2 on entry_day.
+
+    Yields up to `max_bars` bars (bar 2 of entry_day, then bar 1 & 2 of
+    subsequent days).
+    """
+    result = []
+    # bar 2 on entry day
+    b2 = get_bar_row(bars_4h, ticker, entry_day, 2)
+    if b2 is not None:
+        result.append(b2)
+
+    day = entry_day
+    while len(result) < max_bars:
+        day = next_trading_day(day, trading_days)
+        if day is None:
+            break
+        for bn in [1, 2]:
+            bar = get_bar_row(bars_4h, ticker, day, bn)
+            if bar is not None:
+                result.append(bar)
+            if len(result) >= max_bars:
+                break
+    return result
+
+
+def simulate_trade(ev, bars_4h, trading_days, max_bars=10,
+                   exit_strategy="midpoint"):
+    """Simulate a single trade and return result dict (or None if no data).
+
+    Entry: first 4H bar close on entry_day (bar 1 close).
+    Exit depends on exit_strategy:
+      'midpoint'   — gap midpoint breach OR max_bars (spec default)
+      'reversal'   — first 4H close against entry direction
+      'ema9'       — 4H close crosses EMA9 against position
+      'fixed5'     — exit at exactly bar 5 (no stop)
+      'fixed10'    — exit at exactly bar 10 (no stop)
+      'trailing50' — exit if any bar gives back >50% of max unrealized gain
+    """
+    ticker = ev["ticker"]
+    entry_day = ev["entry_day"]
+    gap_pct = ev["gap_pct"]
+    gap_sign = 1 if gap_pct > 0 else -1
+    entry_price = ev["first_4h_close"]
+    gap_midpoint = ev["gap_midpoint"]
+
+    if pd.isna(entry_price) or entry_price == 0:
+        return None
+
+    subsequent = get_subsequent_bars(bars_4h, ticker, entry_day,
+                                     trading_days, max_bars)
+    if not subsequent:
+        return None
+
+    # For EMA9 we need close prices including entry
+    closes_for_ema = [entry_price]
+    for bar in subsequent:
+        closes_for_ema.append(bar["Close"])
+    ema9_values = _ema(closes_for_ema, 9)
+
+    exit_price = None
+    bars_held = 0
+    max_unrealized = 0.0
+
+    for i, bar in enumerate(subsequent):
+        bars_held = i + 1
+        bar_close = bar["Close"]
+        unrealized = (bar_close - entry_price) / entry_price * 100 * gap_sign
+        if unrealized > max_unrealized:
+            max_unrealized = unrealized
+
+        if exit_strategy == "midpoint":
+            # Check if close breaches gap midpoint against position
+            if gap_sign == 1 and bar_close < gap_midpoint:
+                exit_price = bar_close
+                break
+            if gap_sign == -1 and bar_close > gap_midpoint:
+                exit_price = bar_close
+                break
+        elif exit_strategy == "reversal":
+            # Close against entry direction
+            move = (bar_close - entry_price) * gap_sign
+            if move < 0:
+                exit_price = bar_close
+                break
+        elif exit_strategy == "ema9":
+            ema_val = ema9_values[i + 1]  # +1 because index 0 is entry
+            if gap_sign == 1 and bar_close < ema_val:
+                exit_price = bar_close
+                break
+            if gap_sign == -1 and bar_close > ema_val:
+                exit_price = bar_close
+                break
+        elif exit_strategy == "fixed5":
+            if bars_held == 5:
+                exit_price = bar_close
+                break
+        elif exit_strategy == "fixed10":
+            if bars_held == 10:
+                exit_price = bar_close
+                break
+        elif exit_strategy == "trailing50":
+            if max_unrealized > 0 and unrealized < max_unrealized * 0.5:
+                exit_price = bar_close
+                break
+
+    # If no exit triggered, exit at last bar
+    if exit_price is None:
+        if subsequent:
+            exit_price = subsequent[-1]["Close"]
+        else:
+            return None
+
+    raw_return = (exit_price - entry_price) / entry_price * 100
+    signed_return = raw_return * gap_sign
+
+    return {
+        "ticker": ticker,
+        "entry_day": str(entry_day),
+        "gap_pct": round(gap_pct, 4),
+        "gap_sign": gap_sign,
+        "eps_surprise_pct": ev.get("eps_surprise_pct"),
+        "entry_price": round(entry_price, 4),
+        "exit_price": round(exit_price, 4),
+        "bars_held": bars_held,
+        "raw_return_pct": round(raw_return, 4),
+        "signed_return_pct": round(signed_return, 4),
+        "exit_strategy": exit_strategy,
+    }
+
+
+def _ema(values, period):
+    """Compute EMA for a list of values. Returns list of same length."""
+    ema = [values[0]]
+    k = 2 / (period + 1)
+    for v in values[1:]:
+        ema.append(v * k + ema[-1] * (1 - k))
+    return ema
+
+
+def run_trades(events_df, ticker_4h, ticker_trading_days,
+               gap_threshold=2.0, first_bar_filter="holds",
+               max_bars=10, direction="both",
+               eps_surprise_min=None, exit_strategy="midpoint"):
+    """Run trades on filtered events and return list of result dicts."""
+    df = events_df.copy()
+    abs_gap = df["gap_pct"].abs()
+
+    # Gap filter
+    df = df[abs_gap >= gap_threshold]
+
+    # Direction filter
+    if direction == "long":
+        df = df[df["gap_pct"] > 0]
+    elif direction == "short":
+        df = df[df["gap_pct"] < 0]
+
+    # First bar filter
+    if first_bar_filter == "holds":
+        df = df[df["first_bar_holds"] == True]
+    elif first_bar_filter == "direction":
+        # First bar close in gap direction (above/below prior close)
+        mask = ((df["gap_pct"] > 0) & (df["first_4h_close"] > df["prior_close"])) | \
+               ((df["gap_pct"] < 0) & (df["first_4h_close"] < df["prior_close"]))
+        df = df[mask]
+    elif first_bar_filter == "half":
+        # Direction filter + close in upper/lower half of bar range
+        bar_range = df["first_4h_high"] - df["first_4h_low"]
+        bar_mid = (df["first_4h_high"] + df["first_4h_low"]) / 2
+        mask_dir = ((df["gap_pct"] > 0) & (df["first_4h_close"] > df["prior_close"])) | \
+                   ((df["gap_pct"] < 0) & (df["first_4h_close"] < df["prior_close"]))
+        mask_half = ((df["gap_pct"] > 0) & (df["first_4h_close"] > bar_mid)) | \
+                    ((df["gap_pct"] < 0) & (df["first_4h_close"] < bar_mid))
+        df = df[mask_dir & mask_half]
+    # "none" = no filter
+
+    # EPS surprise filter
+    if eps_surprise_min is not None:
+        df = df[df["eps_surprise_pct"].abs() >= eps_surprise_min]
+
+    results = []
+    for _, ev in df.iterrows():
+        ticker = ev["ticker"]
+        if ticker not in ticker_4h:
+            continue
+        res = simulate_trade(ev, ticker_4h[ticker],
+                             ticker_trading_days[ticker],
+                             max_bars=max_bars,
+                             exit_strategy=exit_strategy)
+        if res is not None:
+            results.append(res)
+    return results
+
+
+def compute_metrics(trades):
+    """Compute summary metrics from a list of trade dicts."""
+    if not trades:
+        return {"N": 0, "mean_pct": 0, "wr_pct": 0, "pf": 0,
+                "sharpe": 0, "max_dd_pct": 0, "avg_bars": 0}
+    rets = [t["signed_return_pct"] for t in trades]
+    n = len(rets)
+    mean_r = np.mean(rets)
+    wins = sum(1 for r in rets if r > 0)
+    wr = wins / n * 100
+    gross_profit = sum(r for r in rets if r > 0)
+    gross_loss = abs(sum(r for r in rets if r <= 0))
+    pf = gross_profit / gross_loss if gross_loss > 0 else float("inf")
+
+    std = np.std(rets, ddof=1) if n > 1 else 0
+    sharpe = (mean_r / std) if std > 0 else 0
+
+    # Max drawdown on cumulative equity curve
+    cum = np.cumsum(rets)
+    peak = np.maximum.accumulate(cum)
+    dd = cum - peak
+    max_dd = abs(dd.min()) if len(dd) > 0 else 0
+
+    avg_bars = np.mean([t["bars_held"] for t in trades])
+
+    return {
+        "N": n,
+        "mean_pct": round(mean_r, 2),
+        "wr_pct": round(wr, 1),
+        "pf": round(pf, 2),
+        "sharpe": round(sharpe, 2),
+        "max_dd_pct": round(max_dd, 2),
+        "avg_bars": round(avg_bars, 1),
+    }
+
+
+def print_table(headers, rows, title=""):
+    """Print a formatted ASCII table."""
+    if title:
+        print(f"\n{title}")
+    col_widths = [max(len(str(h)), max((len(str(r[i])) for r in rows), default=0))
+                  for i, h in enumerate(headers)]
+    hdr = " | ".join(str(h).rjust(w) for h, w in zip(headers, col_widths))
+    sep = "-+-".join("-" * w for w in col_widths)
+    print(f"| {hdr} |")
+    print(f"+-{sep}-+")
+    for row in rows:
+        line = " | ".join(str(row[i]).rjust(w) for i, w in enumerate(col_widths))
+        print(f"| {line} |")
+
+
+# ---------------------------------------------------------------------------
+# Part D: Sweep Tests
+# ---------------------------------------------------------------------------
+
+def test1_gap_threshold_sweep(events_df, ticker_4h, ticker_trading_days):
+    """TEST 1: GAP_THRESHOLD sweep."""
+    print("\n" + "=" * 60)
+    print("=== TEST 1: GAP_THRESHOLD Sweep ===")
+    print("=" * 60)
+
+    thresholds = [1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0]
+    rows = []
+    best_pf = 0
+    best_thresh = 2.0
+
+    for thresh in thresholds:
+        trades = run_trades(events_df, ticker_4h, ticker_trading_days,
+                            gap_threshold=thresh, first_bar_filter="holds",
+                            max_bars=10, exit_strategy="midpoint")
+        m = compute_metrics(trades)
+        rows.append([f"{thresh:.1f}%", m["N"], m["mean_pct"], m["wr_pct"],
+                      m["pf"], m["sharpe"], m["max_dd_pct"], m["avg_bars"]])
+        if m["N"] >= 10 and m["pf"] > best_pf:
+            best_pf = m["pf"]
+            best_thresh = thresh
+
+    print_table(["Gap%", "N", "Mean%", "WR%", "PF", "Sharpe", "MaxDD", "Bars"],
+                rows, "Gap Threshold Sweep Results:")
+    print(f"\nBest threshold (PF, N>=10): {best_thresh:.1f}%")
+    return best_thresh
+
+
+def test2_first_bar_filter(events_df, ticker_4h, ticker_trading_days):
+    """TEST 2: FIRST_BAR_HOLDS filter impact."""
+    print("\n" + "=" * 60)
+    print("=== TEST 2: First Bar Filter Impact (gap >= 2%) ===")
+    print("=" * 60)
+
+    filters = [
+        ("none", "No filter"),
+        ("direction", "Direction"),
+        ("half", "Half"),
+        ("holds", "Holds (midpoint)"),
+    ]
+    base_mean = None
+    rows = []
+    for filt_key, filt_name in filters:
+        trades = run_trades(events_df, ticker_4h, ticker_trading_days,
+                            gap_threshold=2.0, first_bar_filter=filt_key,
+                            max_bars=10, exit_strategy="midpoint")
+        m = compute_metrics(trades)
+        if filt_key == "none":
+            base_mean = m["mean_pct"]
+        lift = (m["mean_pct"] - base_mean) if base_mean is not None else 0
+        rows.append([filt_name, m["N"], m["mean_pct"], m["wr_pct"],
+                      m["pf"], f"{lift:+.2f}"])
+
+    print_table(["Filter", "N", "Mean%", "WR%", "PF", "Lift vs (a)"], rows)
+
+
+def test3_max_bars_sweep(events_df, ticker_4h, ticker_trading_days,
+                         gap_threshold=2.0):
+    """TEST 3: MAX_BARS sweep."""
+    print("\n" + "=" * 60)
+    print(f"=== TEST 3: MAX_BARS Sweep (gap >= {gap_threshold}%) ===")
+    print("=" * 60)
+
+    max_bars_values = [4, 6, 8, 10, 15, 20]
+    rows = []
+    for mb in max_bars_values:
+        trades = run_trades(events_df, ticker_4h, ticker_trading_days,
+                            gap_threshold=gap_threshold,
+                            first_bar_filter="holds",
+                            max_bars=mb, exit_strategy="midpoint")
+        m = compute_metrics(trades)
+        rows.append([mb, m["N"], m["mean_pct"], m["wr_pct"],
+                      m["pf"], m["sharpe"], m["avg_bars"]])
+
+    print_table(["MaxBars", "N", "Mean%", "WR%", "PF", "Sharpe", "AvgBars"],
+                rows)
+
+
+def test4_direction(events_df, ticker_4h, ticker_trading_days):
+    """TEST 4: LONG-ONLY vs SHORT-ONLY vs SYMMETRIC."""
+    print("\n" + "=" * 60)
+    print("=== TEST 4: Direction Split (gap >= 2%) ===")
+    print("=" * 60)
+
+    directions = [("long", "LONG"), ("short", "SHORT"), ("both", "SYMMETRIC")]
+    rows = []
+    for dir_key, dir_name in directions:
+        trades = run_trades(events_df, ticker_4h, ticker_trading_days,
+                            gap_threshold=2.0, first_bar_filter="holds",
+                            max_bars=10, direction=dir_key,
+                            exit_strategy="midpoint")
+        m = compute_metrics(trades)
+        rows.append([dir_name, m["N"], m["mean_pct"], m["wr_pct"],
+                      m["pf"], m["sharpe"]])
+
+    print_table(["Direction", "N", "Mean%", "WR%", "PF", "Sharpe"], rows)
+
+
+def test5_eps_surprise(events_df, ticker_4h, ticker_trading_days):
+    """TEST 5: EPS SURPRISE as additional filter."""
+    print("\n" + "=" * 60)
+    print("=== TEST 5: EPS Surprise Filter (gap >= 2%) ===")
+    print("=" * 60)
+
+    thresholds = [0, 5, 10, 15, 20]
+    rows = []
+    for st in thresholds:
+        trades = run_trades(events_df, ticker_4h, ticker_trading_days,
+                            gap_threshold=2.0, first_bar_filter="holds",
+                            max_bars=10, exit_strategy="midpoint",
+                            eps_surprise_min=st if st > 0 else None)
+        m = compute_metrics(trades)
+        rows.append([f">={st}%", m["N"], m["mean_pct"], m["wr_pct"], m["pf"]])
+
+    print_table(["EPS Thresh", "N", "Mean%", "WR%", "PF"], rows,
+                "EPS Surprise Threshold Sweep:")
+
+    # Combined: gap>=2% AND |eps_surprise|>=10%, split by beat/miss
+    print("\nCombined filter: gap>=2%, first_bar_holds, |eps_surprise|>=10%")
+    df = events_df.copy()
+    abs_gap = df["gap_pct"].abs()
+    df = df[(abs_gap >= 2.0) & (df["first_bar_holds"] == True)]
+    df = df[df["eps_surprise_pct"].abs() >= 10]
+
+    for label, sub in [("Beats (eps>0)", df[df["eps_surprise_pct"] > 0]),
+                       ("Misses (eps<0)", df[df["eps_surprise_pct"] < 0])]:
+        trades = []
+        for _, ev in sub.iterrows():
+            ticker = ev["ticker"]
+            if ticker not in ticker_4h:
+                continue
+            res = simulate_trade(ev, ticker_4h[ticker],
+                                 ticker_trading_days[ticker],
+                                 max_bars=10, exit_strategy="midpoint")
+            if res is not None:
+                trades.append(res)
+        m = compute_metrics(trades)
+        print(f"  {label}: N={m['N']}, Mean={m['mean_pct']}%, "
+              f"WR={m['wr_pct']}%, PF={m['pf']}")
+
+
+def test6_exit_strategies(events_df, ticker_4h, ticker_trading_days):
+    """TEST 6: Exit strategy comparison."""
+    print("\n" + "=" * 60)
+    print("=== TEST 6: Exit Strategy Comparison (gap >= 2%) ===")
+    print("=" * 60)
+
+    strategies = [
+        ("midpoint", "Midpoint breach / max10"),
+        ("reversal", "Any reversal bar"),
+        ("ema9", "EMA9 touch"),
+        ("fixed5", "Fixed 5 bars"),
+        ("fixed10", "Fixed 10 bars"),
+        ("trailing50", "Trailing 50% giveback"),
+    ]
+    rows = []
+    for strat_key, strat_name in strategies:
+        trades = run_trades(events_df, ticker_4h, ticker_trading_days,
+                            gap_threshold=2.0, first_bar_filter="holds",
+                            max_bars=10, exit_strategy=strat_key)
+        m = compute_metrics(trades)
+        rows.append([strat_name, m["N"], m["mean_pct"], m["wr_pct"],
+                      m["pf"], m["avg_bars"]])
+
+    print_table(["Exit", "N", "Mean%", "WR%", "PF", "AvgBars"], rows)
+
+
+# ---------------------------------------------------------------------------
+# Part E: Robustness Checks
+# ---------------------------------------------------------------------------
+
+def robustness_loto(events_df, ticker_4h, ticker_trading_days, **kwargs):
+    """R1: Leave-one-ticker-out."""
+    print("\n--- R1: Leave-One-Ticker-Out ---")
+    tickers = sorted(events_df["ticker"].unique())
+    base_trades = run_trades(events_df, ticker_4h, ticker_trading_days, **kwargs)
+    base_m = compute_metrics(base_trades)
+    base_pf = base_m["pf"]
+
+    max_impact_ticker = None
+    max_pf_drop = 0
+    rows = []
+
+    for t in tickers:
+        sub = events_df[events_df["ticker"] != t]
+        trades = run_trades(sub, ticker_4h, ticker_trading_days, **kwargs)
+        m = compute_metrics(trades)
+        pf_drop = base_pf - m["pf"] if base_pf != float("inf") else 0
+        rows.append((t, m["N"], m["mean_pct"], m["pf"]))
+        if abs(pf_drop) > abs(max_pf_drop):
+            max_pf_drop = pf_drop
+            max_impact_ticker = t
+
+    for t, n, mean, pf in rows:
+        print(f"  Without {t:6s}: N={n:3d}, Mean={mean:+.2f}%, PF={pf:.2f}")
+
+    pf_drop_pct = (max_pf_drop / base_pf * 100) if base_pf > 0 and base_pf != float("inf") else 0
+    print(f"\n  Max impact ticker: {max_impact_ticker} "
+          f"(PF drop: {max_pf_drop:+.2f}, {pf_drop_pct:+.1f}%)")
+    return max_impact_ticker, abs(pf_drop_pct)
+
+
+def robustness_monthly(trades):
+    """R2: Monthly returns."""
+    print("\n--- R2: Monthly Returns ---")
+    if not trades:
+        print("  No trades.")
+        return 0
+    df = pd.DataFrame(trades)
+    df["month"] = pd.to_datetime(df["entry_day"]).dt.to_period("M")
+    grouped = df.groupby("month").agg(
+        N=("signed_return_pct", "count"),
+        mean_pct=("signed_return_pct", "mean"),
+        total_pct=("signed_return_pct", "sum"),
+    )
+    total_pnl = grouped["total_pct"].sum()
+
+    max_conc = 0
+    for _, row in grouped.iterrows():
+        wr_approx = "n/a"
+        conc = abs(row["total_pct"]) / abs(total_pnl) * 100 if total_pnl != 0 else 0
+        if conc > max_conc:
+            max_conc = conc
+        print(f"  {row.name}: N={int(row['N'])}, Mean={row['mean_pct']:.2f}%, "
+              f"Total={row['total_pct']:.2f}% ({conc:.0f}% of P&L)")
+
+    if total_pnl != 0:
+        print(f"\n  Max single-month concentration: {max_conc:.1f}% of total P&L")
+    return max_conc
+
+
+def robustness_sector(trades):
+    """R3: Sector concentration."""
+    print("\n--- R3: Sector Concentration ---")
+    SECTORS = {
+        "mega_tech": ["AAPL", "MSFT", "GOOGL", "AMZN", "META", "NVDA"],
+        "growth_semi": ["TSLA", "AMD", "SMCI", "PLTR", "AVGO", "ARM", "TSM",
+                        "MU", "INTC"],
+        "crypto_proxy": ["COIN", "MSTR", "MARA"],
+        "finance": ["C", "GS", "V", "BA", "JPM"],
+        "china_adr": ["BABA", "JD", "BIDU"],
+        "consumer": ["COST"],
+    }
+    ticker_to_sector = {}
+    for sector, tickers in SECTORS.items():
+        for t in tickers:
+            ticker_to_sector[t] = sector
+
+    if not trades:
+        print("  No trades.")
+        return 0
+
+    n_total = len(trades)
+    sector_counts = {}
+    sector_returns = {}
+    for t in trades:
+        sec = ticker_to_sector.get(t["ticker"], "other")
+        sector_counts[sec] = sector_counts.get(sec, 0) + 1
+        sector_returns.setdefault(sec, []).append(t["signed_return_pct"])
+
+    max_conc = 0
+    for sec in sorted(sector_counts.keys()):
+        n = sector_counts[sec]
+        mean_r = np.mean(sector_returns[sec])
+        pct = n / n_total * 100
+        if pct > max_conc:
+            max_conc = pct
+        print(f"  {sec:15s}: N={n:3d}, Mean={mean_r:+.2f}%, "
+              f"{pct:.1f}% of trades")
+
+    print(f"\n  Max sector concentration: {max_conc:.1f}%")
+    return max_conc
+
+
+def robustness_gap_corr(trades):
+    """R4: Gap size vs return correlation."""
+    print("\n--- R4: Gap Size vs Return Correlation ---")
+    if len(trades) < 3:
+        print("  Insufficient trades.")
+        return 0
+
+    gaps = [abs(t["gap_pct"]) for t in trades]
+    rets = [t["signed_return_pct"] for t in trades]
+    corr = np.corrcoef(gaps, rets)[0, 1]
+    print(f"  Correlation(|gap_pct|, return_pct): {corr:.3f}")
+    print(f"  Larger gap = larger drift: {'YES' if corr > 0.1 else 'NO' if corr < -0.1 else 'UNCLEAR'}")
+    return round(corr, 3)
+
+
+def robustness_beat_miss(trades):
+    """R5: Earnings beat vs miss."""
+    print("\n--- R5: Earnings Beat vs Miss ---")
+    if not trades:
+        print("  No trades.")
+        return
+
+    beats = [t for t in trades if t.get("eps_surprise_pct") is not None
+             and t["eps_surprise_pct"] > 0]
+    misses = [t for t in trades if t.get("eps_surprise_pct") is not None
+              and t["eps_surprise_pct"] < 0]
+
+    for label, group in [("Beats", beats), ("Misses", misses)]:
+        m = compute_metrics(group)
+        print(f"  {label:7s}: N={m['N']}, Mean={m['mean_pct']}%, "
+              f"WR={m['wr_pct']}%, PF={m['pf']}")
+
+
+# ---------------------------------------------------------------------------
+# Part F: Full Sweep Orchestrator
+# ---------------------------------------------------------------------------
+
+def run_sweep(events_df, ticker_4h, ticker_trading_days):
+    """Run all parameter sweeps and robustness checks."""
+    print("\n" + "=" * 60)
+    print("=== PEAD-lite Parameter Sweep Mode ===")
+    print("=" * 60)
+
+    all_sweep_trades = []
+
+    # TEST 1
+    best_gap = test1_gap_threshold_sweep(events_df, ticker_4h,
+                                          ticker_trading_days)
+
+    # TEST 2
+    test2_first_bar_filter(events_df, ticker_4h, ticker_trading_days)
+
+    # TEST 3
+    test3_max_bars_sweep(events_df, ticker_4h, ticker_trading_days,
+                         gap_threshold=best_gap)
+
+    # TEST 4
+    test4_direction(events_df, ticker_4h, ticker_trading_days)
+
+    # TEST 5
+    test5_eps_surprise(events_df, ticker_4h, ticker_trading_days)
+
+    # TEST 6
+    test6_exit_strategies(events_df, ticker_4h, ticker_trading_days)
+
+    # --- Determine best config from sweeps ---
+    # We'll search a focused grid of top candidates
+    print("\n" + "=" * 60)
+    print("=== Searching Best Configuration ===")
+    print("=" * 60)
+
+    best_config = {
+        "gap_threshold": 2.0,
+        "first_bar_filter": "holds",
+        "max_bars": 10,
+        "direction": "both",
+        "eps_surprise_min": None,
+        "exit_strategy": "midpoint",
+    }
+    best_score = -999
+
+    for gt in [best_gap, 2.0, 2.5, 3.0]:
+        for fbf in ["holds", "direction", "none"]:
+            for mb in [8, 10, 15]:
+                for es in ["midpoint", "ema9", "trailing50"]:
+                    for eps_min in [None, 10]:
+                        trades = run_trades(
+                            events_df, ticker_4h, ticker_trading_days,
+                            gap_threshold=gt, first_bar_filter=fbf,
+                            max_bars=mb, exit_strategy=es,
+                            eps_surprise_min=eps_min,
+                        )
+                        m = compute_metrics(trades)
+                        if m["N"] < 10:
+                            continue
+                        # Score: balance PF, WR, and sample size
+                        score = (m["pf"] * 0.4 + m["wr_pct"] / 100 * 0.3 +
+                                 min(m["N"] / 50, 1.0) * 0.3)
+                        if score > best_score:
+                            best_score = score
+                            best_config = {
+                                "gap_threshold": gt,
+                                "first_bar_filter": fbf,
+                                "max_bars": mb,
+                                "direction": "both",
+                                "eps_surprise_min": eps_min,
+                                "exit_strategy": es,
+                            }
+
+    print(f"\nBest config found:")
+    for k, v in best_config.items():
+        print(f"  {k}: {v}")
+
+    # Run best config trades
+    best_trades = run_trades(events_df, ticker_4h, ticker_trading_days,
+                             **best_config)
+    best_m = compute_metrics(best_trades)
+    all_sweep_trades.extend(best_trades)
+
+    # --- Robustness Checks ---
+    print("\n" + "=" * 60)
+    print("=== Robustness Checks (best config) ===")
+    print("=" * 60)
+
+    loto_ticker, loto_pct = robustness_loto(
+        events_df, ticker_4h, ticker_trading_days, **best_config)
+    monthly_conc = robustness_monthly(best_trades)
+    sector_conc = robustness_sector(best_trades)
+    gap_corr = robustness_gap_corr(best_trades)
+    robustness_beat_miss(best_trades)
+
+    # p-value
+    p_val = None
+    try:
+        from scipy.stats import ttest_1samp
+        rets = [t["signed_return_pct"] for t in best_trades]
+        if len(rets) >= 2:
+            _, p_val = ttest_1samp(rets, 0)
+    except ImportError:
+        pass
+
+    # --- Final Summary ---
+    print("\n" + "=" * 60)
+    print("=== PEAD-lite Sweep Summary ===")
+    print("=" * 60)
+
+    print(f"\nBest Configuration:")
+    print(f"  GAP_THRESHOLD: {best_config['gap_threshold']}%")
+    print(f"  FIRST_BAR_FILTER: {best_config['first_bar_filter']}")
+    print(f"  MAX_BARS: {best_config['max_bars']}")
+    print(f"  DIRECTION: {best_config['direction']}")
+    print(f"  EPS_SURPRISE_FILTER: >={best_config['eps_surprise_min']}%" if best_config['eps_surprise_min'] else "  EPS_SURPRISE_FILTER: none")
+    print(f"  EXIT_STRATEGY: {best_config['exit_strategy']}")
+
+    print(f"\nPerformance:")
+    print(f"  N: {best_m['N']}")
+    print(f"  Mean return: {best_m['mean_pct']}%")
+    print(f"  Win rate: {best_m['wr_pct']}%")
+    print(f"  Profit factor: {best_m['pf']}")
+    print(f"  Sharpe: {best_m['sharpe']}")
+    print(f"  Max drawdown: {best_m['max_dd_pct']}%")
+    if p_val is not None:
+        print(f"  p-value: {p_val:.4f}")
+    else:
+        print(f"  p-value: scipy not available")
+
+    print(f"\nRobustness:")
+    print(f"  LOTO max impact: {loto_pct:.1f}% (ticker: {loto_ticker})")
+    print(f"  Monthly concentration: {monthly_conc:.1f}% in single month")
+    print(f"  Sector concentration: {sector_conc:.1f}% in single sector")
+    print(f"  Gap-return correlation: {gap_corr}")
+
+    # Verdict
+    validated = (best_m["N"] >= 30 and best_m["wr_pct"] >= 60 and
+                 best_m["pf"] >= 2.0 and
+                 (p_val is not None and p_val < 0.05) and
+                 loto_pct < 25)
+    marginal = not validated and (
+        best_m["N"] >= 20 or best_m["wr_pct"] >= 55 or best_m["pf"] >= 1.5)
+
+    if validated:
+        verdict = "VALIDATED"
+    elif marginal:
+        verdict = "MARGINAL"
+    else:
+        verdict = "REJECTED"
+
+    print(f"\nVERDICT: {verdict}")
+    print(f"  VALIDATED = N>=30, WR>=60%, PF>=2.0, p<0.05, LOTO<25%")
+    print(f"  MARGINAL = close to thresholds, needs more data")
+    print(f"  REJECTED = clear failure on multiple criteria")
+
+    # Save trade details
+    if all_sweep_trades:
+        _OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+        trade_df = pd.DataFrame(all_sweep_trades)
+        trade_df.to_csv(_SWEEP_CSV, index=False)
+        print(f"\nSweep trades saved to: {_SWEEP_CSV}")
+        print(f"Total trades in best config: {len(all_sweep_trades)}")
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 
-def main():
+def load_data():
+    """Load earnings, M5, and 4H bar data. Returns (earnings_df, events_df, ticker_4h, ticker_trading_days)."""
     print("=" * 60)
-    print("PEAD Lite Backtest — Part 1: Data Prep + Baseline")
+    print("PEAD Lite Backtest — Data Loading")
     print("=" * 60)
 
-    # Step 1: Load earnings data
     earnings_df = load_earnings()
 
-    # Step 2: Identify tickers that have M5 data
     fetched_dir = _REPO_ROOT / "Fetched_Data"
     available_tickers = set()
     for f in fetched_dir.glob("*_data.csv"):
         ticker = f.stem.replace("_data", "")
         available_tickers.add(ticker)
 
-    # Filter earnings to tickers with M5 data
     earnings_tickers = set(earnings_df["ticker"].unique())
     tickers_with_data = earnings_tickers & available_tickers
     print(f"Earnings tickers: {len(earnings_tickers)}")
     print(f"Tickers with M5 data: {len(available_tickers)}")
     print(f"Overlap: {len(tickers_with_data)}")
 
-    # Step 3: Load M5 data and synthesize 4H bars per ticker
     print("\nLoading M5 data and synthesizing 4H bars...")
     ticker_4h = {}
     ticker_trading_days = {}
@@ -583,25 +1313,35 @@ def main():
         except (FileNotFoundError, ValueError) as e:
             print(f"  {ticker}: SKIPPED — {e}")
 
-    # Step 4: Build earnings event table
     print("\nBuilding earnings event table...")
     events_df, n_in_range = build_events(earnings_df, ticker_4h, ticker_trading_days)
 
     if len(events_df) == 0:
         print("\nNo qualifying earnings events. Exiting.")
-        return
+        sys.exit(1)
 
-    # Step 5: Print data prep summary
     print_data_prep_summary(earnings_df, events_df, n_in_range)
 
-    # Step 6: Run baseline test
-    run_baseline_test(events_df, ticker_4h, ticker_trading_days)
-
-    # Step 7: Save events table
     _OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     events_df.to_csv(_OUTPUT_CSV, index=False)
     print(f"\nEvents table saved to: {_OUTPUT_CSV}")
     print(f"Total events: {len(events_df)}")
+
+    return earnings_df, events_df, ticker_4h, ticker_trading_days
+
+
+def main():
+    parser = argparse.ArgumentParser(description="PEAD Lite Backtest")
+    parser.add_argument("--sweep", action="store_true",
+                        help="Run full parameter sweep + robustness checks")
+    args = parser.parse_args()
+
+    earnings_df, events_df, ticker_4h, ticker_trading_days = load_data()
+
+    if args.sweep:
+        run_sweep(events_df, ticker_4h, ticker_trading_days)
+    else:
+        run_baseline_test(events_df, ticker_4h, ticker_trading_days)
 
 
 if __name__ == "__main__":
