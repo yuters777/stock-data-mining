@@ -154,6 +154,61 @@ def get_bar(bars_4h: pd.DataFrame, ticker: str, day, bar_num: int):
     return rows.iloc[0]
 
 
+def build_bar_lookup(ticker_4h: dict):
+    """Build fast lookup dicts from per-ticker 4H DataFrames.
+
+    Returns:
+        bar_lookup: {(ticker, trading_day, bar_num): row_dict}
+        ticker_days: {ticker: sorted list of trading_days}
+    """
+    bar_lookup = {}
+    ticker_days = {}
+    for ticker, bars_4h in ticker_4h.items():
+        days = sorted(bars_4h["trading_day"].unique())
+        ticker_days[ticker] = days
+        for _, row in bars_4h.iterrows():
+            key = (row["Ticker"], row["trading_day"], row["bar_num"])
+            bar_lookup[key] = {
+                "Open": row["Open"], "High": row["High"],
+                "Low": row["Low"], "Close": row["Close"],
+                "Volume": row["Volume"],
+            }
+    return bar_lookup, ticker_days
+
+
+def get_forward_bars_fast(bar_lookup, ticker_days, ticker, entry_day, max_bars):
+    """Get up to max_bars 4H bars starting from bar 2 on entry_day using dict lookup."""
+    result = []
+    trading_days = ticker_days.get(ticker)
+    if trading_days is None:
+        return result
+
+    # Find the index of entry_day for fast next-day lookup
+    day_set = {d: i for i, d in enumerate(trading_days)}
+    day = entry_day
+    bar_num = 2
+    count = 0
+    while count < max_bars:
+        row = bar_lookup.get((ticker, day, bar_num))
+        if row is None:
+            break
+        result.append({
+            "day": day, "bar_num": bar_num,
+            "Open": row["Open"], "High": row["High"],
+            "Low": row["Low"], "Close": row["Close"],
+        })
+        count += 1
+        if bar_num == 2:
+            idx = day_set.get(day)
+            if idx is None or idx + 1 >= len(trading_days):
+                break
+            day = trading_days[idx + 1]
+            bar_num = 1
+        else:
+            bar_num = 2
+    return result
+
+
 def get_forward_bars(bars_4h, ticker, entry_day, trading_days, max_bars):
     """Get up to max_bars 4H bars starting from bar 2 on entry_day."""
     result = []
@@ -259,7 +314,7 @@ def build_shock_events(ticker_4h: dict, ticker_trading_days: dict,
 # ---------------------------------------------------------------------------
 
 def simulate_trade(ev, ticker_4h, ticker_trading_days, max_hold=10,
-                   exit_strategy="fixed_10"):
+                   exit_strategy="fixed_10", bar_lookup=None, ticker_days=None):
     """Simulate a single reversal trade.
 
     Entry: first 4H bar close on shock day.
@@ -277,9 +332,12 @@ def simulate_trade(ev, ticker_4h, ticker_trading_days, max_hold=10,
     if entry_price is None or (isinstance(entry_price, float) and np.isnan(entry_price)):
         return None
 
-    bars_4h = ticker_4h[ticker]
-    trading_days = ticker_trading_days[ticker]
-    fwd = get_forward_bars(bars_4h, ticker, day, trading_days, max_hold)
+    if bar_lookup is not None and ticker_days is not None:
+        fwd = get_forward_bars_fast(bar_lookup, ticker_days, ticker, day, max_hold)
+    else:
+        bars_4h = ticker_4h[ticker]
+        trading_days = ticker_trading_days[ticker]
+        fwd = get_forward_bars(bars_4h, ticker, day, trading_days, max_hold)
     if not fwd:
         return None
 
@@ -371,7 +429,8 @@ def compute_metrics(trades_df):
 
 def run_backtest(events_df, ticker_4h, ticker_trading_days,
                  gap_threshold=3.0, max_hold=10, exit_strategy="fixed_10",
-                 direction="both", exclude_ticker=None, exclude_year=None):
+                 direction="both", exclude_ticker=None, exclude_year=None,
+                 bar_lookup=None, ticker_days=None):
     """Run backtest with given parameters. Returns DataFrame of trades."""
     df = events_df.copy()
     df = df[df["gap_pct"].abs() >= gap_threshold]
@@ -387,7 +446,8 @@ def run_backtest(events_df, ticker_4h, ticker_trading_days,
     trades = []
     for _, ev in df.iterrows():
         t = simulate_trade(ev, ticker_4h, ticker_trading_days,
-                           max_hold=max_hold, exit_strategy=exit_strategy)
+                           max_hold=max_hold, exit_strategy=exit_strategy,
+                           bar_lookup=bar_lookup, ticker_days=ticker_days)
         if t is not None:
             trades.append(t)
     return pd.DataFrame(trades) if trades else pd.DataFrame()
@@ -657,14 +717,21 @@ def robustness_r3_sector(events_df, ticker_4h, ticker_trading_days, config):
             "other", m["N"], m["mean_pct"], m["wr_pct"], _fmt_pf(m["pf"])))
 
 
-def robustness_r4_random(events_df, ticker_4h, ticker_trading_days, config):
+def robustness_r4_random(events_df, ticker_4h, ticker_trading_days, config,
+                         bar_lookup=None, ticker_days=None):
     """R4: Random Entry Comparison -- 1000 iterations, seed=42."""
     print("\n" + "=" * 60)
     print("=== R4: Random Entry Comparison ===")
     print("=" * 60)
 
+    # Build fast lookup if not provided
+    if bar_lookup is None or ticker_days is None:
+        bar_lookup, ticker_days = build_bar_lookup(ticker_4h)
+
     # Get actual trades first
-    actual_trades = run_backtest(events_df, ticker_4h, ticker_trading_days, **config)
+    actual_trades = run_backtest(events_df, ticker_4h, ticker_trading_days,
+                                bar_lookup=bar_lookup, ticker_days=ticker_days,
+                                **config)
     actual_m = compute_metrics(actual_trades)
     actual_pf = actual_m["pf"]
     print("Actual strategy: N=%d, PF=%s" % (actual_m["N"], _fmt_pf(actual_pf)))
@@ -683,26 +750,31 @@ def robustness_r4_random(events_df, ticker_4h, ticker_trading_days, config):
     # Pre-filter events for speed
     filtered_events = events_df[events_df["gap_pct"].abs() >= gap_threshold]
 
+    # Pre-compute forward bars for all events once (instead of per-iteration)
+    event_fwd_data = []
+    for _, ev in filtered_events.iterrows():
+        ticker = ev["ticker"]
+        if ticker not in ticker_4h:
+            continue
+
+        entry_price = ev["entry_price"]
+        if entry_price is None or (isinstance(entry_price, float) and np.isnan(entry_price)):
+            continue
+
+        fwd = get_forward_bars_fast(bar_lookup, ticker_days, ticker, ev["date"], max_hold)
+
+        if len(fwd) < max_hold:
+            continue
+
+        exit_price = fwd[max_hold - 1]["Close"]
+        raw_ret = (exit_price - entry_price) / entry_price * 100
+        event_fwd_data.append(raw_ret)
+
+    print("  Pre-computed forward bars for %d events" % len(event_fwd_data))
+
     for iteration in range(n_iterations):
         random_rets = []
-        for _, ev in filtered_events.iterrows():
-            ticker = ev["ticker"]
-            if ticker not in ticker_4h:
-                continue
-
-            entry_price = ev["entry_price"]
-            if entry_price is None or (isinstance(entry_price, float) and np.isnan(entry_price)):
-                continue
-
-            bars_4h = ticker_4h[ticker]
-            trading_days = ticker_trading_days[ticker]
-            fwd = get_forward_bars(bars_4h, ticker, ev["date"], trading_days, max_hold)
-
-            if len(fwd) < max_hold:
-                continue
-
-            exit_price = fwd[max_hold - 1]["Close"]
-            raw_ret = (exit_price - entry_price) / entry_price * 100
+        for raw_ret in event_fwd_data:
             rand_sign = rng.choice([1, -1])
             random_rets.append(raw_ret * rand_sign)
 
@@ -922,6 +994,10 @@ def run_robustness(events_df, ticker_4h, ticker_trading_days, earnings_dates,
         config["gap_threshold"], config["max_hold"],
         config["exit_strategy"], config["direction"]))
 
+    # Build fast bar lookup for R4 and general use
+    print("Building bar lookup dict for fast access...")
+    bar_lookup, ticker_days = build_bar_lookup(ticker_4h)
+
     # Baseline metrics
     base_trades = run_backtest(events_df, ticker_4h, ticker_trading_days, **config)
     base_m = compute_metrics(base_trades)
@@ -944,7 +1020,8 @@ def run_robustness(events_df, ticker_4h, ticker_trading_days, earnings_dates,
 
     # R4: Random entry comparison
     beats_random = robustness_r4_random(events_df, ticker_4h, ticker_trading_days,
-                                         config)
+                                         config, bar_lookup=bar_lookup,
+                                         ticker_days=ticker_days)
 
     # R5: Earnings vs non-earnings
     earnings_validated, _, _ = robustness_r5_earnings(
