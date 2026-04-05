@@ -1,0 +1,251 @@
+======================================================================
+ANT-1: EARNINGS RECOVERY RATIO BACKTEST
+Date: 2026-04-05 10:08
+Tickers: 27
+Period: 2016-01-01 to 2026-04-05
+======================================================================
+
+PHASE 1: Loading daily OHLCV data from local files...
+    WARNING: No daily data file for JD
+  Loaded 26 tickers with daily data
+    AAPL: 1064 days (2022-01-03 to 2026-03-31)
+    AMD: 1064 days (2022-01-03 to 2026-03-31)
+    AMZN: 1064 days (2022-01-03 to 2026-03-31)
+    ARM: 638 days (2023-09-14 to 2026-03-31)
+    AVGO: 1064 days (2022-01-03 to 2026-03-31)
+    BA: 1064 days (2022-01-03 to 2026-03-31)
+    BABA: 1064 days (2022-01-03 to 2026-03-31)
+    BIDU: 1064 days (2022-01-03 to 2026-03-31)
+    C: 1064 days (2022-01-03 to 2026-03-31)
+    COIN: 1064 days (2022-01-03 to 2026-03-31)
+    COST: 1064 days (2022-01-03 to 2026-03-31)
+    GOOGL: 1064 days (2022-01-03 to 2026-03-31)
+    GS: 1064 days (2022-01-03 to 2026-03-31)
+    INTC: 1064 days (2022-01-03 to 2026-03-31)
+    JPM: 1064 days (2022-01-03 to 2026-03-31)
+    MARA: 1064 days (2022-01-03 to 2026-03-31)
+    META: 1064 days (2022-01-03 to 2026-03-31)
+    MSFT: 1064 days (2022-01-03 to 2026-03-31)
+    MSTR: 1064 days (2022-01-03 to 2026-03-31)
+    MU: 1064 days (2022-01-03 to 2026-03-31)
+    NVDA: 1064 days (2022-01-03 to 2026-03-31)
+    PLTR: 1064 days (2022-01-03 to 2026-03-31)
+    SMCI: 1064 days (2022-01-03 to 2026-03-31)
+    TSLA: 1064 days (2022-01-03 to 2026-03-31)
+    TSM: 1064 days (2022-01-03 to 2026-03-31)
+    V: 1064 days (2022-01-03 to 2026-03-31)
+
+PHASE 2: Loading earnings calendar from FMP data...
+  Loaded 143 earnings events for 24 tickers
+    AAPL: 6 dates (2024-10-31 to 2026-01-29)
+    AMD: 6 dates (2024-10-29 to 2026-01-27)
+    AMZN: 6 dates (2024-10-31 to 2026-02-05)
+    AVGO: 6 dates (2024-12-12 to 2026-03-05)
+    BA: 6 dates (2024-10-23 to 2026-01-28)
+    BABA: 6 dates (2024-11-15 to 2026-02-19)
+    BIDU: 6 dates (2024-11-21 to 2026-02-26)
+    C: 6 dates (2024-10-15 to 2026-01-14)
+    COIN: 6 dates (2024-10-30 to 2026-02-12)
+    COST: 6 dates (2024-12-12 to 2026-03-05)
+    GOOGL: 6 dates (2024-10-29 to 2026-02-03)
+    GS: 6 dates (2024-10-15 to 2026-01-14)
+    JPM: 6 dates (2024-10-11 to 2026-01-14)
+    MARA: 6 dates (2024-11-12 to 2026-02-25)
+    META: 6 dates (2024-10-30 to 2026-01-28)
+    MSFT: 6 dates (2024-10-30 to 2026-01-27)
+    MU: 6 dates (2024-12-18 to 2026-03-18)
+    NVDA: 6 dates (2024-11-20 to 2026-02-26)
+    PLTR: 6 dates (2024-11-04 to 2026-02-09)
+    SNOW: 6 dates (2024-11-20 to 2026-02-25)
+    TSLA: 6 dates (2024-10-23 to 2026-01-27)
+    TSM: 5 dates (2025-01-16 to 2026-01-15)
+    TXN: 6 dates (2024-10-22 to 2026-01-27)
+    V: 6 dates (2024-10-29 to 2026-01-29)
+
+PHASE 3: Building events...
+  Total events built: 130
+  Saved events.csv
+
+PHASE 4: Running tests...
+
+======================================================================
+TEST 0: UNIVERSE STATISTICS
+======================================================================
+Total earnings events: 130
+
+  Gap <= -5%: 12 (9.2%)
+  Gap <= -7%: 9 (6.9%)
+  Gap <= -10%: 2 (1.5%)
+  Gap <= -15%: 0 (0.0%)
+  Gap >= +5%: 21 (16.2%)
+
+Gap Size Distribution:
+  -15 to -10%: 2
+  -10 to -7%: 7
+  -7 to -5%: 3
+  -5 to -3%: 9
+  -3 to 0%: 42
+  0 to 3%: 36
+  3 to 5%: 10
+  5 to 7%: 6
+  7 to 10%: 6
+  10 to 15%: 5
+  15 to 20%: 3
+  20 to 100%: 1
+
+Events per Ticker:
+  AAPL: 6
+  AMD: 6
+  AMZN: 6
+  AVGO: 6
+  BA: 6
+  BABA: 6
+  BIDU: 6
+  C: 6
+  COIN: 6
+  COST: 6
+  GOOGL: 6
+  GS: 6
+  JPM: 6
+  MARA: 6
+  META: 6
+  MSFT: 6
+  NVDA: 6
+  PLTR: 6
+  TSLA: 6
+  V: 6
+  MU: 5
+  TSM: 5
+
+Events per Year:
+  2024: 21
+  2025: 88
+  2026: 21
+
+Timing Split:
+  AMC: 94 (72.3%)
+  BMO: 36 (27.7%)
+
+======================================================================
+TEST 1: RECOVERY RATIO vs MULTI-DAY DRIFT
+======================================================================
+Gap-down events (gap <= -5.0%): N=12
+
+Bucket               N   Drift 1d   Drift 3d   Drift 5d  Drift 10d     Med 5d    WR 5d   Std 5d
+------------------------------------------------------------------------------------------
+A (<0.20)            7      -1.38%     -2.03%     -1.60%     -0.71%     -1.95%    42.9%    3.84% **ANECDOTAL**
+B (0.20-0.30)        1      +0.14%     -2.54%     -4.03%     -3.54%     -4.03%     0.0%     nan% **ANECDOTAL**
+C (0.30-0.40)        2      -0.00%     +0.52%     +8.89%     +1.55%     +8.89%   100.0%   12.42% **ANECDOTAL**
+D (0.40-0.60)        2      -1.21%     -2.17%     -2.87%     -0.24%     -2.87%     0.0%    3.69% **ANECDOTAL**
+E (>0.60)            0   (no data)
+
+Spearman Correlation (recovery_ratio vs drift_5d):
+  rho = -0.2168, p-value = 0.498556
+  Significant at p<0.05: NO
+
+======================================================================
+TEST 2: OPTIMAL ZOMBIE THRESHOLD SWEEP
+======================================================================
+Events for sweep: N=12
+
+ Thresh  N_LONG  N_SHORT    Mean_L    Mean_S    WR_L    WR_S       Sep
+------------------------------------------------------------------------
+   0.15       9        3    -0.53%    +0.51%   33.3%   66.7%    -1.04%
+   0.20       5        7    +1.60%    -1.60%   40.0%   42.9%    +3.20%
+   0.25       4        8    +3.01%    -1.91%   50.0%   37.5%    +4.92%
+   0.30       4        8    +3.01%    -1.91%   50.0%   37.5%    +4.92%
+   0.35       2       10    -2.87%    +0.25%    0.0%   50.0%    -3.12%
+   0.40       2       10    -2.87%    +0.25%    0.0%   50.0%    -3.12%
+   0.45       2       10    -2.87%    +0.25%    0.0%   50.0%    -3.12%
+   0.50       1       11    -5.48%    +0.21%    0.0%   45.5%    -5.69%
+
+Optimal threshold: 0.25 (separation = +4.92%)
+ANT claims 0.35-0.40. Data says: 0.25
+
+======================================================================
+TEST 3: GAP SIZE INTERACTION
+======================================================================
+                             -5% to -10%          -10% to -15%                < -15%
+------------------------------------------------------------------------------------
+Rec < 0.30          -1.65% (N=  6) **ANECDOTAL**  -2.68% (N=  2) **ANECDOTAL**                   N/A
+Rec 0.30-0.50       +5.84% (N=  3) **ANECDOTAL**                   N/A                   N/A
+Rec > 0.50          -5.48% (N=  1) **ANECDOTAL**                   N/A                   N/A
+
+======================================================================
+TEST 4: DAY-OF-MINIMUM DISTRIBUTION
+======================================================================
+Low recovery (<0.30) events: N=8
+  Day-of-Minimum Distribution:
+    Day  1:    1 ( 12.5%) ######
+    Day  3:    1 ( 12.5%) ######
+    Day  5:    1 ( 12.5%) ######
+    Day  7:    1 ( 12.5%) ######
+    Day  9:    2 ( 25.0%) ############
+    Day 10:    2 ( 25.0%) ############
+  Mode: Day 9, Mean: Day 6.8
+
+High recovery (>=0.40) events: N=2
+  Day-of-Minimum Distribution:
+    Day  2:    1 ( 50.0%) #########################
+    Day  5:    1 ( 50.0%) #########################
+  Mode: Day 2, Mean: Day 3.5
+
+Average Trajectories (cumulative % from Day 1 close):
+  Rec < 0.20 (N=7): [+0.00%, -1.38%, -1.89%, -2.03%, -1.60%, -1.60%, -1.93%, -1.82%, -1.56%, -1.42%, -0.71%]
+  Rec 0.20-0.40 (N=3): [+0.00%, +0.05%, -0.63%, -0.50%, +2.39%, +4.58%, +4.48%, +1.58%, +2.09%, +0.89%, -0.15%]
+  Rec >= 0.40 (N=2): [+0.00%, -1.21%, -2.79%, -2.17%, -2.95%, -2.87%, -2.27%, -0.83%, -0.28%, +1.15%, -0.24%]
+
+======================================================================
+TEST 5: EPS SURPRISE INTERACTION
+======================================================================
+Events with EPS surprise data: 12 / 12
+                             |Surp| < 5%          |Surp| 5-15%          |Surp| > 15%
+------------------------------------------------------------------------------------
+Rec < 0.30          -1.37% (N=  3) **ANECDOTAL**  -2.68% (N=  2) **ANECDOTAL**  -1.92% (N=  3) **ANECDOTAL**
+Rec 0.30-0.50      +17.67% (N=  1) **ANECDOTAL**  -0.07% (N=  2) **ANECDOTAL**                   N/A
+Rec > 0.50                           N/A                   N/A  -5.48% (N=  1) **ANECDOTAL**
+
+======================================================================
+TEST 6: ZOMBIE LONG & ANTI-ZOMBIE SHORT BACKTESTS
+======================================================================
+
+--- ZOMBIE LONG (recovery >= 0.3, gap <= -10%) ---
+  No trades generated.
+
+--- ZOMBIE LONG (recovery >= 0.35, gap <= -10%) ---
+  No trades generated.
+
+--- ZOMBIE LONG (recovery >= 0.4, gap <= -10%) ---
+  No trades generated.
+
+--- ANTI-ZOMBIE SHORT (recovery < 0.20, gap <= -10%) ---
+  N trades: 2 **ANECDOTAL**
+  Mean return: +2.03%
+  Win rate: 50.0%
+  Profit factor: 3.30
+  Max single loss: -1.77%
+  Avg holding days: 4.0
+  Exit reasons: {'target': 1, 'max_hold': 1}
+
+PHASE 5: Generating charts...
+  Saved ant1_recovery_vs_drift.png
+  Saved ant1_bucket_drift.png
+  Saved ant1_trajectory.png
+  Saved ant1_day_of_min.png
+  Saved ant1_threshold_sweep.png
+
+PHASE 6: Saving summary...
+  Saved ANT1_summary.json
+
+======================================================================
+VERDICT SUMMARY
+======================================================================
+Spearman rho: -0.2168 (p=0.498556)
+  -> No significant predictive power found
+Optimal threshold: 0.25 (separation: 4.918%)
+  -> Diverges from ANT claim (0.35-0.40)
+Day-of-minimum mode (low recovery): Day 9
+  -> Inconclusive (Day 9)
+Zombie LONG (0.35): No trades
+
+Done. All outputs saved to backtest_output/ant1/
