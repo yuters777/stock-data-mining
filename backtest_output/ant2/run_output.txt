@@ -1,0 +1,158 @@
+======================================================================
+ANT-2: EARNINGS RECOVERY RATIO — M5 PRECISION TEST
+Date: 2026-04-05 11:51
+======================================================================
+
+PHASE 1: Loading M5 data...
+  Loaded M5 data for 22 tickers
+    AAPL: 21996 bars, 282 trading days (2025-02-03 to 2026-03-18)
+    AMD: 21996 bars, 282 trading days (2025-02-03 to 2026-03-18)
+    AMZN: 21996 bars, 282 trading days (2025-02-03 to 2026-03-18)
+    AVGO: 21996 bars, 282 trading days (2025-02-03 to 2026-03-18)
+    BA: 21996 bars, 282 trading days (2025-02-03 to 2026-03-18)
+    BABA: 21996 bars, 282 trading days (2025-02-03 to 2026-03-18)
+    BIDU: 21893 bars, 281 trading days (2025-02-03 to 2026-03-17)
+    C: 21988 bars, 282 trading days (2025-02-03 to 2026-03-18)
+    COIN: 21996 bars, 282 trading days (2025-02-03 to 2026-03-18)
+    COST: 21996 bars, 282 trading days (2025-02-03 to 2026-03-18)
+    GOOGL: 21996 bars, 282 trading days (2025-02-03 to 2026-03-18)
+    GS: 21987 bars, 282 trading days (2025-02-03 to 2026-03-18)
+    JPM: 21996 bars, 282 trading days (2025-02-03 to 2026-03-18)
+    MARA: 21996 bars, 282 trading days (2025-02-03 to 2026-03-18)
+    META: 21996 bars, 282 trading days (2025-02-03 to 2026-03-18)
+    MSFT: 21996 bars, 282 trading days (2025-02-03 to 2026-03-18)
+    MU: 21996 bars, 282 trading days (2025-02-03 to 2026-03-18)
+    NVDA: 21996 bars, 282 trading days (2025-02-03 to 2026-03-18)
+    PLTR: 21996 bars, 282 trading days (2025-02-03 to 2026-03-18)
+    TSLA: 21996 bars, 282 trading days (2025-02-03 to 2026-03-18)
+    TSM: 21996 bars, 282 trading days (2025-02-03 to 2026-03-18)
+    V: 21994 bars, 282 trading days (2025-02-03 to 2026-03-18)
+
+PHASE 2: Loading earnings calendar...
+  Earnings in M5 range: 119 events
+
+PHASE 3: Building events with M5 recovery curves...
+  Events built: 99
+  Saved events_m5.csv
+
+PHASE 4: Running tests...
+
+======================================================================
+TEST 0: M5 DATA COVERAGE CHECK
+======================================================================
+Total earnings events with M5 data: 99
+
+  Gap <= -3%: 14 events *LOW N*
+  Gap <= -5%: 9 events **ANECDOTAL**
+  Gap <= -7%: 7 events **ANECDOTAL**
+  Gap <= -10%: 3 events **ANECDOTAL**
+  Gap >= +3%: 19
+
+Gap-down events per ticker (gap <= -3%):
+  AAPL: 1
+  AMD: 2
+  AMZN: 2
+  AVGO: 1
+  BABA: 1
+  COIN: 1
+  COST: 1
+  GOOGL: 1
+  MARA: 1
+  META: 1
+  PLTR: 2
+
+======================================================================
+TEST 1: 6-POINT RECOVERY CURVE BY DRIFT DIRECTION
+======================================================================
+Gap-down events (gap <= -3.0%): N=14
+  Group A (drift_5d > 0, recovered): N=4
+  Group B (drift_5d <= 0, continued): N=10
+
+Time         10:00     10:30     12:00     13:00     13:30     16:00
+--------------------------------------------------------------------
+Group A      0.190     0.450     0.451     0.432     0.412     0.614  (N=4)
+Group B      0.187     0.212     0.237     0.312     0.305     0.445  (N=10)
+Sep         +0.003    +0.238    +0.213    +0.120    +0.107    +0.169
+
+Largest separation at: 10:30 (+0.238)
+ANT predicts 10:30 ET. Data says: 10:30
+
+======================================================================
+TEST 2: OPTIMAL RECOVERY MEASUREMENT TIME
+======================================================================
+Time       Zone        Spearman rho    p-value   Sig
+-------------------------------------------------------
+10:00      Zone 1           -0.2352     0.4183    NO
+10:30      Zone 2           +0.1560     0.5942    NO
+12:00      Zone 2-3         +0.0242     0.9346    NO
+13:00      Zone 3           -0.2396     0.4094    NO
+13:30      Bar 1            -0.4022     0.1540    NO
+16:00      Close            -0.0286     0.9228    NO
+
+Best measurement time: 13:30 (rho = -0.4022)
+ANT-1 daily close rho: +0.02. ANT predicts 10:30 is best.
+
+======================================================================
+TEST 3: RECOVERY TRAJECTORY SHAPE vs DRIFT
+======================================================================
+Shape                N   Drift 1d   Drift 5d     Med 5d    WR 5d   Std 5d
+---------------------------------------------------------------------------
+EARLY_HOLD           4     -1.88%     -6.15%     -1.58%    50.0%   12.54% **ANECDOTAL**
+LATE_REVERSAL        2     -2.35%     -3.26%     -3.26%     0.0%    4.22% **ANECDOTAL**
+MIXED                8     -1.18%     -2.12%     -3.32%    25.0%    9.93% **ANECDOTAL**
+
+ANT Predictions Check:
+
+======================================================================
+TEST 4: ZONE-BASED ENTRY TIMING
+======================================================================
+Events with gap <= -3.0% and recovery >= 0.25 at 10:30: N=4
+
+Entry Time       N  Intraday Ret  5d Return      WR      PF
+------------------------------------------------------------
+10:00            4        +2.12%     -0.10%   25.0%   0.96 **ANECDOTAL**
+10:30            4        +0.97%     -0.67%   25.0%   0.70 **ANECDOTAL**
+12:00            4        +1.84%     -0.98%   25.0%   0.56 **ANECDOTAL**
+13:30            4        +1.62%     -1.03%   25.0%   0.54 **ANECDOTAL**
+
+======================================================================
+TEST 5: GAP SEVERITY x RECOVERY INTERACTION (M5)
+======================================================================
+                              -3% to -5%           -5% to -10%                < -10%
+------------------------------------------------------------------------------------
+Rec < 0.20         -15.39% (N=  2) **ANECDOTAL**  +3.47% (N=  4) **ANECDOTAL**                   N/A
+Rec 0.20-0.40      -17.19% (N=  1) **ANECDOTAL**  -4.06% (N=  1) **ANECDOTAL**  -3.31% (N=  3) **ANECDOTAL**
+Rec > 0.40          -0.08% (N=  2) **ANECDOTAL**  +0.13% (N=  1) **ANECDOTAL**                   N/A
+
+======================================================================
+TEST 6: M5 ZOMBIE STRATEGY BACKTEST
+======================================================================
+
+--- Entry at 12:00 ET (Zone 2 end) ---
+  No trades.
+
+--- Entry at 10:30 ET (ANT 1-hour) ---
+  N trades: 1 **ANECDOTAL**
+  Mean return: -5.01%
+  Win rate: 0.0%
+  Profit factor: 0.00
+  Max single loss: -5.01%
+  Avg holding: 1.0 days
+  Exits: {'stop': 1}
+
+PHASE 5: Generating charts...
+  Saved ant2_recovery_curves.png
+  Saved ant2_spearman_by_time.png
+  Saved ant2_shape_drift.png
+  Saved ant2_entry_timing.png
+
+  Saved ANT2_summary.json
+
+======================================================================
+VERDICT: M5 vs DAILY COMPARISON
+======================================================================
+Best M5 measurement time: 13:30 (rho = -0.4022)
+ANT-1 daily rho: +0.02 (p=0.92)
+  -> M5 timing IMPROVES predictive power over daily
+
+Done. All outputs saved to backtest_output/ant2/
