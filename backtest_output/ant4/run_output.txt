@@ -1,0 +1,136 @@
+======================================================================
+ANT-4: ZOMBIE RECOVERY — SHORT-HOLD TIMING TEST
+Date: 2026-04-05 12:34
+======================================================================
+
+Loaded 444 events from ANT-1
+
+======================================================================
+TEST 1: DAILY — ZOMBIE DRIFT BY HOLDING PERIOD
+======================================================================
+Gap-down events (gap <= -5%): N=30
+
+--- Cumulative Drift by Hold Period ---
+ Recovery >=     N        1d        2d        3d        5d        7d       10d
+--------------------------------------------------------------------------------
+      >=0.25    17    +1.58%    +0.10%    +1.92%    +1.65%    -0.47%    +2.06% *LOW N*
+      >=0.30    17    +1.58%    +0.10%    +1.92%    +1.65%    -0.47%    +2.06% *LOW N*
+      >=0.35    13    +2.09%    -0.08%    +2.40%    +0.93%    -0.95%    +2.05% *LOW N*
+      >=0.40    12    +2.11%    -0.84%    +1.65%    +0.31%    -1.16%    +2.27% *LOW N*
+      >=0.50    11    +2.45%    -0.56%    +1.93%    +0.37%    -1.36%    +2.30% *LOW N*
+         ALL    30    +1.27%    +0.44%    +1.73%    +1.72%    +0.21%    +1.08%
+
+--- Win Rate (% positive) by Hold Period ---
+ Recovery >=     N        1d        2d        3d        5d        7d       10d
+--------------------------------------------------------------------------------
+      >=0.25    17     52.9%     41.2%     52.9%     58.8%     52.9%     64.7% *LOW N*
+      >=0.30    17     52.9%     41.2%     52.9%     58.8%     52.9%     64.7% *LOW N*
+      >=0.35    13     53.8%     38.5%     53.8%     53.8%     53.8%     61.5% *LOW N*
+      >=0.40    12     50.0%     33.3%     50.0%     50.0%     50.0%     66.7% *LOW N*
+      >=0.50    11     54.5%     36.4%     54.5%     54.5%     45.5%     63.6% *LOW N*
+         ALL    30     50.0%     40.0%     46.7%     50.0%     40.0%     50.0%
+
+--- Incremental Drift (marginal value of extra day) ---
+ Recovery >=     N   incr_1d   incr_2d   incr_3d   incr_5d
+------------------------------------------------------------
+      >=0.25    17    +1.58%    -1.48%    +1.82%    -0.14% *LOW N*
+      >=0.30    17    +1.58%    -1.48%    +1.82%    -0.14% *LOW N*
+      >=0.35    13    +2.09%    -2.17%    +2.48%    -0.73% *LOW N*
+      >=0.40    12    +2.11%    -2.95%    +2.49%    -0.67% *LOW N*
+      >=0.50    11    +2.45%    -3.01%    +2.48%    -0.78% *LOW N*
+         ALL    30    +1.27%    -0.83%    +1.29%    -0.01%
+
+--- Gap Severity x Zombie (rec>=0.35) Drift by Hold ---
+Gap Bucket          N        1d        2d        3d        5d
+--------------------------------------------------------
+-5% to -8%          5    +4.74%    +1.18%    +5.52%    +3.59% **ANECDOTAL**
+-8% to -10%         5    +0.73%    -1.92%    +2.69%    +0.13% **ANECDOTAL**
+-10% to -15%        3    -0.05%    +0.88%    -3.30%    -2.16% **ANECDOTAL**
+
+Loading M5 data...
+  22 tickers with M5 data
+
+======================================================================
+TEST 2: M5 — INTRADAY ZOMBIE TIMING
+======================================================================
+Total zombie trigger events: 18
+
+--- Zombie Trigger Timing ---
+ Threshold     N    Mean Time  Median Time
+---------------------------------------------
+      0.25     4        11:35        11:47 **ANECDOTAL**
+      0.30     6        11:41        12:00 **ANECDOTAL**
+      0.35     5        11:51        12:00 **ANECDOTAL**
+      0.40     3        11:58        12:10 **ANECDOTAL**
+
+--- Return from Zombie Trigger Point ---
+ Thresh    N       ->Close        ->Day2        ->Day3        ->Day4        ->Day6
+-------------------------------------------------------------------------------------
+   0.25    4  +0.17/  50%  +0.06/  75%  +0.83/  50%  +0.32/  50%  +2.15/  50% **ANECDOTAL**
+   0.30    6  -0.09/  50%  -1.20/  50%  -0.81/  17%  -1.37/  33%  -0.39/  33% **ANECDOTAL**
+   0.35    5  -0.07/  60%  -1.88/  20%  -1.21/  20%  -1.60/  20%  +0.08/  40% **ANECDOTAL**
+   0.40    3  +0.50/ 100%  -2.14/   0%  -3.15/   0%  -2.72/   0%  -2.79/  33% **ANECDOTAL**
+
+--- Zombie M5 Strategy Backtest ---
+      Exit  Thresh    N    Mean%     WR      PF
+------------------------------------------------
+ Day1Close    0.25    4   +0.17%  50.0%   1.32 **ANECDOTAL**
+      Day2    0.25    4   +0.06%  75.0%   1.07 **ANECDOTAL**
+      Day3    0.25    4   +0.83%  50.0%   1.48 **ANECDOTAL**
+ Day1Close    0.30    6   -0.09%  50.0%   0.85 **ANECDOTAL**
+      Day2    0.30    6   -1.20%  50.0%   0.21 **ANECDOTAL**
+      Day3    0.30    6   -0.81%  16.7%   0.65 **ANECDOTAL**
+ Day1Close    0.35    5   -0.07%  60.0%   0.85 **ANECDOTAL**
+      Day2    0.35    5   -1.88%  20.0%   0.10 **ANECDOTAL**
+      Day3    0.35    5   -1.21%  20.0%   0.60 **ANECDOTAL**
+ Day1Close    0.40    3   +0.50% 100.0%    inf **ANECDOTAL**
+      Day2    0.40    3   -2.14%   0.0%   0.00 **ANECDOTAL**
+      Day3    0.40    3   -3.15%   0.0%   0.00 **ANECDOTAL**
+
+  Saved ant4_trigger_time_dist.png
+======================================================================
+TEST 3: ZOMBIE PEAK — WHEN DOES RECOVERY MAX OUT?
+======================================================================
+Zombie events (gap <= -5%, recovery >= 0.35): N=13
+
+--- Day of Maximum Close (Post-Gap) ---
+  Day 0 (gap day) :   3 ( 23.1%)  mean max return: +0.00%
+  Day 1           :   2 ( 15.4%)  mean max return: +15.25%
+  Day 2           :   0 (  0.0%)  mean max return: +0.00%
+  Day 3           :   3 ( 23.1%)  mean max return: +17.51%
+  Day 4-5         :   0 (  0.0%)  mean max return: +0.00%
+  Day 6-10        :   5 ( 38.5%)  mean max return: +7.60%
+
+Mode: Day 0, Mean: Day 4.5
+
+Non-zombie peak day (recovery < 0.20, N=11):
+  Mode: Day 0, Mean: Day 4.3
+
+  Saved ant4_zombie_peak_dist.png
+======================================================================
+TEST 4: ZOMBIE vs NON-ZOMBIE COMPARISON
+======================================================================
+--- Cumulative Drift Comparison ---
+Group                       N        1d        2d        3d        5d       10d
+------------------------------------------------------------------------
+Zombie (rec>=0.35)         13    +2.09%    -0.08%    +2.40%    +0.93%    +2.05% *LOW N*
+Non-zombie (rec<0.20)      11    +1.09%    +1.21%    +2.10%    +2.98%    +0.60% *LOW N*
+All gap-downs              30    +1.27%    +0.44%    +1.73%    +1.72%    +1.08%
+
+--- Win Rate Comparison ---
+Group                       N        1d        2d        3d        5d       10d
+------------------------------------------------------------------------
+Zombie (rec>=0.35)         13     53.8%     38.5%     53.8%     53.8%     61.5% *LOW N*
+Non-zombie (rec<0.20)      11     45.5%     36.4%     45.5%     45.5%     36.4% *LOW N*
+All gap-downs              30     50.0%     40.0%     46.7%     50.0%     50.0%
+
+--- Zombie Advantage (Zombie minus Non-zombie) ---
+  1d: +1.00%  2d: -1.29%  3d: +0.30%  5d: -2.05%  10d: +1.46%
+
+  Zombie advantage disappears at 2d hold
+
+  Saved ant4_cumulative_drift_curve.png
+  Saved ant4_incremental_drift.png
+Saved ANT4_summary.json
+
+Done. All outputs in backtest_output/ant4/
