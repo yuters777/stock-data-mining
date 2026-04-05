@@ -50,7 +50,7 @@ for d in [OUTPUT_DIR, DAILY_CACHE, EARNINGS_CACHE]:
 # PART 1: DATA LOADING (from local files)
 # ============================================================
 DAILY_DIR = Path('backtester/data/daily')
-EARNINGS_CSV = Path('backtester/data/fmp_earnings.csv')
+DB_PATH = '/var/lib/market-system/market.db'
 
 # BMO/AMC classification (from fmp_earnings_fetcher.py)
 AMC_TICKERS = {
@@ -73,7 +73,6 @@ def load_daily_data():
             df = pd.read_csv(fpath, header=[0, 1], index_col=0, parse_dates=True)
             if isinstance(df.columns, pd.MultiIndex):
                 df.columns = df.columns.get_level_values(0)
-            # Ensure standard column names
             for col in ['Open', 'High', 'Low', 'Close', 'Volume']:
                 if col not in df.columns:
                     print(f"    WARNING: {ticker} missing column {col}")
@@ -86,11 +85,11 @@ def load_daily_data():
 
 
 def load_earnings_data():
-    """Load earnings dates from local FMP earnings CSV."""
-    if not EARNINGS_CSV.exists():
-        print("    ERROR: No FMP earnings CSV found")
-        return pd.DataFrame()
-    df = pd.read_csv(EARNINGS_CSV)
+    """Load earnings calendar from production SQLite DB."""
+    import sqlite3
+    conn = sqlite3.connect(DB_PATH)
+    df = pd.read_sql_query("SELECT * FROM earnings_calendar", conn)
+    conn.close()
     df['earnings_date'] = pd.to_datetime(df['earnings_date'])
     return df
 
@@ -199,7 +198,7 @@ def build_events(all_data, earnings_df):
 
         # EPS surprise from FMP data
         eps_surprise = np.nan
-        eps_surp_raw = earn_row.get('eps_surprise_pct', np.nan)
+        eps_surp_raw = earn_row.get('surprise_pct', earn_row.get('eps_surprise_pct', np.nan))
         if pd.notna(eps_surp_raw):
             try:
                 eps_surprise = float(eps_surp_raw)

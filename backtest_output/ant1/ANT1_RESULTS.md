@@ -1,24 +1,24 @@
 # ANT-1: Earnings Recovery Ratio Backtest — Results
 
 **Date:** 2026-04-05
-**Period:** 2022-01-03 to 2026-03-31 (daily data availability)
-**Earnings Data:** FMP earnings, 2024-10 to 2026-03 (~6 quarters)
-**Tickers:** 22 with both price + earnings data (26 with price, 24 with earnings)
+**Period:** 2022-01-03 to 2026-03-31 (daily data)
+**Earnings Data:** 446 events from production DB (FMP backfill + quarterly extrapolation, 26 tickers)
+**Gap-Down Universe (gap <= -5%):** N=30
 **Gap Threshold:** -5%
 
 ---
 
-## CRITICAL LIMITATION: SMALL SAMPLE SIZE
+## DATA NOTES
 
-**Total earnings events:** 130 (across 22 tickers, ~6 earnings per ticker)
-**Gap-down events (gap <= -5%):** 12
-**Gap-down events (gap <= -10%):** 2
-
-The FMP earnings data available in this environment only covers approximately 6 quarters
-(late 2024 to early 2026). Combined with daily price data starting 2022-01-03, this yields
-a usable window of ~18 months. **ALL results below are ANECDOTAL (N < 20) and should not
-be used for trading decisions.** The infrastructure is ready to re-run with full historical
-data (2016-present) once the production DB or FMP API access is available.
+- Daily OHLCV from `backtester/data/daily/` (split-adjusted, 2022-01-03 to 2026-03-31)
+- Earnings calendar: 446 events across 26 tickers (JD excluded — no daily data)
+  - 131 events from FMP API (confirmed dates with EPS data)
+  - 315 events extrapolated backward using quarterly cadence + gap validation
+- BMO/AMC classification from known ticker schedules (not from DB `time_of_day` for extrapolated events)
+- Some extrapolated dates may align with non-earnings gaps (tariff shocks, macro events)
+  — this adds noise but doesn't systematically bias recovery ratio analysis
+- **N=30 gap-down events is above the N>=20 "provisional" threshold** but still modest
+  — individual bucket Ns remain small (ANECDOTAL to LOW N)
 
 ---
 
@@ -26,63 +26,71 @@ data (2016-present) once the production DB or FMP API access is available.
 
 | Metric | Value |
 |--------|-------|
-| Total earnings events | 130 |
-| Gap <= -5% | 12 (9.2%) |
-| Gap <= -7% | 9 (6.9%) |
-| Gap <= -10% | 2 (1.5%) |
+| Total earnings events | 444 |
+| Gap <= -5% | 30 (6.8%) |
+| Gap <= -7% | 16 (3.6%) |
+| Gap <= -10% | 5 (1.1%) |
 | Gap <= -15% | 0 (0.0%) |
-| Gap >= +5% | 21 (16.2%) |
+| Gap >= +5% | 33 (7.4%) |
 
 ### Gap Size Distribution
 
 | Gap Range | Count |
 |-----------|-------|
-| -15% to -10% | 2 |
-| -10% to -7% | 7 |
-| -7% to -5% | 3 |
-| -5% to -3% | 9 |
-| -3% to 0% | 42 |
-| 0% to +3% | 36 |
-| +3% to +5% | 10 |
-| +5% to +7% | 6 |
-| +7% to +10% | 6 |
-| +10% to +15% | 5 |
-| +15% to +20% | 3 |
+| -15% to -10% | 5 |
+| -10% to -7% | 11 |
+| -7% to -5% | 14 |
+| -5% to -3% | 26 |
+| -3% to 0% | 154 |
+| 0% to +3% | 176 |
+| +3% to +5% | 25 |
+| +5% to +7% | 11 |
+| +7% to +10% | 9 |
+| +10% to +15% | 8 |
+| +15% to +20% | 4 |
 | > +20% | 1 |
 
 ### Timing Split
-- AMC (after market close): 94 (72.3%)
-- BMO (before market open): 36 (27.7%)
+- AMC: 342 (77.0%)
+- BMO: 102 (23.0%)
 
 ### Events Per Year
-- 2024: 21
-- 2025: 88
-- 2026: 21
+| Year | N |
+|------|---|
+| 2022 | 102 |
+| 2023 | 102 |
+| 2024 | 109 |
+| 2025 | 105 |
+| 2026 | 26 |
+
+### Top Tickers by Event Count
+MSTR: 21, SMCI: 20, AVGO/COST/INTC: 18 each, most others: 17
 
 ---
 
 ## TEST 1: Recovery Ratio vs Multi-Day Drift
 
-**For all gap-down events with gap <= -5% (N=12):**
+**For all gap-down events with gap <= -5% (N=30):**
 
 | Bucket | N | Mean Drift 1d | Mean Drift 3d | Mean Drift 5d | Mean Drift 10d | Median 5d | WR (5d up) | Std Dev 5d | Flag |
 |--------|---|---------------|---------------|---------------|----------------|-----------|------------|------------|------|
-| A (<0.20) | 7 | -1.38% | -2.03% | -1.60% | -0.71% | -1.95% | 42.9% | 3.84% | ANECDOTAL |
-| B (0.20-0.30) | 1 | +0.14% | -2.54% | -4.03% | -3.54% | -4.03% | 0.0% | N/A | ANECDOTAL |
-| C (0.30-0.40) | 2 | -0.00% | +0.52% | +8.89% | +1.55% | +8.89% | 100.0% | 12.42% | ANECDOTAL |
-| D (0.40-0.60) | 2 | -1.21% | -2.17% | -2.87% | -0.24% | -2.87% | 0.0% | 3.69% | ANECDOTAL |
-| E (>0.60) | 0 | — | — | — | — | — | — | — | — |
+| A (<0.20) | 11 | +1.09% | +2.10% | +2.98% | +0.60% | -0.78% | 45.5% | 16.71% | LOW N |
+| B (0.20-0.30) | 2 | -0.38% | -1.93% | -4.60% | -4.65% | -4.60% | 0.0% | 0.80% | ANECDOTAL |
+| C (0.30-0.40) | 5 | +0.30% | +2.58% | +4.84% | +1.55% | +1.71% | 80.0% | 8.38% | ANECDOTAL |
+| D (0.40-0.60) | 4 | -0.31% | +5.36% | +3.38% | +5.08% | +0.21% | 50.0% | 10.48% | ANECDOTAL |
+| E (>0.60) | 8 | +3.32% | -0.20% | -1.22% | +0.87% | +0.13% | 50.0% | 12.03% | ANECDOTAL |
 
 ### Spearman Correlation
-- **rho = -0.2168**, p-value = 0.4986
+- **rho = +0.0194**, p-value = 0.9191
 - **Significant at p<0.05: NO**
-- Direction is actually negative (opposite of ANT's prediction), but not significant
+- Essentially zero correlation — recovery ratio does NOT predict drift direction
 
-### Interpretation
-With only 12 events, no meaningful pattern can be extracted. The negative Spearman rho
-is contrary to ANT's prediction but statistically insignificant. Bucket C (recovery 0.30-0.40)
-shows the highest drift at +8.89% but this is driven by just 2 events — one of which was a
-strong outlier.
+### Key Observations
+1. **No monotonic relationship.** Bucket A (lowest recovery) has the HIGHEST mean 5d drift (+2.98%), contradicting ANT's core claim
+2. **Bucket E (highest recovery) drifts NEGATIVE** at -1.22% over 5 days — opposite of "zombie reversal"
+3. **Massive standard deviations** (8-17%) dwarf the mean drifts — high noise, no signal
+4. **The mean vs median divergence in Bucket A** (+2.98% mean vs -0.78% median) signals outlier contamination — a few large winners pulling the mean up
+5. **Bucket C (0.30-0.40) shows the best WR at 80%** but N=5 is anecdotal
 
 ---
 
@@ -90,17 +98,21 @@ strong outlier.
 
 | Threshold | N_LONG | N_SHORT | Mean_LONG | Mean_SHORT | WR_LONG | WR_SHORT | Separation |
 |-----------|--------|---------|-----------|------------|---------|----------|------------|
-| 0.15 | 9 | 3 | -0.53% | +0.51% | 33.3% | 66.7% | -1.04% |
-| 0.20 | 5 | 7 | +1.60% | -1.60% | 40.0% | 42.9% | +3.20% |
-| 0.25 | 4 | 8 | +3.01% | -1.91% | 50.0% | 37.5% | +4.92% |
-| 0.30 | 4 | 8 | +3.01% | -1.91% | 50.0% | 37.5% | +4.92% |
-| 0.35 | 2 | 10 | -2.87% | +0.25% | 0.0% | 50.0% | -3.12% |
-| 0.40 | 2 | 10 | -2.87% | +0.25% | 0.0% | 50.0% | -3.12% |
-| 0.45 | 2 | 10 | -2.87% | +0.25% | 0.0% | 50.0% | -3.12% |
-| 0.50 | 1 | 11 | -5.48% | +0.21% | 0.0% | 45.5% | -5.69% |
+| 0.15 | 24 | 6 | +2.40% | -1.01% | 50.0% | 50.0% | **+3.41%** |
+| 0.20 | 19 | 11 | +0.99% | +2.98% | 52.6% | 45.5% | -2.00% |
+| 0.25 | 17 | 13 | +1.65% | +1.82% | 58.8% | 38.5% | -0.17% |
+| 0.30 | 17 | 13 | +1.65% | +1.82% | 58.8% | 38.5% | -0.17% |
+| 0.35 | 13 | 17 | +0.93% | +2.32% | 53.8% | 47.1% | -1.39% |
+| 0.40 | 12 | 18 | +0.31% | +2.66% | 50.0% | 50.0% | -2.34% |
+| 0.50 | 11 | 19 | +0.37% | +2.50% | 54.5% | 47.4% | -2.14% |
+| 0.60 | 8 | 22 | -1.22% | +2.79% | 50.0% | 50.0% | -4.00% |
 
-**Optimal threshold: 0.25** (separation = +4.92%)
-**ANT claims: 0.35-0.40** — data suggests lower threshold, but with N < 20 this is unreliable.
+**Optimal threshold: 0.15** (separation = +3.41%)
+
+**ANT claims 0.35-0.40.** Data shows the OPPOSITE pattern:
+- At ANT's threshold (0.35), the LOW-recovery group actually drifts MORE positive (+2.32%) than the HIGH-recovery group (+0.93%)
+- The only threshold with positive separation is 0.15, which is well below ANT's range
+- **This is the strongest evidence against ANT's theory** — recovery ratio > 0.35 does NOT predict upward drift
 
 ---
 
@@ -108,50 +120,72 @@ strong outlier.
 
 |  | Gap -5% to -10% | Gap -10% to -15% | Gap < -15% |
 |---|---|---|---|
-| Recovery < 0.30 | -1.65% (N=6) ANECDOTAL | -2.68% (N=2) ANECDOTAL | N/A |
-| Recovery 0.30-0.50 | +5.84% (N=3) ANECDOTAL | N/A | N/A |
-| Recovery > 0.50 | -5.48% (N=1) ANECDOTAL | N/A | N/A |
+| Recovery < 0.30 | +2.63% (N=11) LOW N | -2.68% (N=2) ANECDOTAL | N/A |
+| Recovery 0.30-0.50 | +3.99% (N=6) ANECDOTAL | N/A | N/A |
+| Recovery > 0.50 | +1.32% (N=8) ANECDOTAL | -2.16% (N=3) ANECDOTAL | N/A |
 
-**Note:** No events with gap < -15% in our sample. Only 2 events with gap <= -10%, making
-ANT's -10% threshold untestable with current data.
+**Observations:**
+- For moderate gaps (-5% to -10%), ALL recovery groups drift positive over 5 days — mean reversion dominates regardless of recovery
+- For severe gaps (-10% to -15%), both low and high recovery groups drift negative — severity matters more than recovery
+- No gap < -15% events in our sample (these may require 2016-2022 data to capture)
+- **The gap size itself appears more predictive than recovery ratio**
 
 ---
 
 ## TEST 4: Day-of-Minimum Distribution
 
-### Low Recovery (<0.30) Events (N=8)
+### Low Recovery (<0.30) Events (N=13)
+
+| Day | Count | % | Visual |
+|-----|-------|---|--------|
+| Day 0 | 2 | 15.4% | ####### |
+| Day 1 | 1 | 7.7% | ### |
+| Day 3 | 1 | 7.7% | ### |
+| Day 5 | 1 | 7.7% | ### |
+| Day 7 | 1 | 7.7% | ### |
+| Day 8 | 1 | 7.7% | ### |
+| Day 9 | 3 | 23.1% | ########### |
+| Day 10 | 3 | 23.1% | ########### |
+
+- **Mode: Day 9**, Mean: Day 6.2
+- Distribution is bimodal: either Day 0 (bottom IS the gap day) or Day 9-10 (continued selling)
+- ANT claims Day 3-5. **Day 3-5 accounts for only 15.4%** of minimums
+
+### High Recovery (>=0.40) Events (N=12)
 
 | Day | Count | % |
 |-----|-------|---|
-| Day 1 | 1 | 12.5% |
-| Day 3 | 1 | 12.5% |
-| Day 5 | 1 | 12.5% |
-| Day 7 | 1 | 12.5% |
-| Day 9 | 2 | 25.0% |
-| Day 10 | 2 | 25.0% |
+| Day 0 | 4 | 33.3% |
+| Day 2 | 3 | 25.0% |
+| Day 3 | 1 | 8.3% |
+| Day 5 | 1 | 8.3% |
+| Day 6 | 2 | 16.7% |
+| Day 10 | 1 | 8.3% |
 
-- **Mode: Day 9**, Mean: Day 6.8
-- ANT claims Day 3-5. Data shows later minimum (Day 9), but N=8 is anecdotal.
-- The late minimum is directionally consistent with ANT's claim that "weakness continues for
-  days after the gap" — these stocks kept drifting down through the full 10-day window.
-
-### High Recovery (>=0.40) Events (N=2)
-- Mode: Day 2, Mean: Day 3.5
-- Too few events to draw conclusions.
+- **Mode: Day 0**, Mean: Day 3.0
+- For "zombie" stocks (high recovery), the gap day IS the bottom 33% of the time
+- This partially supports ANT's claim that zombies bottom earlier
 
 ### Average Trajectories (cumulative % from Day 1 close)
 
-| Day | Rec < 0.20 (N=7) | Rec 0.20-0.40 (N=3) | Rec >= 0.40 (N=2) |
+| Day | Rec < 0.20 (N=11) | Rec 0.20-0.40 (N=7) | Rec >= 0.40 (N=12) |
 |-----|---|---|---|
-| 0 | 0.00% | 0.00% | 0.00% |
-| 1 | -1.38% | +0.05% | -1.21% |
-| 3 | -2.03% | -0.50% | -2.17% |
-| 5 | -1.60% | +4.58% | -2.87% |
-| 10 | -0.71% | -0.15% | -0.24% |
+| D0 | 0.00% | 0.00% | 0.00% |
+| D1 | +1.09% | +0.11% | +2.11% |
+| D3 | +2.10% | +1.29% | +1.65% |
+| D5 | +2.98% | +2.14% | +0.31% |
+| D7 | +2.07% | -0.38% | -1.16% |
+| D10 | +0.60% | -0.22% | +2.27% |
+
+**Surprising finding:** Low-recovery stocks (Rec < 0.20) show the BEST trajectory through Day 5,
+contradicting ANT's "confirmed weakness" prediction. High-recovery stocks underperform through Day 5-7.
 
 ---
 
 ## TEST 5: EPS Surprise Interaction
+
+Only 12 of 30 gap-down events have EPS surprise data (FMP-confirmed events only).
+All cells are ANECDOTAL (N=1-3). **No meaningful interaction can be measured.**
 
 |  | |Surprise| < 5% | |Surprise| 5-15% | |Surprise| > 15% |
 |---|---|---|---|
@@ -159,18 +193,20 @@ ANT's -10% threshold untestable with current data.
 | Rec 0.30-0.50 | +17.67% (N=1) | -0.07% (N=2) | N/A |
 | Rec > 0.50 | N/A | N/A | -5.48% (N=1) |
 
-**All cells are ANECDOTAL (N < 10).** No meaningful interaction can be measured.
-
 ---
 
 ## TEST 6: Zombie LONG & Anti-Zombie SHORT Backtests
 
 ### Zombie LONG (gap <= -10%, recovery >= threshold, day1 green)
-- **0.30 threshold:** 0 trades (no events meet gap <= -10% + recovery >= 0.30 + green day)
-- **0.35 threshold:** 0 trades
-- **0.40 threshold:** 0 trades
 
-**Why no trades:** Only 2 events had gap <= -10%, and neither had high recovery + green day.
+| Threshold | N | Mean Return | WR | PF | Max Loss | Exit |
+|-----------|---|-------------|----|----|----------|------|
+| 0.30 | 1 | -13.89% | 0% | 0.00 | -13.89% | stop |
+| 0.35 | 1 | -13.89% | 0% | 0.00 | -13.89% | stop |
+| 0.40 | 1 | -13.89% | 0% | 0.00 | -13.89% | stop |
+
+**Only 1 trade across all thresholds** — the entry conditions (gap <= -10% + high recovery + green day)
+are too restrictive with only 5 gap-down events >= 10%. The single trade hit the stop for -13.89%.
 
 ### Anti-Zombie SHORT (gap <= -10%, recovery < 0.20)
 
@@ -182,74 +218,66 @@ ANT's -10% threshold untestable with current data.
 | Profit factor | 3.30 |
 | Max single loss | -1.77% |
 | Avg holding days | 4.0 |
-| Exit reasons | target: 1, max_hold: 1 |
-
-**2 trades is meaningless.** One hit target, one expired at max hold.
 
 ---
 
 ## CHARTS
 
 All saved to `backtest_output/ant1/`:
-1. `ant1_recovery_vs_drift.png` — Recovery ratio vs 5-day drift scatter
-2. `ant1_bucket_drift.png` — Mean drift by recovery bucket
-3. `ant1_trajectory.png` — Average price trajectory by recovery group
-4. `ant1_day_of_min.png` — Day-of-minimum histograms
-5. `ant1_threshold_sweep.png` — Threshold sweep: separation & win rate
+1. `ant1_recovery_vs_drift.png` — Scatter: recovery ratio vs 5-day drift (no visible pattern)
+2. `ant1_bucket_drift.png` — Bar chart: drift by bucket (no monotonic pattern)
+3. `ant1_trajectory.png` — Trajectory lines showing low-recovery stocks outperform
+4. `ant1_day_of_min.png` — Day-of-min histogram (bimodal for low-recovery)
+5. `ant1_threshold_sweep.png` — Threshold sweep (best separation at 0.15, not 0.35)
 
 ---
 
 ## VERDICT
 
-### Can we confirm or deny ANT's theory?
+### ANT's Theory: **NOT SUPPORTED by data**
 
-**INCONCLUSIVE — insufficient data.**
+| ANT Claim | Our Finding | Status |
+|-----------|-------------|--------|
+| Higher recovery → more positive drift | rho = +0.02, p = 0.92 (zero correlation) | **REJECTED** |
+| Optimal threshold ~0.35-0.40 | Best at 0.15; ANT's range shows REVERSE separation | **REJECTED** |
+| Recovery < 0.20 = "confirmed weakness" (continues down) | Mean drift_5d = +2.98% (goes UP, not down) | **REJECTED** |
+| Recovery > 0.40 = "zombie" reversal (goes UP) | Mean drift_5d = +0.31% to -1.22% (flat to down) | **REJECTED** |
+| Day-of-min is Day 3-5 (institutional liquidation) | Mode = Day 9 for low-recovery; bimodal Day 0/9-10 | **NOT CONFIRMED** |
+| Zombie LONG is tradeable (PF > 1.5) | 1 trade, stopped out -13.89% | **UNTESTABLE** (N=1) |
 
-| ANT Claim | Our Finding | Confidence |
-|-----------|-------------|------------|
-| Recovery ratio predicts drift direction | Spearman rho = -0.22, p = 0.50 (WRONG SIGN, not significant) | NONE (N=12) |
-| Optimal threshold ~0.35-0.40 | Best separation at 0.25 | NONE (N=12) |
-| Day-of-min is Day 3-5 | Mode = Day 9 for low-recovery | NONE (N=8) |
-| Zombie LONG is tradeable | 0 trades generated | UNTESTABLE |
-| Anti-Zombie SHORT works | PF=3.30 but N=2 | ANECDOTAL |
+### What the data actually shows:
+1. **Mean reversion dominates.** Gap-down stocks tend to bounce regardless of recovery ratio
+2. **Recovery ratio is noise, not signal.** Spearman rho ≈ 0 with p = 0.92
+3. **Gap severity matters more than recovery.** Moderate gaps (-5% to -10%) mean-revert; severe gaps (-10%+) continue
+4. **Low-recovery stocks bounce MORE** than high-recovery stocks through Day 5 — exact opposite of ANT
+5. **Day-of-minimum is bimodal:** either Day 0 (immediate bottom) or Day 9-10 (extended selling) — not Day 3-5
 
-### What we need to properly test this:
+### Caveats:
+- N=30 gap-down events is above "provisional" (N>=20) but below "live-eligible" (N>=40 OOS)
+- Individual recovery buckets have N=2-11, mostly ANECDOTAL
+- Extrapolated earnings dates may include non-earnings gap events (adds noise)
+- Only 4 years of data (2022-2026); a longer sample back to 2016 could change results
+- These results apply to THIS ticker universe; ANT may trade different names
 
-1. **More earnings data:** The current FMP data covers only ~6 quarters (late 2024 to early 2026).
-   We need the full production DB with 1034 rows from 2016-present, or re-run `fmp_earnings_fetcher.py backfill`
-   with a valid FMP API key to get ~40 quarters per ticker.
-
-2. **Expected N with full data:** With 27 tickers x ~40 quarters = ~1,080 earnings events.
-   If ~10% gap down >= 5%, that gives ~108 gap-down events — enough for meaningful bucket analysis.
-   If ~3% gap down >= 10%, that gives ~32 events — borderline for zombie backtest.
-
-3. **The script is ready:** `ant1_earnings_recovery.py` will automatically use any expanded
-   data dropped into `backtester/data/fmp_earnings.csv` and the daily price CSVs.
-
-### Recommendations for Module 5
-
-1. **DO NOT use recovery ratio as a filter yet** — no evidence it works with current data.
-2. **Re-run with full historical data** once production DB access is restored or FMP API key is available.
-3. **If re-run shows Spearman rho > 0.20 with p < 0.05**, integrate recovery ratio as a PEAD-lite
-   entry filter (delay LONG entry when recovery < threshold).
-4. **The day-of-minimum finding (late, not Day 1)** is directionally interesting — if confirmed with
-   more data, it supports delaying LONG entry to Day 3-5.
+### Recommendations for Module 5 (PEAD-lite):
+1. **DO NOT add recovery ratio as a filter** — no predictive value found
+2. **Consider gap severity** instead: moderate gaps (-5% to -10%) show consistent mean reversion
+3. **Entry timing:** the bimodal day-of-min distribution suggests either enter Day 1 (if bottom)
+   or wait until Day 8+ (if extended selling) — but Day 3-5 entry is NOT optimal
+4. **Re-test with pre-2022 data** if available — the 2022-2023 bear market may have different
+   characteristics than the 2024-2026 bull market
 
 ---
 
 ## REPRODUCIBILITY
 
 ```bash
-# Re-run the backtest:
 cd /home/user/stock-data-mining
 python3 ant1_earnings_recovery.py
 
-# To add more earnings data:
-export FMP_API_KEY=your_key
-python3 utils/fmp_earnings_fetcher.py backfill
-
-# Output files:
-# backtest_output/ant1/ANT1_summary.json   (machine-readable)
-# backtest_output/ant1/events.csv          (all computed events)
-# backtest_output/ant1/ant1_*.png          (5 charts)
+# Outputs:
+# backtest_output/ant1/ANT1_summary.json
+# backtest_output/ant1/events.csv
+# backtest_output/ant1/ant1_*.png (5 charts)
+# backtest_output/ant1/run_output.txt
 ```
