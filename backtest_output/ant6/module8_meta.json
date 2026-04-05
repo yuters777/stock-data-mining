@@ -1,0 +1,40 @@
+{
+  "gap_floor": 0.05,
+  "gap_caps": [
+    0.1,
+    0.15
+  ],
+  "recovery_threshold": 0.35,
+  "tickers": [
+    "AAPL",
+    "MSFT",
+    "GOOGL",
+    "AMZN",
+    "META",
+    "NVDA",
+    "TSLA",
+    "AMD",
+    "PLTR",
+    "AVGO",
+    "TSM",
+    "MU",
+    "COST",
+    "COIN",
+    "MARA",
+    "C",
+    "GS",
+    "V",
+    "BA",
+    "JPM",
+    "BABA",
+    "BIDU"
+  ],
+  "excluded_tickers": [
+    "ARM",
+    "INTC",
+    "JD",
+    "MSTR",
+    "SMCI"
+  ],
+  "n_eligible": 17
+}

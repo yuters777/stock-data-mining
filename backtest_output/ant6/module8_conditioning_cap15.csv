@@ -1,0 +1,18 @@
+section,bucket,N,mean,median,wr,pf
+gap_severity,5-8%,10,0.024111,0.011656,0.7,6.82
+gap_severity,8-10%,4,0.0042,-0.007461,0.25,1.19
+gap_severity,10-15%,3,0.044983,0.037603,1.0,999.0
+eps_surprise,MISS (<-5%),6,0.052525,0.037603,0.8333,20.39
+eps_surprise,"INLINE (-5,+5)",4,0.045186,0.068049,1.0,999.0
+eps_surprise,BEAT (>+5%),7,-0.014719,-0.009789,0.2857,0.09
+eps_surprise,UNKNOWN,0,,,,
+revenue_surprise,MISS (<-2%),5,0.034743,0.037603,0.8,18.75
+revenue_surprise,"INLINE (-2,+2)",3,0.03837,-0.007461,0.3333,5.85
+revenue_surprise,BEAT (>+2%),9,0.011559,0.011656,0.6667,2.09
+revenue_surprise,UNKNOWN,0,,,,
+release_timing,BMO,2,0.002097,0.011656,0.5,1.56
+release_timing,AMC,15,0.025911,0.013046,0.6667,4.19
+damage_class,HARD,1,0.037603,0.037603,1.0,999.0
+damage_class,MIXED,9,0.045962,0.037142,0.7778,16.88
+damage_class,SOFT,7,-0.008343,-0.007461,0.4286,0.43
+damage_class,UNKNOWN,0,,,,

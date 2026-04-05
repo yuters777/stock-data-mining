@@ -1,0 +1,14 @@
+metric,value
+total_events_in_calendar,376
+canonical_tickers_27,27
+tickers_with_data,22
+excluded_tickers,"[""ARM"", ""INTC"", ""JD"", ""MSTR"", ""SMCI""]"
+excluded_ticker_reason,no cached daily/M5 data available
+events_known_bmo_amc,376
+events_with_gap_gte_5pct,17
+events_with_full_m5,97
+events_with_full_daily_d5,99
+eligible_events_total,97
+gap_down_eligible_events,17
+per_ticker,"{""AAPL"": 4, ""AMD"": 5, ""AMZN"": 5, ""AVGO"": 4, ""BA"": 4, ""BABA"": 5, ""BIDU"": 5, ""C"": 4, ""COIN"": 5, ""COST"": 4, ""GOOGL"": 5, ""GS"": 4, ""JPM"": 4, ""MARA"": 5, ""META"": 4, ""MSFT"": 4, ""MU"": 4, ""NVDA"": 5, ""PLTR"": 5, ""TSLA"": 4, ""TSM"": 4, ""V"": 4}"
+per_year,"{""2025"": 78, ""2026"": 19}"
