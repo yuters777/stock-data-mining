@@ -1,0 +1,128 @@
+======================================================================
+ANT-3: ANT-DERIVED MODULE IMPROVEMENTS
+Date: 2026-04-05 12:19
+======================================================================
+
+Loading events from ANT-1...
+  444 events loaded
+Loading daily price data...
+  26 tickers with daily data
+
+======================================================================
+TEST A: PEAD-LITE GAP CAP
+======================================================================
+Total PEAD trades: 444
+  LONG: 209, SHORT: 235
+
+--- Gap Bucket Drift Analysis ---
+Bucket               N  Mean drift_5d  Mean drift_10d  WR (5d)
+-----------------------------------------------------------------
+-5% to -8%          18         +2.55%          +0.25%    55.6% *LOW N*
+-8% to -10%          7         +2.50%          +0.06%    42.9% **ANECDOTAL**
+-10% to -15%         5         -2.37%          +5.47%    40.0% **ANECDOTAL**
++5% to +8%          15         -2.52%          -1.03%    53.3% *LOW N*
++8% to +10%          5         -0.00%          +5.84%    60.0% **ANECDOTAL**
++10% to +15%         8         -2.10%          +0.06%    25.0% **ANECDOTAL**
+> +15%               5         +6.07%         +14.31%    60.0% **ANECDOTAL**
+
+--- Gap Floor x Cap Matrix (LONG only) ---
+ Floor      Cap     N    Mean%     WR%      PF
+------------------------------------------------
+    2%       8%    75   -2.10%   40.0%   0.49
+    2%      10%    82   -2.52%   40.2%   0.44
+    2%      12%    84   -2.57%   39.3%   0.43
+    2%      15%    87   -2.33%   40.2%   0.47
+    2%   no cap    87   -2.33%   40.2%   0.47
+    3%       8%    44   -1.60%   47.7%   0.63
+    3%      10%    51   -2.35%   47.1%   0.52
+    3%      12%    53   -2.43%   45.3%   0.51
+    3%      15%    56   -2.07%   46.4%   0.56
+    3%   no cap    56   -2.07%   46.4%   0.56
+    5%       8%    18   -1.53%   44.4%   0.66 *LOW N*
+    5%      10%    25   -3.09%   44.0%   0.45
+    5%      12%    27   -3.18%   40.7%   0.43
+    5%      15%    30   -2.44%   43.3%   0.53
+    5%   no cap    30   -2.44%   43.3%   0.53
+
+--- Gap Floor x Cap Matrix (SHORT only) ---
+ Floor      Cap     N    Mean%     WR%      PF
+------------------------------------------------
+    2%       8%    61   -2.74%   34.4%   0.23
+    2%      10%    66   -2.73%   34.8%   0.24
+    2%      12%    70   -2.43%   37.1%   0.29
+    2%      15%    74   -3.16%   36.5%   0.24
+    2%   no cap    79   -3.86%   34.2%   0.19
+    3%       8%    40   -3.00%   32.5%   0.23
+    3%      10%    45   -2.96%   33.3%   0.24
+    3%      12%    49   -2.51%   36.7%   0.30
+    3%      15%    53   -3.52%   35.8%   0.23
+    3%   no cap    58   -4.45%   32.8%   0.18
+    5%       8%    15   -1.43%   40.0%   0.52 *LOW N*
+    5%      10%    20   -1.74%   40.0%   0.47
+    5%      12%    24   -1.02%   45.8%   0.63
+    5%      15%    28   -3.14%   42.9%   0.34
+    5%   no cap    33   -4.83%   36.4%   0.22
+
+  Saved ant3_gap_bucket_drift.png
+  Saved ant3_gap_cap_pf.png
+======================================================================
+TEST B: MODULE 6E — EARNINGS-DAY SHOCK VARIANT
+======================================================================
+Total gap-down earnings events: 209
+
+--- Module 6E Variants (Day 2 Entry) ---
+Variant            Gap     N    Mean%     WR%      PF  AvgHold
+--------------------------------------------------------------
+V1 Basic           -5%    30   -1.62%   33.3%   0.46     1.8
+V1 Basic           -7%    16   -2.43%   31.2%   0.31     2.1 *LOW N*
+V1 Basic          -10%     5   -3.14%   20.0%   0.21     2.2 **ANECDOTAL**
+V2 Low Rec         -5%    13   -0.01%   30.8%   0.99     1.5 *LOW N*
+V2 Low Rec         -7%     6   -0.94%   33.3%   0.24     1.2 **ANECDOTAL**
+V2 Low Rec        -10%     2   -2.27%    0.0%   0.00     1.0 **ANECDOTAL**
+V3 Bad Surp        -5%     8   -1.61%   12.5%   0.16     2.4 **ANECDOTAL**
+V3 Bad Surp        -7%     7   -1.58%   14.3%   0.18     2.6 **ANECDOTAL**
+V3 Bad Surp       -10%     2   -2.27%    0.0%   0.00     1.0 **ANECDOTAL**
+V4 Combined        -5%     5   -1.86%    0.0%   0.00     1.2 **ANECDOTAL**
+V4 Combined        -7%     4   -1.86%    0.0%   0.00     1.2 **ANECDOTAL**
+V4 Combined       -10%     2   -2.27%    0.0%   0.00     1.0 **ANECDOTAL**
+
+--- Day 1 Close vs Day 2 Open Entry (V1 Basic, gap <= -5%) ---
+     Entry     N    Mean%     WR%      PF
+------------------------------------------
+Day1 Close    30   -1.35%   23.3%   0.53
+ Day2 Open    30   -1.62%   33.3%   0.46
+
+  Saved ant3_m6e_variants.png
+Loading M5 data for Test C...
+  22 tickers with M5 data
+
+======================================================================
+TEST C: MODULE 6 GAP UPPER BOUND (M5 DATA)
+======================================================================
+Module 6-eligible gap events (non-earnings, gap <= -4%): N=95
+
+--- Module 6 PF by Gap Severity Bucket ---
+Bucket               N    Mean%     WR%      PF  AvgBars
+--------------------------------------------------------
+-4% to -7%          74   +1.38%   75.7%   2.03     7.8
+-7% to -10%         16   +0.67%   62.5%   1.38    10.8 *LOW N*
+-10% to -15%         5   -2.16%   40.0%   0.33    12.4 **ANECDOTAL**
+ALL                 95   +1.07%   71.6%   1.71     8.5
+
+--- Module 6 with Gap Cap ---
+Config                        N    Mean%     WR%      PF
+-------------------------------------------------------
+gap>=-4%, no cap (current)    95   +1.07%   71.6%   1.71
+gap>=-4%, cap -10%           90   +1.25%   73.3%   1.88
+gap>=-4%, cap -12%           94   +1.15%   72.3%   1.78
+gap>=-4%, cap -15%           95   +1.07%   71.6%   1.71
+
+--- Extreme Gap Losers (gap < -10%, lost money) ---
+  AMD 2026-02-04: gap=-14.3%, ret=-6.0%, exit=max_hold
+  MARA 2026-02-05: gap=-11.9%, ret=-5.4%, exit=max_hold
+  PLTR 2026-02-05: gap=-11.4%, ret=-4.8%, exit=max_hold
+
+  Saved ant3_m6_gap_buckets.png
+Saved ANT3_summary.json
+
+Done. All outputs in backtest_output/ant3/
