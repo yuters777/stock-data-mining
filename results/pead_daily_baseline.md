@@ -625,3 +625,406 @@ No configs with N >= 20 met the Module 5 filter.
 
 No Module 5 candidate configs met N >= 20. Likely insufficient EPS surprise data to filter this aggressively.
 
+
+
+---
+
+## Robustness — Section 1: LOTO (Leave-One-Ticker-Out)
+
+### SHORT_g3_fb_1d (full: N=52, PF=81.42, WR=92.3%)
+
+| ticker   |   N_rm |   N_left |   PF_without |   PF_impact% |   mean_without% |
+|:---------|-------:|---------:|-------------:|-------------:|----------------:|
+| AMZN     |      3 |       49 |        77.52 |          4.8 |           7.766 |
+| BA       |      3 |       49 |        77.72 |          4.5 |           7.787 |
+| BABA     |      9 |       43 |        77.97 |          4.2 |           7.862 |
+| BIDU     |      4 |       48 |        75.96 |          6.7 |           7.767 |
+| JPM      |      4 |       48 |        95.04 |        -16.7 |           7.923 |
+| MSTR     |      4 |       48 |       121.54 |        -49.3 |           8.083 |
+
+**LOTO verdict: FRAGILE** (max impact: -49.3%, ticker: MSTR)
+
+### SHORT_g1_fb_1d (full: N=110, PF=25.53, WR=84.5%)
+
+| ticker   |   N_rm |   N_left |   PF_without |   PF_impact% |   mean_without% |
+|:---------|-------:|---------:|-------------:|-------------:|----------------:|
+| AAPL     |      3 |      107 |        25.45 |          0.3 |           5.124 |
+| AMD      |      5 |      105 |        24.96 |          2.2 |           5.021 |
+| AMZN     |      5 |      105 |        24.25 |          5   |           5.025 |
+| ARM      |      4 |      106 |        24.58 |          3.7 |           5.046 |
+| AVGO     |      4 |      106 |        29.69 |        -16.3 |           5.086 |
+| BA       |      7 |      103 |        24.25 |          5   |           5.121 |
+| BABA     |     11 |       99 |        23.11 |          9.5 |           4.938 |
+| BIDU     |      8 |      102 |        23.51 |          7.9 |           5.007 |
+| C        |      3 |      107 |        26.71 |         -4.6 |           5.17  |
+| COIN     |      3 |      107 |        24.18 |          5.3 |           4.916 |
+| COST     |      3 |      107 |        24.87 |          2.6 |           5.062 |
+| GOOGL    |      4 |      106 |        25.28 |          1   |           5.11  |
+| GS       |      4 |      106 |        25.18 |          1.3 |           5.144 |
+| JPM      |      6 |      104 |        27.18 |         -6.5 |           5.162 |
+| MARA     |      3 |      107 |        30.44 |        -19.2 |           5.054 |
+| META     |      6 |      104 |        24.05 |          5.8 |           5.029 |
+| MSTR     |      6 |      104 |        26.43 |         -3.5 |           5.118 |
+| MU       |      3 |      107 |        24.45 |          4.2 |           4.972 |
+| NVDA     |      5 |      105 |        27.08 |         -6.1 |           5.212 |
+| PLTR     |      3 |      107 |        24.54 |          3.9 |           4.991 |
+| SMCI     |      5 |      105 |        24.02 |          5.9 |           4.612 |
+| TSM      |      3 |      107 |        28.29 |        -10.8 |           5.202 |
+
+**LOTO verdict: ROBUST** (max impact: -19.2%, ticker: MARA)
+
+### LONG_g3_fb_1d (full: N=50, PF=35.93, WR=94.0%)
+
+| ticker   |   N_rm |   N_left |   PF_without |   PF_impact% |   mean_without% |
+|:---------|-------:|---------:|-------------:|-------------:|----------------:|
+| AVGO     |      3 |       47 |        31.82 |         11.4 |           8.629 |
+| BABA     |      4 |       46 |        46.36 |        -29   |           9.492 |
+| BIDU     |      5 |       45 |        33.72 |          6.2 |           9.567 |
+| GS       |      5 |       45 |        34.28 |          4.6 |           9.731 |
+| META     |      4 |       46 |        33.98 |          5.4 |           9.435 |
+| PLTR     |      5 |       45 |        27.76 |         22.7 |           7.824 |
+| TSLA     |      3 |       47 |        32.97 |          8.3 |           8.949 |
+
+**LOTO verdict: FRAGILE** (max impact: -29.0%, ticker: BABA)
+
+### LONG_g2_fb_5d (full: N=64, PF=7.81, WR=76.6%)
+
+| ticker   |   N_rm |   N_left |   PF_without |   PF_impact% |   mean_without% |
+|:---------|-------:|---------:|-------------:|-------------:|----------------:|
+| AMZN     |      3 |       61 |         7.41 |          5.1 |           7.609 |
+| AVGO     |      3 |       61 |         7.14 |          8.6 |           7.279 |
+| BABA     |      4 |       60 |        10.21 |        -30.8 |           8.367 |
+| BIDU     |      6 |       58 |         8.5  |         -8.8 |           8.047 |
+| C        |      3 |       61 |         7.95 |         -1.8 |           7.681 |
+| GS       |      5 |       59 |         7.22 |          7.6 |           7.625 |
+| MARA     |      3 |       61 |         8.67 |        -11.1 |           8.02  |
+| META     |      4 |       60 |         7.48 |          4.2 |           7.813 |
+| NVDA     |      3 |       61 |         8.29 |         -6.2 |           8.022 |
+| PLTR     |      5 |       59 |         6.17 |         21   |           6.339 |
+| SMCI     |      4 |       60 |         7.62 |          2.4 |           7.425 |
+| TSLA     |      3 |       61 |         7.72 |          1.1 |           7.558 |
+
+**LOTO verdict: FRAGILE** (max impact: -30.8%, ticker: BABA)
+
+### BOTH_g3_s5_fb_5d (full: N=33, PF=1.92, WR=63.6%)
+
+| ticker   |   N_rm |   N_left |   PF_without |   PF_impact% |   mean_without% |
+|:---------|-------:|---------:|-------------:|-------------:|----------------:|
+| AMZN     |      3 |       30 |         2.07 |         -7.7 |           4.851 |
+| AVGO     |      3 |       30 |         1.95 |         -1.8 |           4.31  |
+| GOOGL    |      3 |       30 |         2.02 |         -5.2 |           4.787 |
+| META     |      3 |       30 |         2.03 |         -5.9 |           4.625 |
+| MU       |      3 |       30 |         2.32 |        -21   |           5.034 |
+| PLTR     |      4 |       29 |         1.36 |         29   |           1.794 |
+
+**LOTO verdict: FRAGILE** (max impact: +29.0%, ticker: PLTR)
+
+## Robustness — Section 2: LOYO (Leave-One-Year-Out)
+
+### SHORT_g3_fb_1d (full: N=52, PF=81.42)
+
+|   year |   N_rm |   N_left |   PF_without |   PF_impact% |   mean% |   WR% |
+|-------:|-------:|---------:|-------------:|-------------:|--------:|------:|
+|   2022 |     12 |       40 |       587.2  |       -621.2 |   8.515 |  97.5 |
+|   2023 |      7 |       45 |        73.74 |          9.4 |   8.039 |  91.1 |
+|   2024 |     17 |       35 |        55.59 |         31.7 |   6.85  |  91.4 |
+|   2025 |     14 |       38 |        55.79 |         31.5 |   7.171 |  89.5 |
+
+**LOYO verdict: FRAGILE** (max impact: -621.2%, year: 2022)
+
+### SHORT_g1_fb_1d (full: N=110, PF=25.53)
+
+|   year |   N_rm |   N_left |   PF_without |   PF_impact% |   mean% |   WR% |
+|-------:|-------:|---------:|-------------:|-------------:|--------:|------:|
+|   2022 |     25 |       85 |        35.49 |        -39   |   5.525 |  89.4 |
+|   2023 |     19 |       91 |        24.74 |          3.1 |   5.192 |  84.6 |
+|   2024 |     35 |       75 |        17.8  |         30.3 |   4.497 |  82.7 |
+|   2025 |     24 |       86 |        19.01 |         25.5 |   4.75  |  80.2 |
+|   2026 |      7 |      103 |        38.18 |        -49.6 |   5.223 |  85.4 |
+
+**LOYO verdict: FRAGILE** (max impact: -49.6%, year: 2026)
+
+### LONG_g3_fb_1d (full: N=50, PF=35.93)
+
+|   year |   N_rm |   N_left |   PF_without |   PF_impact% |   mean% |   WR% |
+|-------:|-------:|---------:|-------------:|-------------:|--------:|------:|
+|   2022 |     10 |       40 |        40.21 |        -11.9 |   9.438 |  95   |
+|   2023 |      7 |       43 |        30.68 |         14.6 |   9.081 |  93   |
+|   2024 |      9 |       41 |        80.6  |       -124.3 |   8.517 |  95.1 |
+|   2025 |     22 |       28 |        24.3  |         32.4 |  10.235 |  92.9 |
+
+**LOYO verdict: FRAGILE** (max impact: -124.3%, year: 2024)
+
+### LONG_g2_fb_5d (full: N=64, PF=7.81)
+
+|   year |   N_rm |   N_left |   PF_without |   PF_impact% |   mean% |   WR% |
+|-------:|-------:|---------:|-------------:|-------------:|--------:|------:|
+|   2022 |     13 |       51 |        11.37 |        -45.6 |   8.923 |  80.4 |
+|   2023 |      9 |       55 |         7.39 |          5.3 |   7.895 |  74.5 |
+|   2024 |     15 |       49 |         7.92 |         -1.4 |   7.032 |  77.6 |
+|   2025 |     25 |       39 |         5.65 |         27.6 |   6.619 |  74.4 |
+
+**LOYO verdict: FRAGILE** (max impact: -45.6%, year: 2022)
+
+### BOTH_g3_s5_fb_5d (full: N=33, PF=1.92)
+
+|   year |   N_rm |   N_left |   PF_without |   PF_impact% |   mean% |   WR% |
+|-------:|-------:|---------:|-------------:|-------------:|--------:|------:|
+|   2024 |      5 |       28 |         1.55 |         19   |   2.713 |  60.7 |
+|   2025 |     26 |        7 |         1.62 |         15.7 |   4.267 |  57.1 |
+
+**LOYO verdict: ROBUST** (max impact: +19.0%, year: 2024)
+
+## Robustness — Section 3: Temporal IS/OOS Split
+
+### SHORT_g3_fb_1d
+
+| split                          | set   |   N |   mean% |   WR% |     PF |
+|:-------------------------------|:------|----:|--------:|------:|-------:|
+| IS: 2022-2023 / OOS: 2024-2026 | IS    |  19 |   5.138 |  84.2 |  23.22 |
+|                                | OOS   |  33 |   9.163 |  97   | 521.42 |
+| IS: 2022-2024 / OOS: 2025-2026 | IS    |  36 |   7.162 |  88.9 |  52.84 |
+|                                | OOS   |  16 |   8.884 | 100   | inf    |
+
+**IS/OOS verdict: PASS**
+
+### SHORT_g1_fb_1d
+
+| split                          | set   |   N |   mean% |   WR% |    PF |
+|:-------------------------------|:------|----:|--------:|------:|------:|
+| IS: 2022-2023 / OOS: 2024-2026 | IS    |  44 |   3.882 |  75   | 15.41 |
+|                                | OOS   |  66 |   5.843 |  90.9 | 36.6  |
+| IS: 2022-2024 / OOS: 2025-2026 | IS    |  79 |   4.937 |  81   | 27.95 |
+|                                | OOS   |  31 |   5.369 |  93.5 | 21.25 |
+
+**IS/OOS verdict: PASS**
+
+### LONG_g3_fb_1d
+
+| split                          | set   |   N |   mean% |   WR% |     PF |
+|:-------------------------------|:------|----:|--------:|------:|-------:|
+| IS: 2022-2023 / OOS: 2024-2026 | IS    |  17 |   8.901 |  94.1 |  43.86 |
+|                                | OOS   |  33 |   9.343 |  93.9 |  33.03 |
+| IS: 2022-2024 / OOS: 2025-2026 | IS    |  26 |  10.068 |  92.3 |  22.28 |
+|                                | OOS   |  24 |   8.245 |  95.8 | 232.06 |
+
+**IS/OOS verdict: PASS**
+
+### LONG_g2_fb_5d
+
+| split                          | set   |   N |   mean% |   WR% |    PF |
+|:-------------------------------|:------|----:|--------:|------:|------:|
+| IS: 2022-2023 / OOS: 2024-2026 | IS    |  22 |   4.371 |  72.7 |  3.92 |
+|                                | OOS   |  42 |   9.442 |  78.6 | 11.05 |
+| IS: 2022-2024 / OOS: 2025-2026 | IS    |  37 |   6.604 |  73   |  5.4  |
+|                                | OOS   |  27 |   9.199 |  81.5 | 15.71 |
+
+**IS/OOS verdict: PASS**
+
+### BOTH_g3_s5_fb_5d
+
+| split                          | set   |   N |   mean% |   WR% |   PF |
+|:-------------------------------|:------|----:|--------:|------:|-----:|
+| IS: 2022-2023 / OOS: 2024-2026 | IS    |   0 | nan     |   0   | 0    |
+|                                | OOS   |  33 |   4.23  |  63.6 | 1.92 |
+| IS: 2022-2024 / OOS: 2025-2026 | IS    |   5 |  12.723 |  80   | 5.33 |
+|                                | OOS   |  28 |   2.713 |  60.7 | 1.55 |
+
+**IS/OOS verdict: CAUTION**
+
+## Robustness — Section 4: VIX Regime
+
+### SHORT_g3_fb_1d
+
+| VIX regime     |   N |   mean% |   WR% |     PF |
+|:---------------|----:|--------:|------:|-------:|
+| LOW (<20)      |  19 |   9.16  | 100   | inf    |
+| MEDIUM (20-25) |  22 |   7.251 |  90.9 |  47.07 |
+| HIGH (>=25)    |  11 |   6.038 |  81.8 |  44.97 |
+
+**VIX verdict: UNIVERSAL** (3/3 regimes with PF>=1.0)
+
+### SHORT_g1_fb_1d
+
+| VIX regime     |   N |   mean% |   WR% |     PF |
+|:---------------|----:|--------:|------:|-------:|
+| LOW (<20)      |  38 |   6.999 |  97.4 | 213.21 |
+| MEDIUM (20-25) |  47 |   4.382 |  85.1 |  19.59 |
+| HIGH (>=25)    |  25 |   3.382 |  64   |   9.16 |
+
+**VIX verdict: UNIVERSAL** (3/3 regimes with PF>=1.0)
+
+### LONG_g3_fb_1d
+
+| VIX regime     |   N |   mean% |   WR% |     PF |
+|:---------------|----:|--------:|------:|-------:|
+| LOW (<20)      |  21 |   9.448 |  90.5 |  21.61 |
+| MEDIUM (20-25) |  13 |  10.705 | 100   | inf    |
+| HIGH (>=25)    |  16 |   7.629 |  93.8 |  35.57 |
+
+**VIX verdict: UNIVERSAL** (3/3 regimes with PF>=1.0)
+
+### LONG_g2_fb_5d
+
+| VIX regime     |   N |   mean% |   WR% |     PF |
+|:---------------|----:|--------:|------:|-------:|
+| LOW (<20)      |  29 |   7.257 |    69 |   6.97 |
+| MEDIUM (20-25) |  15 |  12.932 |   100 | inf    |
+| HIGH (>=25)    |  20 |   4.415 |    70 |   3.38 |
+
+**VIX verdict: UNIVERSAL** (3/3 regimes with PF>=1.0)
+
+### BOTH_g3_s5_fb_5d
+
+| VIX regime     |   N |   mean% |   WR% |   PF |
+|:---------------|----:|--------:|------:|-----:|
+| LOW (<20)      |  14 |   2.96  |  57.1 | 1.52 |
+| MEDIUM (20-25) |  13 |   5.16  |  61.5 | 2.34 |
+| HIGH (>=25)    |   6 |   5.178 |  83.3 | 2.35 |
+
+**VIX verdict: UNIVERSAL** (3/3 regimes with PF>=1.0)
+
+## Robustness — Section 5: Gap Cap Test
+
+### SHORT_g3_fb_1d
+
+| gap_cap   |   N |   mean% |   WR% |    PF |
+|:----------|----:|--------:|------:|------:|
+| 10%       |  47 |   7.226 |  91.5 | 69.29 |
+| 15%       |  52 |   7.692 |  92.3 | 81.42 |
+| 20%       |  52 |   7.692 |  92.3 | 81.42 |
+| no cap    |  52 |   7.692 |  92.3 | 81.42 |
+
+**Gap cap verdict: NO_EFFECT**
+
+### SHORT_g1_fb_1d
+
+| gap_cap   |   N |   mean% |   WR% |    PF |
+|:----------|----:|--------:|------:|------:|
+| 10%       | 105 |   4.725 |  83.8 | 22.87 |
+| 15%       | 110 |   5.059 |  84.5 | 25.53 |
+| 20%       | 110 |   5.059 |  84.5 | 25.53 |
+| no cap    | 110 |   5.059 |  84.5 | 25.53 |
+
+**Gap cap verdict: NO_EFFECT**
+
+### LONG_g3_fb_1d
+
+| gap_cap   |   N |   mean% |   WR% |    PF |
+|:----------|----:|--------:|------:|------:|
+| 10%       |  38 |   6.155 |  92.1 | 18.77 |
+| 15%       |  45 |   7.217 |  93.3 | 25.68 |
+| 20%       |  49 |   8.951 |  93.9 | 34.33 |
+| no cap    |  50 |   9.193 |  94   | 35.93 |
+
+**Gap cap verdict: NO_EFFECT**
+
+### LONG_g2_fb_5d
+
+| gap_cap   |   N |   mean% |   WR% |   PF |
+|:----------|----:|--------:|------:|-----:|
+| 10%       |  52 |   5.49  |  73.1 | 5    |
+| 15%       |  59 |   5.959 |  74.6 | 5.86 |
+| 20%       |  63 |   7.274 |  76.2 | 7.33 |
+| no cap    |  64 |   7.699 |  76.6 | 7.81 |
+
+**Gap cap verdict: NO_EFFECT**
+
+### BOTH_g3_s5_fb_5d
+
+| gap_cap   |   N |   mean% |   WR% |   PF |
+|:----------|----:|--------:|------:|-----:|
+| 10%       |  25 |   1.193 |  60   | 1.25 |
+| 15%       |  30 |   1.433 |  60   | 1.28 |
+| 20%       |  32 |   3.284 |  62.5 | 1.69 |
+| no cap    |  33 |   4.23  |  63.6 | 1.92 |
+
+**Gap cap verdict: NO_EFFECT**
+
+## PEAD DAILY BASELINE — FINAL VERDICT
+
+### Config: SHORT_g3_fb_1d
+
+```
+N total:      52
+Performance:  mean 7.692%, WR 92.3%, PF 81.42, p=<.001
+
+LOTO:        FRAGILE (max impact -49.3%, ticker: MSTR)
+LOYO:        FRAGILE (max impact -621.2%, year: 2022)
+IS/OOS:      PASS
+VIX regime:  UNIVERSAL
+Gap cap:     NO_EFFECT
+
+OVERALL:     REJECT
+Reason:      2 robustness failures
+Next step:   Do not deploy. Re-examine with different parameters or data.
+```
+
+### Config: SHORT_g1_fb_1d
+
+```
+N total:      110
+Performance:  mean 5.059%, WR 84.5%, PF 25.53, p=<.001
+
+LOTO:        ROBUST (max impact -19.2%, ticker: MARA)
+LOYO:        FRAGILE (max impact -49.6%, year: 2026)
+IS/OOS:      PASS
+VIX regime:  UNIVERSAL
+Gap cap:     NO_EFFECT
+
+OVERALL:     MARGINAL
+Reason:      robustness concern
+Next step:   Consider relaxing filters for more N, or combine with other signals.
+```
+
+### Config: LONG_g3_fb_1d
+
+```
+N total:      50
+Performance:  mean 9.193%, WR 94.0%, PF 35.93, p=<.001
+
+LOTO:        FRAGILE (max impact -29.0%, ticker: BABA)
+LOYO:        FRAGILE (max impact -124.3%, year: 2024)
+IS/OOS:      PASS
+VIX regime:  UNIVERSAL
+Gap cap:     NO_EFFECT
+
+OVERALL:     REJECT
+Reason:      2 robustness failures
+Next step:   Do not deploy. Re-examine with different parameters or data.
+```
+
+### Config: LONG_g2_fb_5d
+
+```
+N total:      64
+Performance:  mean 7.699%, WR 76.6%, PF 7.81, p=<.001
+
+LOTO:        FRAGILE (max impact -30.8%, ticker: BABA)
+LOYO:        FRAGILE (max impact -45.6%, year: 2022)
+IS/OOS:      PASS
+VIX regime:  UNIVERSAL
+Gap cap:     NO_EFFECT
+
+OVERALL:     REJECT
+Reason:      2 robustness failures
+Next step:   Do not deploy. Re-examine with different parameters or data.
+```
+
+### Config: BOTH_g3_s5_fb_5d
+
+```
+N total:      33
+Performance:  mean 4.230%, WR 63.6%, PF 1.92, p=0.14
+
+LOTO:        FRAGILE (max impact +29.0%, ticker: PLTR)
+LOYO:        ROBUST (max impact +19.0%, year: 2024)
+IS/OOS:      CAUTION
+VIX regime:  UNIVERSAL
+Gap cap:     NO_EFFECT
+
+OVERALL:     MARGINAL
+Reason:      N=33<40, robustness concern
+Next step:   Consider relaxing filters for more N, or combine with other signals.
+```
+
