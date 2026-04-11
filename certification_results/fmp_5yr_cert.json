@@ -1,0 +1,1772 @@
+{
+  "generated_at": "2026-04-11T07:14:40.264194Z",
+  "universe_equity": [
+    "AAPL",
+    "AMD",
+    "AMZN",
+    "ARM",
+    "AVGO",
+    "BA",
+    "BABA",
+    "BIDU",
+    "C",
+    "COIN",
+    "COST",
+    "GOOGL",
+    "GS",
+    "INTC",
+    "JD",
+    "JPM",
+    "MARA",
+    "META",
+    "MSFT",
+    "MSTR",
+    "MU",
+    "NVDA",
+    "PLTR",
+    "SMCI",
+    "SPY",
+    "TSLA",
+    "TSM",
+    "V",
+    "VIXY"
+  ],
+  "universe_crypto": [
+    "BTC",
+    "ETH"
+  ],
+  "summary": {
+    "total": 31,
+    "certified": 2,
+    "failed": 29
+  },
+  "results": [
+    {
+      "ticker": "AAPL",
+      "status": "FAILED",
+      "issues": [
+        "[6_first] 56 full days missing 13:30 bar",
+        "[11_weekends] 2784 weekend bars"
+      ],
+      "rows": 76810,
+      "dates": 532,
+      "years": 6,
+      "rth_per_day": 77.2,
+      "checks": {
+        "1_file": {
+          "pass": true,
+          "msg": "AAPL_data.csv"
+        },
+        "2_rows": {
+          "pass": true,
+          "msg": "76,810"
+        },
+        "3_range": {
+          "pass": true,
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "pass": true,
+          "msg": "{2021: np.int64(78), 2022: np.int64(106), 2023: np.int64(106), 2024: np.int64(105), 2025: np.int64(107), 2026: np.int64(30)}"
+        },
+        "5_rth": {
+          "pass": true,
+          "msg": "mean=77.2/day"
+        },
+        "6_first": {
+          "pass": false,
+          "msg": "56 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "pass": true,
+          "msg": "19:55 \u2713"
+        },
+        "8_ohlc": {
+          "pass": true,
+          "msg": ""
+        },
+        "9_dupes": {
+          "pass": true,
+          "msg": ""
+        },
+        "10_order": {
+          "pass": true,
+          "msg": ""
+        },
+        "11_weekends": {
+          "pass": false,
+          "msg": "2784 weekend bars"
+        },
+        "12_continuity": {
+          "pass": true,
+          "msg": ""
+        }
+      }
+    },
+    {
+      "ticker": "AMD",
+      "status": "FAILED",
+      "issues": [
+        "[6_first] 96 full days missing 13:30 bar",
+        "[11_weekends] 4441 weekend bars",
+        "[12_continuity] 2 intraday gaps >15%"
+      ],
+      "rows": 136186,
+      "dates": 757,
+      "years": 6,
+      "rth_per_day": 77.0,
+      "checks": {
+        "1_file": {
+          "pass": true,
+          "msg": "AMD_data.csv"
+        },
+        "2_rows": {
+          "pass": true,
+          "msg": "136,186"
+        },
+        "3_range": {
+          "pass": true,
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "pass": true,
+          "msg": "{2021: np.int64(78), 2022: np.int64(106), 2023: np.int64(106), 2024: np.int64(105), 2025: np.int64(288), 2026: np.int64(74)}"
+        },
+        "5_rth": {
+          "pass": true,
+          "msg": "mean=77.0/day"
+        },
+        "6_first": {
+          "pass": false,
+          "msg": "96 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "pass": true,
+          "msg": "19:55 \u2713"
+        },
+        "8_ohlc": {
+          "pass": true,
+          "msg": ""
+        },
+        "9_dupes": {
+          "pass": true,
+          "msg": ""
+        },
+        "10_order": {
+          "pass": true,
+          "msg": ""
+        },
+        "11_weekends": {
+          "pass": false,
+          "msg": "4441 weekend bars"
+        },
+        "12_continuity": {
+          "pass": false,
+          "msg": "2 intraday gaps >15%"
+        }
+      }
+    },
+    {
+      "ticker": "AMZN",
+      "status": "FAILED",
+      "issues": [
+        "[5_rth] 42 dates with <60 RTH bars; mean=74.9",
+        "[6_first] 44 full days missing 13:30 bar",
+        "[11_weekends] 8111 weekend bars",
+        "[12_continuity] 6 intraday gaps >15%"
+      ],
+      "rows": 137665,
+      "dates": 760,
+      "years": 6,
+      "rth_per_day": 74.9,
+      "checks": {
+        "1_file": {
+          "pass": true,
+          "msg": "AMZN_data.csv"
+        },
+        "2_rows": {
+          "pass": true,
+          "msg": "137,665"
+        },
+        "3_range": {
+          "pass": true,
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "pass": true,
+          "msg": "{2021: np.int64(78), 2022: np.int64(106), 2023: np.int64(106), 2024: np.int64(105), 2025: np.int64(291), 2026: np.int64(74)}"
+        },
+        "5_rth": {
+          "pass": false,
+          "msg": "42 dates with <60 RTH bars; mean=74.9"
+        },
+        "6_first": {
+          "pass": false,
+          "msg": "44 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "pass": true,
+          "msg": "19:55 \u2713"
+        },
+        "8_ohlc": {
+          "pass": true,
+          "msg": ""
+        },
+        "9_dupes": {
+          "pass": true,
+          "msg": ""
+        },
+        "10_order": {
+          "pass": true,
+          "msg": ""
+        },
+        "11_weekends": {
+          "pass": false,
+          "msg": "8111 weekend bars"
+        },
+        "12_continuity": {
+          "pass": false,
+          "msg": "6 intraday gaps >15%"
+        }
+      }
+    },
+    {
+      "ticker": "ARM",
+      "status": "FAILED",
+      "issues": [
+        "[1_file] file not found"
+      ],
+      "rows": null,
+      "dates": null,
+      "years": null,
+      "rth_per_day": null,
+      "checks": {
+        "1_file": {
+          "pass": false,
+          "msg": "file not found"
+        }
+      }
+    },
+    {
+      "ticker": "AVGO",
+      "status": "FAILED",
+      "issues": [
+        "[5_rth] 251 dates with <60 RTH bars; mean=64.5",
+        "[6_first] 18 full days missing 13:30 bar",
+        "[11_weekends] 2797 weekend bars",
+        "[12_continuity] 13 intraday gaps >15%"
+      ],
+      "rows": 112235,
+      "dates": 739,
+      "years": 6,
+      "rth_per_day": 64.5,
+      "checks": {
+        "1_file": {
+          "pass": true,
+          "msg": "AVGO_data.csv"
+        },
+        "2_rows": {
+          "pass": true,
+          "msg": "112,235"
+        },
+        "3_range": {
+          "pass": true,
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "pass": true,
+          "msg": "{2021: np.int64(71), 2022: np.int64(101), 2023: np.int64(101), 2024: np.int64(104), 2025: np.int64(288), 2026: np.int64(74)}"
+        },
+        "5_rth": {
+          "pass": false,
+          "msg": "251 dates with <60 RTH bars; mean=64.5"
+        },
+        "6_first": {
+          "pass": false,
+          "msg": "18 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "pass": true,
+          "msg": "19:55 \u2713"
+        },
+        "8_ohlc": {
+          "pass": true,
+          "msg": ""
+        },
+        "9_dupes": {
+          "pass": true,
+          "msg": ""
+        },
+        "10_order": {
+          "pass": true,
+          "msg": ""
+        },
+        "11_weekends": {
+          "pass": false,
+          "msg": "2797 weekend bars"
+        },
+        "12_continuity": {
+          "pass": false,
+          "msg": "13 intraday gaps >15%"
+        }
+      }
+    },
+    {
+      "ticker": "BA",
+      "status": "FAILED",
+      "issues": [
+        "[5_rth] 51 dates with <60 RTH bars; mean=72.0",
+        "[6_first] 67 full days missing 13:30 bar",
+        "[11_weekends] 3481 weekend bars",
+        "[12_continuity] 2 intraday gaps >15%"
+      ],
+      "rows": 121195,
+      "dates": 759,
+      "years": 6,
+      "rth_per_day": 72.0,
+      "checks": {
+        "1_file": {
+          "pass": true,
+          "msg": "BA_data.csv"
+        },
+        "2_rows": {
+          "pass": true,
+          "msg": "121,195"
+        },
+        "3_range": {
+          "pass": true,
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "pass": true,
+          "msg": "{2021: np.int64(78), 2022: np.int64(106), 2023: np.int64(105), 2024: np.int64(105), 2025: np.int64(291), 2026: np.int64(74)}"
+        },
+        "5_rth": {
+          "pass": false,
+          "msg": "51 dates with <60 RTH bars; mean=72.0"
+        },
+        "6_first": {
+          "pass": false,
+          "msg": "67 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "pass": true,
+          "msg": "19:55 \u2713"
+        },
+        "8_ohlc": {
+          "pass": true,
+          "msg": ""
+        },
+        "9_dupes": {
+          "pass": true,
+          "msg": ""
+        },
+        "10_order": {
+          "pass": true,
+          "msg": ""
+        },
+        "11_weekends": {
+          "pass": false,
+          "msg": "3481 weekend bars"
+        },
+        "12_continuity": {
+          "pass": false,
+          "msg": "2 intraday gaps >15%"
+        }
+      }
+    },
+    {
+      "ticker": "BABA",
+      "status": "FAILED",
+      "issues": [
+        "[6_first] 67 full days missing 13:30 bar",
+        "[11_weekends] 5054 weekend bars",
+        "[12_continuity] 2 intraday gaps >15%"
+      ],
+      "rows": 136682,
+      "dates": 760,
+      "years": 6,
+      "rth_per_day": 77.0,
+      "checks": {
+        "1_file": {
+          "pass": true,
+          "msg": "BABA_data.csv"
+        },
+        "2_rows": {
+          "pass": true,
+          "msg": "136,682"
+        },
+        "3_range": {
+          "pass": true,
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "pass": true,
+          "msg": "{2021: np.int64(78), 2022: np.int64(106), 2023: np.int64(106), 2024: np.int64(105), 2025: np.int64(291), 2026: np.int64(74)}"
+        },
+        "5_rth": {
+          "pass": true,
+          "msg": "mean=77.0/day"
+        },
+        "6_first": {
+          "pass": false,
+          "msg": "67 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "pass": true,
+          "msg": "19:55 \u2713"
+        },
+        "8_ohlc": {
+          "pass": true,
+          "msg": ""
+        },
+        "9_dupes": {
+          "pass": true,
+          "msg": ""
+        },
+        "10_order": {
+          "pass": true,
+          "msg": ""
+        },
+        "11_weekends": {
+          "pass": false,
+          "msg": "5054 weekend bars"
+        },
+        "12_continuity": {
+          "pass": false,
+          "msg": "2 intraday gaps >15%"
+        }
+      }
+    },
+    {
+      "ticker": "BIDU",
+      "status": "FAILED",
+      "issues": [
+        "[5_rth] 96 dates with <60 RTH bars; mean=70.3",
+        "[6_first] 31 full days missing 13:30 bar",
+        "[11_weekends] 2754 weekend bars",
+        "[12_continuity] 2 intraday gaps >15%"
+      ],
+      "rows": 116232,
+      "dates": 755,
+      "years": 6,
+      "rth_per_day": 70.3,
+      "checks": {
+        "1_file": {
+          "pass": true,
+          "msg": "BIDU_data.csv"
+        },
+        "2_rows": {
+          "pass": true,
+          "msg": "116,232"
+        },
+        "3_range": {
+          "pass": true,
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "pass": true,
+          "msg": "{2021: np.int64(78), 2022: np.int64(106), 2023: np.int64(105), 2024: np.int64(105), 2025: np.int64(288), 2026: np.int64(73)}"
+        },
+        "5_rth": {
+          "pass": false,
+          "msg": "96 dates with <60 RTH bars; mean=70.3"
+        },
+        "6_first": {
+          "pass": false,
+          "msg": "31 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "pass": true,
+          "msg": "19:55 \u2713"
+        },
+        "8_ohlc": {
+          "pass": true,
+          "msg": ""
+        },
+        "9_dupes": {
+          "pass": true,
+          "msg": ""
+        },
+        "10_order": {
+          "pass": true,
+          "msg": ""
+        },
+        "11_weekends": {
+          "pass": false,
+          "msg": "2754 weekend bars"
+        },
+        "12_continuity": {
+          "pass": false,
+          "msg": "2 intraday gaps >15%"
+        }
+      }
+    },
+    {
+      "ticker": "C",
+      "status": "FAILED",
+      "issues": [
+        "[5_rth] 111 dates with <60 RTH bars; mean=69.5",
+        "[6_first] 34 full days missing 13:30 bar",
+        "[11_weekends] 2781 weekend bars",
+        "[12_continuity] 10 intraday gaps >15%"
+      ],
+      "rows": 110946,
+      "dates": 760,
+      "years": 6,
+      "rth_per_day": 69.5,
+      "checks": {
+        "1_file": {
+          "pass": true,
+          "msg": "C_data.csv"
+        },
+        "2_rows": {
+          "pass": true,
+          "msg": "110,946"
+        },
+        "3_range": {
+          "pass": true,
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "pass": true,
+          "msg": "{2021: np.int64(78), 2022: np.int64(106), 2023: np.int64(106), 2024: np.int64(105), 2025: np.int64(291), 2026: np.int64(74)}"
+        },
+        "5_rth": {
+          "pass": false,
+          "msg": "111 dates with <60 RTH bars; mean=69.5"
+        },
+        "6_first": {
+          "pass": false,
+          "msg": "34 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "pass": true,
+          "msg": "19:55 \u2713"
+        },
+        "8_ohlc": {
+          "pass": true,
+          "msg": ""
+        },
+        "9_dupes": {
+          "pass": true,
+          "msg": ""
+        },
+        "10_order": {
+          "pass": true,
+          "msg": ""
+        },
+        "11_weekends": {
+          "pass": false,
+          "msg": "2781 weekend bars"
+        },
+        "12_continuity": {
+          "pass": false,
+          "msg": "10 intraday gaps >15%"
+        }
+      }
+    },
+    {
+      "ticker": "COIN",
+      "status": "FAILED",
+      "issues": [
+        "[5_rth] 11 dates with <60 RTH bars; mean=75.0",
+        "[6_first] 84 full days missing 13:30 bar",
+        "[11_weekends] 4753 weekend bars",
+        "[12_continuity] 1 intraday gaps >15%"
+      ],
+      "rows": 131605,
+      "dates": 757,
+      "years": 6,
+      "rth_per_day": 75.0,
+      "checks": {
+        "1_file": {
+          "pass": true,
+          "msg": "COIN_data.csv"
+        },
+        "2_rows": {
+          "pass": true,
+          "msg": "131,605"
+        },
+        "3_range": {
+          "pass": true,
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "pass": true,
+          "msg": "{2021: np.int64(78), 2022: np.int64(106), 2023: np.int64(104), 2024: np.int64(105), 2025: np.int64(290), 2026: np.int64(74)}"
+        },
+        "5_rth": {
+          "pass": false,
+          "msg": "11 dates with <60 RTH bars; mean=75.0"
+        },
+        "6_first": {
+          "pass": false,
+          "msg": "84 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "pass": true,
+          "msg": "19:55 \u2713"
+        },
+        "8_ohlc": {
+          "pass": true,
+          "msg": ""
+        },
+        "9_dupes": {
+          "pass": true,
+          "msg": ""
+        },
+        "10_order": {
+          "pass": true,
+          "msg": ""
+        },
+        "11_weekends": {
+          "pass": false,
+          "msg": "4753 weekend bars"
+        },
+        "12_continuity": {
+          "pass": false,
+          "msg": "1 intraday gaps >15%"
+        }
+      }
+    },
+    {
+      "ticker": "COST",
+      "status": "FAILED",
+      "issues": [
+        "[5_rth] 300 dates with <60 RTH bars; mean=62.2",
+        "[6_first] 5 full days missing 13:30 bar",
+        "[11_weekends] 2672 weekend bars"
+      ],
+      "rows": 106599,
+      "dates": 749,
+      "years": 6,
+      "rth_per_day": 62.2,
+      "checks": {
+        "1_file": {
+          "pass": true,
+          "msg": "COST_data.csv"
+        },
+        "2_rows": {
+          "pass": true,
+          "msg": "106,599"
+        },
+        "3_range": {
+          "pass": true,
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "pass": true,
+          "msg": "{2021: np.int64(74), 2022: np.int64(106), 2023: np.int64(103), 2024: np.int64(104), 2025: np.int64(288), 2026: np.int64(74)}"
+        },
+        "5_rth": {
+          "pass": false,
+          "msg": "300 dates with <60 RTH bars; mean=62.2"
+        },
+        "6_first": {
+          "pass": false,
+          "msg": "5 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "pass": true,
+          "msg": "19:55 \u2713"
+        },
+        "8_ohlc": {
+          "pass": true,
+          "msg": ""
+        },
+        "9_dupes": {
+          "pass": true,
+          "msg": ""
+        },
+        "10_order": {
+          "pass": true,
+          "msg": ""
+        },
+        "11_weekends": {
+          "pass": false,
+          "msg": "2672 weekend bars"
+        },
+        "12_continuity": {
+          "pass": true,
+          "msg": ""
+        }
+      }
+    },
+    {
+      "ticker": "GOOGL",
+      "status": "FAILED",
+      "issues": [
+        "[5_rth] 92 dates with <60 RTH bars; mean=72.2",
+        "[6_first] 61 full days missing 13:30 bar",
+        "[11_weekends] 7668 weekend bars",
+        "[12_continuity] 8 intraday gaps >15%"
+      ],
+      "rows": 132454,
+      "dates": 757,
+      "years": 6,
+      "rth_per_day": 72.2,
+      "checks": {
+        "1_file": {
+          "pass": true,
+          "msg": "GOOGL_data.csv"
+        },
+        "2_rows": {
+          "pass": true,
+          "msg": "132,454"
+        },
+        "3_range": {
+          "pass": true,
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "pass": true,
+          "msg": "{2021: np.int64(76), 2022: np.int64(105), 2023: np.int64(106), 2024: np.int64(105), 2025: np.int64(291), 2026: np.int64(74)}"
+        },
+        "5_rth": {
+          "pass": false,
+          "msg": "92 dates with <60 RTH bars; mean=72.2"
+        },
+        "6_first": {
+          "pass": false,
+          "msg": "61 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "pass": true,
+          "msg": "19:55 \u2713"
+        },
+        "8_ohlc": {
+          "pass": true,
+          "msg": ""
+        },
+        "9_dupes": {
+          "pass": true,
+          "msg": ""
+        },
+        "10_order": {
+          "pass": true,
+          "msg": ""
+        },
+        "11_weekends": {
+          "pass": false,
+          "msg": "7668 weekend bars"
+        },
+        "12_continuity": {
+          "pass": false,
+          "msg": "8 intraday gaps >15%"
+        }
+      }
+    },
+    {
+      "ticker": "GS",
+      "status": "FAILED",
+      "issues": [
+        "[5_rth] 292 dates with <60 RTH bars; mean=63.1",
+        "[6_first] 6 full days missing 13:30 bar",
+        "[11_weekends] 2268 weekend bars",
+        "[12_continuity] 6 intraday gaps >15%"
+      ],
+      "rows": 103099,
+      "dates": 747,
+      "years": 6,
+      "rth_per_day": 63.1,
+      "checks": {
+        "1_file": {
+          "pass": true,
+          "msg": "GS_data.csv"
+        },
+        "2_rows": {
+          "pass": true,
+          "msg": "103,099"
+        },
+        "3_range": {
+          "pass": true,
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "pass": true,
+          "msg": "{2021: np.int64(77), 2022: np.int64(103), 2023: np.int64(103), 2024: np.int64(100), 2025: np.int64(290), 2026: np.int64(74)}"
+        },
+        "5_rth": {
+          "pass": false,
+          "msg": "292 dates with <60 RTH bars; mean=63.1"
+        },
+        "6_first": {
+          "pass": false,
+          "msg": "6 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "pass": true,
+          "msg": "19:55 \u2713"
+        },
+        "8_ohlc": {
+          "pass": true,
+          "msg": ""
+        },
+        "9_dupes": {
+          "pass": true,
+          "msg": ""
+        },
+        "10_order": {
+          "pass": true,
+          "msg": ""
+        },
+        "11_weekends": {
+          "pass": false,
+          "msg": "2268 weekend bars"
+        },
+        "12_continuity": {
+          "pass": false,
+          "msg": "6 intraday gaps >15%"
+        }
+      }
+    },
+    {
+      "ticker": "INTC",
+      "status": "FAILED",
+      "issues": [
+        "[1_file] file not found"
+      ],
+      "rows": null,
+      "dates": null,
+      "years": null,
+      "rth_per_day": null,
+      "checks": {
+        "1_file": {
+          "pass": false,
+          "msg": "file not found"
+        }
+      }
+    },
+    {
+      "ticker": "JD",
+      "status": "FAILED",
+      "issues": [
+        "[1_file] file not found"
+      ],
+      "rows": null,
+      "dates": null,
+      "years": null,
+      "rth_per_day": null,
+      "checks": {
+        "1_file": {
+          "pass": false,
+          "msg": "file not found"
+        }
+      }
+    },
+    {
+      "ticker": "JPM",
+      "status": "FAILED",
+      "issues": [
+        "[5_rth] 204 dates with <60 RTH bars; mean=67.1",
+        "[6_first] 11 full days missing 13:30 bar",
+        "[11_weekends] 2887 weekend bars",
+        "[12_continuity] 3 intraday gaps >15%"
+      ],
+      "rows": 113263,
+      "dates": 759,
+      "years": 6,
+      "rth_per_day": 67.1,
+      "checks": {
+        "1_file": {
+          "pass": true,
+          "msg": "JPM_data.csv"
+        },
+        "2_rows": {
+          "pass": true,
+          "msg": "113,263"
+        },
+        "3_range": {
+          "pass": true,
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "pass": true,
+          "msg": "{2021: np.int64(78), 2022: np.int64(106), 2023: np.int64(105), 2024: np.int64(105), 2025: np.int64(291), 2026: np.int64(74)}"
+        },
+        "5_rth": {
+          "pass": false,
+          "msg": "204 dates with <60 RTH bars; mean=67.1"
+        },
+        "6_first": {
+          "pass": false,
+          "msg": "11 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "pass": true,
+          "msg": "19:55 \u2713"
+        },
+        "8_ohlc": {
+          "pass": true,
+          "msg": ""
+        },
+        "9_dupes": {
+          "pass": true,
+          "msg": ""
+        },
+        "10_order": {
+          "pass": true,
+          "msg": ""
+        },
+        "11_weekends": {
+          "pass": false,
+          "msg": "2887 weekend bars"
+        },
+        "12_continuity": {
+          "pass": false,
+          "msg": "3 intraday gaps >15%"
+        }
+      }
+    },
+    {
+      "ticker": "MARA",
+      "status": "FAILED",
+      "issues": [
+        "[6_first] 62 full days missing 13:30 bar",
+        "[11_weekends] 4428 weekend bars"
+      ],
+      "rows": 135844,
+      "dates": 757,
+      "years": 6,
+      "rth_per_day": 76.9,
+      "checks": {
+        "1_file": {
+          "pass": true,
+          "msg": "MARA_data.csv"
+        },
+        "2_rows": {
+          "pass": true,
+          "msg": "135,844"
+        },
+        "3_range": {
+          "pass": true,
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "pass": true,
+          "msg": "{2021: np.int64(78), 2022: np.int64(106), 2023: np.int64(106), 2024: np.int64(105), 2025: np.int64(288), 2026: np.int64(74)}"
+        },
+        "5_rth": {
+          "pass": true,
+          "msg": "mean=76.9/day"
+        },
+        "6_first": {
+          "pass": false,
+          "msg": "62 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "pass": true,
+          "msg": "19:55 \u2713"
+        },
+        "8_ohlc": {
+          "pass": true,
+          "msg": ""
+        },
+        "9_dupes": {
+          "pass": true,
+          "msg": ""
+        },
+        "10_order": {
+          "pass": true,
+          "msg": ""
+        },
+        "11_weekends": {
+          "pass": false,
+          "msg": "4428 weekend bars"
+        },
+        "12_continuity": {
+          "pass": true,
+          "msg": ""
+        }
+      }
+    },
+    {
+      "ticker": "META",
+      "status": "FAILED",
+      "issues": [
+        "[6_first] 101 full days missing 13:30 bar",
+        "[11_weekends] 8023 weekend bars",
+        "[12_continuity] 384 intraday gaps >15%"
+      ],
+      "rows": 137623,
+      "dates": 760,
+      "years": 6,
+      "rth_per_day": 75.4,
+      "checks": {
+        "1_file": {
+          "pass": true,
+          "msg": "META_data.csv"
+        },
+        "2_rows": {
+          "pass": true,
+          "msg": "137,623"
+        },
+        "3_range": {
+          "pass": true,
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "pass": true,
+          "msg": "{2021: np.int64(78), 2022: np.int64(106), 2023: np.int64(106), 2024: np.int64(105), 2025: np.int64(291), 2026: np.int64(74)}"
+        },
+        "5_rth": {
+          "pass": true,
+          "msg": "mean=75.4/day"
+        },
+        "6_first": {
+          "pass": false,
+          "msg": "101 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "pass": true,
+          "msg": "19:55 \u2713"
+        },
+        "8_ohlc": {
+          "pass": true,
+          "msg": ""
+        },
+        "9_dupes": {
+          "pass": true,
+          "msg": ""
+        },
+        "10_order": {
+          "pass": true,
+          "msg": ""
+        },
+        "11_weekends": {
+          "pass": false,
+          "msg": "8023 weekend bars"
+        },
+        "12_continuity": {
+          "pass": false,
+          "msg": "384 intraday gaps >15%"
+        }
+      }
+    },
+    {
+      "ticker": "MSFT",
+      "status": "FAILED",
+      "issues": [
+        "[6_first] 107 full days missing 13:30 bar",
+        "[11_weekends] 7913 weekend bars",
+        "[12_continuity] 11 intraday gaps >15%"
+      ],
+      "rows": 138129,
+      "dates": 759,
+      "years": 6,
+      "rth_per_day": 75.7,
+      "checks": {
+        "1_file": {
+          "pass": true,
+          "msg": "MSFT_data.csv"
+        },
+        "2_rows": {
+          "pass": true,
+          "msg": "138,129"
+        },
+        "3_range": {
+          "pass": true,
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "pass": true,
+          "msg": "{2021: np.int64(78), 2022: np.int64(106), 2023: np.int64(105), 2024: np.int64(105), 2025: np.int64(291), 2026: np.int64(74)}"
+        },
+        "5_rth": {
+          "pass": true,
+          "msg": "mean=75.7/day"
+        },
+        "6_first": {
+          "pass": false,
+          "msg": "107 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "pass": true,
+          "msg": "19:55 \u2713"
+        },
+        "8_ohlc": {
+          "pass": true,
+          "msg": ""
+        },
+        "9_dupes": {
+          "pass": true,
+          "msg": ""
+        },
+        "10_order": {
+          "pass": true,
+          "msg": ""
+        },
+        "11_weekends": {
+          "pass": false,
+          "msg": "7913 weekend bars"
+        },
+        "12_continuity": {
+          "pass": false,
+          "msg": "11 intraday gaps >15%"
+        }
+      }
+    },
+    {
+      "ticker": "MSTR",
+      "status": "FAILED",
+      "issues": [
+        "[1_file] file not found"
+      ],
+      "rows": null,
+      "dates": null,
+      "years": null,
+      "rth_per_day": null,
+      "checks": {
+        "1_file": {
+          "pass": false,
+          "msg": "file not found"
+        }
+      }
+    },
+    {
+      "ticker": "MU",
+      "status": "FAILED",
+      "issues": [
+        "[5_rth] 32 dates with <60 RTH bars; mean=73.5",
+        "[6_first] 72 full days missing 13:30 bar",
+        "[11_weekends] 3624 weekend bars",
+        "[12_continuity] 5 intraday gaps >15%"
+      ],
+      "rows": 126666,
+      "dates": 757,
+      "years": 6,
+      "rth_per_day": 73.5,
+      "checks": {
+        "1_file": {
+          "pass": true,
+          "msg": "MU_data.csv"
+        },
+        "2_rows": {
+          "pass": true,
+          "msg": "126,666"
+        },
+        "3_range": {
+          "pass": true,
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "pass": true,
+          "msg": "{2021: np.int64(78), 2022: np.int64(106), 2023: np.int64(106), 2024: np.int64(105), 2025: np.int64(288), 2026: np.int64(74)}"
+        },
+        "5_rth": {
+          "pass": false,
+          "msg": "32 dates with <60 RTH bars; mean=73.5"
+        },
+        "6_first": {
+          "pass": false,
+          "msg": "72 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "pass": true,
+          "msg": "19:55 \u2713"
+        },
+        "8_ohlc": {
+          "pass": true,
+          "msg": ""
+        },
+        "9_dupes": {
+          "pass": true,
+          "msg": ""
+        },
+        "10_order": {
+          "pass": true,
+          "msg": ""
+        },
+        "11_weekends": {
+          "pass": false,
+          "msg": "3624 weekend bars"
+        },
+        "12_continuity": {
+          "pass": false,
+          "msg": "5 intraday gaps >15%"
+        }
+      }
+    },
+    {
+      "ticker": "NVDA",
+      "status": "FAILED",
+      "issues": [
+        "[5_rth] 7 dates with <60 RTH bars; mean=76.8",
+        "[6_first] 56 full days missing 13:30 bar",
+        "[11_weekends] 8403 weekend bars",
+        "[12_continuity] 34 intraday gaps >15%"
+      ],
+      "rows": 142756,
+      "dates": 758,
+      "years": 6,
+      "rth_per_day": 76.8,
+      "checks": {
+        "1_file": {
+          "pass": true,
+          "msg": "NVDA_data.csv"
+        },
+        "2_rows": {
+          "pass": true,
+          "msg": "142,756"
+        },
+        "3_range": {
+          "pass": true,
+          "msg": "2021-04-21 \u2192 2026-04-10, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "pass": true,
+          "msg": "{2021: np.int64(78), 2022: np.int64(106), 2023: np.int64(106), 2024: np.int64(105), 2025: np.int64(291), 2026: np.int64(72)}"
+        },
+        "5_rth": {
+          "pass": false,
+          "msg": "7 dates with <60 RTH bars; mean=76.8"
+        },
+        "6_first": {
+          "pass": false,
+          "msg": "56 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "pass": true,
+          "msg": "19:55 \u2713"
+        },
+        "8_ohlc": {
+          "pass": true,
+          "msg": ""
+        },
+        "9_dupes": {
+          "pass": true,
+          "msg": ""
+        },
+        "10_order": {
+          "pass": true,
+          "msg": ""
+        },
+        "11_weekends": {
+          "pass": false,
+          "msg": "8403 weekend bars"
+        },
+        "12_continuity": {
+          "pass": false,
+          "msg": "34 intraday gaps >15%"
+        }
+      }
+    },
+    {
+      "ticker": "PLTR",
+      "status": "FAILED",
+      "issues": [
+        "[6_first] 66 full days missing 13:30 bar",
+        "[11_weekends] 4470 weekend bars",
+        "[12_continuity] 3 intraday gaps >15%"
+      ],
+      "rows": 136685,
+      "dates": 757,
+      "years": 6,
+      "rth_per_day": 77.0,
+      "checks": {
+        "1_file": {
+          "pass": true,
+          "msg": "PLTR_data.csv"
+        },
+        "2_rows": {
+          "pass": true,
+          "msg": "136,685"
+        },
+        "3_range": {
+          "pass": true,
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "pass": true,
+          "msg": "{2021: np.int64(78), 2022: np.int64(106), 2023: np.int64(106), 2024: np.int64(105), 2025: np.int64(288), 2026: np.int64(74)}"
+        },
+        "5_rth": {
+          "pass": true,
+          "msg": "mean=77.0/day"
+        },
+        "6_first": {
+          "pass": false,
+          "msg": "66 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "pass": true,
+          "msg": "19:55 \u2713"
+        },
+        "8_ohlc": {
+          "pass": true,
+          "msg": ""
+        },
+        "9_dupes": {
+          "pass": true,
+          "msg": ""
+        },
+        "10_order": {
+          "pass": true,
+          "msg": ""
+        },
+        "11_weekends": {
+          "pass": false,
+          "msg": "4470 weekend bars"
+        },
+        "12_continuity": {
+          "pass": false,
+          "msg": "3 intraday gaps >15%"
+        }
+      }
+    },
+    {
+      "ticker": "SMCI",
+      "status": "FAILED",
+      "issues": [
+        "[1_file] file not found"
+      ],
+      "rows": null,
+      "dates": null,
+      "years": null,
+      "rth_per_day": null,
+      "checks": {
+        "1_file": {
+          "pass": false,
+          "msg": "file not found"
+        }
+      }
+    },
+    {
+      "ticker": "SPY",
+      "status": "FAILED",
+      "issues": [
+        "[6_first] 15 full days missing 13:30 bar",
+        "[11_weekends] 1985 weekend bars",
+        "[12_continuity] 1 intraday gaps >15%"
+      ],
+      "rows": 114629,
+      "dates": 697,
+      "years": 6,
+      "rth_per_day": 77.6,
+      "checks": {
+        "1_file": {
+          "pass": true,
+          "msg": "SPY_data.csv"
+        },
+        "2_rows": {
+          "pass": true,
+          "msg": "114,629"
+        },
+        "3_range": {
+          "pass": true,
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "pass": true,
+          "msg": "{2021: np.int64(78), 2022: np.int64(106), 2023: np.int64(106), 2024: np.int64(105), 2025: np.int64(241), 2026: np.int64(61)}"
+        },
+        "5_rth": {
+          "pass": true,
+          "msg": "mean=77.6/day"
+        },
+        "6_first": {
+          "pass": false,
+          "msg": "15 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "pass": true,
+          "msg": "19:55 \u2713"
+        },
+        "8_ohlc": {
+          "pass": true,
+          "msg": ""
+        },
+        "9_dupes": {
+          "pass": true,
+          "msg": ""
+        },
+        "10_order": {
+          "pass": true,
+          "msg": ""
+        },
+        "11_weekends": {
+          "pass": false,
+          "msg": "1985 weekend bars"
+        },
+        "12_continuity": {
+          "pass": false,
+          "msg": "1 intraday gaps >15%"
+        }
+      }
+    },
+    {
+      "ticker": "TSLA",
+      "status": "FAILED",
+      "issues": [
+        "[6_first] 36 full days missing 13:30 bar",
+        "[11_weekends] 8550 weekend bars",
+        "[12_continuity] 16 intraday gaps >15%"
+      ],
+      "rows": 144939,
+      "dates": 760,
+      "years": 6,
+      "rth_per_day": 77.6,
+      "checks": {
+        "1_file": {
+          "pass": true,
+          "msg": "TSLA_data.csv"
+        },
+        "2_rows": {
+          "pass": true,
+          "msg": "144,939"
+        },
+        "3_range": {
+          "pass": true,
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "pass": true,
+          "msg": "{2021: np.int64(78), 2022: np.int64(106), 2023: np.int64(106), 2024: np.int64(105), 2025: np.int64(291), 2026: np.int64(74)}"
+        },
+        "5_rth": {
+          "pass": true,
+          "msg": "mean=77.6/day"
+        },
+        "6_first": {
+          "pass": false,
+          "msg": "36 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "pass": true,
+          "msg": "19:55 \u2713"
+        },
+        "8_ohlc": {
+          "pass": true,
+          "msg": ""
+        },
+        "9_dupes": {
+          "pass": true,
+          "msg": ""
+        },
+        "10_order": {
+          "pass": true,
+          "msg": ""
+        },
+        "11_weekends": {
+          "pass": false,
+          "msg": "8550 weekend bars"
+        },
+        "12_continuity": {
+          "pass": false,
+          "msg": "16 intraday gaps >15%"
+        }
+      }
+    },
+    {
+      "ticker": "TSM",
+      "status": "FAILED",
+      "issues": [
+        "[5_rth] 31 dates with <60 RTH bars; mean=72.8",
+        "[6_first] 54 full days missing 13:30 bar",
+        "[11_weekends] 3303 weekend bars",
+        "[12_continuity] 7 intraday gaps >15%"
+      ],
+      "rows": 125220,
+      "dates": 760,
+      "years": 6,
+      "rth_per_day": 72.8,
+      "checks": {
+        "1_file": {
+          "pass": true,
+          "msg": "TSM_data.csv"
+        },
+        "2_rows": {
+          "pass": true,
+          "msg": "125,220"
+        },
+        "3_range": {
+          "pass": true,
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "pass": true,
+          "msg": "{2021: np.int64(78), 2022: np.int64(106), 2023: np.int64(106), 2024: np.int64(105), 2025: np.int64(291), 2026: np.int64(74)}"
+        },
+        "5_rth": {
+          "pass": false,
+          "msg": "31 dates with <60 RTH bars; mean=72.8"
+        },
+        "6_first": {
+          "pass": false,
+          "msg": "54 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "pass": true,
+          "msg": "19:55 \u2713"
+        },
+        "8_ohlc": {
+          "pass": true,
+          "msg": ""
+        },
+        "9_dupes": {
+          "pass": true,
+          "msg": ""
+        },
+        "10_order": {
+          "pass": true,
+          "msg": ""
+        },
+        "11_weekends": {
+          "pass": false,
+          "msg": "3303 weekend bars"
+        },
+        "12_continuity": {
+          "pass": false,
+          "msg": "7 intraday gaps >15%"
+        }
+      }
+    },
+    {
+      "ticker": "V",
+      "status": "FAILED",
+      "issues": [
+        "[5_rth] 270 dates with <60 RTH bars; mean=64.3",
+        "[6_first] 7 full days missing 13:30 bar",
+        "[11_weekends] 2500 weekend bars",
+        "[12_continuity] 5 intraday gaps >15%"
+      ],
+      "rows": 107745,
+      "dates": 754,
+      "years": 6,
+      "rth_per_day": 64.3,
+      "checks": {
+        "1_file": {
+          "pass": true,
+          "msg": "V_data.csv"
+        },
+        "2_rows": {
+          "pass": true,
+          "msg": "107,745"
+        },
+        "3_range": {
+          "pass": true,
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "pass": true,
+          "msg": "{2021: np.int64(78), 2022: np.int64(106), 2023: np.int64(103), 2024: np.int64(102), 2025: np.int64(291), 2026: np.int64(74)}"
+        },
+        "5_rth": {
+          "pass": false,
+          "msg": "270 dates with <60 RTH bars; mean=64.3"
+        },
+        "6_first": {
+          "pass": false,
+          "msg": "7 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "pass": true,
+          "msg": "19:55 \u2713"
+        },
+        "8_ohlc": {
+          "pass": true,
+          "msg": ""
+        },
+        "9_dupes": {
+          "pass": true,
+          "msg": ""
+        },
+        "10_order": {
+          "pass": true,
+          "msg": ""
+        },
+        "11_weekends": {
+          "pass": false,
+          "msg": "2500 weekend bars"
+        },
+        "12_continuity": {
+          "pass": false,
+          "msg": "5 intraday gaps >15%"
+        }
+      }
+    },
+    {
+      "ticker": "VIXY",
+      "status": "FAILED",
+      "issues": [
+        "[5_rth] 126 dates with <60 RTH bars; mean=65.2",
+        "[6_first] 35 full days missing 13:30 bar",
+        "[7_last] 8 full days missing 19:55 bar",
+        "[11_weekends] 594 weekend bars"
+      ],
+      "rows": 88864,
+      "dates": 695,
+      "years": 6,
+      "rth_per_day": 65.2,
+      "checks": {
+        "1_file": {
+          "pass": true,
+          "msg": "VIXY_data.csv"
+        },
+        "2_rows": {
+          "pass": true,
+          "msg": "88,864"
+        },
+        "3_range": {
+          "pass": true,
+          "msg": "2021-04-21 \u2192 2026-04-10, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "pass": true,
+          "msg": "{2021: np.int64(78), 2022: np.int64(106), 2023: np.int64(106), 2024: np.int64(105), 2025: np.int64(240), 2026: np.int64(60)}"
+        },
+        "5_rth": {
+          "pass": false,
+          "msg": "126 dates with <60 RTH bars; mean=65.2"
+        },
+        "6_first": {
+          "pass": false,
+          "msg": "35 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "pass": false,
+          "msg": "8 full days missing 19:55 bar"
+        },
+        "8_ohlc": {
+          "pass": true,
+          "msg": ""
+        },
+        "9_dupes": {
+          "pass": true,
+          "msg": ""
+        },
+        "10_order": {
+          "pass": true,
+          "msg": ""
+        },
+        "11_weekends": {
+          "pass": false,
+          "msg": "594 weekend bars"
+        },
+        "12_continuity": {
+          "pass": true,
+          "msg": ""
+        }
+      }
+    },
+    {
+      "ticker": "BTC",
+      "status": "CERTIFIED",
+      "issues": [],
+      "rows": 239074,
+      "dates": 881,
+      "years": 6,
+      "rth_per_day": null,
+      "checks": {
+        "1_file": {
+          "pass": true,
+          "msg": "BTC_crypto_data.csv"
+        },
+        "2_rows": {
+          "pass": true,
+          "msg": "239,074"
+        },
+        "3_range": {
+          "pass": true,
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "pass": true,
+          "msg": "{2021: np.int64(98), 2022: np.int64(132), 2023: np.int64(132), 2024: np.int64(132), 2025: np.int64(299), 2026: np.int64(88)}"
+        },
+        "5_rth": {
+          "pass": true,
+          "msg": "crypto-skip"
+        },
+        "6_first": {
+          "pass": true,
+          "msg": "crypto-skip"
+        },
+        "7_last": {
+          "pass": true,
+          "msg": "crypto-skip"
+        },
+        "8_ohlc": {
+          "pass": true,
+          "msg": ""
+        },
+        "9_dupes": {
+          "pass": true,
+          "msg": ""
+        },
+        "10_order": {
+          "pass": true,
+          "msg": ""
+        },
+        "11_weekends": {
+          "pass": true,
+          "msg": "crypto-skip"
+        },
+        "12_continuity": {
+          "pass": true,
+          "msg": ""
+        }
+      }
+    },
+    {
+      "ticker": "ETH",
+      "status": "CERTIFIED",
+      "issues": [],
+      "rows": 239073,
+      "dates": 881,
+      "years": 6,
+      "rth_per_day": null,
+      "checks": {
+        "1_file": {
+          "pass": true,
+          "msg": "ETH_crypto_data.csv"
+        },
+        "2_rows": {
+          "pass": true,
+          "msg": "239,073"
+        },
+        "3_range": {
+          "pass": true,
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "pass": true,
+          "msg": "{2021: np.int64(98), 2022: np.int64(132), 2023: np.int64(132), 2024: np.int64(132), 2025: np.int64(299), 2026: np.int64(88)}"
+        },
+        "5_rth": {
+          "pass": true,
+          "msg": "crypto-skip"
+        },
+        "6_first": {
+          "pass": true,
+          "msg": "crypto-skip"
+        },
+        "7_last": {
+          "pass": true,
+          "msg": "crypto-skip"
+        },
+        "8_ohlc": {
+          "pass": true,
+          "msg": ""
+        },
+        "9_dupes": {
+          "pass": true,
+          "msg": ""
+        },
+        "10_order": {
+          "pass": true,
+          "msg": ""
+        },
+        "11_weekends": {
+          "pass": true,
+          "msg": "crypto-skip"
+        },
+        "12_continuity": {
+          "pass": true,
+          "msg": ""
+        }
+      }
+    }
+  ]
+}

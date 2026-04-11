@@ -1,4 +1,132 @@
-Traceback (most recent call last):
-  File "/home/user/stock-data-mining/scripts/fmp_dataset_certification.py", line 5, in <module>
-    import numpy as np
-ModuleNotFoundError: No module named 'numpy'
+=== FMP 5-Year Dataset Certification ===
+
+UNIVERSE COVERAGE: Found 26/31, Missing: ['ARM', 'INTC', 'JD', 'MSTR', 'SMCI'], Extra: ['IBIT_data.csv', 'SNOW_data.csv', 'TXN_data.csv']
+
+TICKER      ROWS  DATES  YRS  RTH/d  FILE ROWS RNG  DYR  RTH  1ST  LST  OHLC DUP  ORD  WKD  GAP  STATUS
+───────────────────────────────────────────────────────────────────────────────────────────────────────
+AAPL      76,810    532    6     77  OK  OK  OK  OK  OK  !!  OK  OK  OK  OK  !!  OK  FAILED
+         ↳ [6_first] 56 full days missing 13:30 bar
+         ↳ [11_weekends] 2784 weekend bars
+AMD      136,186    757    6     77  OK  OK  OK  OK  OK  !!  OK  OK  OK  OK  !!  !!  FAILED
+         ↳ [6_first] 96 full days missing 13:30 bar
+         ↳ [11_weekends] 4441 weekend bars
+         ↳ [12_continuity] 2 intraday gaps >15%
+AMZN     137,665    760    6     75  OK  OK  OK  OK  !!  !!  OK  OK  OK  OK  !!  !!  FAILED
+         ↳ [5_rth] 42 dates with <60 RTH bars; mean=74.9
+         ↳ [6_first] 44 full days missing 13:30 bar
+         ↳ [11_weekends] 8111 weekend bars
+         ↳ [12_continuity] 6 intraday gaps >15%
+ARM            0      0    0   24/7  !!  !!  !!  !!  !!  !!  !!  !!  !!  !!  !!  !!  FAILED
+         ↳ [1_file] file not found
+AVGO     112,235    739    6     64  OK  OK  OK  OK  !!  !!  OK  OK  OK  OK  !!  !!  FAILED
+         ↳ [5_rth] 251 dates with <60 RTH bars; mean=64.5
+         ↳ [6_first] 18 full days missing 13:30 bar
+         ↳ [11_weekends] 2797 weekend bars
+         ↳ [12_continuity] 13 intraday gaps >15%
+BA       121,195    759    6     72  OK  OK  OK  OK  !!  !!  OK  OK  OK  OK  !!  !!  FAILED
+         ↳ [5_rth] 51 dates with <60 RTH bars; mean=72.0
+         ↳ [6_first] 67 full days missing 13:30 bar
+         ↳ [11_weekends] 3481 weekend bars
+         ↳ [12_continuity] 2 intraday gaps >15%
+BABA     136,682    760    6     77  OK  OK  OK  OK  OK  !!  OK  OK  OK  OK  !!  !!  FAILED
+         ↳ [6_first] 67 full days missing 13:30 bar
+         ↳ [11_weekends] 5054 weekend bars
+         ↳ [12_continuity] 2 intraday gaps >15%
+BIDU     116,232    755    6     70  OK  OK  OK  OK  !!  !!  OK  OK  OK  OK  !!  !!  FAILED
+         ↳ [5_rth] 96 dates with <60 RTH bars; mean=70.3
+         ↳ [6_first] 31 full days missing 13:30 bar
+         ↳ [11_weekends] 2754 weekend bars
+         ↳ [12_continuity] 2 intraday gaps >15%
+C        110,946    760    6     70  OK  OK  OK  OK  !!  !!  OK  OK  OK  OK  !!  !!  FAILED
+         ↳ [5_rth] 111 dates with <60 RTH bars; mean=69.5
+         ↳ [6_first] 34 full days missing 13:30 bar
+         ↳ [11_weekends] 2781 weekend bars
+         ↳ [12_continuity] 10 intraday gaps >15%
+COIN     131,605    757    6     75  OK  OK  OK  OK  !!  !!  OK  OK  OK  OK  !!  !!  FAILED
+         ↳ [5_rth] 11 dates with <60 RTH bars; mean=75.0
+         ↳ [6_first] 84 full days missing 13:30 bar
+         ↳ [11_weekends] 4753 weekend bars
+         ↳ [12_continuity] 1 intraday gaps >15%
+COST     106,599    749    6     62  OK  OK  OK  OK  !!  !!  OK  OK  OK  OK  !!  OK  FAILED
+         ↳ [5_rth] 300 dates with <60 RTH bars; mean=62.2
+         ↳ [6_first] 5 full days missing 13:30 bar
+         ↳ [11_weekends] 2672 weekend bars
+GOOGL    132,454    757    6     72  OK  OK  OK  OK  !!  !!  OK  OK  OK  OK  !!  !!  FAILED
+         ↳ [5_rth] 92 dates with <60 RTH bars; mean=72.2
+         ↳ [6_first] 61 full days missing 13:30 bar
+         ↳ [11_weekends] 7668 weekend bars
+         ↳ [12_continuity] 8 intraday gaps >15%
+GS       103,099    747    6     63  OK  OK  OK  OK  !!  !!  OK  OK  OK  OK  !!  !!  FAILED
+         ↳ [5_rth] 292 dates with <60 RTH bars; mean=63.1
+         ↳ [6_first] 6 full days missing 13:30 bar
+         ↳ [11_weekends] 2268 weekend bars
+         ↳ [12_continuity] 6 intraday gaps >15%
+INTC           0      0    0   24/7  !!  !!  !!  !!  !!  !!  !!  !!  !!  !!  !!  !!  FAILED
+         ↳ [1_file] file not found
+JD             0      0    0   24/7  !!  !!  !!  !!  !!  !!  !!  !!  !!  !!  !!  !!  FAILED
+         ↳ [1_file] file not found
+JPM      113,263    759    6     67  OK  OK  OK  OK  !!  !!  OK  OK  OK  OK  !!  !!  FAILED
+         ↳ [5_rth] 204 dates with <60 RTH bars; mean=67.1
+         ↳ [6_first] 11 full days missing 13:30 bar
+         ↳ [11_weekends] 2887 weekend bars
+         ↳ [12_continuity] 3 intraday gaps >15%
+MARA     135,844    757    6     77  OK  OK  OK  OK  OK  !!  OK  OK  OK  OK  !!  OK  FAILED
+         ↳ [6_first] 62 full days missing 13:30 bar
+         ↳ [11_weekends] 4428 weekend bars
+META     137,623    760    6     75  OK  OK  OK  OK  OK  !!  OK  OK  OK  OK  !!  !!  FAILED
+         ↳ [6_first] 101 full days missing 13:30 bar
+         ↳ [11_weekends] 8023 weekend bars
+         ↳ [12_continuity] 384 intraday gaps >15%
+MSFT     138,129    759    6     76  OK  OK  OK  OK  OK  !!  OK  OK  OK  OK  !!  !!  FAILED
+         ↳ [6_first] 107 full days missing 13:30 bar
+         ↳ [11_weekends] 7913 weekend bars
+         ↳ [12_continuity] 11 intraday gaps >15%
+MSTR           0      0    0   24/7  !!  !!  !!  !!  !!  !!  !!  !!  !!  !!  !!  !!  FAILED
+         ↳ [1_file] file not found
+MU       126,666    757    6     74  OK  OK  OK  OK  !!  !!  OK  OK  OK  OK  !!  !!  FAILED
+         ↳ [5_rth] 32 dates with <60 RTH bars; mean=73.5
+         ↳ [6_first] 72 full days missing 13:30 bar
+         ↳ [11_weekends] 3624 weekend bars
+         ↳ [12_continuity] 5 intraday gaps >15%
+NVDA     142,756    758    6     77  OK  OK  OK  OK  !!  !!  OK  OK  OK  OK  !!  !!  FAILED
+         ↳ [5_rth] 7 dates with <60 RTH bars; mean=76.8
+         ↳ [6_first] 56 full days missing 13:30 bar
+         ↳ [11_weekends] 8403 weekend bars
+         ↳ [12_continuity] 34 intraday gaps >15%
+PLTR     136,685    757    6     77  OK  OK  OK  OK  OK  !!  OK  OK  OK  OK  !!  !!  FAILED
+         ↳ [6_first] 66 full days missing 13:30 bar
+         ↳ [11_weekends] 4470 weekend bars
+         ↳ [12_continuity] 3 intraday gaps >15%
+SMCI           0      0    0   24/7  !!  !!  !!  !!  !!  !!  !!  !!  !!  !!  !!  !!  FAILED
+         ↳ [1_file] file not found
+SPY      114,629    697    6     78  OK  OK  OK  OK  OK  !!  OK  OK  OK  OK  !!  !!  FAILED
+         ↳ [6_first] 15 full days missing 13:30 bar
+         ↳ [11_weekends] 1985 weekend bars
+         ↳ [12_continuity] 1 intraday gaps >15%
+TSLA     144,939    760    6     78  OK  OK  OK  OK  OK  !!  OK  OK  OK  OK  !!  !!  FAILED
+         ↳ [6_first] 36 full days missing 13:30 bar
+         ↳ [11_weekends] 8550 weekend bars
+         ↳ [12_continuity] 16 intraday gaps >15%
+TSM      125,220    760    6     73  OK  OK  OK  OK  !!  !!  OK  OK  OK  OK  !!  !!  FAILED
+         ↳ [5_rth] 31 dates with <60 RTH bars; mean=72.8
+         ↳ [6_first] 54 full days missing 13:30 bar
+         ↳ [11_weekends] 3303 weekend bars
+         ↳ [12_continuity] 7 intraday gaps >15%
+V        107,745    754    6     64  OK  OK  OK  OK  !!  !!  OK  OK  OK  OK  !!  !!  FAILED
+         ↳ [5_rth] 270 dates with <60 RTH bars; mean=64.3
+         ↳ [6_first] 7 full days missing 13:30 bar
+         ↳ [11_weekends] 2500 weekend bars
+         ↳ [12_continuity] 5 intraday gaps >15%
+VIXY      88,864    695    6     65  OK  OK  OK  OK  !!  !!  !!  OK  OK  OK  !!  OK  FAILED
+         ↳ [5_rth] 126 dates with <60 RTH bars; mean=65.2
+         ↳ [6_first] 35 full days missing 13:30 bar
+         ↳ [7_last] 8 full days missing 19:55 bar
+         ↳ [11_weekends] 594 weekend bars
+BTC      239,074    881    6   24/7  OK  OK  OK  OK  OK  OK  OK  OK  OK  OK  OK  OK  CERTIFIED
+ETH      239,073    881    6   24/7  OK  OK  OK  OK  OK  OK  OK  OK  OK  OK  OK  OK  CERTIFIED
+
+SPARSE DATA WARNING: ~106 dates/year = FMP Starter plan rate limit, not corruption
+
+OVERALL: 2 CERTIFIED | 29 FAILED
+
+JSON saved → certification_results/fmp_5yr_cert.json
