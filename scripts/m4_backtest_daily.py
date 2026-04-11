@@ -101,19 +101,38 @@ def _resample_m5(m5_path: str) -> pd.DataFrame:
 def load_daily_bars(ticker: str, m5_path: str) -> pd.DataFrame:
     """
     Priority chain:
-      1. FMP download  -> cache to Fetched_Data/{ticker}_daily.csv
+      0. Fetched_Data/{ticker}_daily.json  (pre-downloaded via download_fmp_daily.py)
+      1. FMP live download  -> cache to Fetched_Data/{ticker}_daily.csv
       2. Fetched_Data/{ticker}_daily.csv  (previous download)
       3. backtest_output/{ticker}_daily.csv  (FMP-sourced, ~14 months Feb 2025+)
       4. Resample from Fetched_Data/{ticker}_data.csv  (M5 -> daily, 2021-2026)
-    Sources 3 + 4 are merged: backtest_output fills 2025-2026 gap-free,
-    M5 resample fills 2021-2024 (33-48% trading-day coverage).
+    Sources are merged; JSON/FMP prioritised over M5 resample via dedup keep=first.
     """
+    import json as _j
+    frames = []
+
+    # 0. JSON from download_fmp_daily.py
+    json_path = os.path.join(DATA, f"{ticker}_daily.json")
+    if os.path.exists(json_path) and os.path.getsize(json_path) > 1000:
+        try:
+            with open(json_path) as f:
+                data = _j.load(f)
+            if isinstance(data, list) and data:
+                rows = [{"date": x.get("date"), "Open": x.get("open"),
+                         "High": x.get("high"), "Low": x.get("low"),
+                         "Close": x.get("close"), "Volume": x.get("volume", 0)}
+                        for x in data]
+                jdf = _norm(pd.DataFrame(rows))
+                if not jdf.empty:
+                    frames.append(jdf.sort_values("date").reset_index(drop=True))
+        except Exception:
+            pass
+
     cache = os.path.join(DATA, f"{ticker}_daily.csv")
 
     # 1. FMP download
     if not os.path.exists(cache):
         try:
-            import json as _j
             with urlopen(FMP_URL.format(ticker), timeout=10) as r:
                 data = _j.loads(r.read().decode())
             if isinstance(data, list) and data:
@@ -124,8 +143,6 @@ def load_daily_bars(ticker: str, m5_path: str) -> pd.DataFrame:
                 fmp_df.to_csv(cache, index=False)
         except Exception:
             pass
-
-    frames = []
 
     # 2. Cached FMP file
     if os.path.exists(cache):
