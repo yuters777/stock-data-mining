@@ -1,0 +1,1804 @@
+{
+  "generated_at": "2026-04-11T07:20:05.352082Z",
+  "universe_equity": [
+    "AAPL",
+    "AMD",
+    "AMZN",
+    "ARM",
+    "AVGO",
+    "BA",
+    "BABA",
+    "BIDU",
+    "C",
+    "COIN",
+    "COST",
+    "GOOGL",
+    "GS",
+    "INTC",
+    "JD",
+    "JPM",
+    "MARA",
+    "META",
+    "MSFT",
+    "MSTR",
+    "MU",
+    "NVDA",
+    "PLTR",
+    "SMCI",
+    "SPY",
+    "TSLA",
+    "TSM",
+    "V",
+    "VIXY"
+  ],
+  "universe_crypto": [
+    "BTC",
+    "ETH"
+  ],
+  "summary": {
+    "total": 31,
+    "certified": 2,
+    "certified_with_notes": 24,
+    "failed": 0,
+    "missing": 5
+  },
+  "results": [
+    {
+      "ticker": "AAPL",
+      "status": "CERTIFIED_WITH_NOTES",
+      "warnings": [
+        "[6_first] 56 full days missing 13:30 bar"
+      ],
+      "issues": [],
+      "rows": 76810,
+      "dates": 532,
+      "years": 6,
+      "rth_per_day": 77.2,
+      "checks": {
+        "1_file": {
+          "level": "ok",
+          "msg": "AAPL_data.csv"
+        },
+        "2_rows": {
+          "level": "ok",
+          "msg": "76,810"
+        },
+        "3_range": {
+          "level": "ok",
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "level": "ok",
+          "msg": "{2021: np.int64(78), 2022: np.int64(106), 2023: np.int64(106), 2024: np.int64(105), 2025: np.int64(107), 2026: np.int64(30)}"
+        },
+        "5_rth": {
+          "level": "ok",
+          "msg": "mean=77.2/day"
+        },
+        "6_first": {
+          "level": "warn",
+          "msg": "56 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "level": "ok",
+          "msg": "19:55 \u2713"
+        },
+        "8_ohlc": {
+          "level": "ok",
+          "msg": ""
+        },
+        "9_dupes": {
+          "level": "ok",
+          "msg": ""
+        },
+        "10_order": {
+          "level": "ok",
+          "msg": ""
+        },
+        "11_weekends": {
+          "level": "ok",
+          "msg": "0 after ET conversion \u2713"
+        },
+        "12_continuity": {
+          "level": "ok",
+          "msg": ""
+        }
+      }
+    },
+    {
+      "ticker": "AMD",
+      "status": "CERTIFIED_WITH_NOTES",
+      "warnings": [
+        "[6_first] 96 full days missing 13:30 bar",
+        "[11_weekends] 540 true weekend bars (ET-corrected)",
+        "[12_continuity] 2 intraday gaps >15%; top-5: ['2025-02-11 (42%)', '2025-10-06 (22%)']"
+      ],
+      "issues": [],
+      "rows": 136186,
+      "dates": 757,
+      "years": 6,
+      "rth_per_day": 77.0,
+      "checks": {
+        "1_file": {
+          "level": "ok",
+          "msg": "AMD_data.csv"
+        },
+        "2_rows": {
+          "level": "ok",
+          "msg": "136,186"
+        },
+        "3_range": {
+          "level": "ok",
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "level": "ok",
+          "msg": "{2021: np.int64(78), 2022: np.int64(106), 2023: np.int64(106), 2024: np.int64(105), 2025: np.int64(288), 2026: np.int64(74)}"
+        },
+        "5_rth": {
+          "level": "ok",
+          "msg": "mean=77.0/day"
+        },
+        "6_first": {
+          "level": "warn",
+          "msg": "96 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "level": "ok",
+          "msg": "19:55 \u2713"
+        },
+        "8_ohlc": {
+          "level": "ok",
+          "msg": ""
+        },
+        "9_dupes": {
+          "level": "ok",
+          "msg": ""
+        },
+        "10_order": {
+          "level": "ok",
+          "msg": ""
+        },
+        "11_weekends": {
+          "level": "warn",
+          "msg": "540 true weekend bars (ET-corrected)"
+        },
+        "12_continuity": {
+          "level": "warn",
+          "msg": "2 intraday gaps >15%; top-5: ['2025-02-11 (42%)', '2025-10-06 (22%)']"
+        }
+      }
+    },
+    {
+      "ticker": "AMZN",
+      "status": "CERTIFIED_WITH_NOTES",
+      "warnings": [
+        "[5_rth] 42 dates <60 RTH bars; mean=74.9",
+        "[6_first] 44 full days missing 13:30 bar",
+        "[11_weekends] 3768 true weekend bars (ET-corrected)",
+        "[12_continuity] 6 intraday gaps >15%; top-5: ['2025-08-02 (21%)', '2025-08-02 (21%)', '2025-07-15 (21%)', '2025-07-16 (21%)', '2025-06-07 (17%)']"
+      ],
+      "issues": [],
+      "rows": 137665,
+      "dates": 760,
+      "years": 6,
+      "rth_per_day": 74.9,
+      "checks": {
+        "1_file": {
+          "level": "ok",
+          "msg": "AMZN_data.csv"
+        },
+        "2_rows": {
+          "level": "ok",
+          "msg": "137,665"
+        },
+        "3_range": {
+          "level": "ok",
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "level": "ok",
+          "msg": "{2021: np.int64(78), 2022: np.int64(106), 2023: np.int64(106), 2024: np.int64(105), 2025: np.int64(291), 2026: np.int64(74)}"
+        },
+        "5_rth": {
+          "level": "warn",
+          "msg": "42 dates <60 RTH bars; mean=74.9"
+        },
+        "6_first": {
+          "level": "warn",
+          "msg": "44 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "level": "ok",
+          "msg": "19:55 \u2713"
+        },
+        "8_ohlc": {
+          "level": "ok",
+          "msg": ""
+        },
+        "9_dupes": {
+          "level": "ok",
+          "msg": ""
+        },
+        "10_order": {
+          "level": "ok",
+          "msg": ""
+        },
+        "11_weekends": {
+          "level": "warn",
+          "msg": "3768 true weekend bars (ET-corrected)"
+        },
+        "12_continuity": {
+          "level": "warn",
+          "msg": "6 intraday gaps >15%; top-5: ['2025-08-02 (21%)', '2025-08-02 (21%)', '2025-07-15 (21%)', '2025-07-16 (21%)', '2025-06-07 (17%)']"
+        }
+      }
+    },
+    {
+      "ticker": "ARM",
+      "status": "MISSING",
+      "warnings": [],
+      "issues": [
+        "[1_file] file not found"
+      ],
+      "rows": null,
+      "dates": null,
+      "years": null,
+      "rth_per_day": null,
+      "checks": {
+        "1_file": {
+          "level": "missing",
+          "msg": "file not found"
+        }
+      }
+    },
+    {
+      "ticker": "AVGO",
+      "status": "CERTIFIED_WITH_NOTES",
+      "warnings": [
+        "[5_rth] 251 dates <60 RTH bars; mean=64.5",
+        "[6_first] 18 full days missing 13:30 bar",
+        "[11_weekends] 540 true weekend bars (ET-corrected)",
+        "[12_continuity] 13 intraday gaps >15%; top-5: ['2025-02-25 (48%)', '2025-05-29 (40%)', '2025-02-28 (40%)', '2025-07-26 (37%)', '2025-09-06 (35%)']"
+      ],
+      "issues": [],
+      "rows": 112235,
+      "dates": 739,
+      "years": 6,
+      "rth_per_day": 64.5,
+      "checks": {
+        "1_file": {
+          "level": "ok",
+          "msg": "AVGO_data.csv"
+        },
+        "2_rows": {
+          "level": "ok",
+          "msg": "112,235"
+        },
+        "3_range": {
+          "level": "ok",
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "level": "ok",
+          "msg": "{2021: np.int64(71), 2022: np.int64(101), 2023: np.int64(101), 2024: np.int64(104), 2025: np.int64(288), 2026: np.int64(74)}"
+        },
+        "5_rth": {
+          "level": "warn",
+          "msg": "251 dates <60 RTH bars; mean=64.5"
+        },
+        "6_first": {
+          "level": "warn",
+          "msg": "18 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "level": "ok",
+          "msg": "19:55 \u2713"
+        },
+        "8_ohlc": {
+          "level": "ok",
+          "msg": ""
+        },
+        "9_dupes": {
+          "level": "ok",
+          "msg": ""
+        },
+        "10_order": {
+          "level": "ok",
+          "msg": ""
+        },
+        "11_weekends": {
+          "level": "warn",
+          "msg": "540 true weekend bars (ET-corrected)"
+        },
+        "12_continuity": {
+          "level": "warn",
+          "msg": "13 intraday gaps >15%; top-5: ['2025-02-25 (48%)', '2025-05-29 (40%)', '2025-02-28 (40%)', '2025-07-26 (37%)', '2025-09-06 (35%)']"
+        }
+      }
+    },
+    {
+      "ticker": "BA",
+      "status": "CERTIFIED_WITH_NOTES",
+      "warnings": [
+        "[5_rth] 51 dates <60 RTH bars; mean=72.0",
+        "[6_first] 67 full days missing 13:30 bar",
+        "[11_weekends] 514 true weekend bars (ET-corrected)",
+        "[12_continuity] 2 intraday gaps >15%; top-5: ['2025-08-07 (45%)', '2025-03-13 (19%)']"
+      ],
+      "issues": [],
+      "rows": 121195,
+      "dates": 759,
+      "years": 6,
+      "rth_per_day": 72.0,
+      "checks": {
+        "1_file": {
+          "level": "ok",
+          "msg": "BA_data.csv"
+        },
+        "2_rows": {
+          "level": "ok",
+          "msg": "121,195"
+        },
+        "3_range": {
+          "level": "ok",
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "level": "ok",
+          "msg": "{2021: np.int64(78), 2022: np.int64(106), 2023: np.int64(105), 2024: np.int64(105), 2025: np.int64(291), 2026: np.int64(74)}"
+        },
+        "5_rth": {
+          "level": "warn",
+          "msg": "51 dates <60 RTH bars; mean=72.0"
+        },
+        "6_first": {
+          "level": "warn",
+          "msg": "67 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "level": "ok",
+          "msg": "19:55 \u2713"
+        },
+        "8_ohlc": {
+          "level": "ok",
+          "msg": ""
+        },
+        "9_dupes": {
+          "level": "ok",
+          "msg": ""
+        },
+        "10_order": {
+          "level": "ok",
+          "msg": ""
+        },
+        "11_weekends": {
+          "level": "warn",
+          "msg": "514 true weekend bars (ET-corrected)"
+        },
+        "12_continuity": {
+          "level": "warn",
+          "msg": "2 intraday gaps >15%; top-5: ['2025-08-07 (45%)', '2025-03-13 (19%)']"
+        }
+      }
+    },
+    {
+      "ticker": "BABA",
+      "status": "CERTIFIED_WITH_NOTES",
+      "warnings": [
+        "[6_first] 67 full days missing 13:30 bar",
+        "[11_weekends] 1164 true weekend bars (ET-corrected)",
+        "[12_continuity] 2 intraday gaps >15%; top-5: ['2025-04-05 (36%)', '2022-04-29 (16%)']"
+      ],
+      "issues": [],
+      "rows": 136682,
+      "dates": 760,
+      "years": 6,
+      "rth_per_day": 77.0,
+      "checks": {
+        "1_file": {
+          "level": "ok",
+          "msg": "BABA_data.csv"
+        },
+        "2_rows": {
+          "level": "ok",
+          "msg": "136,682"
+        },
+        "3_range": {
+          "level": "ok",
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "level": "ok",
+          "msg": "{2021: np.int64(78), 2022: np.int64(106), 2023: np.int64(106), 2024: np.int64(105), 2025: np.int64(291), 2026: np.int64(74)}"
+        },
+        "5_rth": {
+          "level": "ok",
+          "msg": "mean=77.0/day"
+        },
+        "6_first": {
+          "level": "warn",
+          "msg": "67 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "level": "ok",
+          "msg": "19:55 \u2713"
+        },
+        "8_ohlc": {
+          "level": "ok",
+          "msg": ""
+        },
+        "9_dupes": {
+          "level": "ok",
+          "msg": ""
+        },
+        "10_order": {
+          "level": "ok",
+          "msg": ""
+        },
+        "11_weekends": {
+          "level": "warn",
+          "msg": "1164 true weekend bars (ET-corrected)"
+        },
+        "12_continuity": {
+          "level": "warn",
+          "msg": "2 intraday gaps >15%; top-5: ['2025-04-05 (36%)', '2022-04-29 (16%)']"
+        }
+      }
+    },
+    {
+      "ticker": "BIDU",
+      "status": "CERTIFIED_WITH_NOTES",
+      "warnings": [
+        "[5_rth] 96 dates <60 RTH bars; mean=70.3",
+        "[6_first] 31 full days missing 13:30 bar",
+        "[11_weekends] 457 true weekend bars (ET-corrected)",
+        "[12_continuity] 2 intraday gaps >15%; top-5: ['2025-09-26 (56%)', '2026-01-07 (21%)']"
+      ],
+      "issues": [],
+      "rows": 116232,
+      "dates": 755,
+      "years": 6,
+      "rth_per_day": 70.3,
+      "checks": {
+        "1_file": {
+          "level": "ok",
+          "msg": "BIDU_data.csv"
+        },
+        "2_rows": {
+          "level": "ok",
+          "msg": "116,232"
+        },
+        "3_range": {
+          "level": "ok",
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "level": "ok",
+          "msg": "{2021: np.int64(78), 2022: np.int64(106), 2023: np.int64(105), 2024: np.int64(105), 2025: np.int64(288), 2026: np.int64(73)}"
+        },
+        "5_rth": {
+          "level": "warn",
+          "msg": "96 dates <60 RTH bars; mean=70.3"
+        },
+        "6_first": {
+          "level": "warn",
+          "msg": "31 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "level": "ok",
+          "msg": "19:55 \u2713"
+        },
+        "8_ohlc": {
+          "level": "ok",
+          "msg": ""
+        },
+        "9_dupes": {
+          "level": "ok",
+          "msg": ""
+        },
+        "10_order": {
+          "level": "ok",
+          "msg": ""
+        },
+        "11_weekends": {
+          "level": "warn",
+          "msg": "457 true weekend bars (ET-corrected)"
+        },
+        "12_continuity": {
+          "level": "warn",
+          "msg": "2 intraday gaps >15%; top-5: ['2025-09-26 (56%)', '2026-01-07 (21%)']"
+        }
+      }
+    },
+    {
+      "ticker": "C",
+      "status": "CERTIFIED_WITH_NOTES",
+      "warnings": [
+        "[5_rth] 111 dates <60 RTH bars; mean=69.5",
+        "[6_first] 34 full days missing 13:30 bar",
+        "[11_weekends] 444 true weekend bars (ET-corrected)",
+        "[12_continuity] 10 intraday gaps >15%; top-5: ['2025-07-29 (31%)', '2025-07-28 (31%)', '2025-06-07 (27%)', '2025-06-07 (27%)', '2025-07-28 (25%)']"
+      ],
+      "issues": [],
+      "rows": 110946,
+      "dates": 760,
+      "years": 6,
+      "rth_per_day": 69.5,
+      "checks": {
+        "1_file": {
+          "level": "ok",
+          "msg": "C_data.csv"
+        },
+        "2_rows": {
+          "level": "ok",
+          "msg": "110,946"
+        },
+        "3_range": {
+          "level": "ok",
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "level": "ok",
+          "msg": "{2021: np.int64(78), 2022: np.int64(106), 2023: np.int64(106), 2024: np.int64(105), 2025: np.int64(291), 2026: np.int64(74)}"
+        },
+        "5_rth": {
+          "level": "warn",
+          "msg": "111 dates <60 RTH bars; mean=69.5"
+        },
+        "6_first": {
+          "level": "warn",
+          "msg": "34 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "level": "ok",
+          "msg": "19:55 \u2713"
+        },
+        "8_ohlc": {
+          "level": "ok",
+          "msg": ""
+        },
+        "9_dupes": {
+          "level": "ok",
+          "msg": ""
+        },
+        "10_order": {
+          "level": "ok",
+          "msg": ""
+        },
+        "11_weekends": {
+          "level": "warn",
+          "msg": "444 true weekend bars (ET-corrected)"
+        },
+        "12_continuity": {
+          "level": "warn",
+          "msg": "10 intraday gaps >15%; top-5: ['2025-07-29 (31%)', '2025-07-28 (31%)', '2025-06-07 (27%)', '2025-06-07 (27%)', '2025-07-28 (25%)']"
+        }
+      }
+    },
+    {
+      "ticker": "COIN",
+      "status": "CERTIFIED_WITH_NOTES",
+      "warnings": [
+        "[5_rth] 11 dates <60 RTH bars; mean=75.0",
+        "[6_first] 84 full days missing 13:30 bar",
+        "[11_weekends] 1164 true weekend bars (ET-corrected)",
+        "[12_continuity] 1 intraday gaps >15%; top-5: ['2025-10-09 (40%)']"
+      ],
+      "issues": [],
+      "rows": 131605,
+      "dates": 757,
+      "years": 6,
+      "rth_per_day": 75.0,
+      "checks": {
+        "1_file": {
+          "level": "ok",
+          "msg": "COIN_data.csv"
+        },
+        "2_rows": {
+          "level": "ok",
+          "msg": "131,605"
+        },
+        "3_range": {
+          "level": "ok",
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "level": "ok",
+          "msg": "{2021: np.int64(78), 2022: np.int64(106), 2023: np.int64(104), 2024: np.int64(105), 2025: np.int64(290), 2026: np.int64(74)}"
+        },
+        "5_rth": {
+          "level": "warn",
+          "msg": "11 dates <60 RTH bars; mean=75.0"
+        },
+        "6_first": {
+          "level": "warn",
+          "msg": "84 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "level": "ok",
+          "msg": "19:55 \u2713"
+        },
+        "8_ohlc": {
+          "level": "ok",
+          "msg": ""
+        },
+        "9_dupes": {
+          "level": "ok",
+          "msg": ""
+        },
+        "10_order": {
+          "level": "ok",
+          "msg": ""
+        },
+        "11_weekends": {
+          "level": "warn",
+          "msg": "1164 true weekend bars (ET-corrected)"
+        },
+        "12_continuity": {
+          "level": "warn",
+          "msg": "1 intraday gaps >15%; top-5: ['2025-10-09 (40%)']"
+        }
+      }
+    },
+    {
+      "ticker": "COST",
+      "status": "CERTIFIED_WITH_NOTES",
+      "warnings": [
+        "[5_rth] 300 dates <60 RTH bars; mean=62.2",
+        "[6_first] 5 full days missing 13:30 bar",
+        "[11_weekends] 519 true weekend bars (ET-corrected)"
+      ],
+      "issues": [],
+      "rows": 106599,
+      "dates": 749,
+      "years": 6,
+      "rth_per_day": 62.2,
+      "checks": {
+        "1_file": {
+          "level": "ok",
+          "msg": "COST_data.csv"
+        },
+        "2_rows": {
+          "level": "ok",
+          "msg": "106,599"
+        },
+        "3_range": {
+          "level": "ok",
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "level": "ok",
+          "msg": "{2021: np.int64(74), 2022: np.int64(106), 2023: np.int64(103), 2024: np.int64(104), 2025: np.int64(288), 2026: np.int64(74)}"
+        },
+        "5_rth": {
+          "level": "warn",
+          "msg": "300 dates <60 RTH bars; mean=62.2"
+        },
+        "6_first": {
+          "level": "warn",
+          "msg": "5 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "level": "ok",
+          "msg": "19:55 \u2713"
+        },
+        "8_ohlc": {
+          "level": "ok",
+          "msg": ""
+        },
+        "9_dupes": {
+          "level": "ok",
+          "msg": ""
+        },
+        "10_order": {
+          "level": "ok",
+          "msg": ""
+        },
+        "11_weekends": {
+          "level": "warn",
+          "msg": "519 true weekend bars (ET-corrected)"
+        },
+        "12_continuity": {
+          "level": "ok",
+          "msg": ""
+        }
+      }
+    },
+    {
+      "ticker": "GOOGL",
+      "status": "CERTIFIED_WITH_NOTES",
+      "warnings": [
+        "[5_rth] 92 dates <60 RTH bars; mean=72.2",
+        "[6_first] 61 full days missing 13:30 bar",
+        "[11_weekends] 3768 true weekend bars (ET-corrected)",
+        "[12_continuity] 8 intraday gaps >15%; top-5: ['2025-07-02 (25%)', '2025-07-03 (25%)', '2025-02-26 (24%)', '2025-02-26 (24%)', '2025-07-26 (16%)']"
+      ],
+      "issues": [],
+      "rows": 132454,
+      "dates": 757,
+      "years": 6,
+      "rth_per_day": 72.2,
+      "checks": {
+        "1_file": {
+          "level": "ok",
+          "msg": "GOOGL_data.csv"
+        },
+        "2_rows": {
+          "level": "ok",
+          "msg": "132,454"
+        },
+        "3_range": {
+          "level": "ok",
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "level": "ok",
+          "msg": "{2021: np.int64(76), 2022: np.int64(105), 2023: np.int64(106), 2024: np.int64(105), 2025: np.int64(291), 2026: np.int64(74)}"
+        },
+        "5_rth": {
+          "level": "warn",
+          "msg": "92 dates <60 RTH bars; mean=72.2"
+        },
+        "6_first": {
+          "level": "warn",
+          "msg": "61 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "level": "ok",
+          "msg": "19:55 \u2713"
+        },
+        "8_ohlc": {
+          "level": "ok",
+          "msg": ""
+        },
+        "9_dupes": {
+          "level": "ok",
+          "msg": ""
+        },
+        "10_order": {
+          "level": "ok",
+          "msg": ""
+        },
+        "11_weekends": {
+          "level": "warn",
+          "msg": "3768 true weekend bars (ET-corrected)"
+        },
+        "12_continuity": {
+          "level": "warn",
+          "msg": "8 intraday gaps >15%; top-5: ['2025-07-02 (25%)', '2025-07-03 (25%)', '2025-02-26 (24%)', '2025-02-26 (24%)', '2025-07-26 (16%)']"
+        }
+      }
+    },
+    {
+      "ticker": "GS",
+      "status": "CERTIFIED_WITH_NOTES",
+      "warnings": [
+        "[5_rth] 292 dates <60 RTH bars; mean=63.1",
+        "[6_first] 6 full days missing 13:30 bar",
+        "[11_weekends] 466 true weekend bars (ET-corrected)",
+        "[12_continuity] 6 intraday gaps >15%; top-5: ['2025-08-15 (60%)', '2025-05-15 (24%)', '2025-05-07 (19%)', '2025-06-05 (18%)', '2025-06-05 (18%)']"
+      ],
+      "issues": [],
+      "rows": 103099,
+      "dates": 747,
+      "years": 6,
+      "rth_per_day": 63.1,
+      "checks": {
+        "1_file": {
+          "level": "ok",
+          "msg": "GS_data.csv"
+        },
+        "2_rows": {
+          "level": "ok",
+          "msg": "103,099"
+        },
+        "3_range": {
+          "level": "ok",
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "level": "ok",
+          "msg": "{2021: np.int64(77), 2022: np.int64(103), 2023: np.int64(103), 2024: np.int64(100), 2025: np.int64(290), 2026: np.int64(74)}"
+        },
+        "5_rth": {
+          "level": "warn",
+          "msg": "292 dates <60 RTH bars; mean=63.1"
+        },
+        "6_first": {
+          "level": "warn",
+          "msg": "6 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "level": "ok",
+          "msg": "19:55 \u2713"
+        },
+        "8_ohlc": {
+          "level": "ok",
+          "msg": ""
+        },
+        "9_dupes": {
+          "level": "ok",
+          "msg": ""
+        },
+        "10_order": {
+          "level": "ok",
+          "msg": ""
+        },
+        "11_weekends": {
+          "level": "warn",
+          "msg": "466 true weekend bars (ET-corrected)"
+        },
+        "12_continuity": {
+          "level": "warn",
+          "msg": "6 intraday gaps >15%; top-5: ['2025-08-15 (60%)', '2025-05-15 (24%)', '2025-05-07 (19%)', '2025-06-05 (18%)', '2025-06-05 (18%)']"
+        }
+      }
+    },
+    {
+      "ticker": "INTC",
+      "status": "MISSING",
+      "warnings": [],
+      "issues": [
+        "[1_file] file not found"
+      ],
+      "rows": null,
+      "dates": null,
+      "years": null,
+      "rth_per_day": null,
+      "checks": {
+        "1_file": {
+          "level": "missing",
+          "msg": "file not found"
+        }
+      }
+    },
+    {
+      "ticker": "JD",
+      "status": "MISSING",
+      "warnings": [],
+      "issues": [
+        "[1_file] file not found"
+      ],
+      "rows": null,
+      "dates": null,
+      "years": null,
+      "rth_per_day": null,
+      "checks": {
+        "1_file": {
+          "level": "missing",
+          "msg": "file not found"
+        }
+      }
+    },
+    {
+      "ticker": "JPM",
+      "status": "CERTIFIED_WITH_NOTES",
+      "warnings": [
+        "[5_rth] 204 dates <60 RTH bars; mean=67.1",
+        "[6_first] 11 full days missing 13:30 bar",
+        "[11_weekends] 523 true weekend bars (ET-corrected)",
+        "[12_continuity] 3 intraday gaps >15%; top-5: ['2025-02-27 (26%)', '2025-03-14 (22%)', '2025-07-03 (15%)']"
+      ],
+      "issues": [],
+      "rows": 113263,
+      "dates": 759,
+      "years": 6,
+      "rth_per_day": 67.1,
+      "checks": {
+        "1_file": {
+          "level": "ok",
+          "msg": "JPM_data.csv"
+        },
+        "2_rows": {
+          "level": "ok",
+          "msg": "113,263"
+        },
+        "3_range": {
+          "level": "ok",
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "level": "ok",
+          "msg": "{2021: np.int64(78), 2022: np.int64(106), 2023: np.int64(105), 2024: np.int64(105), 2025: np.int64(291), 2026: np.int64(74)}"
+        },
+        "5_rth": {
+          "level": "warn",
+          "msg": "204 dates <60 RTH bars; mean=67.1"
+        },
+        "6_first": {
+          "level": "warn",
+          "msg": "11 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "level": "ok",
+          "msg": "19:55 \u2713"
+        },
+        "8_ohlc": {
+          "level": "ok",
+          "msg": ""
+        },
+        "9_dupes": {
+          "level": "ok",
+          "msg": ""
+        },
+        "10_order": {
+          "level": "ok",
+          "msg": ""
+        },
+        "11_weekends": {
+          "level": "warn",
+          "msg": "523 true weekend bars (ET-corrected)"
+        },
+        "12_continuity": {
+          "level": "warn",
+          "msg": "3 intraday gaps >15%; top-5: ['2025-02-27 (26%)', '2025-03-14 (22%)', '2025-07-03 (15%)']"
+        }
+      }
+    },
+    {
+      "ticker": "MARA",
+      "status": "CERTIFIED_WITH_NOTES",
+      "warnings": [
+        "[6_first] 62 full days missing 13:30 bar",
+        "[11_weekends] 539 true weekend bars (ET-corrected)"
+      ],
+      "issues": [],
+      "rows": 135844,
+      "dates": 757,
+      "years": 6,
+      "rth_per_day": 76.9,
+      "checks": {
+        "1_file": {
+          "level": "ok",
+          "msg": "MARA_data.csv"
+        },
+        "2_rows": {
+          "level": "ok",
+          "msg": "135,844"
+        },
+        "3_range": {
+          "level": "ok",
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "level": "ok",
+          "msg": "{2021: np.int64(78), 2022: np.int64(106), 2023: np.int64(106), 2024: np.int64(105), 2025: np.int64(288), 2026: np.int64(74)}"
+        },
+        "5_rth": {
+          "level": "ok",
+          "msg": "mean=76.9/day"
+        },
+        "6_first": {
+          "level": "warn",
+          "msg": "62 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "level": "ok",
+          "msg": "19:55 \u2713"
+        },
+        "8_ohlc": {
+          "level": "ok",
+          "msg": ""
+        },
+        "9_dupes": {
+          "level": "ok",
+          "msg": ""
+        },
+        "10_order": {
+          "level": "ok",
+          "msg": ""
+        },
+        "11_weekends": {
+          "level": "warn",
+          "msg": "539 true weekend bars (ET-corrected)"
+        },
+        "12_continuity": {
+          "level": "ok",
+          "msg": ""
+        }
+      }
+    },
+    {
+      "ticker": "META",
+      "status": "CERTIFIED_WITH_NOTES",
+      "warnings": [
+        "[6_first] 101 full days missing 13:30 bar",
+        "[11_weekends] 3768 true weekend bars (ET-corrected)",
+        "[12_continuity] 384 intraday gaps >15%; top-5: ['2021-07-27 (2442%)', '2021-07-27 (2440%)', '2021-08-31 (2432%)', '2021-08-31 (2427%)', '2021-08-31 (2425%)']"
+      ],
+      "issues": [],
+      "rows": 137623,
+      "dates": 760,
+      "years": 6,
+      "rth_per_day": 75.4,
+      "checks": {
+        "1_file": {
+          "level": "ok",
+          "msg": "META_data.csv"
+        },
+        "2_rows": {
+          "level": "ok",
+          "msg": "137,623"
+        },
+        "3_range": {
+          "level": "ok",
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "level": "ok",
+          "msg": "{2021: np.int64(78), 2022: np.int64(106), 2023: np.int64(106), 2024: np.int64(105), 2025: np.int64(291), 2026: np.int64(74)}"
+        },
+        "5_rth": {
+          "level": "ok",
+          "msg": "mean=75.4/day"
+        },
+        "6_first": {
+          "level": "warn",
+          "msg": "101 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "level": "ok",
+          "msg": "19:55 \u2713"
+        },
+        "8_ohlc": {
+          "level": "ok",
+          "msg": ""
+        },
+        "9_dupes": {
+          "level": "ok",
+          "msg": ""
+        },
+        "10_order": {
+          "level": "ok",
+          "msg": ""
+        },
+        "11_weekends": {
+          "level": "warn",
+          "msg": "3768 true weekend bars (ET-corrected)"
+        },
+        "12_continuity": {
+          "level": "warn",
+          "msg": "384 intraday gaps >15%; top-5: ['2021-07-27 (2442%)', '2021-07-27 (2440%)', '2021-08-31 (2432%)', '2021-08-31 (2427%)', '2021-08-31 (2425%)']"
+        }
+      }
+    },
+    {
+      "ticker": "MSFT",
+      "status": "CERTIFIED_WITH_NOTES",
+      "warnings": [
+        "[6_first] 107 full days missing 13:30 bar",
+        "[11_weekends] 3768 true weekend bars (ET-corrected)",
+        "[12_continuity] 11 intraday gaps >15%; top-5: ['2025-07-26 (22%)', '2025-07-26 (22%)', '2025-07-26 (19%)', '2026-03-17 (18%)', '2025-07-10 (17%)']"
+      ],
+      "issues": [],
+      "rows": 138129,
+      "dates": 759,
+      "years": 6,
+      "rth_per_day": 75.7,
+      "checks": {
+        "1_file": {
+          "level": "ok",
+          "msg": "MSFT_data.csv"
+        },
+        "2_rows": {
+          "level": "ok",
+          "msg": "138,129"
+        },
+        "3_range": {
+          "level": "ok",
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "level": "ok",
+          "msg": "{2021: np.int64(78), 2022: np.int64(106), 2023: np.int64(105), 2024: np.int64(105), 2025: np.int64(291), 2026: np.int64(74)}"
+        },
+        "5_rth": {
+          "level": "ok",
+          "msg": "mean=75.7/day"
+        },
+        "6_first": {
+          "level": "warn",
+          "msg": "107 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "level": "ok",
+          "msg": "19:55 \u2713"
+        },
+        "8_ohlc": {
+          "level": "ok",
+          "msg": ""
+        },
+        "9_dupes": {
+          "level": "ok",
+          "msg": ""
+        },
+        "10_order": {
+          "level": "ok",
+          "msg": ""
+        },
+        "11_weekends": {
+          "level": "warn",
+          "msg": "3768 true weekend bars (ET-corrected)"
+        },
+        "12_continuity": {
+          "level": "warn",
+          "msg": "11 intraday gaps >15%; top-5: ['2025-07-26 (22%)', '2025-07-26 (22%)', '2025-07-26 (19%)', '2026-03-17 (18%)', '2025-07-10 (17%)']"
+        }
+      }
+    },
+    {
+      "ticker": "MSTR",
+      "status": "MISSING",
+      "warnings": [],
+      "issues": [
+        "[1_file] file not found"
+      ],
+      "rows": null,
+      "dates": null,
+      "years": null,
+      "rth_per_day": null,
+      "checks": {
+        "1_file": {
+          "level": "missing",
+          "msg": "file not found"
+        }
+      }
+    },
+    {
+      "ticker": "MU",
+      "status": "CERTIFIED_WITH_NOTES",
+      "warnings": [
+        "[5_rth] 32 dates <60 RTH bars; mean=73.5",
+        "[6_first] 72 full days missing 13:30 bar",
+        "[11_weekends] 540 true weekend bars (ET-corrected)",
+        "[12_continuity] 5 intraday gaps >15%; top-5: ['2025-04-23 (41%)', '2026-01-08 (40%)', '2025-03-28 (36%)', '2025-10-03 (25%)', '2025-10-09 (23%)']"
+      ],
+      "issues": [],
+      "rows": 126666,
+      "dates": 757,
+      "years": 6,
+      "rth_per_day": 73.5,
+      "checks": {
+        "1_file": {
+          "level": "ok",
+          "msg": "MU_data.csv"
+        },
+        "2_rows": {
+          "level": "ok",
+          "msg": "126,666"
+        },
+        "3_range": {
+          "level": "ok",
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "level": "ok",
+          "msg": "{2021: np.int64(78), 2022: np.int64(106), 2023: np.int64(106), 2024: np.int64(105), 2025: np.int64(288), 2026: np.int64(74)}"
+        },
+        "5_rth": {
+          "level": "warn",
+          "msg": "32 dates <60 RTH bars; mean=73.5"
+        },
+        "6_first": {
+          "level": "warn",
+          "msg": "72 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "level": "ok",
+          "msg": "19:55 \u2713"
+        },
+        "8_ohlc": {
+          "level": "ok",
+          "msg": ""
+        },
+        "9_dupes": {
+          "level": "ok",
+          "msg": ""
+        },
+        "10_order": {
+          "level": "ok",
+          "msg": ""
+        },
+        "11_weekends": {
+          "level": "warn",
+          "msg": "540 true weekend bars (ET-corrected)"
+        },
+        "12_continuity": {
+          "level": "warn",
+          "msg": "5 intraday gaps >15%; top-5: ['2025-04-23 (41%)', '2026-01-08 (40%)', '2025-03-28 (36%)', '2025-10-03 (25%)', '2025-10-09 (23%)']"
+        }
+      }
+    },
+    {
+      "ticker": "NVDA",
+      "status": "CERTIFIED_WITH_NOTES",
+      "warnings": [
+        "[5_rth] 7 dates <60 RTH bars; mean=76.8",
+        "[6_first] 56 full days missing 13:30 bar",
+        "[11_weekends] 3768 true weekend bars (ET-corrected)",
+        "[12_continuity] 34 intraday gaps >15%; top-5: ['2025-04-05 (51%)', '2025-04-05 (51%)', '2025-10-09 (42%)', '2025-10-09 (42%)', '2025-03-05 (41%)']"
+      ],
+      "issues": [],
+      "rows": 142756,
+      "dates": 758,
+      "years": 6,
+      "rth_per_day": 76.8,
+      "checks": {
+        "1_file": {
+          "level": "ok",
+          "msg": "NVDA_data.csv"
+        },
+        "2_rows": {
+          "level": "ok",
+          "msg": "142,756"
+        },
+        "3_range": {
+          "level": "ok",
+          "msg": "2021-04-21 \u2192 2026-04-10, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "level": "ok",
+          "msg": "{2021: np.int64(78), 2022: np.int64(106), 2023: np.int64(106), 2024: np.int64(105), 2025: np.int64(291), 2026: np.int64(72)}"
+        },
+        "5_rth": {
+          "level": "warn",
+          "msg": "7 dates <60 RTH bars; mean=76.8"
+        },
+        "6_first": {
+          "level": "warn",
+          "msg": "56 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "level": "ok",
+          "msg": "19:55 \u2713"
+        },
+        "8_ohlc": {
+          "level": "ok",
+          "msg": ""
+        },
+        "9_dupes": {
+          "level": "ok",
+          "msg": ""
+        },
+        "10_order": {
+          "level": "ok",
+          "msg": ""
+        },
+        "11_weekends": {
+          "level": "warn",
+          "msg": "3768 true weekend bars (ET-corrected)"
+        },
+        "12_continuity": {
+          "level": "warn",
+          "msg": "34 intraday gaps >15%; top-5: ['2025-04-05 (51%)', '2025-04-05 (51%)', '2025-10-09 (42%)', '2025-10-09 (42%)', '2025-03-05 (41%)']"
+        }
+      }
+    },
+    {
+      "ticker": "PLTR",
+      "status": "CERTIFIED_WITH_NOTES",
+      "warnings": [
+        "[6_first] 66 full days missing 13:30 bar",
+        "[11_weekends] 540 true weekend bars (ET-corrected)",
+        "[12_continuity] 3 intraday gaps >15%; top-5: ['2025-03-25 (37%)', '2025-07-10 (29%)', '2023-01-24 (19%)']"
+      ],
+      "issues": [],
+      "rows": 136685,
+      "dates": 757,
+      "years": 6,
+      "rth_per_day": 77.0,
+      "checks": {
+        "1_file": {
+          "level": "ok",
+          "msg": "PLTR_data.csv"
+        },
+        "2_rows": {
+          "level": "ok",
+          "msg": "136,685"
+        },
+        "3_range": {
+          "level": "ok",
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "level": "ok",
+          "msg": "{2021: np.int64(78), 2022: np.int64(106), 2023: np.int64(106), 2024: np.int64(105), 2025: np.int64(288), 2026: np.int64(74)}"
+        },
+        "5_rth": {
+          "level": "ok",
+          "msg": "mean=77.0/day"
+        },
+        "6_first": {
+          "level": "warn",
+          "msg": "66 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "level": "ok",
+          "msg": "19:55 \u2713"
+        },
+        "8_ohlc": {
+          "level": "ok",
+          "msg": ""
+        },
+        "9_dupes": {
+          "level": "ok",
+          "msg": ""
+        },
+        "10_order": {
+          "level": "ok",
+          "msg": ""
+        },
+        "11_weekends": {
+          "level": "warn",
+          "msg": "540 true weekend bars (ET-corrected)"
+        },
+        "12_continuity": {
+          "level": "warn",
+          "msg": "3 intraday gaps >15%; top-5: ['2025-03-25 (37%)', '2025-07-10 (29%)', '2023-01-24 (19%)']"
+        }
+      }
+    },
+    {
+      "ticker": "SMCI",
+      "status": "MISSING",
+      "warnings": [],
+      "issues": [
+        "[1_file] file not found"
+      ],
+      "rows": null,
+      "dates": null,
+      "years": null,
+      "rth_per_day": null,
+      "checks": {
+        "1_file": {
+          "level": "missing",
+          "msg": "file not found"
+        }
+      }
+    },
+    {
+      "ticker": "SPY",
+      "status": "CERTIFIED_WITH_NOTES",
+      "warnings": [
+        "[6_first] 15 full days missing 13:30 bar",
+        "[11_weekends] 240 true weekend bars (ET-corrected)",
+        "[12_continuity] 1 intraday gaps >15%; top-5: ['2025-09-11 (16%)']"
+      ],
+      "issues": [],
+      "rows": 114629,
+      "dates": 697,
+      "years": 6,
+      "rth_per_day": 77.6,
+      "checks": {
+        "1_file": {
+          "level": "ok",
+          "msg": "SPY_data.csv"
+        },
+        "2_rows": {
+          "level": "ok",
+          "msg": "114,629"
+        },
+        "3_range": {
+          "level": "ok",
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "level": "ok",
+          "msg": "{2021: np.int64(78), 2022: np.int64(106), 2023: np.int64(106), 2024: np.int64(105), 2025: np.int64(241), 2026: np.int64(61)}"
+        },
+        "5_rth": {
+          "level": "ok",
+          "msg": "mean=77.6/day"
+        },
+        "6_first": {
+          "level": "warn",
+          "msg": "15 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "level": "ok",
+          "msg": "19:55 \u2713"
+        },
+        "8_ohlc": {
+          "level": "ok",
+          "msg": ""
+        },
+        "9_dupes": {
+          "level": "ok",
+          "msg": ""
+        },
+        "10_order": {
+          "level": "ok",
+          "msg": ""
+        },
+        "11_weekends": {
+          "level": "warn",
+          "msg": "240 true weekend bars (ET-corrected)"
+        },
+        "12_continuity": {
+          "level": "warn",
+          "msg": "1 intraday gaps >15%; top-5: ['2025-09-11 (16%)']"
+        }
+      }
+    },
+    {
+      "ticker": "TSLA",
+      "status": "CERTIFIED_WITH_NOTES",
+      "warnings": [
+        "[6_first] 36 full days missing 13:30 bar",
+        "[11_weekends] 3768 true weekend bars (ET-corrected)",
+        "[12_continuity] 16 intraday gaps >15%; top-5: ['2025-02-08 (50%)', '2025-02-26 (44%)', '2025-02-26 (44%)', '2025-05-29 (37%)', '2025-05-24 (32%)']"
+      ],
+      "issues": [],
+      "rows": 144939,
+      "dates": 760,
+      "years": 6,
+      "rth_per_day": 77.6,
+      "checks": {
+        "1_file": {
+          "level": "ok",
+          "msg": "TSLA_data.csv"
+        },
+        "2_rows": {
+          "level": "ok",
+          "msg": "144,939"
+        },
+        "3_range": {
+          "level": "ok",
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "level": "ok",
+          "msg": "{2021: np.int64(78), 2022: np.int64(106), 2023: np.int64(106), 2024: np.int64(105), 2025: np.int64(291), 2026: np.int64(74)}"
+        },
+        "5_rth": {
+          "level": "ok",
+          "msg": "mean=77.6/day"
+        },
+        "6_first": {
+          "level": "warn",
+          "msg": "36 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "level": "ok",
+          "msg": "19:55 \u2713"
+        },
+        "8_ohlc": {
+          "level": "ok",
+          "msg": ""
+        },
+        "9_dupes": {
+          "level": "ok",
+          "msg": ""
+        },
+        "10_order": {
+          "level": "ok",
+          "msg": ""
+        },
+        "11_weekends": {
+          "level": "warn",
+          "msg": "3768 true weekend bars (ET-corrected)"
+        },
+        "12_continuity": {
+          "level": "warn",
+          "msg": "16 intraday gaps >15%; top-5: ['2025-02-08 (50%)', '2025-02-26 (44%)', '2025-02-26 (44%)', '2025-05-29 (37%)', '2025-05-24 (32%)']"
+        }
+      }
+    },
+    {
+      "ticker": "TSM",
+      "status": "CERTIFIED_WITH_NOTES",
+      "warnings": [
+        "[5_rth] 31 dates <60 RTH bars; mean=72.8",
+        "[6_first] 54 full days missing 13:30 bar",
+        "[11_weekends] 540 true weekend bars (ET-corrected)",
+        "[12_continuity] 7 intraday gaps >15%; top-5: ['2025-10-04 (26%)', '2025-10-04 (25%)', '2025-06-05 (23%)', '2025-06-14 (20%)', '2025-09-26 (17%)']"
+      ],
+      "issues": [],
+      "rows": 125220,
+      "dates": 760,
+      "years": 6,
+      "rth_per_day": 72.8,
+      "checks": {
+        "1_file": {
+          "level": "ok",
+          "msg": "TSM_data.csv"
+        },
+        "2_rows": {
+          "level": "ok",
+          "msg": "125,220"
+        },
+        "3_range": {
+          "level": "ok",
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "level": "ok",
+          "msg": "{2021: np.int64(78), 2022: np.int64(106), 2023: np.int64(106), 2024: np.int64(105), 2025: np.int64(291), 2026: np.int64(74)}"
+        },
+        "5_rth": {
+          "level": "warn",
+          "msg": "31 dates <60 RTH bars; mean=72.8"
+        },
+        "6_first": {
+          "level": "warn",
+          "msg": "54 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "level": "ok",
+          "msg": "19:55 \u2713"
+        },
+        "8_ohlc": {
+          "level": "ok",
+          "msg": ""
+        },
+        "9_dupes": {
+          "level": "ok",
+          "msg": ""
+        },
+        "10_order": {
+          "level": "ok",
+          "msg": ""
+        },
+        "11_weekends": {
+          "level": "warn",
+          "msg": "540 true weekend bars (ET-corrected)"
+        },
+        "12_continuity": {
+          "level": "warn",
+          "msg": "7 intraday gaps >15%; top-5: ['2025-10-04 (26%)', '2025-10-04 (25%)', '2025-06-05 (23%)', '2025-06-14 (20%)', '2025-09-26 (17%)']"
+        }
+      }
+    },
+    {
+      "ticker": "V",
+      "status": "CERTIFIED_WITH_NOTES",
+      "warnings": [
+        "[5_rth] 270 dates <60 RTH bars; mean=64.3",
+        "[6_first] 7 full days missing 13:30 bar",
+        "[11_weekends] 515 true weekend bars (ET-corrected)",
+        "[12_continuity] 5 intraday gaps >15%; top-5: ['2026-03-16 (50%)', '2025-02-27 (24%)', '2025-03-25 (22%)', '2025-05-17 (20%)', '2025-02-27 (20%)']"
+      ],
+      "issues": [],
+      "rows": 107745,
+      "dates": 754,
+      "years": 6,
+      "rth_per_day": 64.3,
+      "checks": {
+        "1_file": {
+          "level": "ok",
+          "msg": "V_data.csv"
+        },
+        "2_rows": {
+          "level": "ok",
+          "msg": "107,745"
+        },
+        "3_range": {
+          "level": "ok",
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "level": "ok",
+          "msg": "{2021: np.int64(78), 2022: np.int64(106), 2023: np.int64(103), 2024: np.int64(102), 2025: np.int64(291), 2026: np.int64(74)}"
+        },
+        "5_rth": {
+          "level": "warn",
+          "msg": "270 dates <60 RTH bars; mean=64.3"
+        },
+        "6_first": {
+          "level": "warn",
+          "msg": "7 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "level": "ok",
+          "msg": "19:55 \u2713"
+        },
+        "8_ohlc": {
+          "level": "ok",
+          "msg": ""
+        },
+        "9_dupes": {
+          "level": "ok",
+          "msg": ""
+        },
+        "10_order": {
+          "level": "ok",
+          "msg": ""
+        },
+        "11_weekends": {
+          "level": "warn",
+          "msg": "515 true weekend bars (ET-corrected)"
+        },
+        "12_continuity": {
+          "level": "warn",
+          "msg": "5 intraday gaps >15%; top-5: ['2026-03-16 (50%)', '2025-02-27 (24%)', '2025-03-25 (22%)', '2025-05-17 (20%)', '2025-02-27 (20%)']"
+        }
+      }
+    },
+    {
+      "ticker": "VIXY",
+      "status": "CERTIFIED_WITH_NOTES",
+      "warnings": [
+        "[5_rth] 126 dates <60 RTH bars; mean=65.2",
+        "[6_first] 35 full days missing 13:30 bar",
+        "[7_last] 8 full days missing 19:55 bar",
+        "[11_weekends] 185 true weekend bars (ET-corrected)"
+      ],
+      "issues": [],
+      "rows": 88864,
+      "dates": 695,
+      "years": 6,
+      "rth_per_day": 65.2,
+      "checks": {
+        "1_file": {
+          "level": "ok",
+          "msg": "VIXY_data.csv"
+        },
+        "2_rows": {
+          "level": "ok",
+          "msg": "88,864"
+        },
+        "3_range": {
+          "level": "ok",
+          "msg": "2021-04-21 \u2192 2026-04-10, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "level": "ok",
+          "msg": "{2021: np.int64(78), 2022: np.int64(106), 2023: np.int64(106), 2024: np.int64(105), 2025: np.int64(240), 2026: np.int64(60)}"
+        },
+        "5_rth": {
+          "level": "warn",
+          "msg": "126 dates <60 RTH bars; mean=65.2"
+        },
+        "6_first": {
+          "level": "warn",
+          "msg": "35 full days missing 13:30 bar"
+        },
+        "7_last": {
+          "level": "warn",
+          "msg": "8 full days missing 19:55 bar"
+        },
+        "8_ohlc": {
+          "level": "ok",
+          "msg": ""
+        },
+        "9_dupes": {
+          "level": "ok",
+          "msg": ""
+        },
+        "10_order": {
+          "level": "ok",
+          "msg": ""
+        },
+        "11_weekends": {
+          "level": "warn",
+          "msg": "185 true weekend bars (ET-corrected)"
+        },
+        "12_continuity": {
+          "level": "ok",
+          "msg": ""
+        }
+      }
+    },
+    {
+      "ticker": "BTC",
+      "status": "CERTIFIED",
+      "warnings": [],
+      "issues": [],
+      "rows": 239074,
+      "dates": 881,
+      "years": 6,
+      "rth_per_day": null,
+      "checks": {
+        "1_file": {
+          "level": "ok",
+          "msg": "BTC_crypto_data.csv"
+        },
+        "2_rows": {
+          "level": "ok",
+          "msg": "239,074"
+        },
+        "3_range": {
+          "level": "ok",
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "level": "ok",
+          "msg": "{2021: np.int64(98), 2022: np.int64(132), 2023: np.int64(132), 2024: np.int64(132), 2025: np.int64(299), 2026: np.int64(88)}"
+        },
+        "5_rth": {
+          "level": "ok",
+          "msg": "crypto-skip"
+        },
+        "6_first": {
+          "level": "ok",
+          "msg": "crypto-skip"
+        },
+        "7_last": {
+          "level": "ok",
+          "msg": "crypto-skip"
+        },
+        "8_ohlc": {
+          "level": "ok",
+          "msg": ""
+        },
+        "9_dupes": {
+          "level": "ok",
+          "msg": ""
+        },
+        "10_order": {
+          "level": "ok",
+          "msg": ""
+        },
+        "11_weekends": {
+          "level": "ok",
+          "msg": "crypto-skip"
+        },
+        "12_continuity": {
+          "level": "ok",
+          "msg": ""
+        }
+      }
+    },
+    {
+      "ticker": "ETH",
+      "status": "CERTIFIED",
+      "warnings": [],
+      "issues": [],
+      "rows": 239073,
+      "dates": 881,
+      "years": 6,
+      "rth_per_day": null,
+      "checks": {
+        "1_file": {
+          "level": "ok",
+          "msg": "ETH_crypto_data.csv"
+        },
+        "2_rows": {
+          "level": "ok",
+          "msg": "239,073"
+        },
+        "3_range": {
+          "level": "ok",
+          "msg": "2021-04-21 \u2192 2026-04-11, 6 yr(s)"
+        },
+        "4_dates_yr": {
+          "level": "ok",
+          "msg": "{2021: np.int64(98), 2022: np.int64(132), 2023: np.int64(132), 2024: np.int64(132), 2025: np.int64(299), 2026: np.int64(88)}"
+        },
+        "5_rth": {
+          "level": "ok",
+          "msg": "crypto-skip"
+        },
+        "6_first": {
+          "level": "ok",
+          "msg": "crypto-skip"
+        },
+        "7_last": {
+          "level": "ok",
+          "msg": "crypto-skip"
+        },
+        "8_ohlc": {
+          "level": "ok",
+          "msg": ""
+        },
+        "9_dupes": {
+          "level": "ok",
+          "msg": ""
+        },
+        "10_order": {
+          "level": "ok",
+          "msg": ""
+        },
+        "11_weekends": {
+          "level": "ok",
+          "msg": "crypto-skip"
+        },
+        "12_continuity": {
+          "level": "ok",
+          "msg": ""
+        }
+      }
+    }
+  ]
+}
