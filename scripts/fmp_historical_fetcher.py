@@ -152,7 +152,7 @@ def fetch_month(fmp_symbol: str, from_date: str, to_date: str,
     url_symbol = fmp_symbol.replace("^", "%5E")
     url = (f"{FMP_BASE_URL}"
            f"?symbol={url_symbol}"
-           f"&from={from_date}"
+           f"&from={from_date}&extended=true"
            f"&to={to_date}"
            f"&apikey={api_key}")
 
