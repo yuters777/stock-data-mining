@@ -28,12 +28,16 @@ SKIP_FILES = {"VIXCLS_FRED_real.csv", "VXVCLS.csv"}
 VIX_URL = ("https://fred.stlouisfed.org/graph/fredgraph.csv"
            "?id=VIXCLS&cosd=2021-01-01&coed=2026-04-11")
 
-# RTH in minutes-since-midnight (ET): 09:30-15:55
-# _m5_full.csv timestamps are already in ET; no UTC conversion needed.
-RTH_S  = 9 * 60 + 30    # 570   09:30 ET
-RTH_E  = 15 * 60 + 55   # 955   15:55 ET
-BAR1_E = 13 * 60 + 25   # 805   Bar-1 ends   (09:30-13:25 ET)
-BAR2_S = 13 * 60 + 30   # 810   Bar-2 starts (13:30-15:55 ET)
+# RTH boundaries — two formats depending on M5 data source.
+# build_4h() auto-detects which set to use based on max hour in data.
+# _m5_full.csv: timestamps in ET (09:30-15:55)
+RTH_S_ET   = 9 * 60 + 30     # 570
+RTH_E_ET   = 15 * 60 + 55    # 955
+BAR1_E_ET  = 13 * 60 + 25    # 805
+# _data.csv: timestamps in UTC (13:30-19:55)
+RTH_S_UTC  = 13 * 60 + 30    # 810
+RTH_E_UTC  = 19 * 60 + 55    # 1195
+BAR1_E_UTC = 17 * 60 + 25    # 1045
 
 
 # ── VIX ───────────────────────────────────────────────────────────────────
@@ -98,22 +102,35 @@ def _norm_m5(df: pd.DataFrame) -> pd.DataFrame:
 # ── 4H bar builder ─────────────────────────────────────────────────────────
 def build_4h(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Filter raw M5 data to RTH, assign to Bar-1 (09:30-13:25 ET) or
-    Bar-2 (13:30-15:55 ET), then aggregate OHLCV.
+    Filter raw M5 data to RTH, assign to Bar-1 / Bar-2, aggregate OHLCV.
+    Auto-detects timestamp timezone:
+      _m5_full.csv  -> ET  (max hour <= 16, RTH 09:30-15:55)
+      _data.csv     -> UTC (max hour > 16,  RTH 13:30-19:55)
     """
     df = df.copy()
     df["dt"]  = pd.to_datetime(df["Datetime"], errors="coerce")
     df = df.sort_values("dt").dropna(subset=["dt"])
-    tod = df["dt"].dt.hour * 60 + df["dt"].dt.minute
+    if df.empty:
+        return pd.DataFrame()
 
-    rth_mask = (tod >= RTH_S) & (tod <= RTH_E)
+    # Auto-detect: _m5_full.csv has RTH-only bars (max hour <= 16 = ET);
+    #              _data.csv has extended-hours bars (max hour > 16 = UTC).
+    if df["dt"].dt.hour.max() <= 16:
+        rth_s, rth_e, bar1_e = RTH_S_ET, RTH_E_ET, BAR1_E_ET
+        h1, m1, h2, m2 = 9, 30, 13, 30
+    else:
+        rth_s, rth_e, bar1_e = RTH_S_UTC, RTH_E_UTC, BAR1_E_UTC
+        h1, m1, h2, m2 = 13, 30, 17, 30
+
+    tod = df["dt"].dt.hour * 60 + df["dt"].dt.minute
+    rth_mask = (tod >= rth_s) & (tod <= rth_e)
     df = df[rth_mask].copy()
     if df.empty:
         return pd.DataFrame()
 
     tod_filt     = df["dt"].dt.hour * 60 + df["dt"].dt.minute
     df["date"]   = df["dt"].dt.date
-    df["session"] = (tod_filt > BAR1_E).astype(int)   # 0 = Bar-1, 1 = Bar-2
+    df["session"] = (tod_filt > bar1_e).astype(int)   # 0 = Bar-1, 1 = Bar-2
 
     def agg_bar(g):
         g = g.sort_values("dt")
@@ -133,9 +150,9 @@ def build_4h(df: pd.DataFrame) -> pd.DataFrame:
 
     # Canonical bar timestamp (start of each session)
     bar_ts = bars.apply(
-        lambda r: pd.Timestamp(str(r["date"])) + pd.Timedelta(
-            hours=9, minutes=30) if r["session"] == 0
-        else pd.Timestamp(str(r["date"])) + pd.Timedelta(hours=13, minutes=30),
+        lambda r: pd.Timestamp(str(r["date"])) + pd.Timedelta(hours=h1, minutes=m1)
+        if r["session"] == 0
+        else pd.Timestamp(str(r["date"])) + pd.Timedelta(hours=h2, minutes=m2),
         axis=1,
     )
     bars["ts"] = bar_ts
