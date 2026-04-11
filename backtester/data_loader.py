@@ -1,13 +1,16 @@
 """
 Data loader for the False Breakout Strategy Backtester.
 
-Loads M5 OHLCV CSVs (IST timezone-naive), tags sessions, assigns trading days,
-aggregates D1 bars from regular session, and validates data quality.
+Loads M5 OHLCV CSVs (IST-equivalent timezone-naive), tags sessions, assigns
+trading days, aggregates D1 bars from regular session, and validates data.
+
+Supports both legacy Alpha Vantage and new FMP data sources. Both use
+IST-equivalent timestamps (ET + 7h).
 
 Reference: Data_Request_v2 §5, L-005.1 spec.
 
 CRITICAL RULES:
-- NO timezone conversion. Data stays in IST.
+- NO timezone conversion. Data stays in IST-equivalent.
 - Saturday bars (00:00-02:55 IST) → Friday's trading day.
 - D1 aggregation = regular session ONLY.
 - All M5 bars kept; time filters applied later by filter_chain.
@@ -33,11 +36,15 @@ REGULAR_END_HOUR = 22        # up to 22:55 IST
 CLOSE_BAR_HOUR = 23          # 23:00 IST close bar
 POST_MARKET_START_HOUR = 23  # 23:05+ IST
 
-# All 25 tickers from MarketPatterns-AI pipeline (source of truth)
+# All tickers — expanded universe (FMP migration, April 2026)
+# Legacy tickers (IBIT, SNOW, TXN) kept for backward compatibility with
+# existing backtest results. New tickers: ARM, INTC, JD, MSTR, SMCI, SPY,
+# VIXY, VIX, BTC, ETH.
 ALL_TICKERS = [
-    "AAPL", "AMD", "AMZN", "AVGO", "BA", "BABA", "BIDU", "C", "COIN", "COST",
-    "GOOGL", "GS", "IBIT", "JPM", "MARA", "META", "MSFT", "MU", "NVDA",
-    "PLTR", "SNOW", "TSLA", "TSM", "TXN", "V",
+    "AAPL", "AMD", "AMZN", "ARM", "AVGO", "BA", "BABA", "BIDU", "BTC",
+    "C", "COIN", "COST", "ETH", "GOOGL", "GS", "IBIT", "INTC", "JD",
+    "JPM", "MARA", "META", "MSFT", "MSTR", "MU", "NVDA", "PLTR", "SMCI",
+    "SNOW", "SPY", "TSLA", "TSM", "TXN", "V", "VIX", "VIXY",
 ]
 
 SECTOR_MAP = {
@@ -46,18 +53,24 @@ SECTOR_MAP = {
     "META": "Technology", "AMZN": "Technology", "NVDA": "Technology",
     "AMD": "Technology", "AVGO": "Technology", "MU": "Technology",
     "TSM": "Technology", "TXN": "Technology", "PLTR": "Technology",
-    "SNOW": "Technology",
+    "SNOW": "Technology", "INTC": "Technology", "ARM": "Technology",
+    "SMCI": "Technology",
     # Financial
     "C": "Financial", "GS": "Financial", "JPM": "Financial",
     "V": "Financial", "COIN": "Financial", "MARA": "Financial",
-    "IBIT": "Financial",
+    "IBIT": "Financial", "MSTR": "Financial",
     # Consumer Discretionary
     "TSLA": "Consumer Discretionary", "BABA": "Consumer Discretionary",
+    "JD": "Consumer Discretionary",
     "COST": "Consumer Staples",
     # Communication
     "BIDU": "Communication",
     # Industrials
     "BA": "Industrials",
+    # Cross-asset / Index
+    "SPY": "Index", "VIXY": "Volatility", "VIX": "Volatility",
+    # Crypto
+    "BTC": "Crypto", "ETH": "Crypto",
 }
 
 
@@ -70,16 +83,20 @@ def load_m5(ticker: str, data_dir: str | Path) -> pd.DataFrame:
 
     Returns:
         DataFrame with columns: Datetime, Open, High, Low, Close, Volume, Ticker.
-        Datetime is parsed as timezone-naive (IST).
+        Datetime is parsed as timezone-naive (IST-equivalent).
 
     Raises:
         FileNotFoundError: If CSV file does not exist.
     """
     data_dir = Path(data_dir)
+
+    # Try standard naming, then crypto naming convention
     filepath = data_dir / f"{ticker}_data.csv"
+    if not filepath.exists():
+        filepath = data_dir / f"{ticker}_crypto_data.csv"
 
     if not filepath.exists():
-        raise FileNotFoundError(f"Data file not found: {filepath}")
+        raise FileNotFoundError(f"Data file not found: {data_dir / ticker}_data.csv")
 
     df = pd.read_csv(filepath, parse_dates=["Datetime"])
 
