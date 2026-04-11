@@ -9,3 +9,4 @@ venv/
 *.gsheet
 *.gslides
 level_detection/cache/
+Fetched_Data/*.csv
