@@ -458,10 +458,201 @@ def profit_factor(rets) -> float:
     return round(float(wins / losses), 4) if losses > 0 else float("inf")
 
 
+# ── DEBUG: AAPL-only diagnostic (temporary) ──────────────────────────────────
+def debug_aapl(vix: pd.Series) -> None:
+    """Trace every processing step for AAPL to find the 0-trade root cause."""
+
+    # 1. File selection
+    print("\n[1] FILE SELECTION")
+    candidates = {}
+    for fpath in sorted(glob.glob(os.path.join(DATA, "*.csv"))):
+        name = os.path.basename(fpath)
+        if name in SKIP_FILES:
+            continue
+        if name.endswith("_m5_full.csv"):
+            t = name[:-len("_m5_full.csv")]; p = 0
+        elif name.endswith("_crypto_data.csv"):
+            t = name[:-len("_crypto_data.csv")]; p = 2
+        elif name.endswith("_data.csv"):
+            t = name[:-len("_data.csv")]; p = 1
+        else:
+            continue
+        if t == "AAPL":
+            candidates[p] = fpath
+            print(f"  Found: {name}  (priority {p})")
+    if not candidates:
+        print("  *** NO AAPL FILE FOUND ***")
+        return
+    best_p = min(candidates)
+    fpath  = candidates[best_p]
+    pnames = {0: "_m5_full.csv", 1: "_data.csv", 2: "_crypto_data.csv"}
+    print(f"  Selected: {os.path.basename(fpath)}  ({pnames[best_p]})")
+
+    # 2. Raw CSV read
+    print("\n[2] RAW CSV")
+    try:
+        raw = pd.read_csv(fpath)
+    except Exception as exc:
+        print(f"  *** READ FAILED: {exc} ***")
+        return
+    print(f"  Columns : {list(raw.columns)}")
+    print(f"  Rows    : {len(raw)}")
+    print(f"  Row 0   : {raw.iloc[0].to_dict()}")
+    print(f"  Row 1   : {raw.iloc[1].to_dict()}")
+    close_col = next((c for c in raw.columns if c.lower() == "close"), None)
+    if close_col:
+        sample = raw[close_col].head(5).tolist()
+        nan_ct = raw[close_col].isna().sum()
+        print(f"  Close sample (raw): {sample}  NaN count: {nan_ct}")
+    else:
+        print("  *** NO CLOSE COLUMN FOUND ***")
+
+    # 3. After _norm_m5
+    print("\n[3] AFTER _norm_m5")
+    raw = _norm_m5(raw)
+    print(f"  Columns : {list(raw.columns)}")
+    print(f"  Rows    : {len(raw)}")
+    if "Close" in raw.columns:
+        sample = pd.to_numeric(raw["Close"], errors="coerce").head(5).tolist()
+        nan_ct = pd.to_numeric(raw["Close"], errors="coerce").isna().sum()
+        print(f"  Close sample: {sample}  NaN count: {nan_ct}/{len(raw)}")
+    else:
+        print("  *** 'Close' column MISSING after _norm_m5 -- early exit! ***")
+        return
+    if "Datetime" not in raw.columns:
+        print("  *** 'Datetime' column MISSING -- build_4h will crash ***")
+        return
+
+    # 4. Inside build_4h: inject a debug path
+    print("\n[4] build_4h INTERNALS")
+    df_tmp = raw.copy()
+    df_tmp["dt"] = pd.to_datetime(df_tmp["Datetime"], errors="coerce")
+    n_before = len(df_tmp)
+    df_tmp = df_tmp.sort_values("dt").dropna(subset=["dt"])
+    n_after = len(df_tmp)
+    print(f"  Rows before dropna(dt): {n_before},  after: {n_after}")
+    if df_tmp.empty:
+        print("  *** ALL DATETIMES ARE NaT -- check Datetime column format ***")
+        print(f"  Sample raw Datetime values: {raw['Datetime'].head(3).tolist()}")
+        return
+    max_h = df_tmp["dt"].dt.hour.max()
+    print(f"  Max hour: {max_h}  ->  timezone: {'ET' if max_h <= 16 else 'UTC'}")
+    if max_h <= 16:
+        rth_s, rth_e = RTH_S_ET, RTH_E_ET
+        label = "ET (09:30-15:55)"
+    else:
+        rth_s, rth_e = RTH_S_UTC, RTH_E_UTC
+        label = "UTC (13:30-19:55)"
+    tod = df_tmp["dt"].dt.hour * 60 + df_tmp["dt"].dt.minute
+    rth_ct = ((tod >= rth_s) & (tod <= rth_e)).sum()
+    print(f"  RTH filter ({label}): {rth_ct} / {n_after} rows pass")
+    if rth_ct == 0:
+        print("  *** RTH FILTER CAPTURES ZERO BARS ***")
+        print(f"  tod min={tod.min()}  max={tod.max()}  rth_s={rth_s}  rth_e={rth_e}")
+        return
+
+    # 5. build_4h result
+    print("\n[5] 4H BARS")
+    bars = build_4h(raw)
+    print(f"  4H bars: {len(bars)}")
+    if bars.empty:
+        print("  *** BUILD_4H RETURNED EMPTY ***")
+        return
+    print(f"  Date range: {bars['ts'].min()}  to  {bars['ts'].max()}")
+    print("  First 5 bars:")
+    for _, r in bars.head(5).iterrows():
+        print(f"    ts={r['ts']}  sess={r['session']}  "
+              f"O={r['Open']:.4f}  H={r['High']:.4f}  "
+              f"L={r['Low']:.4f}  C={r['Close']:.4f}")
+    close_nan = bars["Close"].isna().sum()
+    print(f"  Close NaN in 4H bars: {close_nan}/{len(bars)}")
+
+    # 6. RSI
+    print("\n[6] RSI(14)")
+    bars["rsi"] = rsi14(bars["Close"])
+    rsi_nan = bars["rsi"].isna().sum()
+    rsi_lt35 = (bars["rsi"] < 35).sum()
+    print(f"  RSI NaN: {rsi_nan}/{len(bars)}")
+    print(f"  RSI < 35: {rsi_lt35} bars")
+    first = bars[bars["rsi"] < 35].head(1)
+    if not first.empty:
+        idx = first.index[0]
+        print(f"  First RSI<35: ts={bars.at[idx,'ts']}  RSI={bars.at[idx,'rsi']:.2f}")
+
+    # 7. EMA21 before warmup mask
+    print("\n[7] EMA21 (before warmup mask)")
+    bars["ema21"] = bars["Close"].ewm(span=21, adjust=False).mean()
+    valid_before = (~bars["ema21"].isna()).sum()
+    print(f"  Valid EMA21: {valid_before}/{len(bars)}")
+
+    # 8. EMA21 after warmup mask
+    print("\n[8] EMA21 (after warmup mask)")
+    bars["ema21"] = apply_ema21_warmup_mask(bars)
+    valid_after = (~bars["ema21"].isna()).sum()
+    print(f"  Valid EMA21: {valid_after}/{len(bars)}")
+    nan_windows = []
+    in_nan = False
+    for i, v in enumerate(bars["ema21"].isna()):
+        if v and not in_nan:
+            nan_windows.append([i, i]); in_nan = True
+        elif v and in_nan:
+            nan_windows[-1][1] = i
+        else:
+            in_nan = False
+    print(f"  NaN windows: {len(nan_windows)}")
+    for lo, hi in nan_windows[:5]:
+        print(f"    bars {lo}..{hi}  ({bars.at[lo,'ts']} to {bars.at[hi,'ts']})")
+
+    # 9. Streak
+    print("\n[9] STREAK")
+    streaks = calc_streak(bars)
+    bars["streak"] = streaks
+    print(f"  Max streak: {streaks.max()}")
+    print(f"  Streak >= 3 bars: {(streaks >= 3).sum()}")
+
+    # 10. Combined gate
+    print("\n[10] COMBINED GATE (streak>=3 AND VIX>=25 AND RSI<35 AND EMA valid)")
+    corrupt = flag_corrupt(bars["Close"]).values
+    emas  = bars["ema21"].values
+    rsis  = bars["rsi"].values
+    dates = [ts.date() for ts in bars["ts"]]
+
+    g_corrupt = g_streak = g_ema = g_rsi = g_vix = 0
+    triggers = 0
+    for i in range(len(bars)):
+        if corrupt[i]:
+            g_corrupt += 1; continue
+        if streaks[i] < 3:
+            g_streak += 1; continue
+        if np.isnan(emas[i]):
+            g_ema += 1; continue
+        if np.isnan(rsis[i]) or rsis[i] >= 35:
+            g_rsi += 1; continue
+        vv = prior_vix(dates[i], vix)
+        if np.isnan(vv) or vv < 25:
+            g_vix += 1; continue
+        triggers += 1
+        if triggers <= 5:
+            print(f"  Trigger: ts={bars['ts'].iloc[i]}  streak={streaks[i]}"
+                  f"  RSI={rsis[i]:.1f}  VIX={vv:.1f}")
+
+    print(f"  Rejected by corrupt  : {g_corrupt}")
+    print(f"  Rejected by streak<3 : {g_streak}")
+    print(f"  Rejected by NaN EMA  : {g_ema}")
+    print(f"  Rejected by RSI>=35  : {g_rsi}")
+    print(f"  Rejected by VIX<25   : {g_vix}")
+    print(f"  Triggers found       : {triggers}")
+
+
 # ── Main ───────────────────────────────────────────────────────────────────
 def main():
     print("Loading VIX data...")
     vix = load_vix()
+
+    # ── DEBUG MODE: run AAPL diagnostics only ──────────────────────────────
+    debug_aapl(vix)
+    return
+    # ── END DEBUG -- remove the two lines above to restore normal operation ─
 
     tickers = get_tickers()
     print(f"  Tickers ({len(tickers)}): {[t for t, _ in tickers]}\n")
