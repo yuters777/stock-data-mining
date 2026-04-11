@@ -21,18 +21,19 @@ DATA  = os.path.join(BASE, "Fetched_Data")
 OUT   = os.path.join(BASE, "backtest_results")
 os.makedirs(OUT, exist_ok=True)
 
-# IBIT/SNOW/TXN excluded: too few bars (<600) for reliable 5yr signal
-EXCLUDE    = {"SPY", "VIXY", "BTC", "ETH", "IBIT", "SNOW", "TXN"}
+# IBIT/SNOW/TXN/VIX excluded: not in trading universe
+EXCLUDE    = {"SPY", "VIXY", "BTC", "ETH", "IBIT", "SNOW", "TXN", "VIX"}
 SKIP_FILES = {"VIXCLS_FRED_real.csv", "VXVCLS.csv"}
 
 VIX_URL = ("https://fred.stlouisfed.org/graph/fredgraph.csv"
            "?id=VIXCLS&cosd=2021-01-01&coed=2026-04-11")
 
-# RTH in minutes-since-midnight (UTC): 13:30–19:55
-RTH_S  = 13 * 60 + 30   # 810
-RTH_E  = 19 * 60 + 55   # 1195
-BAR1_E = 17 * 60 + 25   # 1045  Bar-1 ends
-BAR2_S = 17 * 60 + 30   # 1050  Bar-2 starts
+# RTH in minutes-since-midnight (ET): 09:30-15:55
+# _m5_full.csv timestamps are already in ET; no UTC conversion needed.
+RTH_S  = 9 * 60 + 30    # 570   09:30 ET
+RTH_E  = 15 * 60 + 55   # 955   15:55 ET
+BAR1_E = 13 * 60 + 25   # 805   Bar-1 ends   (09:30-13:25 ET)
+BAR2_S = 13 * 60 + 30   # 810   Bar-2 starts (13:30-15:55 ET)
 
 
 # ── VIX ───────────────────────────────────────────────────────────────────
@@ -75,11 +76,30 @@ def rsi14(close: pd.Series) -> pd.Series:
     return 100 - 100 / (1 + rs)
 
 
+# ── M5 column normaliser ────────────────────────────────────────────────────
+def _norm_m5(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Normalise raw M5 CSV to: Datetime, Open, High, Low, Close, Volume.
+    Handles two formats:
+      old _data.csv      : Datetime, Ticker, Open, High, Low, Close, Volume  (UTC)
+      new _m5_full.csv   : date, open, high, low, close, volume              (ET)
+    """
+    df = df.copy()
+    lc = {c.lower(): c for c in df.columns}
+    if "Datetime" not in df.columns and "date" in lc:
+        df = df.rename(columns={lc["date"]: "Datetime"})
+    for cap, low in [("Open", "open"), ("High", "high"), ("Low", "low"),
+                     ("Close", "close"), ("Volume", "volume")]:
+        if cap not in df.columns and low in df.columns:
+            df = df.rename(columns={low: cap})
+    return df
+
+
 # ── 4H bar builder ─────────────────────────────────────────────────────────
 def build_4h(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Filter raw M5 data to RTH, assign to Bar-1 (13:30-17:25) or
-    Bar-2 (17:30-19:55), then aggregate OHLCV.
+    Filter raw M5 data to RTH, assign to Bar-1 (09:30-13:25 ET) or
+    Bar-2 (13:30-15:55 ET), then aggregate OHLCV.
     """
     df = df.copy()
     df["dt"]  = pd.to_datetime(df["Datetime"], errors="coerce")
@@ -114,8 +134,8 @@ def build_4h(df: pd.DataFrame) -> pd.DataFrame:
     # Canonical bar timestamp (start of each session)
     bar_ts = bars.apply(
         lambda r: pd.Timestamp(str(r["date"])) + pd.Timedelta(
-            hours=13, minutes=30) if r["session"] == 0
-        else pd.Timestamp(str(r["date"])) + pd.Timedelta(hours=17, minutes=30),
+            hours=9, minutes=30) if r["session"] == 0
+        else pd.Timestamp(str(r["date"])) + pd.Timedelta(hours=13, minutes=30),
         axis=1,
     )
     bars["ts"] = bar_ts
@@ -183,20 +203,32 @@ def apply_ema21_warmup_mask(bars: pd.DataFrame) -> pd.Series:
 
 # ── Ticker discovery ────────────────────────────────────────────────────────
 def get_tickers() -> list[tuple[str, str]]:
-    result = []
+    """
+    Discover tickers from M5 CSV files.
+    Priority per ticker: _m5_full.csv (0) > _data.csv (1) > _crypto_data.csv (2).
+    If a full-coverage file exists it is preferred over the sparse fallback.
+    """
+    candidates: dict[str, tuple[int, str]] = {}  # ticker -> (priority, path)
     for fpath in sorted(glob.glob(os.path.join(DATA, "*.csv"))):
         name = os.path.basename(fpath)
         if name in SKIP_FILES:
             continue
-        if name.endswith("_crypto_data.csv"):
+        if name.endswith("_m5_full.csv"):
+            ticker = name[: -len("_m5_full.csv")]
+            prio   = 0
+        elif name.endswith("_crypto_data.csv"):
             ticker = name[: -len("_crypto_data.csv")]
+            prio   = 2
         elif name.endswith("_data.csv"):
             ticker = name[: -len("_data.csv")]
+            prio   = 1
         else:
             continue
-        if ticker not in EXCLUDE:
-            result.append((ticker, fpath))
-    return result
+        if ticker in EXCLUDE:
+            continue
+        if ticker not in candidates or prio < candidates[ticker][0]:
+            candidates[ticker] = (prio, fpath)
+    return sorted((t, p) for t, (_, p) in candidates.items())
 
 
 # ── Prior-day VIX lookup ────────────────────────────────────────────────────
@@ -214,6 +246,7 @@ def backtest_ticker(ticker: str, fpath: str, vix: pd.Series) -> list[dict]:
         raw = pd.read_csv(fpath)
     except Exception:
         return []
+    raw = _norm_m5(raw)
     if raw.empty or "Close" not in raw.columns:
         return []
 
@@ -319,6 +352,9 @@ def backtest_antisignal(ticker: str, fpath: str, vix: pd.Series,
     try:
         raw = pd.read_csv(fpath)
     except Exception:
+        return []
+    raw = _norm_m5(raw)
+    if raw.empty or "Close" not in raw.columns:
         return []
     bars = build_4h(raw)
     if bars.empty or len(bars) < 20:
