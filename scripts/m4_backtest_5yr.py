@@ -21,7 +21,8 @@ DATA  = os.path.join(BASE, "Fetched_Data")
 OUT   = os.path.join(BASE, "backtest_results")
 os.makedirs(OUT, exist_ok=True)
 
-EXCLUDE    = {"SPY", "VIXY", "BTC", "ETH"}
+# IBIT/SNOW/TXN excluded: too few bars (<600) for reliable 5yr signal
+EXCLUDE    = {"SPY", "VIXY", "BTC", "ETH", "IBIT", "SNOW", "TXN"}
 SKIP_FILES = {"VIXCLS_FRED_real.csv", "VXVCLS.csv"}
 
 VIX_URL = ("https://fred.stlouisfed.org/graph/fredgraph.csv"
@@ -36,19 +37,31 @@ BAR2_S = 17 * 60 + 30   # 1050  Bar-2 starts
 
 # ── VIX ───────────────────────────────────────────────────────────────────
 def load_vix() -> pd.Series:
-    """Return Series{date -> float} of daily VIX closes."""
+    """Return Series{date -> float} of daily VIX closes.
+    Priority: FRED URL -> local VIXCLS_FRED_real.csv -> VXVCLS.csv (2021+ proxy).
+    """
     from io import StringIO
+    df = None
     try:
         with urlopen(VIX_URL, timeout=10) as r:
             raw = r.read().decode()
         df = pd.read_csv(StringIO(raw))
     except Exception:
-        df = pd.read_csv(os.path.join(DATA, "VIXCLS_FRED_real.csv"))
+        pass
+    if df is None:
+        local = os.path.join(DATA, "VIXCLS_FRED_real.csv")
+        df = pd.read_csv(local)
+        # If this file only covers ~15 months, fall through to VXVCLS
+        tmp = pd.to_datetime(df.iloc[:, 0], errors="coerce")
+        if tmp.dropna().dt.year.min() > 2022:
+            df = pd.read_csv(os.path.join(DATA, "VXVCLS.csv"))
     df.columns = ["date", "vix"]
     df["date"] = pd.to_datetime(df["date"], errors="coerce").dt.date
     df["vix"]  = pd.to_numeric(df["vix"], errors="coerce")
     df = df.dropna()
-    return df.set_index("date")["vix"]
+    vix = df.set_index("date")["vix"]
+    print(f"  VIX source: {len(vix)} rows, {vix.index.min()} to {vix.index.max()}")
+    return vix
 
 
 # ── RSI(14) — Wilder's smoothing ───────────────────────────────────────────
@@ -123,16 +136,21 @@ def calc_streak(bars: pd.DataFrame) -> np.ndarray:
     """
     Streak of consecutive 4H down bars (close < open).
     Resets on: (a) up bar, or (b) time gap > 30 h between bars.
+
+    BUG-FIX: bars["ts"].values has dtype datetime64[us] in pandas >= 2.0, so
+    the old integer-division approach (/ 3_600_000_000_000) silently gave
+    values 1000x too small — no gap ever exceeded 30h.  Using pd.Timestamp
+    subtraction with .total_seconds() is unit-agnostic and always correct.
     """
     n       = len(bars)
     streaks = np.zeros(n, dtype=np.int32)
-    ts_ns   = bars["ts"].values.astype(np.int64)   # nanoseconds
+    ts_ns   = bars["ts"].values          # datetime64[us] — keep as-is for indexing
     closes  = bars["Close"].values
     opens   = bars["Open"].values
     s = 0
     for i in range(n):
         if i > 0:
-            gap_h = (ts_ns[i] - ts_ns[i - 1]) / 3_600_000_000_000  # ns → h
+            gap_h = (pd.Timestamp(ts_ns[i]) - pd.Timestamp(ts_ns[i - 1])).total_seconds() / 3600
             if gap_h > 30:
                 s = 0
         if closes[i] < opens[i]:
@@ -141,6 +159,26 @@ def calc_streak(bars: pd.DataFrame) -> np.ndarray:
             s = 0
         streaks[i] = s
     return streaks
+
+
+# ── EMA21 warmup mask after data gaps ─────────────────────────────────────
+def apply_ema21_warmup_mask(bars: pd.DataFrame) -> pd.Series:
+    """
+    After any data gap > 7 calendar days, NaN-out the next 21 EMA21 bars.
+    Stale carry-forward EMA (sometimes 20-33% above post-gap price) must not
+    be used as an exit reference — doing so inflates hard-max exit rate.
+    """
+    ema      = bars["ema21"].copy()
+    ts_list  = bars["ts"].tolist()
+    n        = len(bars)
+    warmup_end = -1
+    for i in range(1, n):
+        gap_days = (ts_list[i] - ts_list[i - 1]).total_seconds() / 86400
+        if gap_days > 7:
+            warmup_end = min(n - 1, i + 20)   # bars i … i+20 inclusive
+        if i <= warmup_end:
+            ema.iloc[i] = np.nan
+    return ema
 
 
 # ── Ticker discovery ────────────────────────────────────────────────────────
@@ -185,6 +223,7 @@ def backtest_ticker(ticker: str, fpath: str, vix: pd.Series) -> list[dict]:
 
     corrupt         = flag_corrupt(bars["Close"]).values
     bars["ema21"]   = bars["Close"].ewm(span=21, adjust=False).mean()
+    bars["ema21"]   = apply_ema21_warmup_mask(bars)   # NaN stale post-gap values
     bars["rsi"]     = rsi14(bars["Close"])
     bars["streak"]  = calc_streak(bars)
 
@@ -212,6 +251,10 @@ def backtest_ticker(ticker: str, fpath: str, vix: pd.Series) -> list[dict]:
             continue
 
         if streaks.iloc[i] < 3:
+            i += 1
+            continue
+
+        if np.isnan(emas[i]):   # EMA21 warmup zone — no valid exit reference
             i += 1
             continue
 
@@ -283,6 +326,7 @@ def backtest_antisignal(ticker: str, fpath: str, vix: pd.Series,
 
     corrupt        = flag_corrupt(bars["Close"]).values
     bars["ema21"]  = bars["Close"].ewm(span=21, adjust=False).mean()
+    bars["ema21"]  = apply_ema21_warmup_mask(bars)   # NaN stale post-gap values
     bars["rsi"]    = rsi14(bars["Close"])
     bars["streak"] = calc_streak(bars)
 
@@ -295,7 +339,7 @@ def backtest_antisignal(ticker: str, fpath: str, vix: pd.Series,
     rets = []
     i = 0
     while i < len(bars):
-        if corrupt[i] or streaks.iloc[i] < 3:
+        if corrupt[i] or streaks.iloc[i] < 3 or np.isnan(emas[i]):
             i += 1
             continue
         vix_val = prior_vix(dates[i], vix)
@@ -365,7 +409,6 @@ def profit_factor(rets) -> float:
 def main():
     print("Loading VIX data...")
     vix = load_vix()
-    print(f"  VIX rows: {len(vix)}  range: {vix.index.min()} – {vix.index.max()}")
 
     tickers = get_tickers()
     print(f"  Tickers ({len(tickers)}): {[t for t, _ in tickers]}\n")
@@ -438,7 +481,7 @@ def main():
 
     # ── Print ──────────────────────────────────────────────────────────────
     o = overall
-    print("\n=== Module 4 Mean-Reversion — 5-Year Backtest ===")
+    print("\n=== Module 4 Mean-Reversion -- 5-Year Backtest ===")
     print(f"OVERALL: N={o['n']}, Mean={o['mean']}%, WR={o['wr']}%, "
           f"PF={o['pf']}, Sharpe={o['sharpe']}, "
           f"Avg hold={o['avg_hold']} bars, "
@@ -500,8 +543,8 @@ def main():
     with open(summary_path, "w") as f:
         json.dump(summary, f, indent=2, default=str)
 
-    print(f"\nTrades  → {trades_path}")
-    print(f"Summary → {summary_path}")
+    print(f"\nTrades  -> {trades_path}")
+    print(f"Summary -> {summary_path}")
 
 
 if __name__ == "__main__":
