@@ -152,7 +152,7 @@ def fetch_month(fmp_symbol: str, from_date: str, to_date: str,
     url_symbol = fmp_symbol.replace("^", "%5E")
     url = (f"{FMP_BASE_URL}"
            f"?symbol={url_symbol}"
-           f"&from={from_date}&extended=true"
+           f"&from={from_date}"
            f"&to={to_date}"
            f"&apikey={api_key}")
 
@@ -308,12 +308,7 @@ def download_ticker(ticker: str, fmp_symbol: str,
     for month_start, month_end in month_range(from_date, to_date):
         month_key = month_start.strftime("%Y-%m")
 
-        # For IST-equivalent timestamps, the month key in the file
-        # is shifted. E.g., ET 2021-04-30 20:00 → IST 2021-05-01 03:00.
-        # So we check the ET month key AND the next month key.
-        ist_month_key = (month_start + timedelta(hours=ET_TO_IST_OFFSET_HOURS)).strftime("%Y-%m")
-
-        if not force and month_key in existing_months and ist_month_key in existing_months:
+        if not force and month_key in existing_months:
             logger.info(f"  {ticker} {month_key}: SKIP (exists)")
             continue
 
