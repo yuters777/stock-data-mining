@@ -43,9 +43,35 @@ BAR1_E_UTC = 17 * 60 + 25    # 1045
 # ── VIX ───────────────────────────────────────────────────────────────────
 def load_vix() -> pd.Series:
     """Return Series{date -> float} of daily VIX closes.
-    Priority: FRED URL -> local VIXCLS_FRED_real.csv -> VXVCLS.csv (2021+ proxy).
+    Priority:
+      1. Fetched_Data/VIX_daily_fmp.json  (FMP daily, JSON array)
+      2. FRED URL download
+      3. Fetched_Data/VIXCLS_FRED_real.csv
+      4. Fetched_Data/VXVCLS.csv          (2021+ proxy)
     """
     from io import StringIO
+
+    # 1. FMP local JSON (preferred — full 2021-2026 coverage, no network needed)
+    fmp_path = os.path.join(DATA, "VIX_daily_fmp.json")
+    if os.path.exists(fmp_path):
+        try:
+            with open(fmp_path) as f:
+                records = json.load(f)
+            rows = [{"date": r["date"], "vix": r["close"]}
+                    for r in records if r.get("date") and r.get("close") is not None]
+            if rows:
+                df = pd.DataFrame(rows)
+                df["date"] = pd.to_datetime(df["date"], errors="coerce").dt.date
+                df["vix"]  = pd.to_numeric(df["vix"], errors="coerce")
+                df = df.dropna()
+                vix = df.set_index("date")["vix"].sort_index()
+                print(f"  VIX source: VIX_daily_fmp.json  {len(vix)} rows, "
+                      f"{vix.index.min()} to {vix.index.max()}")
+                return vix
+        except Exception:
+            pass
+
+    # 2. FRED URL
     df = None
     try:
         with urlopen(VIX_URL, timeout=10) as r:
@@ -53,13 +79,17 @@ def load_vix() -> pd.Series:
         df = pd.read_csv(StringIO(raw))
     except Exception:
         pass
+
+    # 3. Local VIXCLS_FRED_real.csv
     if df is None:
         local = os.path.join(DATA, "VIXCLS_FRED_real.csv")
         df = pd.read_csv(local)
         # If this file only covers ~15 months, fall through to VXVCLS
         tmp = pd.to_datetime(df.iloc[:, 0], errors="coerce")
         if tmp.dropna().dt.year.min() > 2022:
+            # 4. VXVCLS proxy
             df = pd.read_csv(os.path.join(DATA, "VXVCLS.csv"))
+
     df.columns = ["date", "vix"]
     df["date"] = pd.to_datetime(df["date"], errors="coerce").dt.date
     df["vix"]  = pd.to_numeric(df["vix"], errors="coerce")
