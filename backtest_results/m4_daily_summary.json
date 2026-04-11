@@ -1,0 +1,139 @@
+{
+  "overall": {
+    "n": 23,
+    "mean": 6.8362,
+    "wr": 91.3,
+    "pf": 27.8161,
+    "sharpe": 5.2096,
+    "avg_hold": 4.35,
+    "ema_exit_pct": 65.22,
+    "hardmax_pct": 34.78
+  },
+  "by_year": {
+    "2025": {
+      "n": 20,
+      "mean": 7.931,
+      "wr": 100.0
+    },
+    "2026": {
+      "n": 3,
+      "mean": -0.4621,
+      "wr": 33.33
+    }
+  },
+  "by_rsi": {
+    "TIER_A_25_35": {
+      "n": 18,
+      "mean": 5.6207,
+      "wr": 88.89,
+      "pf": 18.255,
+      "sharpe": 4.4379
+    },
+    "TIER_B_lt25": {
+      "n": 5,
+      "mean": 11.2121,
+      "wr": 100.0,
+      "pf": Infinity,
+      "sharpe": 3.121
+    }
+  },
+  "by_vix": {
+    "25-30": {
+      "n": 18,
+      "mean": 5.0944,
+      "wr": 88.89
+    },
+    "30-35": {
+      "n": 0,
+      "mean": 0.0,
+      "wr": 0.0
+    },
+    "35+": {
+      "n": 5,
+      "mean": 13.1067,
+      "wr": 100.0
+    }
+  },
+  "anti_signal": {
+    "rsi_high": {
+      "n": 96,
+      "mean": 2.057,
+      "wr": 64.58,
+      "pf": 3.7927,
+      "sharpe": 4.5396
+    },
+    "vix_low": {
+      "n": 27,
+      "mean": 0.225,
+      "wr": 51.85,
+      "pf": 1.0943,
+      "sharpe": 0.1886
+    }
+  },
+  "vix_cliff": {
+    ">=24": 27.8161,
+    ">=25": 27.8161,
+    ">=26": 25.5201
+  },
+  "top5": [
+    {
+      "ticker": "AAPL",
+      "mean": 22.4616,
+      "count": 1
+    },
+    {
+      "ticker": "AVGO",
+      "mean": 20.6504,
+      "count": 1
+    },
+    {
+      "ticker": "BA",
+      "mean": 16.8292,
+      "count": 1
+    },
+    {
+      "ticker": "COIN",
+      "mean": 9.9047,
+      "count": 1
+    },
+    {
+      "ticker": "NVDA",
+      "mean": 8.5523,
+      "count": 1
+    }
+  ],
+  "bottom5": [
+    {
+      "ticker": "C",
+      "mean": 3.3389,
+      "count": 1
+    },
+    {
+      "ticker": "MSFT",
+      "mean": 2.5872,
+      "count": 1
+    },
+    {
+      "ticker": "GS",
+      "mean": 2.5233333333333334,
+      "count": 3
+    },
+    {
+      "ticker": "BIDU",
+      "mean": 0.2732,
+      "count": 1
+    },
+    {
+      "ticker": "JPM",
+      "mean": -1.5325,
+      "count": 1
+    }
+  ],
+  "streak3_variant": {
+    "n": 12,
+    "mean": 6.0886,
+    "wr": 75.0,
+    "pf": 11.5119,
+    "sharpe": 3.1505
+  }
+}

@@ -1,0 +1,132 @@
+{
+  "overall": {
+    "n": 28,
+    "mean": 4.6338,
+    "wr": 71.43,
+    "pf": 4.9527,
+    "sharpe": 3.164,
+    "avg_hold": 8.75,
+    "ema21_exit_pct": 35.71,
+    "hardmax_pct": 64.29
+  },
+  "by_year": {
+    "2025": {
+      "n": 26,
+      "mean": 5.3955,
+      "wr": 76.92
+    },
+    "2026": {
+      "n": 2,
+      "mean": -5.2688,
+      "wr": 0.0
+    }
+  },
+  "by_rsi": {
+    "TIER_A_25_35": {
+      "n": 17,
+      "mean": 5.6413,
+      "wr": 64.71,
+      "pf": 5.2901,
+      "sharpe": 2.7062
+    },
+    "TIER_B_lt25": {
+      "n": 11,
+      "mean": 3.0766,
+      "wr": 81.82,
+      "pf": 4.2325,
+      "sharpe": 1.6224
+    }
+  },
+  "by_vix": {
+    "25-30": {
+      "n": 28,
+      "mean": 4.6338,
+      "wr": 71.43
+    },
+    "30-35": {
+      "n": 0,
+      "mean": 0.0,
+      "wr": 0.0
+    },
+    "35+": {
+      "n": 0,
+      "mean": 0.0,
+      "wr": 0.0
+    }
+  },
+  "anti_signal": {
+    "rsi_high_streak_vix25": {
+      "n": 63,
+      "mean": 1.2486,
+      "wr": 66.67,
+      "pf": 3.119,
+      "sharpe": 3.0586
+    },
+    "vix_low_streak_rsi35": {
+      "n": 49,
+      "mean": 0.0431,
+      "wr": 55.1,
+      "pf": 1.0174,
+      "sharpe": 0.043
+    }
+  },
+  "vix_cliff": {
+    ">=24": 4.9527,
+    ">=25": 4.9527,
+    ">=26": 4.8039
+  },
+  "top5_tickers": [
+    {
+      "ticker": "AVGO",
+      "mean": 17.7985,
+      "count": 1
+    },
+    {
+      "ticker": "MARA",
+      "mean": 15.9884,
+      "count": 1
+    },
+    {
+      "ticker": "NVDA",
+      "mean": 12.83665,
+      "count": 2
+    },
+    {
+      "ticker": "PLTR",
+      "mean": 12.1919,
+      "count": 1
+    },
+    {
+      "ticker": "AMD",
+      "mean": 9.9863,
+      "count": 1
+    }
+  ],
+  "bottom5_tickers": [
+    {
+      "ticker": "BIDU",
+      "mean": 0.2732,
+      "count": 1
+    },
+    {
+      "ticker": "COST",
+      "mean": -2.4481,
+      "count": 1
+    },
+    {
+      "ticker": "GOOGL",
+      "mean": -4.118,
+      "count": 1
+    },
+    {
+      "ticker": "META",
+      "mean": -5.1962,
+      "count": 2
+    },
+    {
+      "ticker": "BABA",
+      "mean": -8.0216,
+      "count": 1
+    }
+  ]
+}
