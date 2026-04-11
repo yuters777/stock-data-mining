@@ -4,129 +4,130 @@ UNIVERSE COVERAGE: Found 26/31, Missing: ['ARM', 'INTC', 'JD', 'MSTR', 'SMCI'], 
 
 TICKER      ROWS  DATES  YRS  RTH/d  FILE ROWS RNG  DYR  RTH  1ST  LST  OHLC DUP  ORD  WKD  GAP  STATUS
 ───────────────────────────────────────────────────────────────────────────────────────────────────────
-AAPL      76,810    532    6     77  OK  OK  OK  OK  OK  !!  OK  OK  OK  OK  !!  OK  FAILED
-         ↳ [6_first] 56 full days missing 13:30 bar
-         ↳ [11_weekends] 2784 weekend bars
-AMD      136,186    757    6     77  OK  OK  OK  OK  OK  !!  OK  OK  OK  OK  !!  !!  FAILED
-         ↳ [6_first] 96 full days missing 13:30 bar
-         ↳ [11_weekends] 4441 weekend bars
-         ↳ [12_continuity] 2 intraday gaps >15%
-AMZN     137,665    760    6     75  OK  OK  OK  OK  !!  !!  OK  OK  OK  OK  !!  !!  FAILED
-         ↳ [5_rth] 42 dates with <60 RTH bars; mean=74.9
-         ↳ [6_first] 44 full days missing 13:30 bar
-         ↳ [11_weekends] 8111 weekend bars
-         ↳ [12_continuity] 6 intraday gaps >15%
-ARM            0      0    0   24/7  !!  !!  !!  !!  !!  !!  !!  !!  !!  !!  !!  !!  FAILED
+AAPL      76,810    532    6     77  OK  OK  OK  OK  OK  WN  OK  OK  OK  OK  OK  OK  CERTIFIED_WITH_NOTES
+         ~ [6_first] 56 full days missing 13:30 bar
+AMD      136,186    757    6     77  OK  OK  OK  OK  OK  WN  OK  OK  OK  OK  WN  WN  CERTIFIED_WITH_NOTES
+         ~ [6_first] 96 full days missing 13:30 bar
+         ~ [11_weekends] 540 true weekend bars (ET-corrected)
+         ~ [12_continuity] 2 intraday gaps >15%; top-5: ['2025-02-11 (42%)', '2025-10-06 (22%)']
+AMZN     137,665    760    6     75  OK  OK  OK  OK  WN  WN  OK  OK  OK  OK  WN  WN  CERTIFIED_WITH_NOTES
+         ~ [5_rth] 42 dates <60 RTH bars; mean=74.9
+         ~ [6_first] 44 full days missing 13:30 bar
+         ~ [11_weekends] 3768 true weekend bars (ET-corrected)
+         ~ [12_continuity] 6 intraday gaps >15%; top-5: ['2025-08-02 (21%)', '2025-08-02 (21%)', '2025-07-15 (21%)', '2025-07-16 (21%)', '2025-06-07 (17%)']
+ARM            0      0    0   24/7  --  OK  OK  OK  OK  OK  OK  OK  OK  OK  OK  OK  MISSING
          ↳ [1_file] file not found
-AVGO     112,235    739    6     64  OK  OK  OK  OK  !!  !!  OK  OK  OK  OK  !!  !!  FAILED
-         ↳ [5_rth] 251 dates with <60 RTH bars; mean=64.5
-         ↳ [6_first] 18 full days missing 13:30 bar
-         ↳ [11_weekends] 2797 weekend bars
-         ↳ [12_continuity] 13 intraday gaps >15%
-BA       121,195    759    6     72  OK  OK  OK  OK  !!  !!  OK  OK  OK  OK  !!  !!  FAILED
-         ↳ [5_rth] 51 dates with <60 RTH bars; mean=72.0
-         ↳ [6_first] 67 full days missing 13:30 bar
-         ↳ [11_weekends] 3481 weekend bars
-         ↳ [12_continuity] 2 intraday gaps >15%
-BABA     136,682    760    6     77  OK  OK  OK  OK  OK  !!  OK  OK  OK  OK  !!  !!  FAILED
-         ↳ [6_first] 67 full days missing 13:30 bar
-         ↳ [11_weekends] 5054 weekend bars
-         ↳ [12_continuity] 2 intraday gaps >15%
-BIDU     116,232    755    6     70  OK  OK  OK  OK  !!  !!  OK  OK  OK  OK  !!  !!  FAILED
-         ↳ [5_rth] 96 dates with <60 RTH bars; mean=70.3
-         ↳ [6_first] 31 full days missing 13:30 bar
-         ↳ [11_weekends] 2754 weekend bars
-         ↳ [12_continuity] 2 intraday gaps >15%
-C        110,946    760    6     70  OK  OK  OK  OK  !!  !!  OK  OK  OK  OK  !!  !!  FAILED
-         ↳ [5_rth] 111 dates with <60 RTH bars; mean=69.5
-         ↳ [6_first] 34 full days missing 13:30 bar
-         ↳ [11_weekends] 2781 weekend bars
-         ↳ [12_continuity] 10 intraday gaps >15%
-COIN     131,605    757    6     75  OK  OK  OK  OK  !!  !!  OK  OK  OK  OK  !!  !!  FAILED
-         ↳ [5_rth] 11 dates with <60 RTH bars; mean=75.0
-         ↳ [6_first] 84 full days missing 13:30 bar
-         ↳ [11_weekends] 4753 weekend bars
-         ↳ [12_continuity] 1 intraday gaps >15%
-COST     106,599    749    6     62  OK  OK  OK  OK  !!  !!  OK  OK  OK  OK  !!  OK  FAILED
-         ↳ [5_rth] 300 dates with <60 RTH bars; mean=62.2
-         ↳ [6_first] 5 full days missing 13:30 bar
-         ↳ [11_weekends] 2672 weekend bars
-GOOGL    132,454    757    6     72  OK  OK  OK  OK  !!  !!  OK  OK  OK  OK  !!  !!  FAILED
-         ↳ [5_rth] 92 dates with <60 RTH bars; mean=72.2
-         ↳ [6_first] 61 full days missing 13:30 bar
-         ↳ [11_weekends] 7668 weekend bars
-         ↳ [12_continuity] 8 intraday gaps >15%
-GS       103,099    747    6     63  OK  OK  OK  OK  !!  !!  OK  OK  OK  OK  !!  !!  FAILED
-         ↳ [5_rth] 292 dates with <60 RTH bars; mean=63.1
-         ↳ [6_first] 6 full days missing 13:30 bar
-         ↳ [11_weekends] 2268 weekend bars
-         ↳ [12_continuity] 6 intraday gaps >15%
-INTC           0      0    0   24/7  !!  !!  !!  !!  !!  !!  !!  !!  !!  !!  !!  !!  FAILED
+AVGO     112,235    739    6     64  OK  OK  OK  OK  WN  WN  OK  OK  OK  OK  WN  WN  CERTIFIED_WITH_NOTES
+         ~ [5_rth] 251 dates <60 RTH bars; mean=64.5
+         ~ [6_first] 18 full days missing 13:30 bar
+         ~ [11_weekends] 540 true weekend bars (ET-corrected)
+         ~ [12_continuity] 13 intraday gaps >15%; top-5: ['2025-02-25 (48%)', '2025-05-29 (40%)', '2025-02-28 (40%)', '2025-07-26 (37%)', '2025-09-06 (35%)']
+BA       121,195    759    6     72  OK  OK  OK  OK  WN  WN  OK  OK  OK  OK  WN  WN  CERTIFIED_WITH_NOTES
+         ~ [5_rth] 51 dates <60 RTH bars; mean=72.0
+         ~ [6_first] 67 full days missing 13:30 bar
+         ~ [11_weekends] 514 true weekend bars (ET-corrected)
+         ~ [12_continuity] 2 intraday gaps >15%; top-5: ['2025-08-07 (45%)', '2025-03-13 (19%)']
+BABA     136,682    760    6     77  OK  OK  OK  OK  OK  WN  OK  OK  OK  OK  WN  WN  CERTIFIED_WITH_NOTES
+         ~ [6_first] 67 full days missing 13:30 bar
+         ~ [11_weekends] 1164 true weekend bars (ET-corrected)
+         ~ [12_continuity] 2 intraday gaps >15%; top-5: ['2025-04-05 (36%)', '2022-04-29 (16%)']
+BIDU     116,232    755    6     70  OK  OK  OK  OK  WN  WN  OK  OK  OK  OK  WN  WN  CERTIFIED_WITH_NOTES
+         ~ [5_rth] 96 dates <60 RTH bars; mean=70.3
+         ~ [6_first] 31 full days missing 13:30 bar
+         ~ [11_weekends] 457 true weekend bars (ET-corrected)
+         ~ [12_continuity] 2 intraday gaps >15%; top-5: ['2025-09-26 (56%)', '2026-01-07 (21%)']
+C        110,946    760    6     70  OK  OK  OK  OK  WN  WN  OK  OK  OK  OK  WN  WN  CERTIFIED_WITH_NOTES
+         ~ [5_rth] 111 dates <60 RTH bars; mean=69.5
+         ~ [6_first] 34 full days missing 13:30 bar
+         ~ [11_weekends] 444 true weekend bars (ET-corrected)
+         ~ [12_continuity] 10 intraday gaps >15%; top-5: ['2025-07-29 (31%)', '2025-07-28 (31%)', '2025-06-07 (27%)', '2025-06-07 (27%)', '2025-07-28 (25%)']
+COIN     131,605    757    6     75  OK  OK  OK  OK  WN  WN  OK  OK  OK  OK  WN  WN  CERTIFIED_WITH_NOTES
+         ~ [5_rth] 11 dates <60 RTH bars; mean=75.0
+         ~ [6_first] 84 full days missing 13:30 bar
+         ~ [11_weekends] 1164 true weekend bars (ET-corrected)
+         ~ [12_continuity] 1 intraday gaps >15%; top-5: ['2025-10-09 (40%)']
+COST     106,599    749    6     62  OK  OK  OK  OK  WN  WN  OK  OK  OK  OK  WN  OK  CERTIFIED_WITH_NOTES
+         ~ [5_rth] 300 dates <60 RTH bars; mean=62.2
+         ~ [6_first] 5 full days missing 13:30 bar
+         ~ [11_weekends] 519 true weekend bars (ET-corrected)
+GOOGL    132,454    757    6     72  OK  OK  OK  OK  WN  WN  OK  OK  OK  OK  WN  WN  CERTIFIED_WITH_NOTES
+         ~ [5_rth] 92 dates <60 RTH bars; mean=72.2
+         ~ [6_first] 61 full days missing 13:30 bar
+         ~ [11_weekends] 3768 true weekend bars (ET-corrected)
+         ~ [12_continuity] 8 intraday gaps >15%; top-5: ['2025-07-02 (25%)', '2025-07-03 (25%)', '2025-02-26 (24%)', '2025-02-26 (24%)', '2025-07-26 (16%)']
+GS       103,099    747    6     63  OK  OK  OK  OK  WN  WN  OK  OK  OK  OK  WN  WN  CERTIFIED_WITH_NOTES
+         ~ [5_rth] 292 dates <60 RTH bars; mean=63.1
+         ~ [6_first] 6 full days missing 13:30 bar
+         ~ [11_weekends] 466 true weekend bars (ET-corrected)
+         ~ [12_continuity] 6 intraday gaps >15%; top-5: ['2025-08-15 (60%)', '2025-05-15 (24%)', '2025-05-07 (19%)', '2025-06-05 (18%)', '2025-06-05 (18%)']
+INTC           0      0    0   24/7  --  OK  OK  OK  OK  OK  OK  OK  OK  OK  OK  OK  MISSING
          ↳ [1_file] file not found
-JD             0      0    0   24/7  !!  !!  !!  !!  !!  !!  !!  !!  !!  !!  !!  !!  FAILED
+JD             0      0    0   24/7  --  OK  OK  OK  OK  OK  OK  OK  OK  OK  OK  OK  MISSING
          ↳ [1_file] file not found
-JPM      113,263    759    6     67  OK  OK  OK  OK  !!  !!  OK  OK  OK  OK  !!  !!  FAILED
-         ↳ [5_rth] 204 dates with <60 RTH bars; mean=67.1
-         ↳ [6_first] 11 full days missing 13:30 bar
-         ↳ [11_weekends] 2887 weekend bars
-         ↳ [12_continuity] 3 intraday gaps >15%
-MARA     135,844    757    6     77  OK  OK  OK  OK  OK  !!  OK  OK  OK  OK  !!  OK  FAILED
-         ↳ [6_first] 62 full days missing 13:30 bar
-         ↳ [11_weekends] 4428 weekend bars
-META     137,623    760    6     75  OK  OK  OK  OK  OK  !!  OK  OK  OK  OK  !!  !!  FAILED
-         ↳ [6_first] 101 full days missing 13:30 bar
-         ↳ [11_weekends] 8023 weekend bars
-         ↳ [12_continuity] 384 intraday gaps >15%
-MSFT     138,129    759    6     76  OK  OK  OK  OK  OK  !!  OK  OK  OK  OK  !!  !!  FAILED
-         ↳ [6_first] 107 full days missing 13:30 bar
-         ↳ [11_weekends] 7913 weekend bars
-         ↳ [12_continuity] 11 intraday gaps >15%
-MSTR           0      0    0   24/7  !!  !!  !!  !!  !!  !!  !!  !!  !!  !!  !!  !!  FAILED
+JPM      113,263    759    6     67  OK  OK  OK  OK  WN  WN  OK  OK  OK  OK  WN  WN  CERTIFIED_WITH_NOTES
+         ~ [5_rth] 204 dates <60 RTH bars; mean=67.1
+         ~ [6_first] 11 full days missing 13:30 bar
+         ~ [11_weekends] 523 true weekend bars (ET-corrected)
+         ~ [12_continuity] 3 intraday gaps >15%; top-5: ['2025-02-27 (26%)', '2025-03-14 (22%)', '2025-07-03 (15%)']
+MARA     135,844    757    6     77  OK  OK  OK  OK  OK  WN  OK  OK  OK  OK  WN  OK  CERTIFIED_WITH_NOTES
+         ~ [6_first] 62 full days missing 13:30 bar
+         ~ [11_weekends] 539 true weekend bars (ET-corrected)
+META     137,623    760    6     75  OK  OK  OK  OK  OK  WN  OK  OK  OK  OK  WN  WN  CERTIFIED_WITH_NOTES
+         ~ [6_first] 101 full days missing 13:30 bar
+         ~ [11_weekends] 3768 true weekend bars (ET-corrected)
+         ~ [12_continuity] 384 intraday gaps >15%; top-5: ['2021-07-27 (2442%)', '2021-07-27 (2440%)', '2021-08-31 (2432%)', '2021-08-31 (2427%)', '2021-08-31 (2425%)']
+MSFT     138,129    759    6     76  OK  OK  OK  OK  OK  WN  OK  OK  OK  OK  WN  WN  CERTIFIED_WITH_NOTES
+         ~ [6_first] 107 full days missing 13:30 bar
+         ~ [11_weekends] 3768 true weekend bars (ET-corrected)
+         ~ [12_continuity] 11 intraday gaps >15%; top-5: ['2025-07-26 (22%)', '2025-07-26 (22%)', '2025-07-26 (19%)', '2026-03-17 (18%)', '2025-07-10 (17%)']
+MSTR           0      0    0   24/7  --  OK  OK  OK  OK  OK  OK  OK  OK  OK  OK  OK  MISSING
          ↳ [1_file] file not found
-MU       126,666    757    6     74  OK  OK  OK  OK  !!  !!  OK  OK  OK  OK  !!  !!  FAILED
-         ↳ [5_rth] 32 dates with <60 RTH bars; mean=73.5
-         ↳ [6_first] 72 full days missing 13:30 bar
-         ↳ [11_weekends] 3624 weekend bars
-         ↳ [12_continuity] 5 intraday gaps >15%
-NVDA     142,756    758    6     77  OK  OK  OK  OK  !!  !!  OK  OK  OK  OK  !!  !!  FAILED
-         ↳ [5_rth] 7 dates with <60 RTH bars; mean=76.8
-         ↳ [6_first] 56 full days missing 13:30 bar
-         ↳ [11_weekends] 8403 weekend bars
-         ↳ [12_continuity] 34 intraday gaps >15%
-PLTR     136,685    757    6     77  OK  OK  OK  OK  OK  !!  OK  OK  OK  OK  !!  !!  FAILED
-         ↳ [6_first] 66 full days missing 13:30 bar
-         ↳ [11_weekends] 4470 weekend bars
-         ↳ [12_continuity] 3 intraday gaps >15%
-SMCI           0      0    0   24/7  !!  !!  !!  !!  !!  !!  !!  !!  !!  !!  !!  !!  FAILED
+MU       126,666    757    6     74  OK  OK  OK  OK  WN  WN  OK  OK  OK  OK  WN  WN  CERTIFIED_WITH_NOTES
+         ~ [5_rth] 32 dates <60 RTH bars; mean=73.5
+         ~ [6_first] 72 full days missing 13:30 bar
+         ~ [11_weekends] 540 true weekend bars (ET-corrected)
+         ~ [12_continuity] 5 intraday gaps >15%; top-5: ['2025-04-23 (41%)', '2026-01-08 (40%)', '2025-03-28 (36%)', '2025-10-03 (25%)', '2025-10-09 (23%)']
+NVDA     142,756    758    6     77  OK  OK  OK  OK  WN  WN  OK  OK  OK  OK  WN  WN  CERTIFIED_WITH_NOTES
+         ~ [5_rth] 7 dates <60 RTH bars; mean=76.8
+         ~ [6_first] 56 full days missing 13:30 bar
+         ~ [11_weekends] 3768 true weekend bars (ET-corrected)
+         ~ [12_continuity] 34 intraday gaps >15%; top-5: ['2025-04-05 (51%)', '2025-04-05 (51%)', '2025-10-09 (42%)', '2025-10-09 (42%)', '2025-03-05 (41%)']
+PLTR     136,685    757    6     77  OK  OK  OK  OK  OK  WN  OK  OK  OK  OK  WN  WN  CERTIFIED_WITH_NOTES
+         ~ [6_first] 66 full days missing 13:30 bar
+         ~ [11_weekends] 540 true weekend bars (ET-corrected)
+         ~ [12_continuity] 3 intraday gaps >15%; top-5: ['2025-03-25 (37%)', '2025-07-10 (29%)', '2023-01-24 (19%)']
+SMCI           0      0    0   24/7  --  OK  OK  OK  OK  OK  OK  OK  OK  OK  OK  OK  MISSING
          ↳ [1_file] file not found
-SPY      114,629    697    6     78  OK  OK  OK  OK  OK  !!  OK  OK  OK  OK  !!  !!  FAILED
-         ↳ [6_first] 15 full days missing 13:30 bar
-         ↳ [11_weekends] 1985 weekend bars
-         ↳ [12_continuity] 1 intraday gaps >15%
-TSLA     144,939    760    6     78  OK  OK  OK  OK  OK  !!  OK  OK  OK  OK  !!  !!  FAILED
-         ↳ [6_first] 36 full days missing 13:30 bar
-         ↳ [11_weekends] 8550 weekend bars
-         ↳ [12_continuity] 16 intraday gaps >15%
-TSM      125,220    760    6     73  OK  OK  OK  OK  !!  !!  OK  OK  OK  OK  !!  !!  FAILED
-         ↳ [5_rth] 31 dates with <60 RTH bars; mean=72.8
-         ↳ [6_first] 54 full days missing 13:30 bar
-         ↳ [11_weekends] 3303 weekend bars
-         ↳ [12_continuity] 7 intraday gaps >15%
-V        107,745    754    6     64  OK  OK  OK  OK  !!  !!  OK  OK  OK  OK  !!  !!  FAILED
-         ↳ [5_rth] 270 dates with <60 RTH bars; mean=64.3
-         ↳ [6_first] 7 full days missing 13:30 bar
-         ↳ [11_weekends] 2500 weekend bars
-         ↳ [12_continuity] 5 intraday gaps >15%
-VIXY      88,864    695    6     65  OK  OK  OK  OK  !!  !!  !!  OK  OK  OK  !!  OK  FAILED
-         ↳ [5_rth] 126 dates with <60 RTH bars; mean=65.2
-         ↳ [6_first] 35 full days missing 13:30 bar
-         ↳ [7_last] 8 full days missing 19:55 bar
-         ↳ [11_weekends] 594 weekend bars
+SPY      114,629    697    6     78  OK  OK  OK  OK  OK  WN  OK  OK  OK  OK  WN  WN  CERTIFIED_WITH_NOTES
+         ~ [6_first] 15 full days missing 13:30 bar
+         ~ [11_weekends] 240 true weekend bars (ET-corrected)
+         ~ [12_continuity] 1 intraday gaps >15%; top-5: ['2025-09-11 (16%)']
+TSLA     144,939    760    6     78  OK  OK  OK  OK  OK  WN  OK  OK  OK  OK  WN  WN  CERTIFIED_WITH_NOTES
+         ~ [6_first] 36 full days missing 13:30 bar
+         ~ [11_weekends] 3768 true weekend bars (ET-corrected)
+         ~ [12_continuity] 16 intraday gaps >15%; top-5: ['2025-02-08 (50%)', '2025-02-26 (44%)', '2025-02-26 (44%)', '2025-05-29 (37%)', '2025-05-24 (32%)']
+TSM      125,220    760    6     73  OK  OK  OK  OK  WN  WN  OK  OK  OK  OK  WN  WN  CERTIFIED_WITH_NOTES
+         ~ [5_rth] 31 dates <60 RTH bars; mean=72.8
+         ~ [6_first] 54 full days missing 13:30 bar
+         ~ [11_weekends] 540 true weekend bars (ET-corrected)
+         ~ [12_continuity] 7 intraday gaps >15%; top-5: ['2025-10-04 (26%)', '2025-10-04 (25%)', '2025-06-05 (23%)', '2025-06-14 (20%)', '2025-09-26 (17%)']
+V        107,745    754    6     64  OK  OK  OK  OK  WN  WN  OK  OK  OK  OK  WN  WN  CERTIFIED_WITH_NOTES
+         ~ [5_rth] 270 dates <60 RTH bars; mean=64.3
+         ~ [6_first] 7 full days missing 13:30 bar
+         ~ [11_weekends] 515 true weekend bars (ET-corrected)
+         ~ [12_continuity] 5 intraday gaps >15%; top-5: ['2026-03-16 (50%)', '2025-02-27 (24%)', '2025-03-25 (22%)', '2025-05-17 (20%)', '2025-02-27 (20%)']
+VIXY      88,864    695    6     65  OK  OK  OK  OK  WN  WN  WN  OK  OK  OK  WN  OK  CERTIFIED_WITH_NOTES
+         ~ [5_rth] 126 dates <60 RTH bars; mean=65.2
+         ~ [6_first] 35 full days missing 13:30 bar
+         ~ [7_last] 8 full days missing 19:55 bar
+         ~ [11_weekends] 185 true weekend bars (ET-corrected)
 BTC      239,074    881    6   24/7  OK  OK  OK  OK  OK  OK  OK  OK  OK  OK  OK  OK  CERTIFIED
 ETH      239,073    881    6   24/7  OK  OK  OK  OK  OK  OK  OK  OK  OK  OK  OK  OK  CERTIFIED
 
 SPARSE DATA WARNING: ~106 dates/year = FMP Starter plan rate limit, not corruption
+LEGEND: OK=pass  WN=warning  !!=hard-fail  --=file missing
 
-OVERALL: 2 CERTIFIED | 29 FAILED
+OVERALL: 2 CERTIFIED | 24 CERTIFIED_WITH_NOTES | 0 FAILED | 5 MISSING
 
 JSON saved → certification_results/fmp_5yr_cert.json
+Report saved → certification_results/CERTIFICATION_REPORT.md
