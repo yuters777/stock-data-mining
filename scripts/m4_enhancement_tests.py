@@ -178,38 +178,29 @@ def test_a(triggers):
     # A1 -- base M4 (comparison)
     print(f"  A1 base M4:       {fmt(trade_stats([tg['base'] for tg in triggers]))}")
 
-    # A2 -- hold if bar+1 green, else exit at bar+1 close
-    conf, rej = [], []
+    # A2 -- bar+1 green: continue to EMA/hard-max. bar+1 red: early exit.
+    all_a2, green_a2, early_a2 = [], [], []
     for tg in triggers:
-        fc, fo, fe, fx = tg["fc"], tg["fo"], tg["fe"], tg["fx"]
-        if len(fc) < 2:
+        r = _conf_trade(tg)
+        if r is None:
             continue
-        if fc[1] > fo[1]:  # bar+1 green
-            t = run_fwd(fc, fe, fx)
-            if t:
-                conf.append(t)
-        else:
-            rej.append(((fc[1] - fc[0]) / fc[0] * 100, 1, "rejected"))
-    print(f"  A2 confirmed:     {fmt(trade_stats(conf))}")
-    print(f"  A2 rejected:      {fmt(trade_stats(rej))}")
+        all_a2.append(r)
+        (green_a2 if r[2] != "early_exit" else early_a2).append(r)
+    print(f"  A2 all:           {fmt(trade_stats(all_a2))}")
+    print(f"    green (held):   {fmt(trade_stats(green_a2))}")
+    print(f"    red (early):    {fmt(trade_stats(early_a2))}")
 
-    # A3 -- hold if bar+1 OR bar+2 green, else exit at bar+2 close
-    conf, rej = [], []
+    # A3 -- bar+1|2 green: continue. neither: early exit at bar+2 close.
+    all_a3, green_a3, early_a3 = [], [], []
     for tg in triggers:
-        fc, fo, fe, fx = tg["fc"], tg["fo"], tg["fe"], tg["fx"]
-        if len(fc) < 2:
+        r = _conf2_trade(tg)
+        if r is None:
             continue
-        g1 = len(fc) > 1 and fc[1] > fo[1]
-        g2 = len(fc) > 2 and fc[2] > fo[2]
-        if g1 or g2:
-            t = run_fwd(fc, fe, fx)
-            if t:
-                conf.append(t)
-        else:
-            ek = min(2, len(fc) - 1)
-            rej.append(((fc[ek] - fc[0]) / fc[0] * 100, ek, "rejected"))
-    print(f"  A3 confirmed:     {fmt(trade_stats(conf))}")
-    print(f"  A3 rejected:      {fmt(trade_stats(rej))}")
+        all_a3.append(r)
+        (green_a3 if r[2] != "early_exit" else early_a3).append(r)
+    print(f"  A3 all:           {fmt(trade_stats(all_a3))}")
+    print(f"    green (held):   {fmt(trade_stats(green_a3))}")
+    print(f"    red (early):    {fmt(trade_stats(early_a3))}")
     print("  [A complete]")
 
 
@@ -347,6 +338,38 @@ def _stall_trade(tg, mode, ns):
     return None
 
 
+def _conf_trade(tg, trade_fn=None):
+    """Confirmation bar trade (no lookahead).  Position already open at
+    trigger bar close.  Bar+1 green -> continue to normal/custom exit.
+    Bar+1 red -> early exit at bar+1 close with actual P&L."""
+    fc, fo = tg["fc"], tg["fo"]
+    if len(fc) < 2:
+        return None
+    if fc[1] > fo[1]:  # bar+1 green -> continue holding
+        if trade_fn:
+            return trade_fn(tg)
+        return run_fwd(fc, tg["fe"], tg["fx"])
+    else:  # bar+1 red -> early exit at bar+1 close
+        return ((fc[1] - fc[0]) / fc[0] * 100, 1, "early_exit")
+
+
+def _conf2_trade(tg, trade_fn=None):
+    """Two-bar confirmation (no lookahead).  Bar+1 OR bar+2 green -> continue.
+    Neither green -> early exit at bar+2 close."""
+    fc, fo = tg["fc"], tg["fo"]
+    if len(fc) < 2:
+        return None
+    g1 = len(fc) > 1 and fc[1] > fo[1]
+    g2 = len(fc) > 2 and fc[2] > fo[2]
+    if g1 or g2:
+        if trade_fn:
+            return trade_fn(tg)
+        return run_fwd(fc, tg["fe"], tg["fx"])
+    else:
+        ek = min(2, len(fc) - 1)
+        return ((fc[ek] - fc[0]) / fc[0] * 100, ek, "early_exit")
+
+
 ALL_VARIANTS = []
 
 
@@ -362,20 +385,21 @@ def collect_ad(triggers, vix):
     """Register Tests A-D variants into ALL_VARIANTS (no printing)."""
     reg("A1", "Base M4", "streak>=3 VIX>=25 RSI<35",
         [tg["base"] for tg in triggers], list(triggers))
-    for aid, ck, desc in [
-        ("A2", lambda tg: len(tg["fc"]) >= 2 and tg["fc"][1] > tg["fo"][1],
-         "Bar+1 green"),
-        ("A3", lambda tg: (len(tg["fc"]) > 1 and tg["fc"][1] > tg["fo"][1])
-                        or (len(tg["fc"]) > 2 and tg["fc"][2] > tg["fo"][2]),
-         "Bar+1|2 green"),
+    # A2/A3 confirmation (fixed: all triggers produce a trade, no lookahead)
+    for aid, cfn, desc in [
+        ("A2", _conf_trade, "Bar+1 confirm"),
+        ("A3", _conf2_trade, "Bar+1|2 confirm"),
     ]:
         t, g = [], []
         for tg in triggers:
-            if ck(tg):
-                r = run_fwd(tg["fc"], tg["fe"], tg["fx"])
-                if r:
-                    t.append(r); g.append(tg)
+            r = cfn(tg)
+            if r:
+                t.append(r); g.append(tg)
         reg(aid, desc, f"Confirm: {desc}", t, g)
+    # TIER_B standalone (RSI<25, no other filters)
+    tb_sub = [tg for tg in triggers if tg["rsi_val"] < 25]
+    reg("A_TB", "TIER_B only", "RSI<25 standalone",
+        [tg["base"] for tg in tb_sub], tb_sub)
     for x in [30, 40, 50, 60, 70]:
         t, g = [], []
         for tg in triggers:
@@ -451,32 +475,37 @@ def test_e(triggers, vix):
     def gd(tg):
         d = prior_vix_dt(tg["date"], vix)
         return dur.get(d, 0) if d else 0
-    def conf(tg):
-        return len(tg["fc"]) >= 2 and tg["fc"][1] > tg["fo"][1]
     tier_b = lambda tg: tg["rsi_val"] < 25
     tier_a = lambda tg: 25 <= tg["rsi_val"] < 35
 
+    # (vid, name, desc, filter_fn, uses_confirm, trade_fn_override)
+    # Confirmation is NOT a pre-filter -- it modifies exit logic:
+    #   bar+1 green -> continue to normal/custom exit
+    #   bar+1 red   -> early exit at bar+1 close with real P&L
     combos = [
         ("E1", "TIER_B+dur<=5",      "RSI<25 + VIX dur<=5d",
-         lambda tg: tier_b(tg) and gd(tg) <= 5, None),
-        ("E2", "TIER_B+confirm",     "RSI<25 + bar+1 green",
-         lambda tg: tier_b(tg) and conf(tg), None),
-        ("E3", "Confirm+dur<=7",     "bar+1 green + VIX dur<=7",
-         lambda tg: conf(tg) and gd(tg) <= 7, None),
+         lambda tg: tier_b(tg) and gd(tg) <= 5, False, None),
+        ("E2", "TIER_B+confirm",     "RSI<25 + bar+1 confirm",
+         lambda tg: tier_b(tg), True, None),
+        ("E3", "Confirm+dur<=7",     "bar+1 confirm + VIX dur<=7",
+         lambda tg: gd(tg) <= 7, True, None),
         ("E4", "Conf+C2N2+dur<=7",   "confirm + C2 stall N=2 + dur<=7",
-         lambda tg: conf(tg) and gd(tg) <= 7,
+         lambda tg: gd(tg) <= 7, True,
          lambda tg: _stall_trade(tg, "high", 2)),
         ("E5", "TIER_B+conf+dur<=5", "RSI<25 + confirm + VIX dur<=5",
-         lambda tg: tier_b(tg) and conf(tg) and gd(tg) <= 5, None),
+         lambda tg: tier_b(tg) and gd(tg) <= 5, True, None),
         ("E6", "TIER_A+dur<=5+conf", "RSI 25-35 + dur<=5 + confirm",
-         lambda tg: tier_a(tg) and gd(tg) <= 5 and conf(tg), None),
+         lambda tg: tier_a(tg) and gd(tg) <= 5, True, None),
     ]
-    for vid, nm, desc, filt, tfn in combos:
+    for vid, nm, desc, filt, uses_conf, tfn in combos:
         t, g = [], []
         for tg in triggers:
             if not filt(tg):
                 continue
-            r = tfn(tg) if tfn else run_fwd(tg["fc"], tg["fe"], tg["fx"])
+            if uses_conf:
+                r = _conf_trade(tg, trade_fn=tfn)
+            else:
+                r = tfn(tg) if tfn else run_fwd(tg["fc"], tg["fe"], tg["fx"])
             if r:
                 t.append(r); g.append(tg)
         s = reg(vid, nm, desc, t, g)
