@@ -1,0 +1,21 @@
+EMA CROSS FALSIFICATION — SUMMARY REPORT
+Date: 2026-04-13
+Data: 22 tickers, 5yr M5 → 4H bars
+Cross events: 520 UP, 519 DOWN
+
+VERDICT: SR #22 CONFIRMED
+
+UNCONDITIONAL UP CROSS:
+  Mean return at bar+5:  +0.0333%
+  Mean return at bar+10: +0.4970%
+  Unconditional +5: 95% CI=[-0.3121, +0.3762], p=0.87835
+  Unconditional +10: 95% CI=[-0.1752, +1.1230], p=0.18412
+
+CONFIG G: Insufficient N (6)
+
+VIX REGIME SPLIT (bar+5 mean):
+  NORMAL      : N= 360, mean=+0.1720%
+  ELEVATED    : N=  92, mean=-0.6648%
+  HIGH_RISK   : N=  64, mean=+0.2563%
+
+RECOMMENDATION: Keep EMA cross as Module 2 permission filter only
