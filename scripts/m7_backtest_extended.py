@@ -235,12 +235,19 @@ def detect_m7_signals(
 ) -> tuple:
     """Detect M7 momentum-pullback signals for one ticker.
 
-    Filters (ALL): red streak 1–3d | prior VIX < 20 | RS top 30% |
-    within 5% of 60d high | all 4H streak bars above EMA21 (per mode) |
-    today daily close > pre-pullback close (spec §2.1 #5) | no earnings ±6d.
+    State machine fires on the first recovery day after 1–3 red closes:
+      IDLE → PULLBACK_1 on red close (record pre_pullback_close)
+      PULLBACK_N → PULLBACK_N+1 on another red close (max N=3)
+      PULLBACK_N → ENTRY if today close > pre_pullback_close
+      PULLBACK_N → RESET if today is non-red but close ≤ pre_pullback_close
+      PULLBACK_3 → RESET on 4th red close
+
+    Remaining gates checked on the recovery (entry) day:
+      VIX < 20 | RS top 30% | within 5% of 60d high | no earnings ±6d |
+      all 4H bars during streak close above EMA21 (per mode)
 
     Returns (rth_signals, ext_signals) — each a list of signal dicts:
-        ticker, signal_date, entry_day_high, pullback_low,
+        ticker, signal_date, entry_day_high, pullback_low, pullback_high,
         vix_at_entry, rs_rank, streak_len
     """
     rth_signals: list = []
@@ -249,11 +256,6 @@ def detect_m7_signals(
     if daily.empty or len(daily) < 22:
         return rth_signals, ext_signals
 
-    streak_map = {
-        d: (slen, sdates)
-        for d, slen, sdates in find_red_streaks(daily)
-    }
-
     dates  = daily.index.tolist()
     closes = daily['close'].values
 
@@ -261,56 +263,68 @@ def detect_m7_signals(
         mask = vix_df['date'] < date
         return float(vix_df.loc[mask, 'vix_close'].iloc[-1]) if mask.any() else np.nan
 
+    state    = 'IDLE'
+    pb_close = np.nan   # close of bar immediately before streak started
+    pb_idx   = -1       # index of that bar
+    pb_dates = []       # red-bar dates in the current pullback
+
     for i, d in enumerate(dates):
-        if d not in streak_map:
-            continue
-        slen, streak_dates = streak_map[d]
+        close      = closes[i]
+        prev_close = closes[i - 1] if i > 0 else np.nan
+        is_red     = not np.isnan(prev_close) and close < prev_close
 
-        # Gate 1: VIX < 20
-        vix_val = _prior_vix(d)
-        if np.isnan(vix_val) or vix_val >= 20.0:
-            continue
-
-        # Gate 2: RS top 30%
-        rs_rank = rs_ranks.get((d, ticker), np.nan)
-        if np.isnan(rs_rank) or rs_rank > 0.30:
+        if state == 'IDLE':
+            if is_red:
+                state    = 'PULLBACK_1'
+                pb_close = float(prev_close)
+                pb_idx   = i - 1
+                pb_dates = [d]
             continue
 
-        # Gate 3: within 5% of 60d high
-        high_60d = daily.at[d, 'high_60d']
-        if pd.isna(high_60d) or closes[i] < 0.95 * high_60d:
+        # ── In PULLBACK_1 / PULLBACK_2 / PULLBACK_3 ──────────────────────────
+        streak_num      = int(state[-1])
+        saved_pb_close  = pb_close
+        saved_pb_idx    = pb_idx
+        saved_pb_dates  = list(pb_dates)
+
+        if is_red:
+            if streak_num < 3:
+                state = f'PULLBACK_{streak_num + 1}'
+                pb_dates.append(d)
+            else:                           # 4th red bar → reset without signal
+                state = 'IDLE'; pb_close = np.nan; pb_idx = -1; pb_dates = []
             continue
 
-        # Gate 4: earnings block
-        if is_earnings_window(ticker, d, earnings):
-            continue
+        # Non-red day: recovery attempt or reset
+        if close > saved_pb_close:
+            # ── Recovery day: evaluate remaining gates ────────────────────────
+            vix_val  = _prior_vix(d)
+            rs_rank  = rs_ranks.get((d, ticker), np.nan)
+            high_60d = daily.at[d, 'high_60d']
 
-        entry_day_high = float(daily.at[d, 'high'])
-        streak_slice   = daily.iloc[i - slen + 1:i + 1]
-        pullback_low   = float(streak_slice['low'].min())
-        # G6: today's daily close must exceed the close of the bar immediately
-        # before the streak started (spec §2.1 #5: "pre_pullback_close").
-        pullback_high  = float(daily.iloc[i - slen]['close'])
-        recovery       = closes[i] > pullback_high
+            if (not np.isnan(vix_val)  and vix_val  < 20.0
+                    and not np.isnan(rs_rank) and rs_rank  <= 0.30
+                    and not pd.isna(high_60d) and close    >= 0.95 * float(high_60d)
+                    and not is_earnings_window(ticker, d, earnings)):
 
-        base = {
-            'ticker':         ticker,
-            'signal_date':    str(d),
-            'entry_day_high': round(entry_day_high, 4),
-            'pullback_low':   round(pullback_low, 4),
-            'pullback_high':  round(pullback_high, 4),
-            'vix_at_entry':   round(float(vix_val), 2),
-            'rs_rank':        round(float(rs_rank), 4),
-            'streak_len':     slen,
-        }
+                pullback_slice = daily.iloc[saved_pb_idx + 1:i]  # red bars only
+                base = {
+                    'ticker':         ticker,
+                    'signal_date':    str(d),
+                    'entry_day_high': round(float(daily.at[d, 'high']), 4),
+                    'pullback_low':   round(float(pullback_slice['low'].min()), 4),
+                    'pullback_high':  round(saved_pb_close, 4),
+                    'vix_at_entry':   round(float(vix_val), 2),
+                    'rs_rank':        round(float(rs_rank), 4),
+                    'streak_len':     streak_num,
+                }
+                if check_pullback_above_ema21(ticker, saved_pb_dates, bars_4h_rth):
+                    rth_signals.append(dict(base))
+                if check_pullback_above_ema21(ticker, saved_pb_dates, bars_4h_ext):
+                    ext_signals.append(dict(base))
 
-        # G6 is mode-independent (daily close vs pre-pullback close).
-        # G5 (pullback above EMA21 on 4H bars) is still mode-specific.
-        if recovery:
-            if check_pullback_above_ema21(ticker, streak_dates, bars_4h_rth):
-                rth_signals.append(dict(base))
-            if check_pullback_above_ema21(ticker, streak_dates, bars_4h_ext):
-                ext_signals.append(dict(base))
+        # Reset after any non-red day (one recovery attempt per pullback)
+        state = 'IDLE'; pb_close = np.nan; pb_idx = -1; pb_dates = []
 
     return rth_signals, ext_signals
 
