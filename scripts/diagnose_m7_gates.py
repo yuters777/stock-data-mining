@@ -7,6 +7,7 @@ funnel showing how many days survive each successive gate.
 
 Usage: python scripts/diagnose_m7_gates.py
 """
+import math
 import sys
 import os
 
@@ -130,15 +131,22 @@ def evaluate_gates(
         # ── Gate evaluation ───────────────────────────────────────────────────
         high_60d = daily.at[d, 'high_60d']
         vix_val  = _prior_vix(d, vix_df)
-        rs_pct   = rs_ranks.get((d, ticker), np.nan)
+        rs_info  = rs_ranks.get((d, ticker))   # (ord_rank, n) or None
+
+        # rs_pct column now stores ordinal rank (1 = best) for display
+        if rs_info is not None:
+            rs_ord, rs_n = rs_info
+            rs_threshold = math.ceil(rs_n * 0.30)
+        else:
+            rs_ord, rs_n, rs_threshold = np.nan, 0, 0
 
         pct_from_60h = (
             (close / high_60d - 1) * 100
             if not pd.isna(high_60d) and high_60d > 0 else np.nan
         )
 
-        g2 = not np.isnan(vix_val)    and vix_val    < 20.0
-        g3 = not np.isnan(rs_pct)     and rs_pct     <= 0.30
+        g2 = not np.isnan(vix_val) and vix_val < 20.0
+        g3 = (rs_info is not None) and (rs_ord <= rs_threshold)
         g4 = not np.isnan(pct_from_60h) and pct_from_60h >= -5.0
         g7 = not is_earnings_window(ticker, d, earnings)
 
@@ -157,7 +165,7 @@ def evaluate_gates(
             'streak_len':    streak_len,
             'vix_val':       round(float(vix_val), 2) if not np.isnan(vix_val) else np.nan,
             'g2_vix':        g2,
-            'rs_pct':        round(float(rs_pct), 4) if not np.isnan(rs_pct) else np.nan,
+            'rs_pct':        int(rs_ord) if rs_info is not None else np.nan,
             'g3_rs':         g3,
             'pct_from_60h':  round(pct_from_60h, 2) if not np.isnan(pct_from_60h) else np.nan,
             'g4_near_high':  g4,
@@ -282,13 +290,14 @@ def print_funnel(df: pd.DataFrame, ticker: str, year: int) -> None:
             print(f'    min={vix_vals.min():.1f}  median={vix_vals.median():.1f}'
                   f'  max={vix_vals.max():.1f}  pct<20={100*(vix_vals<20).mean():.0f}%')
 
-    # RS distribution on recovery days
+    # RS distribution on recovery days (ordinal rank; 1 = best)
     if n_rec > 0:
         rs_vals = g1_days['rs_pct'].dropna()
         if len(rs_vals) > 0:
-            print(f'\n  RS rank_pct on {len(rs_vals)} recovery days:')
-            print(f'    min={rs_vals.min():.3f}  median={rs_vals.median():.3f}'
-                  f'  max={rs_vals.max():.3f}  pct<=0.30={100*(rs_vals<=0.30).mean():.0f}%')
+            pct_pass = 100 * int(g1_days['g3_rs'].sum()) / n_rec
+            print(f'\n  RS ordinal rank on {len(rs_vals)} recovery days (1=best):')
+            print(f'    min={int(rs_vals.min())}  median={int(rs_vals.median())}'
+                  f'  max={int(rs_vals.max())}  pct_top30%={pct_pass:.0f}%')
 
 
 # ── Main ───────────────────────────────────────────────────────────────────────
@@ -299,9 +308,11 @@ if __name__ == '__main__':
     print('=' * 60)
 
     # ── Load all 27 tickers for cross-sectional RS ranking ────────────────────
-    print(f'\nLoading M5 data for all {len(TICKERS)} tickers (RS ranking)...')
+    print(f'\nLoading M5 data for all {len(TICKERS)} tickers + SPY (RS ranking)...')
     ticker_data = load_all_tickers()
-    print(f'Loaded {len(ticker_data)}/{len(TICKERS)} tickers.')
+    n_sig = sum(1 for t in ticker_data if t in TICKERS)
+    print(f'Loaded {n_sig}/{len(TICKERS)} signal tickers'
+          f'{" + SPY" if "SPY" in ticker_data else " (SPY missing)"}.')
 
     if DIAG_TICKER not in ticker_data:
         print(f'\nERROR: {DIAG_TICKER} data not found — '

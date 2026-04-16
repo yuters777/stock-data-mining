@@ -8,9 +8,11 @@ state machine, simulates trades, and saves comparison results.
 
 Usage: python scripts/m7_backtest_extended.py
 """
+import math
 import sys
 import os
 import datetime
+from itertools import groupby
 
 import numpy as np
 import pandas as pd
@@ -52,13 +54,14 @@ _RTH_END   = 15 * 60 + 55  # 955
 # ── Data loading ───────────────────────────────────────────────────────────────
 
 def load_all_tickers(data_dir: str = 'Fetched_Data') -> dict:
-    """Load M5 extended data for all 27 tickers.
+    """Load M5 extended data for all 27 signal tickers plus SPY.
 
-    Skips tickers whose _m5_extended.csv is missing (prints a notice).
+    SPY is loaded for SPY-adjusted RS computation (spec §4.1) but is
+    excluded from signal generation.  Skips missing CSV files silently.
 
     Returns
     -------
-    dict : {ticker: df_m5}
+    dict : {ticker: df_m5}  — includes 'SPY' key when data is available.
     """
     result = {}
     for ticker in TICKERS:
@@ -67,6 +70,11 @@ def load_all_tickers(data_dir: str = 'Fetched_Data') -> dict:
             result[ticker] = df
         except FileNotFoundError:
             print(f'  {ticker}: SKIP (no _m5_extended.csv)')
+    # SPY needed for SPY-adjusted RS — excluded from signal generation
+    try:
+        result['SPY'] = load_extended_data('SPY', data_dir=data_dir)
+    except FileNotFoundError:
+        print('  SPY: SKIP (no _m5_extended.csv) — dates missing SPY will be excluded from RS')
     return result
 
 
@@ -136,17 +144,28 @@ def compute_daily_indicators(daily_df: pd.DataFrame) -> pd.DataFrame:
 # ── RS ranks ──────────────────────────────────────────────────────────────────
 
 def compute_rs_ranks(daily_data_dict: dict) -> dict:
-    """Rank all tickers by 20-day return for each date.
+    """Rank tickers by SPY-adjusted 20-day return for each date (spec §4.1).
 
-    Returns {(date, ticker): rank_pct} where 0.0 = best RS (highest
-    20d return). Top 30% = rank_pct <= 0.30.
-    Dates with fewer than 2 valid tickers are skipped.
+    Algorithm:
+      1. Require SPY 20d return — skip the entire date if SPY is missing
+         (fail-closed).
+      2. rs_adjusted = ticker_20d_return − SPY_20d_return.
+      3. Rank DESCENDING; ordinal rank 1 = highest adjusted return (best RS).
+      4. Top-30% threshold = ceil(eligible_count × 0.30), where
+         eligible_count excludes SPY.
+
+    Returns
+    -------
+    dict : {(date, ticker): (ordinal_rank, eligible_count)}
+        ordinal_rank   : 1-based integer (1 = best relative strength).
+        eligible_count : non-SPY tickers ranked on that date.
+    Dates where SPY 20d return is unavailable are omitted entirely.
     """
     rows = []
     for ticker, daily in daily_data_dict.items():
         if 'ret_20d' not in daily.columns:
             continue
-        sub = daily[['ret_20d']].dropna().reset_index()   # cols: date, ret_20d
+        sub = daily[['ret_20d']].dropna().reset_index()
         sub['ticker'] = ticker
         rows.append(sub)
 
@@ -157,14 +176,27 @@ def compute_rs_ranks(daily_data_dict: dict) -> dict:
 
     result = {}
     for date, grp in df.groupby('date'):
-        n = len(grp)
+        spy_rows = grp[grp['ticker'] == 'SPY']
+        if spy_rows.empty:
+            continue                              # fail-closed: skip whole date
+        spy_ret = float(spy_rows['ret_20d'].iloc[0])
+
+        eligible = grp[grp['ticker'] != 'SPY'].copy()
+        n = len(eligible)
         if n < 2:
             continue
-        # rank ascending=False: rank 1 = highest 20d return (best RS)
-        ranked = grp['ret_20d'].rank(ascending=False, method='average')
-        for idx in grp.index:
-            rp = (ranked.at[idx] - 1) / (n - 1)   # normalised: 0.0 = best
-            result[(date, grp.at[idx, 'ticker'])] = round(float(rp), 4)
+
+        eligible['rs_adj'] = eligible['ret_20d'] - spy_ret
+        # rank 1 = highest rs_adjusted (best relative strength)
+        eligible['ord_rank'] = (
+            eligible['rs_adj']
+            .rank(ascending=False, method='min')
+            .astype(int)
+        )
+        for idx in eligible.index:
+            result[(date, eligible.at[idx, 'ticker'])] = (
+                int(eligible.at[idx, 'ord_rank']), n
+            )
 
     return result
 
@@ -302,34 +334,81 @@ def detect_m7_signals(
         if close > saved_pb_close:
             # ── Recovery day: evaluate remaining gates ────────────────────────
             vix_val  = _prior_vix(d)
-            rs_rank  = rs_ranks.get((d, ticker), np.nan)
+            rs_info  = rs_ranks.get((d, ticker))   # (ord_rank, n) or None
             high_60d = daily.at[d, 'high_60d']
 
-            if (not np.isnan(vix_val)  and vix_val  < 20.0
-                    and not np.isnan(rs_rank) and rs_rank  <= 0.30
-                    and not pd.isna(high_60d) and close    >= 0.95 * float(high_60d)
+            if (rs_info is not None
+                    and not np.isnan(vix_val) and vix_val < 20.0
+                    and not pd.isna(high_60d) and close >= 0.95 * float(high_60d)
                     and not is_earnings_window(ticker, d, earnings)):
 
-                pullback_slice = daily.iloc[saved_pb_idx + 1:i]  # red bars only
-                base = {
-                    'ticker':         ticker,
-                    'signal_date':    str(d),
-                    'entry_day_high': round(float(daily.at[d, 'high']), 4),
-                    'pullback_low':   round(float(pullback_slice['low'].min()), 4),
-                    'pullback_high':  round(saved_pb_close, 4),
-                    'vix_at_entry':   round(float(vix_val), 2),
-                    'rs_rank':        round(float(rs_rank), 4),
-                    'streak_len':     streak_num,
-                }
-                if check_pullback_above_ema21(ticker, saved_pb_dates, bars_4h_rth):
-                    rth_signals.append(dict(base))
-                if check_pullback_above_ema21(ticker, saved_pb_dates, bars_4h_ext):
-                    ext_signals.append(dict(base))
+                rs_ord, rs_n = rs_info
+                rs_threshold = math.ceil(rs_n * 0.30)   # dynamic top-30%
+
+                if rs_ord <= rs_threshold:
+                    pullback_slice = daily.iloc[saved_pb_idx + 1:i]
+                    pull_low_val   = float(pullback_slice['low'].min())
+                    base = {
+                        'ticker':               ticker,
+                        'signal_date':          str(d),
+                        'entry_day_high':       round(float(daily.at[d, 'high']), 4),
+                        'pullback_low':         round(pull_low_val, 4),
+                        'pullback_high':        round(saved_pb_close, 4),
+                        'vix_at_entry':         round(float(vix_val), 2),
+                        'rs_rank':              rs_ord,
+                        'streak_len':           streak_num,
+                        'pullback_depth_pct':   round(
+                            (pull_low_val - saved_pb_close) / saved_pb_close * 100, 4
+                        ),
+                        'distance_to_high_pct': round(
+                            (close / float(high_60d) - 1) * 100, 4
+                        ),
+                    }
+                    if check_pullback_above_ema21(ticker, saved_pb_dates, bars_4h_rth):
+                        rth_signals.append(dict(base))
+                    if check_pullback_above_ema21(ticker, saved_pb_dates, bars_4h_ext):
+                        ext_signals.append(dict(base))
 
         # Reset after any non-red day (one recovery attempt per pullback)
         state = 'IDLE'; pb_close = np.nan; pb_idx = -1; pb_dates = []
 
     return rth_signals, ext_signals
+
+
+# ── Concurrency helpers ────────────────────────────────────────────────────────
+
+def _skip_record(sig: dict, entry_date_str: str) -> dict:
+    """Build a SKIP_MAX_CONCURRENT placeholder trade record."""
+    return {
+        'ticker':       sig['ticker'],
+        'signal_date':  sig['signal_date'],
+        'entry_date':   entry_date_str,
+        'entry_price':  np.nan,
+        'exit_date':    None,
+        'exit_price':   np.nan,
+        'return_pct':   np.nan,
+        'hold_days':    0,
+        'exit_reason':  'SKIP_MAX_CONCURRENT',
+        'streak_len':   sig['streak_len'],
+        'vix_at_entry': sig['vix_at_entry'],
+        'rs_rank':      sig['rs_rank'],
+    }
+
+
+def _sort_candidates(candidates: list) -> list:
+    """Sort same-entry-date signals by 4-tier priority (best first).
+
+    Tier 1: rs_rank ASC          — lower ordinal rank = stronger RS
+    Tier 2: -distance_to_high_pct ASC — closer to 0 = nearer 60d high
+    Tier 3: -pullback_depth_pct ASC   — closer to 0 = shallower pullback
+    Tier 4: ticker ASC           — alphabetical tie-break
+    """
+    def _key(sig):
+        rs_ord = sig.get('rs_rank', 9999)
+        dist   = sig.get('distance_to_high_pct', -100.0)   # ≤ 0
+        depth  = sig.get('pullback_depth_pct',   -100.0)   # ≤ 0
+        return (rs_ord, -dist, -depth, sig['ticker'])
+    return sorted(candidates, key=_key)
 
 
 # ── Trade simulation ──────────────────────────────────────────────────────────
@@ -342,14 +421,15 @@ def simulate_m7_trade(
 ) -> dict:
     """Simulate one M7 trade from a signal dict.
 
-    Entry : open of the first trading day after signal_date.
-    Exit  : first triggered at end-of-day daily close:
+    Entry : daily close on the recovery (signal) day — spec §2.2.
+    Exit  : first triggered at end-of-day daily close, starting the day
+            after entry:
               1. close < EMA9            → BELOW_EMA9
               2. close < pullback_low    → STOP_PULLBACK_LOW
               3. hold_days >= 6          → MAX_HOLD_6D
               4. VIX close >= 25         → OVERRIDE_SUSPENDED
 
-    Returns None if insufficient bars remain after the signal day.
+    Returns None if no exit days remain after the signal day.
     bars_4h is accepted for API symmetry; exits are daily-level only.
     """
     sig_date  = datetime.date.fromisoformat(signal['signal_date'])
@@ -360,12 +440,12 @@ def simulate_m7_trade(
         sig_idx = dates.index(sig_date)
     except ValueError:
         return None
-    if sig_idx + 1 >= len(dates):
+    if sig_idx + 1 >= len(dates):   # need at least one exit day
         return None
 
-    entry_idx   = sig_idx + 1
-    entry_date  = dates[entry_idx]
-    entry_price = float(daily_df.iloc[entry_idx]['open'])
+    # Entry = recovery day close (spec §2.2)
+    entry_date  = sig_date
+    entry_price = float(daily_df.iloc[sig_idx]['close'])
 
     def _vix_on(d):
         row = vix_df[vix_df['date'] == d]
@@ -374,7 +454,7 @@ def simulate_m7_trade(
     exit_price = exit_date = exit_reason = None
     hold_days  = 0
 
-    for j in range(entry_idx, min(entry_idx + 6, len(dates))):
+    for j in range(sig_idx + 1, min(sig_idx + 7, len(dates))):
         hold_days += 1
         d     = dates[j]
         row   = daily_df.iloc[j]
@@ -426,61 +506,54 @@ def run_m7_backtest(
 ) -> list:
     """Simulate M7 trades with a global max-2-concurrent-positions cap.
 
-    Signals are processed chronologically.  When 2 positions are already
-    open at a new entry date the signal is recorded as SKIP_MAX_CONCURRENT.
+    When multiple signals share the same entry date and compete for a
+    limited slot, they are ranked by 4-tier priority before allocation
+    (spec §5.2):
+      Tier 1: rs_rank ASC  |  Tier 2: -distance_to_high_pct ASC
+      Tier 3: -pullback_depth_pct ASC  |  Tier 4: ticker ASC
 
+    Signals that do not win a slot are recorded as SKIP_MAX_CONCURRENT.
     Returns list of trade dicts (executed + skipped).
     """
     sorted_sigs = sorted(signals_list, key=lambda s: s['signal_date'])
     trades: list = []
-    active: list = []   # trade dicts for currently open positions
+    active: list = []   # executed trade dicts for currently open positions
 
-    for signal in sorted_sigs:
-        ticker = signal['ticker']
-        if ticker not in daily_data:
+    for entry_date_str, grp in groupby(sorted_sigs, key=lambda s: s['signal_date']):
+        candidates = [s for s in grp if s['ticker'] in daily_data]
+        if not candidates:
             continue
 
-        daily_df = daily_data[ticker]
-        sig_date = datetime.date.fromisoformat(signal['signal_date'])
-        dates    = daily_df.index.tolist()
-
-        try:
-            sig_idx = dates.index(sig_date)
-        except ValueError:
-            continue
-        if sig_idx + 1 >= len(dates):
-            continue
-
-        entry_date_str = str(dates[sig_idx + 1])
-
-        # Drop positions that have already closed before this entry date
+        # Drop positions closed before this entry date
         active = [t for t in active if t['exit_date'] >= entry_date_str]
+        slots = max(0, 2 - len(active))
 
-        if len(active) >= 2:
-            trades.append({
-                'ticker':       ticker,
-                'signal_date':  signal['signal_date'],
-                'entry_date':   entry_date_str,
-                'entry_price':  np.nan,
-                'exit_date':    None,
-                'exit_price':   np.nan,
-                'return_pct':   np.nan,
-                'hold_days':    0,
-                'exit_reason':  'SKIP_MAX_CONCURRENT',
-                'streak_len':   signal['streak_len'],
-                'vix_at_entry': signal['vix_at_entry'],
-                'rs_rank':      signal['rs_rank'],
-            })
+        if slots == 0:
+            for sig in candidates:
+                trades.append(_skip_record(sig, entry_date_str))
             continue
 
-        trade = simulate_m7_trade(
-            signal, daily_df,
-            bars_4h_data.get(ticker, pd.DataFrame()),
-            vix_df,
-        )
-        if trade is not None:
-            trades.append(trade)
-            active.append(trade)
+        if len(candidates) > slots:
+            ranked   = _sort_candidates(candidates)
+            to_exec  = ranked[:slots]
+            to_skip  = ranked[slots:]
+        else:
+            to_exec = candidates
+            to_skip = []
+
+        for sig in to_skip:
+            trades.append(_skip_record(sig, entry_date_str))
+
+        for sig in to_exec:
+            ticker = sig['ticker']
+            trade = simulate_m7_trade(
+                sig, daily_data[ticker],
+                bars_4h_data.get(ticker, pd.DataFrame()),
+                vix_df,
+            )
+            if trade is not None:
+                trades.append(trade)
+                active.append(trade)
 
     return trades
 
@@ -539,11 +612,12 @@ def _build_comparison_md(stats_rth, stats_ext, stats_rth_25, stats_ext_25):
         '',
         '1. 1–3 day daily pullback (state machine)',
         '2. Prior-day VIX close < 20',
-        '3. RS rank top 30% (20d return cross-sectional)',
+        '3. RS top 30%: SPY-adjusted 20d return, rank ≤ ceil(n × 0.30)',
         '4. Daily close within 5% of 60-day high',
         '5. All 4H streak bars close above EMA21 (mode-specific)',
         '6. Recovery day: daily close > pre-pullback close',
         '7. No earnings ±6 days',
+        '8. Entry price = recovery day close (spec §2.2)',
         '',
         '## Exit Rules (first triggered, end-of-day)',
         '',
@@ -563,9 +637,12 @@ if __name__ == '__main__':
     print(f'KNOWN_BASELINE: N={KNOWN_BASELINE["N"]}, PF={KNOWN_BASELINE["PF"]}')
     print('=' * 60)
 
-    print(f'\nLoading M5 data for {len(TICKERS)} tickers...')
+    print(f'\nLoading M5 data for {len(TICKERS)} signal tickers + SPY...')
     ticker_data = load_all_tickers()
-    print(f'Loaded {len(ticker_data)}/{len(TICKERS)} tickers.')
+    n_sig = sum(1 for t in ticker_data if t in TICKERS)
+    has_spy = 'SPY' in ticker_data
+    print(f'Loaded {n_sig}/{len(TICKERS)} signal tickers'
+          f'{" + SPY" if has_spy else " (SPY missing — RS dates excluded)"}.')
 
     print('Loading VIX...')
     vix_df = load_vix_daily()
@@ -584,6 +661,9 @@ if __name__ == '__main__':
     for ticker, df_m5 in ticker_data.items():
         daily = build_daily_from_m5(df_m5)
         daily_data[ticker] = compute_daily_indicators(daily)
+
+        if ticker == 'SPY':
+            continue  # SPY: daily only (RS computation); no 4H bars needed
 
         b_rth = build_4h_extended(df_m5, mode='rth')
         b_rth = compute_indicators(b_rth, warmup_rows=0)
