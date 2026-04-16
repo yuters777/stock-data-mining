@@ -16,6 +16,8 @@ from backtest_utils_extended import (
     load_extended_data,
     build_4h_extended,
     compute_indicators,
+    flag_corrupt,
+    apply_ema21_warmup_mask,
 )
 
 TICKERS = ['AAPL', 'AMD', 'AMZN', 'ARM', 'AVGO', 'BA', 'BABA', 'BIDU',
@@ -26,8 +28,12 @@ TICKERS = ['AAPL', 'AMD', 'AMZN', 'ARM', 'AVGO', 'BA', 'BABA', 'BIDU',
 _BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT_DIR = os.path.join(_BASE, 'results', 'extended_validation')
 
-# Bar label -> hour-of-day (ET) for gap timestamp construction
-_BAR_HOUR = {'A': 4, 'B': 8, 'C': 12, 'D': 16, '1': 9, '2': 13}
+# Bar label -> (hour, minute) ET for canonical timestamp reconstruction.
+# RTH bars use :30 offsets matching m4_backtest_5yr.py (Bar1=09:30, Bar2=13:30).
+_BAR_TIME = {
+    'A': (4, 0), 'B': (8, 0), 'C': (12, 0), 'D': (16, 0),
+    '1': (9, 30), '2': (13, 30),
+}
 
 KNOWN_BASELINE = {
     'N': 63,
@@ -42,8 +48,8 @@ KNOWN_BASELINE = {
 
 def _bar_timestamp(date, bar_label: str) -> pd.Timestamp:
     """Reconstruct a full Timestamp from bar date + label (for gap checks)."""
-    h = _BAR_HOUR.get(str(bar_label), 9)
-    return pd.Timestamp(str(date)) + pd.Timedelta(hours=h)
+    h, m = _BAR_TIME.get(str(bar_label), (9, 30))
+    return pd.Timestamp(str(date)) + pd.Timedelta(hours=h, minutes=m)
 
 
 def _prior_vix(bar_date, vix_df: pd.DataFrame) -> float:
@@ -65,7 +71,9 @@ def _calc_streak(bars: pd.DataFrame) -> np.ndarray:
     Streak increments on each consecutive down bar.
     Resets on:
       - a non-down bar (close >= open), OR
-      - a calendar gap > 7 days between consecutive bars
+      - a time gap > 30 hours between consecutive bars
+        (Fri→Mon RTH gap is ~68h, so streaks always reset over weekends —
+         matching m4_backtest_5yr.calc_streak() exactly)
     """
     n = len(bars)
     streaks = np.zeros(n, dtype=np.int32)
@@ -79,8 +87,8 @@ def _calc_streak(bars: pd.DataFrame) -> np.ndarray:
     for i in range(n):
         ts = _bar_timestamp(dates[i], labels[i])
         if prev_ts is not None:
-            gap_days = (ts - prev_ts).total_seconds() / 86400
-            if gap_days > 7:
+            gap_hours = (ts - prev_ts).total_seconds() / 3600
+            if gap_hours > 30:
                 s = 0
         if closes[i] < opens[i]:
             s += 1
@@ -131,7 +139,7 @@ def run_m4_single_ticker(ticker: str, bars: pd.DataFrame,
       - Entry price  = trigger bar close
       - Exit price   = exit bar close
       - "Down bar"   = close < open
-      - Streak resets on non-down bar OR calendar gap > 7 days
+      - Streak resets on non-down bar OR time gap > 30 hours (resets on weekends)
       - VIX          = prior trading-day close (not intraday)
       - No earnings filter for M4
 
@@ -141,6 +149,7 @@ def run_m4_single_ticker(ticker: str, bars: pd.DataFrame,
         return []
 
     streaks = _calc_streak(bars)
+    corrupt = flag_corrupt(bars['close']).values
     dates = bars['date'].tolist()
     labels = bars['bar_label'].tolist()
     closes = bars['close'].values
@@ -151,6 +160,11 @@ def run_m4_single_ticker(ticker: str, bars: pd.DataFrame,
     trades = []
     i = 0
     while i < n:
+        # Gate 0: skip corrupt bars (split artefacts / bad data)
+        if corrupt[i]:
+            i += 1
+            continue
+
         # Gate 1: streak >= 3
         if streaks[i] < 3:
             i += 1
@@ -188,6 +202,13 @@ def run_m4_single_ticker(ticker: str, bars: pd.DataFrame,
 
         for j in range(i + 1, min(i + 11, n)):
             bars_held += 1
+            # Corrupt bar during hold → hard_max exit immediately
+            if corrupt[j]:
+                exit_price = closes[j]
+                exit_date = dates[j]
+                exit_bar = labels[j]
+                exit_reason = 'hard_max'
+                break
             # EMA21 exit: close >= EMA21 (skip if EMA still in warmup)
             if not np.isnan(emas[j]) and closes[j] >= emas[j]:
                 exit_price = closes[j]
@@ -256,7 +277,13 @@ def run_m4_backtest(mode: str = 'extended', vix_df: pd.DataFrame = None) -> list
             continue
 
         bars = build_4h_extended(df, mode=mode)
-        bars = compute_indicators(bars)
+        if mode == 'rth':
+            # RTH: no static warmup blanket — use gap-based masking only,
+            # matching m4_backtest_5yr.py behaviour for _m5_full.csv files.
+            bars = compute_indicators(bars, warmup_rows=0)
+            bars['ema21'] = apply_ema21_warmup_mask(bars)
+        else:
+            bars = compute_indicators(bars)  # static 25-row warmup for extended
         trades = run_m4_single_ticker(ticker, bars, vix_df)
         all_trades.extend(trades)
         print(f'{len(trades)} trades')
@@ -335,7 +362,7 @@ def _build_comparison_md(stats_rth: dict, stats_ext: dict) -> str:
         '## Streak Definition',
         '',
         '- Down bar: close < open',
-        '- Streak resets on: non-down bar OR calendar gap > 7 days between bars',
+        '- Streak resets on: non-down bar OR time gap > 30 hours (resets every weekend)',
         '',
         '## Conviction Tiers',
         '',

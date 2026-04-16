@@ -84,7 +84,7 @@ def build_4h_extended(df_m5: pd.DataFrame, mode: str = 'extended') -> pd.DataFra
         bar_label[(tod >= 960) & (tod <= 1195)] = 'D'  # 16:00–19:55
     else:  # rth
         bar_label[(tod >= 570) & (tod <= 805)] = '1'   # 09:30–13:25
-        bar_label[(tod >= 810) & (tod <= 955)] = '2'   # 13:30–15:55
+        bar_label[(tod > 805)  & (tod <= 955)] = '2'   # 13:26–15:55 (matches original: > BAR1_E_ET)
 
     df['bar_label'] = bar_label
     df = df[df['bar_label'] != ''].copy()
@@ -119,7 +119,7 @@ def build_4h_extended(df_m5: pd.DataFrame, mode: str = 'extended') -> pd.DataFra
 
 # ── Technical indicators ───────────────────────────────────────────────────────
 
-def compute_indicators(df_4h: pd.DataFrame) -> pd.DataFrame:
+def compute_indicators(df_4h: pd.DataFrame, warmup_rows: int = 25) -> pd.DataFrame:
     """Compute technical indicators on 4H bars.
 
     Indicators:
@@ -130,7 +130,9 @@ def compute_indicators(df_4h: pd.DataFrame) -> pd.DataFrame:
     - adx14:           ADX with period=14 (Wilder smoothing)
     - chandelier_exit: highest_high(22) – 3 × atr14
 
-    Warmup: set all indicators to NaN for first 25 rows.
+    Warmup: set all indicators to NaN for first warmup_rows rows (default 25).
+            Pass warmup_rows=0 to skip static warmup (e.g. RTH mode when
+            gap-based masking is applied separately via apply_ema21_warmup_mask).
     Return df with indicator columns added.
     """
     result = df_4h.copy()
@@ -197,11 +199,68 @@ def compute_indicators(df_4h: pd.DataFrame) -> pd.DataFrame:
     result['adx14']           = adx14
     result['chandelier_exit'] = chandelier_exit
 
-    # Warmup: blank out first 25 rows for all indicator columns
-    indicator_cols = ['ema9', 'ema21', 'rsi14', 'atr14', 'adx14', 'chandelier_exit']
-    result.loc[result.index[:25], indicator_cols] = np.nan
+    # Warmup: blank out first warmup_rows rows for all indicator columns.
+    # Pass warmup_rows=0 to skip (e.g. for RTH mode with gap-based masking).
+    if warmup_rows > 0:
+        indicator_cols = ['ema9', 'ema21', 'rsi14', 'atr14', 'adx14', 'chandelier_exit']
+        result.loc[result.index[:warmup_rows], indicator_cols] = np.nan
 
     return result
+
+
+# ── Corrupt bar filter ─────────────────────────────────────────────────────────
+
+def flag_corrupt(closes: pd.Series) -> pd.Series:
+    """Return boolean Series: True where adjacent-bar price ratio exceeds 6×.
+
+    Flags stock-split artefacts and bad data (>500% jump between consecutive
+    bars).  Contaminates the immediately surrounding bars as well, matching
+    the logic in m4_backtest_5yr.flag_corrupt().
+    """
+    ratio = closes / closes.shift(1)
+    bad   = (ratio > 6) | (ratio < 1 / 6)
+    return bad | bad.shift(1, fill_value=False) | bad.shift(-1, fill_value=False)
+
+
+# ── EMA21 gap-based warmup mask ────────────────────────────────────────────────
+
+# Canonical bar start times (ET) for timestamp reconstruction.
+# Used by apply_ema21_warmup_mask; matches _BAR_TIME in m4_backtest_extended.py.
+_BAR_TIME_ET = {
+    'A': (4, 0), 'B': (8, 0), 'C': (12, 0), 'D': (16, 0),
+    '1': (9, 30), '2': (13, 30),
+}
+
+
+def apply_ema21_warmup_mask(bars: pd.DataFrame) -> pd.Series:
+    """Re-NaN EMA21 for 21 bars after any data gap > 7 calendar days.
+
+    After a multi-day gap the EMA has been carrying forward stale values.
+    This function reconstructs bar timestamps from (date, bar_label) and
+    NaNs bars i … i+20 whenever the gap to bar i-1 exceeds 7 days —
+    matching m4_backtest_5yr.apply_ema21_warmup_mask() behaviour.
+
+    bars must contain columns: 'date', 'bar_label', 'ema21'.
+    Returns a new pd.Series (same index) with the masked EMA21 values.
+    """
+    ema    = bars['ema21'].copy()
+    dates  = bars['date'].tolist()
+    labels = bars['bar_label'].tolist()
+    n      = len(bars)
+
+    def _ts(date, label):
+        h, m = _BAR_TIME_ET.get(str(label), (9, 30))
+        return pd.Timestamp(str(date)) + pd.Timedelta(hours=h, minutes=m)
+
+    warmup_end = -1
+    for i in range(1, n):
+        gap_days = (_ts(dates[i], labels[i]) - _ts(dates[i - 1], labels[i - 1])
+                    ).total_seconds() / 86400
+        if gap_days > 7:
+            warmup_end = min(n - 1, i + 20)   # bars i … i+20 inclusive
+        if i <= warmup_end:
+            ema.iloc[i] = np.nan
+    return ema
 
 
 # ── VIX loader ─────────────────────────────────────────────────────────────────
