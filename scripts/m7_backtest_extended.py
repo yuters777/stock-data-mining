@@ -237,7 +237,7 @@ def detect_m7_signals(
 
     Filters (ALL): red streak 1–3d | prior VIX < 20 | RS top 30% |
     within 5% of 60d high | all 4H streak bars above EMA21 (per mode) |
-    last 4H close > prior daily high | no earnings ±6d.
+    today daily close > pre-pullback close (spec §2.1 #5) | no earnings ±6d.
 
     Returns (rth_signals, ext_signals) — each a list of signal dicts:
         ticker, signal_date, entry_day_high, pullback_low,
@@ -285,36 +285,32 @@ def detect_m7_signals(
         if is_earnings_window(ticker, d, earnings):
             continue
 
-        prev_day_high = float(daily.iloc[i - 1]['high'])
         entry_day_high = float(daily.at[d, 'high'])
         streak_slice   = daily.iloc[i - slen + 1:i + 1]
         pullback_low   = float(streak_slice['low'].min())
+        # G6: today's daily close must exceed the close of the bar immediately
+        # before the streak started (spec §2.1 #5: "pre_pullback_close").
+        pullback_high  = float(daily.iloc[i - slen]['close'])
+        recovery       = closes[i] > pullback_high
 
         base = {
             'ticker':         ticker,
             'signal_date':    str(d),
             'entry_day_high': round(entry_day_high, 4),
             'pullback_low':   round(pullback_low, 4),
+            'pullback_high':  round(pullback_high, 4),
             'vix_at_entry':   round(float(vix_val), 2),
             'rs_rank':        round(float(rs_rank), 4),
             'streak_len':     slen,
         }
 
-        # RTH mode: pullback above EMA21 + 4H breakout above prev daily high
-        if check_pullback_above_ema21(ticker, streak_dates, bars_4h_rth):
-            today_rth = bars_4h_rth[bars_4h_rth['date'] == d]
-            if not today_rth.empty:
-                last_close = float(today_rth.iloc[-1]['close'])
-                if last_close > prev_day_high:
-                    rth_signals.append(dict(base))
-
-        # EXT mode: same checks on extended-hours bars
-        if check_pullback_above_ema21(ticker, streak_dates, bars_4h_ext):
-            today_ext = bars_4h_ext[bars_4h_ext['date'] == d]
-            if not today_ext.empty:
-                last_close = float(today_ext.iloc[-1]['close'])
-                if last_close > prev_day_high:
-                    ext_signals.append(dict(base))
+        # G6 is mode-independent (daily close vs pre-pullback close).
+        # G5 (pullback above EMA21 on 4H bars) is still mode-specific.
+        if recovery:
+            if check_pullback_above_ema21(ticker, streak_dates, bars_4h_rth):
+                rth_signals.append(dict(base))
+            if check_pullback_above_ema21(ticker, streak_dates, bars_4h_ext):
+                ext_signals.append(dict(base))
 
     return rth_signals, ext_signals
 
