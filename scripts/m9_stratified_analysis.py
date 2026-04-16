@@ -127,6 +127,11 @@ def enrich_signal_bar(df: pd.DataFrame, mode: str = 'rth') -> pd.DataFrame:
                 .drop(columns='date')
                 .drop_duplicates(subset=['entry_date', 'entry_bar'])
             )
+            # Ensure key columns are str on both sides before merge
+            subset['entry_date'] = subset['entry_date'].astype(str)
+            subset['entry_bar']  = subset['entry_bar'].astype(str)
+            ref['entry_date']    = ref['entry_date'].astype(str)
+            ref['entry_bar']     = ref['entry_bar'].astype(str)
             subset = subset.merge(ref, on=['entry_date', 'entry_bar'], how='left')
         except FileNotFoundError:
             for c in new_cols:
