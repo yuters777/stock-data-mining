@@ -44,11 +44,6 @@ def _prior_vix(date, vix_df: pd.DataFrame) -> float:
     return float(vix_df.loc[mask, 'vix_close'].iloc[-1]) if mask.any() else np.nan
 
 
-def _last_4h_close(date, bars_4h: pd.DataFrame):
-    """Close of the last 4H bar for the given date; None if no bars."""
-    day = bars_4h[bars_4h['date'] == date]
-    return float(day.iloc[-1]['close']) if not day.empty else None
-
 
 # ── Per-day gate evaluation ────────────────────────────────────────────────────
 
@@ -70,7 +65,7 @@ def evaluate_gates(
         rs_pct, g3_rs,
         pct_from_60h, g4_near_high,
         g5_ema21_rth, g5_ema21_ext,
-        g6_recovery_rth, g6_recovery_ext,
+        g6_recovery,
         g7_no_earnings
     """
     # Pre-compute streak map for the full history (warmup for older dates)
@@ -87,7 +82,6 @@ def evaluate_gates(
 
         close     = float(daily.at[d, 'close'])
         high_60d  = daily.at[d, 'high_60d']
-        prev_high = float(daily.iloc[i - 1]['high']) if i > 0 else np.nan
 
         # Gate 1: red streak 1-3
         if d in streak_map:
@@ -119,14 +113,13 @@ def evaluate_gates(
             g5_rth = False
             g5_ext = False
 
-        # Gate 6 (mode-specific): today's last 4H close > yesterday daily high
-        if not np.isnan(prev_high):
-            last_rth = _last_4h_close(d, bars_rth)
-            g6_rth   = last_rth is not None and last_rth > prev_high
-            last_ext = _last_4h_close(d, bars_ext)
-            g6_ext   = last_ext is not None and last_ext > prev_high
+        # Gate 6: today's daily close > pre-pullback close (close of bar before
+        # streak started — spec §2.1 #5 "pre_pullback_close"). Mode-independent.
+        if slen > 0:
+            pullback_high = float(daily.iloc[i - slen]['close'])
+            g6 = close > pullback_high
         else:
-            g6_rth = g6_ext = False
+            g6 = False
 
         # Gate 7: no earnings within ±6 days
         g7 = not is_earnings_window(ticker, d, earnings)
@@ -142,8 +135,7 @@ def evaluate_gates(
             'g4_near_high':    g4,
             'g5_ema21_rth':    g5_rth,
             'g5_ema21_ext':    g5_ext,
-            'g6_recovery_rth': g6_rth,
-            'g6_recovery_ext': g6_ext,
+            'g6_recovery':     g6,
             'g7_no_earnings':  g7,
         })
 
@@ -169,7 +161,7 @@ def _f(v, fmt='.2f') -> str:
 def print_gate_table(df: pd.DataFrame, ticker: str, year: int) -> None:
     """Print per-day gate evaluation table."""
     hdr = (f'{"Date":<12} {"Stk":>3}  {"VIX":>5} G2  {"RS%":>5} G3  '
-           f'{"60H%":>6} G4  G5r G5e  G6r G6e  G7')
+           f'{"60H%":>6} G4  G5r G5e  G6  G7')
     sep = '-' * len(hdr)
     print(f'\n{ticker} {year} — per-day gate table')
     print(sep)
@@ -184,7 +176,7 @@ def print_gate_table(df: pd.DataFrame, ticker: str, year: int) -> None:
             f'{_f(r["rs_pct"]):>5} {_b(r["g3_rs"])}  '
             f'{_f(r["pct_from_60h"]):>6} {_b(r["g4_near_high"])}  '
             f'{_b(r["g5_ema21_rth"])} {_b(r["g5_ema21_ext"])}  '
-            f'{_b(r["g6_recovery_rth"])} {_b(r["g6_recovery_ext"])}  '
+            f'{_b(r["g6_recovery"])}  '
             f'{_b(r["g7_no_earnings"])}'
         )
         print(line)
@@ -204,8 +196,8 @@ def print_funnel(df: pd.DataFrame, ticker: str, year: int) -> None:
 
     g5_rth  = g7 & df['g5_ema21_rth']
     g5_ext  = g7 & df['g5_ema21_ext']
-    g6_rth  = g5_rth & df['g6_recovery_rth']
-    g6_ext  = g5_ext & df['g6_recovery_ext']
+    g6_rth  = g5_rth & df['g6_recovery']
+    g6_ext  = g5_ext & df['g6_recovery']
 
     # Also: gates 1-4+7 without mode-specific checks (shared funnel)
     print(f'\n{ticker} {year} — cumulative gate funnel  (total trading days: {total})')
@@ -238,8 +230,7 @@ def print_funnel(df: pd.DataFrame, ticker: str, year: int) -> None:
         print(f'    No earnings   : {g1_days["g7_no_earnings"].sum():>3} / {len(g1_days)}')
         print(f'    G5 EMA21 RTH  : {g1_days["g5_ema21_rth"].sum():>3} / {len(g1_days)}')
         print(f'    G5 EMA21 EXT  : {g1_days["g5_ema21_ext"].sum():>3} / {len(g1_days)}')
-        print(f'    G6 recovery RTH: {g1_days["g6_recovery_rth"].sum():>3} / {len(g1_days)}')
-        print(f'    G6 recovery EXT: {g1_days["g6_recovery_ext"].sum():>3} / {len(g1_days)}')
+        print(f'    G6 recovery     : {g1_days["g6_recovery"].sum():>3} / {len(g1_days)}')
 
     # VIX distribution on streak days
     if len(g1_days) > 0:
