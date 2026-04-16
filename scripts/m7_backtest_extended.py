@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
-"""M7 Extended Backtest — Phase 2: Signal Detection.
+"""M7 Extended Backtest — Phase 3: Full Backtest with Trade Simulation.
 
 Loads M5 extended data for all 27 equity tickers, resamples to daily
 RTH bars and 4H bars (both modes), computes daily indicators and
-cross-ticker RS ranks, then detects M7 momentum-pullback signals.
-No trade simulation yet.
+cross-ticker RS ranks, detects M7 momentum-pullback signals via a
+state machine, simulates trades, and saves comparison results.
 
 Usage: python scripts/m7_backtest_extended.py
 """
 import sys
 import os
+import datetime
 
 import numpy as np
 import pandas as pd
@@ -33,12 +34,14 @@ TICKERS = [
     'SMCI', 'TSLA', 'TSM', 'V',
 ]  # 27 equities
 
-_BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+_BASE   = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+OUT_DIR = os.path.join(_BASE, 'results', 'extended_validation')
 
-# Known baseline from prior M7 backtest (all dates, 27 tickers)
+# Known baseline from prior M7 backtest
 KNOWN_BASELINE = {
-    'N':  168,
-    'PF': 1.85,
+    'N':      168,
+    'PF':     1.85,
+    'PF_OOS': 1.11,   # 2025 out-of-sample reference
 }
 
 # RTH filter: 09:30–15:55 ET expressed as minutes-of-day
@@ -329,11 +332,234 @@ def detect_m7_signals(
     return rth_signals, ext_signals
 
 
+# ── Trade simulation ──────────────────────────────────────────────────────────
+
+def simulate_m7_trade(
+    signal: dict,
+    daily_df: pd.DataFrame,
+    bars_4h: pd.DataFrame,
+    vix_df: pd.DataFrame,
+) -> dict:
+    """Simulate one M7 trade from a signal dict.
+
+    Entry : open of the first trading day after signal_date.
+    Exit  : first triggered at end-of-day daily close:
+              1. close < EMA9            → BELOW_EMA9
+              2. close < pullback_low    → STOP_PULLBACK_LOW
+              3. hold_days >= 6          → MAX_HOLD_6D
+              4. VIX close >= 25         → OVERRIDE_SUSPENDED
+
+    Returns None if insufficient bars remain after the signal day.
+    bars_4h is accepted for API symmetry; exits are daily-level only.
+    """
+    sig_date  = datetime.date.fromisoformat(signal['signal_date'])
+    pull_low  = float(signal['pullback_low'])
+    dates     = daily_df.index.tolist()
+
+    try:
+        sig_idx = dates.index(sig_date)
+    except ValueError:
+        return None
+    if sig_idx + 1 >= len(dates):
+        return None
+
+    entry_idx   = sig_idx + 1
+    entry_date  = dates[entry_idx]
+    entry_price = float(daily_df.iloc[entry_idx]['open'])
+
+    def _vix_on(d):
+        row = vix_df[vix_df['date'] == d]
+        return float(row['vix_close'].iloc[0]) if not row.empty else np.nan
+
+    exit_price = exit_date = exit_reason = None
+    hold_days  = 0
+
+    for j in range(entry_idx, min(entry_idx + 6, len(dates))):
+        hold_days += 1
+        d     = dates[j]
+        row   = daily_df.iloc[j]
+        close = float(row['close'])
+        ema9  = float(row['ema9']) if not pd.isna(row['ema9']) else np.nan
+        vix_c = _vix_on(d)
+
+        if not np.isnan(ema9) and close < ema9:
+            triggered = 'BELOW_EMA9'
+        elif close < pull_low:
+            triggered = 'STOP_PULLBACK_LOW'
+        elif hold_days >= 6:
+            triggered = 'MAX_HOLD_6D'
+        elif not np.isnan(vix_c) and vix_c >= 25.0:
+            triggered = 'OVERRIDE_SUSPENDED'
+        else:
+            triggered = None
+
+        if triggered:
+            exit_price, exit_date, exit_reason = close, d, triggered
+            break
+
+    if exit_price is None:
+        return None
+
+    return {
+        'ticker':       signal['ticker'],
+        'signal_date':  signal['signal_date'],
+        'entry_date':   str(entry_date),
+        'entry_price':  round(entry_price, 4),
+        'exit_date':    str(exit_date),
+        'exit_price':   round(exit_price, 4),
+        'return_pct':   round((exit_price - entry_price) / entry_price * 100, 4),
+        'hold_days':    hold_days,
+        'exit_reason':  exit_reason,
+        'streak_len':   signal['streak_len'],
+        'vix_at_entry': signal['vix_at_entry'],
+        'rs_rank':      signal['rs_rank'],
+    }
+
+
+# ── Multi-ticker backtest runner ───────────────────────────────────────────────
+
+def run_m7_backtest(
+    signals_list: list,
+    daily_data: dict,
+    bars_4h_data: dict,
+    vix_df: pd.DataFrame,
+) -> list:
+    """Simulate M7 trades with a global max-2-concurrent-positions cap.
+
+    Signals are processed chronologically.  When 2 positions are already
+    open at a new entry date the signal is recorded as SKIP_MAX_CONCURRENT.
+
+    Returns list of trade dicts (executed + skipped).
+    """
+    sorted_sigs = sorted(signals_list, key=lambda s: s['signal_date'])
+    trades: list = []
+    active: list = []   # trade dicts for currently open positions
+
+    for signal in sorted_sigs:
+        ticker = signal['ticker']
+        if ticker not in daily_data:
+            continue
+
+        daily_df = daily_data[ticker]
+        sig_date = datetime.date.fromisoformat(signal['signal_date'])
+        dates    = daily_df.index.tolist()
+
+        try:
+            sig_idx = dates.index(sig_date)
+        except ValueError:
+            continue
+        if sig_idx + 1 >= len(dates):
+            continue
+
+        entry_date_str = str(dates[sig_idx + 1])
+
+        # Drop positions that have already closed before this entry date
+        active = [t for t in active if t['exit_date'] >= entry_date_str]
+
+        if len(active) >= 2:
+            trades.append({
+                'ticker':       ticker,
+                'signal_date':  signal['signal_date'],
+                'entry_date':   entry_date_str,
+                'entry_price':  np.nan,
+                'exit_date':    None,
+                'exit_price':   np.nan,
+                'return_pct':   np.nan,
+                'hold_days':    0,
+                'exit_reason':  'SKIP_MAX_CONCURRENT',
+                'streak_len':   signal['streak_len'],
+                'vix_at_entry': signal['vix_at_entry'],
+                'rs_rank':      signal['rs_rank'],
+            })
+            continue
+
+        trade = simulate_m7_trade(
+            signal, daily_df,
+            bars_4h_data.get(ticker, pd.DataFrame()),
+            vix_df,
+        )
+        if trade is not None:
+            trades.append(trade)
+            active.append(trade)
+
+    return trades
+
+
+# ── Statistics ─────────────────────────────────────────────────────────────────
+
+def compute_stats(trades: list) -> dict:
+    """Aggregate N, PF, WR, Mean, Avg_Hold from executed trades."""
+    executed = [t for t in trades
+                if t.get('exit_reason') != 'SKIP_MAX_CONCURRENT'
+                and pd.notna(t.get('return_pct'))]
+    if not executed:
+        return {'N': 0, 'PF': 0.0, 'WR': 0.0, 'Mean': 0.0, 'Avg_Hold': 0.0}
+    rets  = np.array([t['return_pct'] for t in executed], dtype=float)
+    holds = np.array([t['hold_days']  for t in executed], dtype=float)
+    wins  = rets[rets > 0]
+    loss_sum = abs(rets[rets <= 0].sum())
+    pf   = float(wins.sum() / loss_sum) if loss_sum > 0 else float('inf')
+    return {
+        'N':        len(executed),
+        'PF':       round(pf, 2),
+        'WR':       round(float((rets > 0).mean() * 100), 2),
+        'Mean':     round(float(rets.mean()), 4),
+        'Avg_Hold': round(float(holds.mean()), 2),
+    }
+
+
+# ── Markdown builder ───────────────────────────────────────────────────────────
+
+def _build_comparison_md(stats_rth, stats_ext, stats_rth_25, stats_ext_25):
+    bl = KNOWN_BASELINE
+    lines = [
+        '# M7 RS-Leader Pullback Backtest — Extended Hours Comparison',
+        '',
+        '## All Dates',
+        '',
+        '| Metric | RTH | Extended | Baseline |',
+        '|--------|-----|----------|----------|',
+        f'| N | {stats_rth["N"]} | {stats_ext["N"]} | {bl["N"]} |',
+        f'| PF | {stats_rth["PF"]:.2f} | {stats_ext["PF"]:.2f} | {bl["PF"]:.2f} |',
+        f'| WR % | {stats_rth["WR"]:.1f}% | {stats_ext["WR"]:.1f}% | — |',
+        f'| Mean % | {stats_rth["Mean"]:+.2f}% | {stats_ext["Mean"]:+.2f}% | — |',
+        f'| Avg Hold (d) | {stats_rth["Avg_Hold"]:.1f} | {stats_ext["Avg_Hold"]:.1f} | — |',
+        '',
+        '## 2025 Out-of-Sample',
+        '',
+        '| Metric | RTH | Extended | Baseline OOS |',
+        '|--------|-----|----------|--------------|',
+        f'| N | {stats_rth_25["N"]} | {stats_ext_25["N"]} | — |',
+        f'| PF | {stats_rth_25["PF"]:.2f} | {stats_ext_25["PF"]:.2f} | {bl["PF_OOS"]:.2f} |',
+        f'| WR % | {stats_rth_25["WR"]:.1f}% | {stats_ext_25["WR"]:.1f}% | — |',
+        f'| Mean % | {stats_rth_25["Mean"]:+.2f}% | {stats_ext_25["Mean"]:+.2f}% | — |',
+        f'| Avg Hold (d) | {stats_rth_25["Avg_Hold"]:.1f} | {stats_ext_25["Avg_Hold"]:.1f} | — |',
+        '',
+        '## Entry Rules',
+        '',
+        '1. 1–3 day daily pullback (state machine)',
+        '2. Prior-day VIX close < 20',
+        '3. RS rank top 30% (20d return cross-sectional)',
+        '4. Daily close within 5% of 60-day high',
+        '5. All 4H streak bars close above EMA21 (mode-specific)',
+        '6. Recovery day: daily close > pre-pullback close',
+        '7. No earnings ±6 days',
+        '',
+        '## Exit Rules (first triggered, end-of-day)',
+        '',
+        '1. Daily close < EMA9  → BELOW_EMA9',
+        '2. Daily close < pullback_low  → STOP_PULLBACK_LOW',
+        '3. Hold >= 6 days  → MAX_HOLD_6D',
+        '4. VIX close >= 25  → OVERRIDE_SUSPENDED',
+    ]
+    return '\n'.join(lines)
+
+
 # ── Main ───────────────────────────────────────────────────────────────────────
 
 if __name__ == '__main__':
     print('=' * 60)
-    print('M7 BACKTEST — Phase 2: Signal Detection')
+    print('M7 BACKTEST — Phase 3: Full Backtest')
     print(f'KNOWN_BASELINE: N={KNOWN_BASELINE["N"]}, PF={KNOWN_BASELINE["PF"]}')
     print('=' * 60)
 
@@ -371,32 +597,99 @@ if __name__ == '__main__':
     rs_ranks = compute_rs_ranks(daily_data)
     print(f'  RS rank entries: {len(rs_ranks):,}')
 
-    print('\nDetecting M7 signals...\n')
+    # ── Signal detection ──────────────────────────────────────────────────────
+    print('\nDetecting signals...')
     all_rth: list = []
     all_ext: list = []
 
-    print(f'  {"Ticker":<8} {"RTH_signals":>12} {"EXT_signals":>12} {"Delta":>8}')
-    print('  ' + '-' * 44)
-
     for ticker in TICKERS:
         if ticker not in daily_data:
-            print(f'  {ticker:<8}  SKIP')
             continue
         rth_sigs, ext_sigs = detect_m7_signals(
             ticker,
             daily_data[ticker],
             bars_rth.get(ticker, pd.DataFrame()),
             bars_ext.get(ticker, pd.DataFrame()),
-            vix_df,
-            earnings,
-            rs_ranks,
+            vix_df, earnings, rs_ranks,
         )
         all_rth.extend(rth_sigs)
         all_ext.extend(ext_sigs)
-        delta = len(ext_sigs) - len(rth_sigs)
-        print(f'  {ticker:<8} {len(rth_sigs):>12} {len(ext_sigs):>12} {delta:>+8}')
 
+    print(f'  Signals: {len(all_rth)} RTH | {len(all_ext)} EXT')
+
+    # ── Trade simulation ──────────────────────────────────────────────────────
+    print('\nRunning trade simulation...')
+    trades_rth = run_m7_backtest(all_rth, daily_data, bars_rth, vix_df)
+    trades_ext = run_m7_backtest(all_ext, daily_data, bars_ext, vix_df)
+    stats_rth  = compute_stats(trades_rth)
+    stats_ext  = compute_stats(trades_ext)
+    print(f'  RTH: {stats_rth["N"]} trades | EXT: {stats_ext["N"]} trades')
+
+    # ── Print comparison tables ───────────────────────────────────────────────
+    bl  = KNOWN_BASELINE
+    cw  = [22, 14, 16, 14]
+
+    def _tbl(title, sr, se, bl_stats):
+        print(f'\n{title}')
+        print('=' * sum(cw))
+        print(f'{"Metric":<{cw[0]}} {"RTH":>{cw[1]}} {"Extended":>{cw[2]}} {"Baseline":>{cw[3]}}')
+        print('-' * sum(cw))
+        def r(lbl, rv, ev, bv):
+            print(f'{lbl:<{cw[0]}} {rv:>{cw[1]}} {ev:>{cw[2]}} {bv:>{cw[3]}}')
+        r('N',            str(sr['N']),             str(se['N']),             str(bl_stats.get('N', '—')))
+        r('PF',           f'{sr["PF"]:.2f}',         f'{se["PF"]:.2f}',         f'{bl_stats["PF"]:.2f}')
+        r('WR %',         f'{sr["WR"]:.1f}%',        f'{se["WR"]:.1f}%',        '—')
+        r('Mean %',       f'{sr["Mean"]:+.2f}%',     f'{se["Mean"]:+.2f}%',     '—')
+        r('Avg Hold (d)', f'{sr["Avg_Hold"]:.1f}',   f'{se["Avg_Hold"]:.1f}',   '—')
+
+    _tbl('ALL DATES', stats_rth, stats_ext, bl)
+
+    def _oos(trades, year=2025):
+        return [t for t in trades if t.get('entry_date', '')[:4] == str(year)]
+
+    stats_rth_25 = compute_stats(_oos(trades_rth))
+    stats_ext_25 = compute_stats(_oos(trades_ext))
+    _tbl('2025 OOS', stats_rth_25, stats_ext_25, {'N': '—', 'PF': bl['PF_OOS']})
+
+    # Per-ticker counts
+    print('\nPER-TICKER TRADE COUNTS  (executed only)')
+    print('=' * 36)
+    print(f'  {"Ticker":<8} {"RTH":>8} {"EXT":>8}')
+    print('  ' + '-' * 26)
+    for tk in TICKERS:
+        nr = sum(1 for t in trades_rth if t['ticker'] == tk
+                 and t.get('exit_reason') != 'SKIP_MAX_CONCURRENT')
+        ne = sum(1 for t in trades_ext if t['ticker'] == tk
+                 and t.get('exit_reason') != 'SKIP_MAX_CONCURRENT')
+        if nr or ne:
+            print(f'  {tk:<8} {nr:>8} {ne:>8}')
+
+    # Exit reason breakdown
+    print('\nEXIT REASON BREAKDOWN')
+    print('=' * 46)
+    print(f'  {"Reason":<26} {"RTH":>8} {"EXT":>8}')
     print('  ' + '-' * 44)
-    total_delta = len(all_ext) - len(all_rth)
-    print(f'  {"TOTAL":<8} {len(all_rth):>12} {len(all_ext):>12} {total_delta:>+8}')
-    print('\nPhase 2 complete — signal detection only.  No trade simulation yet.')
+    all_reasons = sorted({t['exit_reason'] for t in trades_rth + trades_ext
+                          if t['exit_reason'] is not None})
+    for reason in all_reasons:
+        nr = sum(1 for t in trades_rth if t['exit_reason'] == reason)
+        ne = sum(1 for t in trades_ext if t['exit_reason'] == reason)
+        print(f'  {reason:<26} {nr:>8} {ne:>8}')
+
+    # ── Save outputs ──────────────────────────────────────────────────────────
+    os.makedirs(OUT_DIR, exist_ok=True)
+
+    if trades_rth:
+        rth_path = os.path.join(OUT_DIR, 'm7_rth_trades.csv')
+        pd.DataFrame(trades_rth).to_csv(rth_path, index=False)
+        print(f'\nRTH trades ({stats_rth["N"]}) → {rth_path}')
+
+    if trades_ext:
+        ext_path = os.path.join(OUT_DIR, 'm7_extended_trades.csv')
+        pd.DataFrame(trades_ext).to_csv(ext_path, index=False)
+        print(f'EXT trades ({stats_ext["N"]}) → {ext_path}')
+
+    md_path = os.path.join(OUT_DIR, 'm7_comparison.md')
+    with open(md_path, 'w', encoding='utf-8') as f:
+        f.write(_build_comparison_md(stats_rth, stats_ext, stats_rth_25, stats_ext_25))
+    print(f'Comparison   → {md_path}')
