@@ -20,10 +20,12 @@ from backtest_utils_extended import (
     apply_ema21_warmup_mask,
 )
 
-TICKERS = ['AAPL', 'AMD', 'AMZN', 'ARM', 'AVGO', 'BA', 'BABA', 'BIDU',
-           'C', 'COIN', 'COST', 'GOOGL', 'GS', 'INTC', 'JD', 'JPM',
-           'MARA', 'META', 'MSFT', 'MSTR', 'MU', 'NVDA', 'PLTR',
-           'SMCI', 'TSLA', 'TSM', 'V']  # 27 equity, no SPY/VIXY
+# 22 tickers that have _m5_full.csv in Fetched_Data — matches m4_backtest_5yr.py baseline.
+# Excluded (no _m5_full.csv): ARM, INTC, JD, MSTR, SMCI
+TICKERS = ['AAPL', 'AMD', 'AMZN', 'AVGO', 'BA', 'BABA', 'BIDU',
+           'C', 'COIN', 'COST', 'GOOGL', 'GS', 'JPM',
+           'MARA', 'META', 'MSFT', 'MU', 'NVDA', 'PLTR',
+           'TSLA', 'TSM', 'V']  # 22 equity, matching baseline
 
 _BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT_DIR = os.path.join(_BASE, 'results', 'extended_validation')
@@ -36,11 +38,11 @@ _BAR_TIME = {
 }
 
 KNOWN_BASELINE = {
-    'N': 63,
-    'PF': 126.88,
-    'WR': 94.0,
-    'Mean': 7.52,
-    'Avg_Hold': 5.3,
+    'N': 28,       # actual run of m4_backtest_5yr.py (2025-2026 VIX≥25 window, 22 tickers)
+    'PF': 4.95,
+    'WR': 71.43,
+    'Mean': 4.63,
+    'Avg_Hold': 8.75,
 }
 
 
@@ -401,9 +403,50 @@ if __name__ == '__main__':
     stats_rth = _compute_stats(trades_rth)
 
     print('\n' + '=' * 60)
-    print('COMPARISON TABLE')
+    print('COMPARISON TABLE  (all dates)')
     print('=' * 60)
     _print_comparison(stats_rth, stats_ext)
+
+    # ── 2025-2026 window (apples-to-apples with baseline) ─────────────────────
+    def _filter_window(trades, year_start=2025, year_end=2026):
+        return [t for t in trades
+                if year_start <= int(t['entry_date'][:4]) <= year_end]
+
+    trades_rth_25  = _filter_window(trades_rth)
+    trades_ext_25  = _filter_window(trades_ext)
+    stats_rth_25   = _compute_stats(trades_rth_25)
+    stats_ext_25   = _compute_stats(trades_ext_25)
+
+    print('\n' + '=' * 60)
+    print('COMPARISON TABLE  (2025-2026 only — same window as baseline)')
+    print('=' * 60)
+    bl = KNOWN_BASELINE
+    col_w = [22, 18, 20, 16]
+    header = (f'{"Metric":<{col_w[0]}} {"RTH 2025-26":>{col_w[1]}}'
+              f' {"Ext 2025-26":>{col_w[2]}} {"Baseline 22T":>{col_w[3]}}')
+    print(header)
+    print('-' * sum(col_w))
+    for label, rv, ev, bv in [
+        ('N',               str(stats_rth_25['N']),                str(stats_ext_25['N']),                str(bl['N'])),
+        ('PF',              f'{stats_rth_25["PF"]:.2f}',           f'{stats_ext_25["PF"]:.2f}',           f'{bl["PF"]:.2f}'),
+        ('WR %',            f'{stats_rth_25["WR"]:.1f}%',          f'{stats_ext_25["WR"]:.1f}%',          f'{bl["WR"]:.1f}%'),
+        ('Mean %',          f'{stats_rth_25["Mean"]:+.2f}%',       f'{stats_ext_25["Mean"]:+.2f}%',       f'+{bl["Mean"]:.2f}%'),
+        ('Avg Hold (bars)', f'{stats_rth_25["Avg_Hold"]:.1f}',     f'{stats_ext_25["Avg_Hold"]:.1f}',     f'{bl["Avg_Hold"]:.1f}'),
+    ]:
+        print(f'{label:<{col_w[0]}} {rv:>{col_w[1]}} {ev:>{col_w[2]}} {bv:>{col_w[3]}}')
+
+    # ── Per-ticker breakdown ───────────────────────────────────────────────────
+    print('\n' + '=' * 60)
+    print('PER-TICKER TRADE COUNT  (all dates | 2025-26)')
+    print('=' * 60)
+    print(f'  {"Ticker":<8} {"RTH-all":>8} {"RTH-25":>8} {"EXT-all":>8} {"EXT-25":>8}')
+    print('  ' + '-' * 44)
+    for tk in TICKERS:
+        rth_a = sum(1 for t in trades_rth if t['ticker'] == tk)
+        rth_2 = sum(1 for t in trades_rth_25 if t['ticker'] == tk)
+        ext_a = sum(1 for t in trades_ext if t['ticker'] == tk)
+        ext_2 = sum(1 for t in trades_ext_25 if t['ticker'] == tk)
+        print(f'  {tk:<8} {rth_a:>8} {rth_2:>8} {ext_a:>8} {ext_2:>8}')
 
     # ── Save outputs ──────────────────────────────────────────────────────────
     os.makedirs(OUT_DIR, exist_ok=True)
