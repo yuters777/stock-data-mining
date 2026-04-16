@@ -512,6 +512,6 @@ if __name__ == '__main__':
         print(f'RTH trades      ({stats_rth["N"]}) -> {rth_path}')
 
     comp_path = os.path.join(OUT_DIR, 'm6_comparison.md')
-    with open(comp_path, 'w') as f:
+    with open(comp_path, 'w', encoding='utf-8') as f:
         f.write(_build_comparison_md(stats_rth, stats_ext, gap_rth, gap_ext))
     print(f'Comparison      -> {comp_path}')
