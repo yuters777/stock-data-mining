@@ -1,9 +1,9 @@
-#!/usr/bin/env python3
-"""Phase 1 OOS Event Study: compression_score → Z4 forward return (2025 data).
+﻿#!/usr/bin/env python3
+"""Phase 1 OOS Event Study: compression_score ג†’ Z4 forward return (2025 data).
 
-Zone_Compression_Module_Spec_v1_1.md §7.2.  No VPS, no DB, pure local.
+Zone_Compression_Module_Spec_v1_1.md ֲ§7.2.  No VPS, no DB, pure local.
 
-Compression score formula (Zone_Guide_v2_1_IST.md §2.5):
+Compression score formula (Zone_Guide_v2_1_IST.md ֲ§2.5):
   Z3 = slots 30-47  (12:00-13:25 ET, 18 M5 bars)
   today_Z3_range       = (max(Z3 highs) - min(Z3 lows)) / Z3 open
   today_Z3_avg_abs_ret = mean(|M5 close - M5 open| / M5 open) across 18 Z3 bars
@@ -11,8 +11,10 @@ Compression score formula (Zone_Guide_v2_1_IST.md §2.5):
   compression_score    = percentile_rank(activity_raw within historical_Z3_activity_raw)
 
 Z3 slot range : slots 30-47 (12:00-13:25 ET, 18 bars).  Z3 open = bar at slot 30.
-Z4 start      : slot 48 (13:30 ET) — signal reference bar for M8 forward returns.
+Z4 start      : slot 48 (13:30 ET) ג€” signal reference bar for M8 forward returns.
 """
+
+from __future__ import annotations
 
 import argparse
 import hashlib
@@ -31,14 +33,14 @@ for _p in (str(_BASE), str(_BASE / "scripts")):
 
 from scripts.backtest_utils_extended import is_earnings_window, load_earnings  # noqa: E402
 
-# ── Constants ──────────────────────────────────────────────────────────────────
+# ג”€ג”€ Constants ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
 
 EXPECTED_BASELINE_SHA = "661975f5e7e5f061c0fd0221c2b9976a4a0e395affa410a34ee0f12796ae3024"
 
 # FOMC announcement days (Fed 8-meeting calendar 2025)
 # CPI release days (BLS schedule 2025)
 # NFP Employment Situation release days (BLS 2025)
-# Note: Beige Book (8×/year, mid-cycle) omitted — dates not bundled locally.
+# Note: Beige Book (8ֳ—/year, mid-cycle) omitted ג€” dates not bundled locally.
 HIGH_IMPACT_DAYS_2025 = frozenset({
     date(2025, 1, 29), date(2025, 3, 19), date(2025, 5, 7),   # FOMC
     date(2025, 6, 18), date(2025, 7, 30), date(2025, 9, 17),
@@ -53,9 +55,9 @@ HIGH_IMPACT_DAYS_2025 = frozenset({
     date(2025, 10, 3), date(2025, 11, 7), date(2025, 12, 5),
 })
 
-Z3_SLOTS = frozenset(range(30, 48))    # 12:00–13:25 ET (18 bars)
-Z4_SLOT  = 48                           # 13:30 ET — signal reference bar
-FWD_SLOTS = frozenset(range(49, 57))   # 13:35–14:10 ET (8 bars forward)
+Z3_SLOTS = frozenset(range(30, 48))    # 12:00ג€“13:25 ET (18 bars)
+Z4_SLOT  = 48                           # 13:30 ET ג€” signal reference bar
+FWD_SLOTS = frozenset(range(49, 57))   # 13:35ג€“14:10 ET (8 bars forward)
 
 _DATA_DIRS = [_BASE / "data", _BASE / "Fetched_Data"]
 
@@ -63,7 +65,7 @@ BUCKET_NAMES = ("deep", "neutral", "active")
 EX_VERSIONS  = ("full", "earnings_excluded", "earnings_and_hi_day_excluded")
 
 
-# ── Data loading ───────────────────────────────────────────────────────────────
+# ג”€ג”€ Data loading ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
 
 def _load_csv(path: Path) -> pd.DataFrame:
     df = pd.read_csv(path)
@@ -95,7 +97,7 @@ def _rth_2025(df: pd.DataFrame) -> pd.DataFrame:
     return df[mask & (df["date"].dt.year == 2025)].reset_index(drop=True)
 
 
-# ── Core formula (R4) ──────────────────────────────────────────────────────────
+# ג”€ג”€ Core formula (R4) ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
 
 def compression_score_from_baseline(
     baseline: dict, ticker: str, activity_raw: float
@@ -122,7 +124,7 @@ def _bucket_name(cs: float) -> str:
     return "neutral"
 
 
-# ── Session processing (R3-R6) ─────────────────────────────────────────────────
+# ג”€ג”€ Session processing (R3-R6) ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
 
 def _process_session(
     day_df: pd.DataFrame,
@@ -186,7 +188,7 @@ def _process_session(
     }
 
 
-# ── Bucketing + metrics (R8) ───────────────────────────────────────────────────
+# ג”€ג”€ Bucketing + metrics (R8) ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
 
 def _metrics(sessions: list) -> dict:
     if not sessions:
@@ -225,7 +227,7 @@ def _compute_buckets(all_sessions: list, earnings_dict: dict) -> dict:
     return {b: {v: _metrics(raw[b][v]) for v in EX_VERSIONS} for b in BUCKET_NAMES}
 
 
-# ── Kill-switch (R9) ───────────────────────────────────────────────────────────
+# ג”€ג”€ Kill-switch (R9) ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
 
 def _kill_switch(buckets: dict) -> tuple:
     deep    = buckets["deep"]["earnings_excluded"]
@@ -254,13 +256,13 @@ def _kill_switch(buckets: dict) -> tuple:
     return ks, rec
 
 
-# ── Report generation (R10) ────────────────────────────────────────────────────
+# ג”€ג”€ Report generation (R10) ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
 
 def _write_report(results: dict, buckets: dict, ks: dict, rec: str,
                   per_ticker: dict, output_md: str) -> None:
     sha_match = results.get("baseline_sha256_match", False)
-    sha_note  = "SHA match ✓" if sha_match else (
-        "SHA mismatch — local fallback baseline (not canonical 2023-2024)"
+    sha_note  = "SHA match ג“" if sha_match else (
+        "SHA mismatch ג€” local fallback baseline (not canonical 2023-2024)"
     )
     deep_ee    = buckets["deep"]["earnings_excluded"]
     neutral_ee = buckets["neutral"]["earnings_excluded"]
@@ -269,7 +271,7 @@ def _write_report(results: dict, buckets: dict, ks: dict, rec: str,
         return f"{x:{fmt}}" if x is not None else "N/A"
 
     lines = [
-        "# Phase 1 OOS Event Study — compression_score Validation (2025)",
+        "# Phase 1 OOS Event Study ג€” compression_score Validation (2025)",
         "",
         f"**Test window:** {results['test_window']}  ",
         f"**Computed:** {results['computed_at']}  ",
@@ -316,7 +318,7 @@ def _write_report(results: dict, buckets: dict, ks: dict, rec: str,
         lines.append(f"| {k} | {'**PASS**' if v else 'FAIL'} |")
     lines += [
         "",
-        f"**All-pass → {rec}**",
+        f"**All-pass ג†’ {rec}**",
         "",
         "## Per-Ticker Session Counts",
         "",
@@ -332,14 +334,14 @@ def _write_report(results: dict, buckets: dict, ks: dict, rec: str,
         "",
         (
             f"- **Baseline data:** The canonical 2023-2024 baseline (SHA "
-            f"`{EXPECTED_BASELINE_SHA[:16]}…`) was not available in this environment. "
+            f"`{EXPECTED_BASELINE_SHA[:16]}ג€¦`) was not available in this environment. "
             "A local fallback was used, computed from pre-2025 Z3 sessions in Fetched_Data. "
             "Tickers with fewer than 100 pre-2025 Z3 sessions received abstain score 0.50 "
             "(neutral bucket). Obtain the canonical baseline from CC-BASELINE-1 for "
             "production-grade kill-switch decisions."
         ),
-        "- **News-based filters:** Skipped — not in local repo. Sprint 2 backtest to include.",
-        "- **Beige Book dates:** Not included in HIGH_IMPACT_DAYS_2025 (8×/year, mid-cycle).",
+        "- **News-based filters:** Skipped ג€” not in local repo. Sprint 2 backtest to include.",
+        "- **Beige Book dates:** Not included in HIGH_IMPACT_DAYS_2025 (8ֳ—/year, mid-cycle).",
         (
             "- **SPY adjustment:** Computed when SPY data exists for same date; "
             "`mean_spy_adj_return_8bar` is None if SPY bars are missing."
@@ -349,7 +351,7 @@ def _write_report(results: dict, buckets: dict, ks: dict, rec: str,
     Path(output_md).write_text("\n".join(lines) + "\n")
 
 
-# ── Main pipeline ──────────────────────────────────────────────────────────────
+# ג”€ג”€ Main pipeline ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
 
 def run(baseline_path: str, output_json: str, output_md: str,
         verbose: bool = False) -> dict:
@@ -362,7 +364,7 @@ def run(baseline_path: str, output_json: str, output_md: str,
             f"WARNING: baseline SHA mismatch.\n"
             f"  actual:   {actual_sha}\n"
             f"  expected: {EXPECTED_BASELINE_SHA}\n"
-            f"  (local fallback baseline — results not suitable for production)"
+            f"  (local fallback baseline ג€” results not suitable for production)"
         )
     baseline = json.loads(raw)
     tickers  = baseline["tickers_accepted"]  # 27 tickers (ARM excluded)
@@ -449,7 +451,7 @@ def run(baseline_path: str, output_json: str, output_md: str,
     return results
 
 
-# ── CLI (R11) ──────────────────────────────────────────────────────────────────
+# ג”€ג”€ CLI (R11) ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€ג”€
 
 def main(argv=None) -> int:
     p = argparse.ArgumentParser(description="Phase 1 OOS event study (2025)")
