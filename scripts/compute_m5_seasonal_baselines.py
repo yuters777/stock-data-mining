@@ -28,10 +28,15 @@ import pandas as pd
 
 _SCRIPT_DIR = Path(__file__).resolve().parent
 _BASE = _SCRIPT_DIR.parent
-if str(_SCRIPT_DIR) not in sys.path:
-    sys.path.insert(0, str(_SCRIPT_DIR))
+# Ensure the repo root (so 'scripts.backtest_utils_extended' resolves) and
+# the scripts dir (for the legacy bare 'backtest_utils_extended' import)
+# are both on sys.path. PEP 420 namespace packages mean no __init__.py is
+# required in scripts/.
+for _p in (str(_BASE), str(_SCRIPT_DIR)):
+    if _p not in sys.path:
+        sys.path.insert(0, _p)
 
-from backtest_utils_extended import load_extended_data  # noqa: E402
+from scripts.backtest_utils_extended import load_extended_data  # noqa: E402
 
 
 # ── Universe (Sprint 1: 28 tickers, equity + SPY, per PI v39 / spec §3.1) ──
@@ -135,84 +140,66 @@ def resolve_ticker_path(ticker, data_dir='Fetched_Data'):
 
 # ── Pipeline primitives ──────────────────────────────────────────────────
 
-def _resolve_timestamp_column(df):
-    """Return the column name that carries the M5 timestamp.
-
-    load_extended_data() on the Windows operator machine yields a
-    tz-aware ET 'timestamp_ny' column (prompt spec contract). The
-    in-repo version yields a naive ET 'date' column. Accept either.
-    """
-    for candidate in ('timestamp_ny', 'date', 'datetime', 'Datetime'):
-        if candidate in df.columns:
-            return candidate
-    raise ValueError(
-        'No timestamp column found (expected timestamp_ny or date)'
-    )
-
-
-def _to_et_naive(series):
-    """Coerce a timestamp series to naive ET wall clock."""
-    s = pd.to_datetime(series, errors='coerce')
-    tz = getattr(s.dt, 'tz', None)
-    if tz is not None:
-        try:
-            s = s.dt.tz_convert('America/New_York')
-        except Exception:
-            pass
-        s = s.dt.tz_localize(None)
-    return s
-
-
 def prepare_ticker_frame(df, start_date, end_date):
     """Filter to RTH + train window, drop incomplete days, add slot_id /
     zone / bar metrics. Returns None if frame is empty after filtering.
+
+    Expected input columns (from load_extended_data):
+        date, open, high, low, close, volume, date_only, time_str,
+        hour, minute
     """
     if df is None or df.empty:
         return None
 
-    ts_col = _resolve_timestamp_column(df)
-    cols = [ts_col, 'open', 'high', 'low', 'close']
-    missing = [c for c in cols if c not in df.columns]
+    required = ['date', 'open', 'high', 'low', 'close',
+                'date_only', 'hour', 'minute']
+    missing = [c for c in required if c not in df.columns]
     if missing:
         raise ValueError('Missing required columns: {}'.format(missing))
 
-    work = df[cols].copy()
-    work = work.rename(columns={ts_col: '_ts'})
-    work['_ts'] = _to_et_naive(work['_ts'])
+    work = df.copy()
     for col in ('open', 'high', 'low', 'close'):
         work[col] = pd.to_numeric(work[col], errors='coerce')
-    work = work.dropna(subset=['_ts', 'open', 'high', 'low', 'close'])
+    work = work.dropna(
+        subset=['date', 'open', 'high', 'low', 'close',
+                'date_only', 'hour', 'minute']
+    )
     if work.empty:
         return None
 
-    hour = work['_ts'].dt.hour
-    minute = work['_ts'].dt.minute
-    tod = hour * 60 + minute
-
-    rth_mask = (tod >= RTH_START_MIN) & (tod < RTH_END_MIN)
+    # RTH mask — operator-confirmed explicit form.
+    rth_mask = (
+        ((work['hour'] == 9) & (work['minute'] >= 30))
+        | ((work['hour'] >= 10) & (work['hour'] < 16))
+    )
     work = work.loc[rth_mask].copy()
     if work.empty:
         return None
 
-    trading_date = work['_ts'].dt.date
-    work['trading_date'] = trading_date
-
+    # Trading-date filter on the ready-made date_only column.
     start_d = start_date.date()
     end_d = end_date.date()
-    work = work.loc[(trading_date >= start_d) & (trading_date <= end_d)].copy()
+    work['trading_date'] = work['date_only']
+    work = work.loc[
+        (work['trading_date'] >= start_d)
+        & (work['trading_date'] <= end_d)
+    ].copy()
     if work.empty:
         return None
 
+    # Drop incomplete trading days (!= 78 RTH bars).
     day_counts = work.groupby('trading_date').size()
     complete_days = day_counts[day_counts == SLOTS_PER_DAY].index
     work = work.loc[work['trading_date'].isin(complete_days)].copy()
     if work.empty:
         return None
 
-    work = work.sort_values(['trading_date', '_ts']).reset_index(drop=True)
+    work = work.sort_values(['trading_date', 'date']).reset_index(drop=True)
 
-    tod_f = work['_ts'].dt.hour * 60 + work['_ts'].dt.minute
-    work['slot_id'] = ((tod_f - RTH_START_MIN) // SLOT_WIDTH_MIN).astype(int)
+    # Slot formula — operator-confirmed: 09:30 → 0, 15:55 → 77.
+    work['slot_id'] = (
+        ((work['hour'] - 9) * 60 + work['minute'] - 30) // SLOT_WIDTH_MIN
+    ).astype(int)
     work['zone'] = work['slot_id'].map(slot_zone)
 
     open_safe = work['open'].replace(0, np.nan)
@@ -272,7 +259,7 @@ def compute_per_zone_distribution(work):
             for _, day_bars in bars.groupby('trading_date', sort=True):
                 if len(day_bars) != expected:
                     continue
-                day_bars = day_bars.sort_values('_ts')
+                day_bars = day_bars.sort_values('date')
                 first_open = float(day_bars.iloc[0]['open'])
                 if first_open == 0 or math.isnan(first_open):
                     continue
