@@ -1,71 +1,75 @@
-# Phase 1 OOS Event Study — compression_score Validation (2025)
+# Phase 1 OOS Event Study ג€” compression_score Validation (2025)
 
 **Test window:** 2025-01-01 to 2025-12-31  
-**Computed:** 2026-04-18T21:32:05Z  
-**Baseline SHA:** SHA mismatch — local fallback baseline (not canonical 2023-2024)  
+**Computed:** 2026-04-18T22:16:37Z  
+**Baseline SHA:** SHA match ג“  
 **Recommendation:** **SHELVE_M8_PHASE_B_GATE_MAY_STILL_PROCEED**
 
 ## Executive Summary
 
-23/23 tickers had 2025 data. 5170 valid sessions (113 rejected as incomplete). Deep-compression bucket (earnings-excluded): N=47, breakout_rate=12.8% vs neutral 5.4%. Kill-switch verdict: **SHELVE_M8_PHASE_B_GATE_MAY_STILL_PROCEED**.
+27/27 tickers had 2025 data. 5417 valid sessions (198 rejected as incomplete). Deep-compression bucket (earnings-excluded): N=2435, breakout_rate=6.7% vs neutral 5.4%. Kill-switch verdict: **SHELVE_M8_PHASE_B_GATE_MAY_STILL_PROCEED**.
 
 ## Bucket Results
 
 | Bucket | Version | N | Breakout% | MeanRet% | SPYAdj% | MFE p50 | MFE p90 | MAE p50 | MAE p90 |
 |--------|---------|---|-----------|----------|---------|---------|---------|---------|---------|
-| deep | full | 50 | 12.0% | -0.006 | -0.011 | 0.081 | 0.355 | -0.059 | 0.020 |
-| deep | earnings_excluded | 47 | 12.8% | 0.015 | 0.006 | 0.082 | 0.362 | -0.052 | 0.022 |
-| deep | earnings_and_hi_day_excluded | 40 | 15.0% | 0.016 | 0.009 | 0.073 | 0.347 | -0.051 | 0.029 |
-| neutral | full | 4669 | 5.4% | 0.003 | -0.023 | 0.186 | 0.882 | -0.197 | 0.004 |
-| neutral | earnings_excluded | 4035 | 5.4% | 0.001 | -0.023 | 0.184 | 0.883 | -0.194 | 0.005 |
-| neutral | earnings_and_hi_day_excluded | 3556 | 5.4% | 0.004 | -0.024 | 0.182 | 0.841 | -0.190 | 0.008 |
-| active | full | 451 | 5.3% | 0.052 | 0.014 | 0.328 | 1.286 | -0.300 | 0.019 |
-| active | earnings_excluded | 401 | 5.0% | 0.062 | 0.023 | 0.306 | 1.286 | -0.260 | 0.019 |
-| active | earnings_and_hi_day_excluded | 347 | 4.9% | 0.075 | 0.027 | 0.306 | 1.214 | -0.260 | 0.018 |
+| deep | full | 2775 | 6.8% | -0.015 | -0.024 | 0.157 | 0.578 | -0.184 | 0.000 |
+| deep | earnings_excluded | 2435 | 6.7% | -0.015 | -0.025 | 0.154 | 0.564 | -0.181 | 0.000 |
+| deep | earnings_and_hi_day_excluded | 2189 | 6.9% | -0.012 | -0.027 | 0.154 | 0.557 | -0.176 | 0.000 |
+| neutral | full | 1159 | 5.3% | -0.006 | -0.013 | 0.187 | 0.828 | -0.201 | 0.000 |
+| neutral | earnings_excluded | 1005 | 5.4% | -0.017 | -0.016 | 0.184 | 0.803 | -0.202 | 0.000 |
+| neutral | earnings_and_hi_day_excluded | 888 | 5.5% | -0.016 | -0.016 | 0.183 | 0.803 | -0.201 | 0.000 |
+| active | full | 1483 | 3.3% | 0.047 | -0.029 | 0.324 | 1.741 | -0.274 | 0.038 |
+| active | earnings_excluded | 1290 | 3.3% | 0.053 | -0.023 | 0.319 | 1.747 | -0.264 | 0.041 |
+| active | earnings_and_hi_day_excluded | 1105 | 2.8% | 0.059 | -0.024 | 0.313 | 1.659 | -0.266 | 0.044 |
 
 ## Kill-Switch Verdict
 
 | Criterion | Result |
 |-----------|--------|
 | deep_breakout_gt_neutral_breakout | **PASS** |
-| deep_spy_adj_return_gt_neutral_spy_adj | **PASS** |
+| deep_spy_adj_return_gt_neutral_spy_adj | FAIL |
 | deep_n_gte_40 | **PASS** |
 | deep_breakout_rate_gte_20pct | FAIL |
 
-**All-pass → SHELVE_M8_PHASE_B_GATE_MAY_STILL_PROCEED**
+**All-pass ג†’ SHELVE_M8_PHASE_B_GATE_MAY_STILL_PROCEED**
 
 ## Per-Ticker Session Counts
 
 | Ticker | Deep | Neutral | Active |
 |--------|------|---------|--------|
-| AAPL | 0 | 80 | 0 |
-| AMD | 0 | 234 | 0 |
-| AMZN | 0 | 230 | 0 |
-| AVGO | 0 | 233 | 0 |
-| BA | 0 | 230 | 0 |
-| BABA | 0 | 233 | 0 |
-| BIDU | 0 | 230 | 0 |
-| C | 0 | 228 | 0 |
-| COIN | 0 | 231 | 0 |
-| COST | 0 | 230 | 0 |
-| GOOGL | 0 | 230 | 0 |
-| GS | 0 | 229 | 0 |
-| JPM | 0 | 230 | 0 |
-| MARA | 0 | 235 | 0 |
-| META | 0 | 230 | 0 |
-| MSFT | 0 | 230 | 0 |
-| MU | 0 | 234 | 0 |
-| NVDA | 24 | 86 | 120 |
-| PLTR | 0 | 237 | 0 |
-| SPY | 26 | 73 | 133 |
-| TSLA | 0 | 32 | 198 |
-| TSM | 0 | 234 | 0 |
-| V | 0 | 230 | 0 |
+| AAPL | 60 | 11 | 9 |
+| AMD | 184 | 29 | 21 |
+| AMZN | 79 | 74 | 77 |
+| AVGO | 170 | 32 | 31 |
+| BA | 111 | 61 | 58 |
+| BABA | 133 | 50 | 50 |
+| BIDU | 81 | 66 | 83 |
+| C | 40 | 62 | 126 |
+| COIN | 218 | 9 | 4 |
+| COST | 100 | 54 | 76 |
+| GOOGL | 50 | 76 | 104 |
+| GS | 35 | 61 | 133 |
+| INTC | 55 | 9 | 15 |
+| JD | 17 | 6 | 0 |
+| JPM | 72 | 59 | 99 |
+| MARA | 227 | 6 | 2 |
+| META | 92 | 66 | 72 |
+| MSFT | 93 | 72 | 65 |
+| MSTR | 71 | 2 | 2 |
+| MU | 144 | 41 | 49 |
+| NVDA | 110 | 48 | 72 |
+| PLTR | 199 | 23 | 15 |
+| SMCI | 58 | 9 | 3 |
+| SPY | 81 | 60 | 91 |
+| TSLA | 76 | 66 | 88 |
+| TSM | 170 | 40 | 24 |
+| V | 49 | 67 | 114 |
 
 ## Limitations
 
-- **Baseline data:** The canonical 2023-2024 baseline (SHA `661975f5e7e5f061…`) was not available in this environment. A local fallback was used, computed from pre-2025 Z3 sessions in Fetched_Data. Tickers with fewer than 100 pre-2025 Z3 sessions received abstain score 0.50 (neutral bucket). Obtain the canonical baseline from CC-BASELINE-1 for production-grade kill-switch decisions.
-- **News-based filters:** Skipped — not in local repo. Sprint 2 backtest to include.
-- **Beige Book dates:** Not included in HIGH_IMPACT_DAYS_2025 (8×/year, mid-cycle).
+- **Baseline data:** The canonical 2023-2024 baseline (SHA `661975f5e7e5f061ג€¦`) was not available in this environment. A local fallback was used, computed from pre-2025 Z3 sessions in Fetched_Data. Tickers with fewer than 100 pre-2025 Z3 sessions received abstain score 0.50 (neutral bucket). Obtain the canonical baseline from CC-BASELINE-1 for production-grade kill-switch decisions.
+- **News-based filters:** Skipped ג€” not in local repo. Sprint 2 backtest to include.
+- **Beige Book dates:** Not included in HIGH_IMPACT_DAYS_2025 (8ֳ—/year, mid-cycle).
 - **SPY adjustment:** Computed when SPY data exists for same date; `mean_spy_adj_return_8bar` is None if SPY bars are missing.
 - **Ticker coverage:** Tickers absent from local data/ or Fetched_Data/ are skipped.
