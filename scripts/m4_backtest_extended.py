@@ -18,6 +18,8 @@ from backtest_utils_extended import (
     compute_indicators,
     flag_corrupt,
     apply_ema21_warmup_mask,
+    load_earnings,
+    is_earnings_window,
 )
 
 # 22 tickers that have _m5_full.csv in Fetched_Data — matches m4_backtest_5yr.py baseline.
@@ -123,7 +125,8 @@ def _compute_stats(trades: list) -> dict:
 # ── Per-ticker backtest ────────────────────────────────────────────────────────
 
 def run_m4_single_ticker(ticker: str, bars: pd.DataFrame,
-                         vix_df: pd.DataFrame) -> list:
+                         vix_df: pd.DataFrame,
+                         earnings_dict: dict = None, buffer_days: int = 0) -> list:
     """Run M4 backtest on a single ticker's pre-built 4H bars.
 
     M4 Entry (ALL must be true):
@@ -189,6 +192,11 @@ def run_m4_single_ticker(ticker: str, bars: pd.DataFrame,
         if np.isnan(vix_val) or vix_val < 25.0:
             i += 1
             continue
+
+        if buffer_days > 0 and earnings_dict is not None:
+            if is_earnings_window(ticker, bar_date, earnings_dict, buffer_days=buffer_days):
+                i += 1
+                continue  # Retroactive filter: skip valid M4 signal due to earnings proximity
 
         # ── All gates passed — open trade ──────────────────────────────────
         entry_price = closes[i]
@@ -256,7 +264,8 @@ def run_m4_single_ticker(ticker: str, bars: pd.DataFrame,
 
 # ── Multi-ticker runner ────────────────────────────────────────────────────────
 
-def run_m4_backtest(mode: str = 'extended', vix_df: pd.DataFrame = None) -> list:
+def run_m4_backtest(mode: str = 'extended', vix_df: pd.DataFrame = None,
+                    earnings_dict: dict = None, buffer_days: int = 0) -> list:
     """Run M4 backtest for all tickers in the given bar mode.
 
     Parameters
@@ -286,7 +295,8 @@ def run_m4_backtest(mode: str = 'extended', vix_df: pd.DataFrame = None) -> list
             bars['ema21'] = apply_ema21_warmup_mask(bars)
         else:
             bars = compute_indicators(bars)  # static 25-row warmup for extended
-        trades = run_m4_single_ticker(ticker, bars, vix_df)
+        trades = run_m4_single_ticker(ticker, bars, vix_df,
+                                       earnings_dict=earnings_dict, buffer_days=buffer_days)
         all_trades.extend(trades)
         print(f'{len(trades)} trades')
 
@@ -393,11 +403,17 @@ if __name__ == '__main__':
     print(f'  VIX: {len(vix_df)} rows, '
           f'{vix_df["date"].min()} to {vix_df["date"].max()}')
 
+    print('\nLoading earnings data...')
+    earnings_dict = load_earnings()
+    print(f'  Earnings: {len(earnings_dict)} tickers covered.')
+
     print('\n--- Mode: EXTENDED (4 bars/day) ---')
-    trades_ext = run_m4_backtest('extended', vix_df=vix_df)
+    trades_ext = run_m4_backtest('extended', vix_df=vix_df,
+                                 earnings_dict=earnings_dict, buffer_days=0)
 
     print('\n--- Mode: RTH (2 bars/day) ---')
-    trades_rth = run_m4_backtest('rth', vix_df=vix_df)
+    trades_rth = run_m4_backtest('rth', vix_df=vix_df,
+                                 earnings_dict=earnings_dict, buffer_days=0)
 
     stats_ext = _compute_stats(trades_ext)
     stats_rth = _compute_stats(trades_rth)

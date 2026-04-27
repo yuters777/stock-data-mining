@@ -6,12 +6,16 @@ Entry: trigger bar close. Exit: first 4H close >= EMA21 or bar 10 hard max.
 """
 
 import os
+import sys
 import json
 import glob
 import warnings
 import numpy as np
 import pandas as pd
 from urllib.request import urlopen
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from backtest_utils_extended import load_earnings, is_earnings_window
 
 warnings.filterwarnings("ignore")
 
@@ -288,7 +292,8 @@ def prior_vix(bar_date, vix: pd.Series):
 
 
 # ── Core backtest (main signal) ─────────────────────────────────────────────
-def backtest_ticker(ticker: str, fpath: str, vix: pd.Series) -> list[dict]:
+def backtest_ticker(ticker: str, fpath: str, vix: pd.Series,
+                    earnings_dict: dict = None, buffer_days: int = 0) -> list[dict]:
     try:
         raw = pd.read_csv(fpath)
     except Exception:
@@ -338,6 +343,11 @@ def backtest_ticker(ticker: str, fpath: str, vix: pd.Series) -> list[dict]:
         if np.isnan(emas[i]):   # EMA21 warmup zone — no valid exit reference
             i += 1
             continue
+
+        if buffer_days > 0 and earnings_dict is not None:
+            if is_earnings_window(ticker, dates[i], earnings_dict, buffer_days=buffer_days):
+                i += 1
+                continue  # Retroactive filter: skip valid M4 signal due to earnings proximity
 
         # ── Trigger fired ──
         entry_price = closes[i]
@@ -498,10 +508,13 @@ def main():
     tickers = get_tickers()
     print(f"  Tickers ({len(tickers)}): {[t for t, _ in tickers]}\n")
 
+    earnings_dict = load_earnings()
+
     # ── Main backtest ──
     all_trades: list[dict] = []
     for ticker, fpath in tickers:
-        trades = backtest_ticker(ticker, fpath, vix)
+        trades = backtest_ticker(ticker, fpath, vix,
+                                 earnings_dict=earnings_dict, buffer_days=0)
         print(f"  {ticker:6s}: {len(trades)} trades")
         all_trades.extend(trades)
 
