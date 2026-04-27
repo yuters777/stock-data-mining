@@ -98,6 +98,77 @@ def _split_trades(trades: list) -> tuple:
     return is_trades, oos_trades
 
 
+# ── Diagnostic helpers (crossed-earnings, per-ticker, decision rule) ──────────
+
+def _annotate_crossed_earnings(trades: list, earnings_dict: dict) -> None:
+    """Mutate `trades` in place: add 'crossed_earnings' bool to each trade.
+
+    A trade crosses earnings if any earnings date for the ticker falls in
+    [entry_date, exit_date] inclusive (string comparison on ISO YYYY-MM-DD).
+    Skipped trades (exit_date is None) get crossed_earnings=False.
+    """
+    iso_cache: dict = {}
+    for t in trades:
+        ticker         = t.get('ticker')
+        entry_date_str = t.get('entry_date')
+        exit_date_str  = t.get('exit_date')
+        if not entry_date_str or not exit_date_str:
+            t['crossed_earnings'] = False
+            continue
+        if ticker not in iso_cache:
+            iso_cache[ticker] = [
+                ed.isoformat() if hasattr(ed, 'isoformat') else str(ed)[:10]
+                for ed in earnings_dict.get(ticker, [])
+            ]
+        crossed = False
+        for ed_str in iso_cache[ticker]:
+            if entry_date_str <= ed_str <= exit_date_str:
+                crossed = True
+                break
+        t['crossed_earnings'] = crossed
+
+
+def _crossed_stats(trades: list) -> dict:
+    """Stats over the subset of executed trades that crossed earnings.
+
+    Returns {'count': int, 'PF': float | None}; PF is None when count < 5.
+    """
+    crossed = [t for t in trades
+               if t.get('crossed_earnings')
+               and t.get('exit_reason') != 'SKIP_MAX_CONCURRENT'
+               and pd.notna(t.get('return_pct'))]
+    n = len(crossed)
+    if n < 5:
+        return {'count': n, 'PF': None}
+    rets   = np.array([t['return_pct'] for t in crossed], dtype=float)
+    wins   = rets[rets > 0]
+    losses = rets[rets <= 0]
+    pf     = float(wins.sum() / abs(losses.sum())) if losses.sum() != 0 else float('inf')
+    return {'count': n, 'PF': round(pf, 2) if not math.isinf(pf) else float('inf')}
+
+
+def _per_ticker_stats(trades: list) -> dict:
+    """Per-ticker {N, PF} over executed trades."""
+    by_ticker: dict = {}
+    for t in trades:
+        if t.get('exit_reason') == 'SKIP_MAX_CONCURRENT':
+            continue
+        if not pd.notna(t.get('return_pct')):
+            continue
+        by_ticker.setdefault(t['ticker'], []).append(t['return_pct'])
+    result: dict = {}
+    for ticker, rets in by_ticker.items():
+        arr    = np.array(rets, dtype=float)
+        wins   = arr[arr > 0]
+        losses = arr[arr <= 0]
+        pf     = float(wins.sum() / abs(losses.sum())) if losses.sum() != 0 else float('inf')
+        result[ticker] = {
+            'N':  len(arr),
+            'PF': round(pf, 2) if not math.isinf(pf) else float('inf'),
+        }
+    return result
+
+
 # ── Regression check ───────────────────────────────────────────────────────────
 
 def _check_regression(results_rth: list, results_ext: list) -> bool:
@@ -144,13 +215,18 @@ def _primary_table(results: list, n0: int) -> list:
     """Build the main sweep table rows."""
     lines = [
         '| filter_days | N (full) | PF (full) | WR (full) |'
-        ' N (IS) | PF (IS) | N (OOS) | PF (OOS) | Blocked vs filter=0 |',
+        ' N (IS) | PF (IS) | N (OOS) | PF (OOS) | Blocked vs filter=0 |'
+        ' Crossed_count | Crossed_PF |',
         '|-------------|----------|-----------|-----------|'
-        '--------|---------|---------|----------|---------------------|',
+        '--------|---------|---------|----------|---------------------|'
+        '---------------|------------|',
     ]
     for r in results:
         blocked = n0 - r['full']['N'] if (r['buffer_days'] != 0 and n0 > 0) else 0
         blocked_str = '0 (baseline)' if r['buffer_days'] == 0 else str(blocked)
+        crossed       = r.get('crossed', {'count': 0, 'PF': None})
+        crossed_count = crossed['count']
+        crossed_pf    = '—' if crossed['PF'] is None else _fmt(crossed['PF'], '.2f')
         lines.append(
             f'| {r["buffer_days"]}'
             f' | {r["full"]["N"]}'
@@ -160,9 +236,129 @@ def _primary_table(results: list, n0: int) -> list:
             f' | {_fmt(r["is"]["PF"], ".2f")}'
             f' | {r["oos"]["N"]}'
             f' | {_fmt(r["oos"]["PF"], ".2f")}'
-            f' | {blocked_str} |'
+            f' | {blocked_str}'
+            f' | {crossed_count}'
+            f' | {crossed_pf} |'
         )
     return lines
+
+
+def _per_ticker_table(trades_f0: list, trades_f6: list) -> list:
+    """Build per-ticker breakdown rows comparing filter=0 vs filter=6."""
+    s0 = _per_ticker_stats(trades_f0)
+    s6 = _per_ticker_stats(trades_f6)
+
+    rows = []
+    for ticker in set(s0) | set(s6):
+        n0 = s0.get(ticker, {}).get('N', 0)
+        n6 = s6.get(ticker, {}).get('N', 0)
+        if n0 < 5 and n6 < 5:
+            continue
+        pf0 = s0.get(ticker, {}).get('PF', float('nan'))
+        pf6 = s6.get(ticker, {}).get('PF', float('nan'))
+
+        d_trades = n0 - n6
+        if (isinstance(pf0, float) and (math.isnan(pf0) or math.isinf(pf0))) or \
+           (isinstance(pf6, float) and (math.isnan(pf6) or math.isinf(pf6))):
+            d_pf = float('nan')
+        else:
+            d_pf = pf0 - pf6
+
+        rows.append({
+            'ticker':   ticker,
+            'n0':       n0,
+            'pf0':      pf0,
+            'n6':       n6,
+            'pf6':      pf6,
+            'd_trades': d_trades,
+            'd_pf':     d_pf,
+        })
+
+    rows.sort(key=lambda r: -abs(r['d_trades']))
+
+    lines = [
+        '| Ticker | N (f=0) | PF (f=0) | N (f=6) | PF (f=6) | Δ trades | Δ PF |',
+        '|--------|---------|----------|---------|----------|----------|------|',
+    ]
+    for r in rows:
+        lines.append(
+            f'| {r["ticker"]}'
+            f' | {r["n0"]}'
+            f' | {_fmt(r["pf0"], ".2f")}'
+            f' | {r["n6"]}'
+            f' | {_fmt(r["pf6"], ".2f")}'
+            f' | {r["d_trades"]:+d}'
+            f' | {_fmt(r["d_pf"], "+.2f")} |'
+        )
+    return lines
+
+
+def _decide_hypothesis(results: list) -> tuple:
+    """Decide which pre-registered hypothesis the OOS PF data supports.
+
+    H1 (filter justified): OOS PF(f=6) ≥ 1.15 × OOS PF(f=0) AND OOS max at f=6
+    H2 (filter unnecessary): OOS PF(f=0) ≥ 0.95 × OOS PF(f=6) AND OOS max at f=0
+    H3 (filter optimum elsewhere): OOS PF maximizes at filter ∉ {0, 6}
+
+    Returns (label, rationale_str).
+    """
+    def _safe_pf(v):
+        if isinstance(v, float) and (math.isnan(v) or math.isinf(v)):
+            return None
+        return float(v)
+
+    by_buf  = {r['buffer_days']: r for r in results}
+    pf0_raw = by_buf.get(0, {}).get('oos', {}).get('PF', float('nan'))
+    pf6_raw = by_buf.get(6, {}).get('oos', {}).get('PF', float('nan'))
+    pf0     = _safe_pf(pf0_raw)
+    pf6     = _safe_pf(pf6_raw)
+
+    best     = max(results, key=_oos_pf)
+    best_buf = best['buffer_days']
+    best_pf  = _safe_pf(best['oos']['PF'])
+
+    if best_buf not in (0, 6):
+        return (
+            'H3',
+            f'OOS PF maximizes at filter={best_buf} '
+            f'(PF={_fmt(best["oos"]["PF"], ".2f")}), not at 0 or 6.',
+        )
+
+    if pf0 is None or pf6 is None:
+        return (
+            'INDETERMINATE',
+            f'OOS PF unavailable for f=0 or f=6 '
+            f'(f=0={_fmt(pf0_raw, ".2f")}, f=6={_fmt(pf6_raw, ".2f")}).',
+        )
+
+    if best_buf == 6 and pf6 >= 1.15 * pf0:
+        return (
+            'H1',
+            f'OOS PF(f=6)={pf6:.2f} ≥ 1.15 × OOS PF(f=0)={pf0:.2f} '
+            f'(threshold {1.15 * pf0:.2f}); OOS max at f=6.',
+        )
+
+    if best_buf == 0 and pf0 >= 0.95 * pf6:
+        return (
+            'H2',
+            f'OOS PF(f=0)={pf0:.2f} ≥ 0.95 × OOS PF(f=6)={pf6:.2f} '
+            f'(threshold {0.95 * pf6:.2f}); OOS max at f=0.',
+        )
+
+    return (
+        'NONE',
+        f'No hypothesis cleanly supported '
+        f'(OOS PF f=0={pf0:.2f}, f=6={pf6:.2f}, max at f={best_buf} '
+        f'PF={_fmt(best_pf, ".2f") if best_pf is not None else "—"}).',
+    )
+
+
+def _oos_pf(r: dict) -> float:
+    """Sort key: OOS PF, with nan/inf coerced to -1 so they don't win."""
+    v = r['oos']['PF']
+    if isinstance(v, float) and (math.isnan(v) or math.isinf(v)):
+        return -1.0
+    return float(v)
 
 
 def _extended_metrics_table(results: list) -> list:
@@ -189,6 +385,7 @@ def _build_sweep_md(
     n0_ext: int,
     best_rth: dict,
     best_ext: dict,
+    captured_trades: dict,
 ) -> str:
     lines = [
         '# M7 Earnings Filter Sensitivity Sweep',
@@ -233,6 +430,40 @@ def _build_sweep_md(
         '',
         f'**EXT: filter_days={best_ext["buffer_days"]} maximizes OOS PF'
         f' ({_fmt(best_ext["oos"]["PF"], ".2f")})**',
+        '',
+        '---',
+        '',
+        '## Per-ticker breakdown: filter=0 vs filter=6 (RTH mode)',
+        '',
+    ]
+    lines += _per_ticker_table(
+        captured_trades['rth'].get(0, []),
+        captured_trades['rth'].get(6, []),
+    )
+    lines += [
+        '',
+        '## Per-ticker breakdown: filter=0 vs filter=6 (EXT mode)',
+        '',
+    ]
+    lines += _per_ticker_table(
+        captured_trades['ext'].get(0, []),
+        captured_trades['ext'].get(6, []),
+    )
+
+    rth_label, rth_rationale = _decide_hypothesis(results_rth)
+    ext_label, ext_rationale = _decide_hypothesis(results_ext)
+    lines += [
+        '',
+        '---',
+        '',
+        '## Decision per pre-registered rule',
+        '',
+        '- H1 (filter justified): PF(f=6) ≥ 1.15 × PF(f=0) AND OOS confirms',
+        '- H2 (filter unnecessary): PF(f=0) ≥ 0.95 × PF(f=6) AND OOS confirms',
+        '- H3 (filter optimum elsewhere): PF maximizes at filter ≠ 6',
+        '',
+        f'- **RTH**: {rth_label} — {rth_rationale}',
+        f'- **EXT**: {ext_label} — {ext_rationale}',
         '',
         '---',
         '',
@@ -305,6 +536,12 @@ if __name__ == '__main__':
     n0_rth = 0
     n0_ext = 0
 
+    # Trades captured for filter=0 and filter=6 (used for per-ticker breakdown)
+    captured_trades = {
+        'rth': {0: [], 6: []},
+        'ext': {0: [], 6: []},
+    }
+
     for buf in FILTER_VALUES:
         print(f'\n{SEP}')
         print(f'filter_days = {buf}')
@@ -329,45 +566,57 @@ if __name__ == '__main__':
 
         # RTH
         trades_rth = run_m7_backtest(all_rth_sigs, daily_data, bars_rth, vix_df)
+        _annotate_crossed_earnings(trades_rth, earnings)
         is_rth, oos_rth = _split_trades(trades_rth)
         rec_rth = {
             'buffer_days': buf,
-            'full': _compute_stats(trades_rth),
-            'is':   _compute_stats(is_rth),
-            'oos':  _compute_stats(oos_rth),
+            'full':    _compute_stats(trades_rth),
+            'is':      _compute_stats(is_rth),
+            'oos':     _compute_stats(oos_rth),
+            'crossed': _crossed_stats(trades_rth),
         }
         results_rth.append(rec_rth)
         if buf == 0:
             n0_rth = rec_rth['full']['N']
+        if buf in captured_trades['rth']:
+            captured_trades['rth'][buf] = list(trades_rth)
         print(
             f'  RTH  full: N={rec_rth["full"]["N"]}, '
             f'PF={_fmt(rec_rth["full"]["PF"], ".2f")}, '
             f'WR={rec_rth["full"]["WR"]:.1f}%  '
             f'| IS: N={rec_rth["is"]["N"]} PF={_fmt(rec_rth["is"]["PF"], ".2f")}'
             f'  OOS: N={rec_rth["oos"]["N"]} PF={_fmt(rec_rth["oos"]["PF"], ".2f")}'
+            f'  | crossed: N={rec_rth["crossed"]["count"]} '
+            f'PF={"—" if rec_rth["crossed"]["PF"] is None else _fmt(rec_rth["crossed"]["PF"], ".2f")}'
         )
 
         # EXT
         trades_ext = run_m7_backtest(all_ext_sigs, daily_data, bars_ext, vix_df)
+        _annotate_crossed_earnings(trades_ext, earnings)
         is_ext, oos_ext = _split_trades(trades_ext)
         rec_ext = {
             'buffer_days': buf,
-            'full': _compute_stats(trades_ext),
-            'is':   _compute_stats(is_ext),
-            'oos':  _compute_stats(oos_ext),
+            'full':    _compute_stats(trades_ext),
+            'is':      _compute_stats(is_ext),
+            'oos':     _compute_stats(oos_ext),
+            'crossed': _crossed_stats(trades_ext),
         }
         results_ext.append(rec_ext)
         if buf == 0:
             n0_ext = rec_ext['full']['N']
+        if buf in captured_trades['ext']:
+            captured_trades['ext'][buf] = list(trades_ext)
         print(
             f'  EXT  full: N={rec_ext["full"]["N"]}, '
             f'PF={_fmt(rec_ext["full"]["PF"], ".2f")}, '
             f'WR={rec_ext["full"]["WR"]:.1f}%  '
             f'| IS: N={rec_ext["is"]["N"]} PF={_fmt(rec_ext["is"]["PF"], ".2f")}'
             f'  OOS: N={rec_ext["oos"]["N"]} PF={_fmt(rec_ext["oos"]["PF"], ".2f")}'
+            f'  | crossed: N={rec_ext["crossed"]["count"]} '
+            f'PF={"—" if rec_ext["crossed"]["PF"] is None else _fmt(rec_ext["crossed"]["PF"], ".2f")}'
         )
 
-        # Save per-filter CSV (RTH and EXT combined)
+        # Save per-filter CSV (RTH and EXT combined; includes crossed_earnings col)
         combined = trades_rth + trades_ext
         if combined:
             csv_path = os.path.join(OUT_DIR, f'm7_trades_filter_{buf}.csv')
@@ -393,10 +642,6 @@ if __name__ == '__main__':
     print(f'\n  {"filter_days":>12}  {"OOS PF (RTH)":>14}  {"OOS PF (EXT)":>14}')
     print('  ' + '-' * 46)
 
-    def _oos_pf(r):
-        v = r['oos']['PF']
-        return v if (isinstance(v, float) and not math.isnan(v) and not math.isinf(v)) else -1.0
-
     best_rth = max(results_rth, key=_oos_pf)
     best_ext = max(results_ext, key=_oos_pf)
 
@@ -419,7 +664,12 @@ if __name__ == '__main__':
     )
 
     # ── Write markdown report ─────────────────────────────────────────────────
-    md = _build_sweep_md(results_rth, results_ext, n0_rth, n0_ext, best_rth, best_ext)
+    md = _build_sweep_md(
+        results_rth, results_ext,
+        n0_rth, n0_ext,
+        best_rth, best_ext,
+        captured_trades,
+    )
     md_path = os.path.join(OUT_DIR, 'm7_sweep.md')
     with open(md_path, 'w', encoding='utf-8') as f:
         f.write(md)
