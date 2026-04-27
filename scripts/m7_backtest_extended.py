@@ -267,6 +267,7 @@ def detect_m7_signals(
     vix_df: pd.DataFrame,
     earnings: dict,
     rs_ranks: dict,
+    buffer_days: int = 6,
 ) -> tuple:
     """Detect M7 momentum-pullback signals for one ticker.
 
@@ -337,10 +338,14 @@ def detect_m7_signals(
             rs_info  = rs_ranks.get((d, ticker))   # (ord_rank, n) or None
             high_60d = daily.at[d, 'high_60d']
 
+            earnings_blocked = (
+                buffer_days > 0
+                and is_earnings_window(ticker, d, earnings, buffer_days=buffer_days)
+            )
             if (rs_info is not None
                     and not np.isnan(vix_val) and vix_val < 20.0
                     and not pd.isna(high_60d) and close >= 0.95 * float(high_60d)
-                    and not is_earnings_window(ticker, d, earnings)):
+                    and not earnings_blocked):
 
                 rs_ord, rs_n = rs_info
                 rs_threshold = math.ceil(rs_n * 0.30)   # dynamic top-30%
