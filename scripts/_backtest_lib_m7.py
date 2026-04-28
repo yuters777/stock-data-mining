@@ -25,6 +25,87 @@ from scripts._earnings_filter import is_in_earnings_window
 
 # Production frozen parameters (DR_FROZEN_M7 line 165)
 _MAX_HOLD_DAYS = 6
+
+
+class ActiveTradeTracker:
+    """Mirrors production has_active_module4 / has_active_module6 lookups
+    (module7.py:908, 921, market-engine HEAD a673359) for backtest context.
+    Supports multiple trades per ticker across the full date range.
+    """
+
+    def __init__(self) -> None:
+        self._m4: Dict[str, List[dict]] = {}
+        self._m6: Dict[str, List[dict]] = {}
+
+    def register_m4(self, ticker: str, entry: Date, exit_date: Date) -> None:
+        self._m4.setdefault(ticker, []).append({"entry_date": entry, "exit_date": exit_date})
+
+    def register_m6(self, ticker: str, entry: Date, exit_date: Date) -> None:
+        self._m6.setdefault(ticker, []).append({"entry_date": entry, "exit_date": exit_date})
+
+    def has_active_m4(self, ticker: str, date_et: Date) -> bool:
+        for t in self._m4.get(ticker, []):
+            if t["entry_date"] <= date_et <= t["exit_date"]:
+                return True
+        return False
+
+    def has_active_m6(self, ticker: str, date_et: Date) -> bool:
+        for t in self._m6.get(ticker, []):
+            if t["entry_date"] <= date_et <= t["exit_date"]:
+                return True
+        return False
+
+
+class M7PullbackState:
+    """Multi-bar pullback state tracking per ticker.
+    Production uses pullback_active, pre_pullback_close, pullback_low, pullback_bars
+    fields per ticker (module7.py:880-945, market-engine HEAD a673359).
+    """
+
+    def __init__(self) -> None:
+        self.states: Dict[str, dict] = {}
+
+    def update(
+        self,
+        ticker: str,
+        daily_close: float,
+        ema21_daily: float,
+        prior_close: Optional[float],
+    ) -> Optional[dict]:
+        """Update pullback state for ticker. Returns recovery snapshot dict
+        (with recovery_triggered=True and pullback_bars count) when recovery fires,
+        else None. Entry requires pullback_bars >= 2."""
+        s = self.states.setdefault(ticker, {
+            "pullback_active": False,
+            "pre_pullback_close": None,
+            "pullback_low": None,
+            "pullback_bars": 0,
+        })
+
+        if not s["pullback_active"]:
+            if prior_close is not None and daily_close < prior_close and daily_close < ema21_daily:
+                s["pullback_active"] = True
+                s["pre_pullback_close"] = prior_close
+                s["pullback_low"] = daily_close
+                s["pullback_bars"] = 1
+            return None
+
+        # Pullback in progress
+        if daily_close < s["pullback_low"]:
+            s["pullback_low"] = daily_close
+        s["pullback_bars"] += 1
+
+        # Recovery: close > prior AND > ema21
+        if prior_close is not None and daily_close > prior_close and daily_close > ema21_daily:
+            result = dict(s)
+            result["recovery_triggered"] = True
+            s["pullback_active"] = False
+            s["pre_pullback_close"] = None
+            s["pullback_low"] = None
+            s["pullback_bars"] = 0
+            return result
+
+        return None
 _DISTANCE_THRESHOLD = -5.0  # pullback ≤ -5% from 60d high
 _TOP_PCT = 30
 _RS_LOOKBACK = 20
@@ -88,6 +169,8 @@ def run_module7_backtest(
     data_root: Path,
     earnings_df: pd.DataFrame,
     spy_data_root: Optional[Path] = None,
+    m4_trades: Optional[List[Dict]] = None,
+    m6_trades: Optional[List[Dict]] = None,
 ) -> List[Dict]:
     """Run M7 RS Leader Pullback backtest with parameterized earnings buffer.
 
@@ -120,6 +203,26 @@ def run_module7_backtest(
         d for df in daily_bars.values() for d in df["date_et"].tolist()
         if start_dt <= d <= end_dt
     ))
+
+    # Build active-trade trackers (Fix 3.2 — production module7.py:907-931)
+    active_tracker = ActiveTradeTracker()
+    if m4_trades:
+        for t in m4_trades:
+            active_tracker.register_m4(
+                t["ticker"],
+                pd.Timestamp(t["entry_date_et"]).date(),
+                pd.Timestamp(t["exit_date_et"]).date(),
+            )
+    if m6_trades:
+        for t in m6_trades:
+            active_tracker.register_m6(
+                t["ticker"],
+                pd.Timestamp(t["entry_date_et"]).date(),
+                pd.Timestamp(t["exit_date_et"]).date(),
+            )
+
+    # Multi-bar pullback state (Fix 3.3)
+    pullback_tracker = M7PullbackState()
 
     # Open positions: list of dicts
     open_positions: List[Dict] = []
@@ -174,11 +277,27 @@ def run_module7_backtest(
 
         open_positions = still_open
 
+        # ── Update pullback state for ALL tickers every bar (Fix 3.3) ───────
+        daily_pullback: Dict[str, Optional[dict]] = {}
+        for ticker in universe:
+            if ticker not in daily_bars:
+                continue
+            df = daily_bars[ticker]
+            closes_td = df[df["date_et"] <= current_date]["close"].tolist()
+            if len(closes_td) >= 2:
+                ema21_pb = compute_ema_21_daily(closes_td)
+                if ema21_pb is not None:
+                    daily_pullback[ticker] = pullback_tracker.update(
+                        ticker, closes_td[-1], ema21_pb, closes_td[-2]
+                    )
+
         # ── Skip entry evaluation if at max positions ───────────────────────
         if len(open_positions) >= _MAX_POSITIONS:
             continue
 
-        # ── Compute RS scores for all tickers today ─────────────────────────
+        # ── Compute RS scores with CA guard (Fix 3.1) ───────────────────────
+        # CA guard: abs(return_20d) > 0.50 suppresses from ranking pool BEFORE
+        # rs_adjusted compute (production module7.py:307-323, market-engine HEAD a673359).
         spy_closes_today = spy_daily[spy_daily["date_et"] <= current_date]["close"].tolist()
         rs_scores: Dict[str, float] = {}
         for ticker in universe:
@@ -186,6 +305,14 @@ def run_module7_backtest(
                 continue
             df = daily_bars[ticker]
             closes = df[df["date_et"] <= current_date]["close"].tolist()
+            # Step 1: compute return_20d (production line 307)
+            if len(closes) >= _RS_LOOKBACK + 1:
+                return_20d = (closes[-1] - closes[-_RS_LOOKBACK - 1]) / closes[-_RS_LOOKBACK - 1]
+                # Step 2: CA guard before rs_adjusted (production line 310-323)
+                if abs(return_20d) > 0.50:
+                    rs_scores[ticker] = float("nan")
+                    continue
+            # Step 3: compute rs_adjusted (production line 333)
             rs_scores[ticker] = compute_rs_score(closes, spy_closes_today)
 
         top_tickers = set(select_top_30(rs_scores))
@@ -195,11 +322,23 @@ def run_module7_backtest(
         already_open = {p["ticker"] for p in open_positions}
 
         for ticker in universe:
-            if ticker in already_open:
-                continue
             if ticker not in top_tickers:
                 continue
             if ticker not in daily_bars:
+                continue
+
+            # Pre-filter cascade (production module7.py:890-941, market-engine HEAD a673359)
+            # Filter 1: earnings window (production line 890)
+            if is_in_earnings_window(ticker, str(current_date), earnings_buffer_days, earnings_df):
+                continue
+            # Filter 2: active M4 position (production line 907)
+            if active_tracker.has_active_m4(ticker, current_date):
+                continue
+            # Filter 3: active M6 position (production line 920)
+            if active_tracker.has_active_m6(ticker, current_date):
+                continue
+            # Filter 4: existing M7 position (production line 933)
+            if ticker in already_open:
                 continue
 
             df = daily_bars[ticker]
@@ -210,7 +349,7 @@ def run_module7_backtest(
             today_close = closes_to_date[-1]
             yest_close = closes_to_date[-2]
 
-            # Pullback: today_close ≤ -5% from 60d rolling high
+            # 60d high distance check
             high_60 = _rolling_60d_high(closes_to_date)
             if high_60 is None:
                 continue
@@ -218,15 +357,11 @@ def run_module7_backtest(
             if pullback_pct > _DISTANCE_THRESHOLD:
                 continue
 
-            # Recovery day: close > yesterday's close AND close > EMA21
-            if today_close <= yest_close:
+            # Multi-bar pullback state machine (Fix 3.3): require ≥2 pullback bars
+            pb_result = daily_pullback.get(ticker)
+            if pb_result is None or not pb_result.get("recovery_triggered"):
                 continue
-            ema21 = compute_ema_21_daily(closes_to_date)
-            if ema21 is None or today_close <= ema21:
-                continue
-
-            # Earnings filter
-            if is_in_earnings_window(ticker, str(current_date), earnings_buffer_days, earnings_df):
+            if pb_result["pullback_bars"] < 2:
                 continue
 
             candidates.append({

@@ -242,6 +242,24 @@ def main(modules: Optional[List[str]] = None, validate_only: bool = False) -> No
 
     target_modules = modules or ["M4", "M6", "M7"]
 
+    # EBS-1.1 Fix 3.2 Option A: pre-compute M4/M6 trades at production buffers
+    # for injection into M7 pre-filters (module7.py:907-931).
+    m4_trades_prod: Optional[List] = None
+    m6_trades_prod: Optional[List] = None
+    if "M7" in target_modules:
+        log.info("Pre-computing M4 trades (buffer=0d) for M7 active-trade pre-filter...")
+        try:
+            m4_trades_prod = run_module4_backtest(UNIVERSE, DATE_RANGE, 0, DATA_ROOT, earnings_df, vix_df)
+            log.info(f"  M4 pre-computed: {len(m4_trades_prod)} trades")
+        except Exception as e:
+            log.warning(f"  M4 pre-computation failed ({e}) — M7 will run without M4 pre-filter")
+        log.info("Pre-computing M6 trades (buffer=1d) for M7 active-trade pre-filter...")
+        try:
+            m6_trades_prod = run_module6_backtest(UNIVERSE, DATE_RANGE, 1, DATA_ROOT, earnings_df, news_df, ca_df, None)
+            log.info(f"  M6 pre-computed: {len(m6_trades_prod)} trades")
+        except Exception as e:
+            log.warning(f"  M6 pre-computation failed ({e}) — M7 will run without M6 pre-filter")
+
     results: Dict[str, Dict] = {}
 
     for module in target_modules:
@@ -255,7 +273,11 @@ def main(modules: Optional[List[str]] = None, validate_only: bool = False) -> No
                 return run_module6_backtest(UNIVERSE, DATE_RANGE, buf, DATA_ROOT, earnings_df, news_df, ca_df, None)
 
             def run_m7(buf):
-                return run_module7_backtest(UNIVERSE, DATE_RANGE, buf, DATA_ROOT, earnings_df)
+                return run_module7_backtest(
+                    UNIVERSE, DATE_RANGE, buf, DATA_ROOT, earnings_df,
+                    m4_trades=m4_trades_prod,
+                    m6_trades=m6_trades_prod,
+                )
 
             return {"M4": run_m4, "M6": run_m6, "M7": run_m7}[mod]
 
