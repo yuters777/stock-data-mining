@@ -17,6 +17,10 @@ import pandas as pd
 from scripts._data_loaders import aggregate_m5_to_4h_rth, load_m5_extended, load_vix_daily
 from scripts._earnings_filter import is_in_earnings_window
 
+# D6 VIX ROC filter — frozen per PI v33
+D6_VIX_ROC_ENABLED = True
+D6_VIX_ROC_THRESHOLD = 30.0  # percent
+
 
 def compute_rsi_14(closes: List[float]) -> Optional[float]:
     """Standard 14-period RSI (Wilder's). Returns None if <15 closes available."""
@@ -54,6 +58,24 @@ def _lookup_vix_prior_close(vix_df: pd.DataFrame, current_date: Date) -> Optiona
     if prior.empty:
         return None
     return float(prior.iloc[-1]["vix_close"])
+
+
+def compute_vix_5d_roc(vix_df: pd.DataFrame, current_date_et: Date) -> Optional[float]:
+    """Compute VIX 5-trading-day Rate of Change.
+    Production reference: module4.py:115-151 (market-engine HEAD a673359).
+
+    vix_df schema: columns = ['date' (datetime64), 'vix_close' (float)]
+    Returns ROC percent, or None if <6 prior trading days available.
+    """
+    relevant = vix_df[vix_df["date"].dt.date < current_date_et].sort_values("date")
+    if len(relevant) < 6:
+        return None
+    last_6 = relevant.tail(6)
+    vix_today = float(last_6.iloc[-1]["vix_close"])
+    vix_5d_ago = float(last_6.iloc[0]["vix_close"])
+    if vix_5d_ago <= 0:
+        return None
+    return round((vix_today - vix_5d_ago) / vix_5d_ago * 100, 2)
 
 
 def run_module4_backtest(
@@ -107,6 +129,14 @@ def run_module4_backtest(
                 vix_val = _lookup_vix_prior_close(vix_df, bar_date)
                 if vix_val is None or vix_val < 25.0:
                     continue
+
+                # D6 VIX 5d ROC filter (production module4.py:374-393, market-engine HEAD a673359)
+                if D6_VIX_ROC_ENABLED:
+                    vix_5d_roc = compute_vix_5d_roc(vix_df, bar_date)
+                    if vix_5d_roc is None:
+                        continue  # insufficient VIX history — block (production line 378-382)
+                    if vix_5d_roc <= D6_VIX_ROC_THRESHOLD:
+                        continue  # chronic elevation — block (production line 383-388)
 
                 recent_closes = bars.iloc[max(0, i - 19):i + 1]["close"].tolist()
                 rsi = compute_rsi_14(recent_closes)
