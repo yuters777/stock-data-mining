@@ -251,3 +251,75 @@ Is the earnings date column `earnings_date` or `report_date` or another name? CC
 
 *HARN-1.1 deviations: 6 documented (HARN11-D-1 through D-6).*
 *Pre-approved: D-1 through D-3. CC-discovered: D-4 through D-6.*
+
+---
+
+## §6. M4 VIX Threshold Sensitivity Sweep v1.0 Deviations
+
+**Spec:** CC_M4_VIX_THRESHOLD_SWEEP_v1_0_spec.md (Day 47 evening IST, May 6 2026)
+**Production reference HEAD:** market-engine `eb832b6` (read-only)
+**Branch:** `claude/vix-threshold-analysis-zol3I` (harness-assigned; spec says
+`claude/m4-vix-threshold-sweep-v1`)
+
+### VTS-D-1 — Branch name mismatch (pre-approved by harness)
+
+**Spec says:** `claude/m4-vix-threshold-sweep-v1`
+**Harness says:** `claude/vix-threshold-analysis-zol3I`
+**Resolution:** Used harness-assigned branch per harness instructions. Content
+identical; branch name is infrastructure detail.
+
+### VTS-D-2 — `module4_mirror.run_module4_mirror_backtest()` trade dicts lack `vix_at_entry`
+
+**Spec assumption:** Trade dict includes `vix_at_entry` field (mirror sets it).
+**Actual state:** `module4_mirror.py` (verified at `module4_mirror.py:145-156`)
+emits trade dicts with keys ticker, entry_date, entry_price, exit_date,
+exit_price, exit_reason, return_pct, conviction_tier, bars_held — **no**
+`vix_at_entry`.
+**Resolution (pre-approved as VTS-D-3 in spec §4):** Sweep computes
+`vix_at_entry` post-hoc inside `_attach_vix_at_entry()` using `entry_date` plus
+the canonical VIX df (prior-day close lookup with weekend/holiday walkback up
+to 7 calendar days). Semantic matches production VIX gate (prior-day close,
+production `module4.py:367-372`).
+
+### VTS-D-3 — Mean return display unit conversion
+
+**Spec writes:** `f"{r['mean_return']:+.2f}%"`
+**Actual contract:** `compute_metrics()` (`scripts/_metrics.py:33`) returns
+`mean` as a **decimal fraction** (0.05 = +5%), and `module4_mirror.py:144`
+emits `return_pct` as a fraction. Spec format string would render +1.37%
+edge as "+0.01%".
+**Resolution:** Display helper `_fmt_mean_pct()` multiplies by 100 before
+formatting (`{mean * 100:+.2f}%`). Matches spec's referenced canonical
+"Mean +1.37%" expectation in §0 background table.
+
+### VTS-D-4 — Test count delta +1 (pre-approved per spec §4 VTS-D-4)
+
+**Spec asks:** ≥4 tests covering threshold inclusion, bucket continuity,
+per-bucket assignment.
+**Implementation:** 5 tests added — added `test_analyze_per_bucket_boundary_value_falls_in_upper_bucket`
+to explicitly verify the half-open `[low, high)` bucket semantic at boundary
+values (e.g. VIX=22.0 → "22-25"). Pre-approved as additive direction in
+spec §4 VTS-D-4.
+
+### VTS-D-5 — VIX data coverage limited to 2025-2026 (inherited from HARN11-D-4)
+
+**Spec assumption (A3):** Canonical 5yr VIX in `Fetched_Data/VIX_daily.csv`
+(~1369 rows, 2021-2026).
+**Actual state:** `VIX_daily.csv` covers 2025-02-10 to 2026-03-12 (282 rows)
+per HARN11-D-4. M4 backtest entries can only fire within this VIX coverage
+window even though M5 bar data spans the full 5yr range.
+**Impact:** Per-threshold N values reported by sweep reflect ~1yr VIX coverage,
+not 5yr. The shape of the sweep (relative ordering across thresholds, presence
+of edge in VIX 22-25 range) is still informative; absolute trade counts will
+be lower than the spec's reference 264.
+**Mitigation:** Operator should fetch full 5yr VIXCLS history and re-run
+post-merge: `curl -o Fetched_Data/VIX_daily.csv "https://fred.stlouisfed.org/graph/fredgraph.csv?id=VIXCLS"`
+**Status:** CC-discovered, non-blocking per spec §3 (canonical reproduction is
+operator-side post-merge step).
+
+---
+
+*M4 VIX Threshold Sweep v1.0 deviations: 5 documented (VTS-D-1 through D-5).*
+*Pre-approved: D-1 (branch), D-2 (trade enrichment, == spec VTS-D-3), D-4 (additive tests).*
+*CC-discovered: D-3 (display unit), D-5 (data coverage gap).*
+*None forbidden.*
