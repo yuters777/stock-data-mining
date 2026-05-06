@@ -21,7 +21,7 @@ import pandas as pd
 from scripts._production_mirror.module4_mirror import run_module4_mirror_backtest
 from scripts._production_mirror.module6_mirror import run_module6_mirror_backtest
 from scripts._production_mirror.module7_mirror import run_module7_mirror_backtest
-from scripts._production_mirror.override_4_mirror import load_vix_daily
+from scripts._production_mirror._data_paths import load_vix, load_earnings
 from scripts._metrics import compute_metrics
 
 # Canonical baselines — Day 41 post-mortem
@@ -47,17 +47,12 @@ def main() -> None:
     print("=== Harness Validation v1.0 ===")
     print(f"Universe: {len(UNIVERSE)} tickers")
 
-    # Load shared data
-    vix_df = load_vix_daily()
-    print(f"VIX rows loaded: {len(vix_df)} (HARN-D-8: VXVCLS.csv)")
+    # Load shared data via canonical _data_paths loaders (HARN-1.1 fix for HARN-D-8/9)
+    vix_df = load_vix()
+    print(f"VIX rows loaded: {len(vix_df)} (canonical VIX_daily.csv, HARN-1.1)")
 
-    # Try to load earnings calendar; fall back to empty (HARN-D-9)
-    earnings_path = DATA_ROOT / "earnings_calendar.csv"
-    if earnings_path.exists():
-        earnings_df = pd.read_csv(earnings_path)
-    else:
-        print("WARNING: earnings_calendar.csv not found — using empty DataFrame (HARN-D-9)")
-        earnings_df = pd.DataFrame({"ticker": [], "earnings_date": pd.to_datetime([])})
+    earnings_df = load_earnings()
+    print(f"Earnings records loaded: {len(earnings_df)} ({earnings_df['ticker'].nunique()} tickers, HARN-1.1)")
 
     date_range = (date(2021, 4, 28), date(2026, 4, 28))
     results: dict = {}

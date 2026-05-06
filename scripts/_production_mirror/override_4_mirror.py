@@ -12,41 +12,31 @@ HARN-D-5: SUSPENDED/STALE never returned in v1.0. GeoStress excluded per
 operator-approved 95% fidelity decision (Day 43). Modules check for
 SUSPENDED/STALE but never block on these states.
 
-HARN-D-8: VIX data loaded from Fetched_Data/VXVCLS.csv (observation_date,VXVCLS)
-instead of VIX_daily.csv. Column remapping applied on load.
+HARN-1.1: HARN-D-8 closed. VIX now loaded via _data_paths.load_vix() which
+reads VIX_daily.csv (canonical FRED VIXCLS, 30-day) and hard-rejects VXVCLS.csv.
 """
 from __future__ import annotations
 
 from datetime import date
-from pathlib import Path
 from typing import Optional
 
 import pandas as pd
+
+from scripts._production_mirror._data_paths import load_vix
 
 VIX_NORMAL_MAX = 20.0
 VIX_HIGH_RISK_MIN = 25.0
 GAP_HIGH_RISK_THRESHOLD_PCT = 1.0
 
-_DATA_ROOT = Path(__file__).resolve().parent.parent.parent / "Fetched_Data"
-_VIX_CACHE: Optional[pd.DataFrame] = None
-
 
 def load_vix_daily() -> pd.DataFrame:
-    """Load VIX daily data.
+    """Load canonical VIX daily data via _data_paths canonical loader.
 
-    HARN-D-8: Uses Fetched_Data/VXVCLS.csv (observation_date,VXVCLS columns)
-    remapped to date,vix_close schema expected by override logic.
+    HARN-1.1: Delegates to _data_paths.load_vix() which reads VIX_daily.csv
+    (FRED VIXCLS, 30-day) and hard-rejects VXVCLS.csv (VIX3M).
+    Fixes HARN-D-8 silent semantic drift that caused M4 N=4 vs canonical 47.
     """
-    global _VIX_CACHE
-    if _VIX_CACHE is None:
-        path = _DATA_ROOT / "VXVCLS.csv"
-        if not path.exists():
-            raise FileNotFoundError(f"VIX data not found: {path}")
-        df = pd.read_csv(path)
-        df = df.rename(columns={"observation_date": "date", "VXVCLS": "vix_close"})
-        df["date"] = pd.to_datetime(df["date"])
-        _VIX_CACHE = df.sort_values("date").reset_index(drop=True)
-    return _VIX_CACHE
+    return load_vix()
 
 
 def derive_override_state(
