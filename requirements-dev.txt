@@ -1,0 +1,10 @@
+# Development-only dependencies for stock-data-mining
+# These are NOT runtime requirements.
+#
+# pandas_market_calendars is needed ONCE to generate
+# Fetched_Data/nyse_calendar_2021_2026.csv (static file).
+# After generation, the CSV is checked in and this package
+# is no longer needed at runtime.
+# HARN-D-1: dev-only dependency, NOT added to requirements.txt.
+
+pandas_market_calendars>=4.0

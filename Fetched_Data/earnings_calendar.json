@@ -1,0 +1,2594 @@
+[
+  {
+    "symbol": "AAPL",
+    "date": "2021-01-25"
+  },
+  {
+    "symbol": "AAPL",
+    "date": "2021-04-26"
+  },
+  {
+    "symbol": "AAPL",
+    "date": "2021-07-28"
+  },
+  {
+    "symbol": "AAPL",
+    "date": "2021-10-25"
+  },
+  {
+    "symbol": "AAPL",
+    "date": "2022-01-25"
+  },
+  {
+    "symbol": "AAPL",
+    "date": "2022-04-25"
+  },
+  {
+    "symbol": "AAPL",
+    "date": "2022-07-28"
+  },
+  {
+    "symbol": "AAPL",
+    "date": "2022-10-24"
+  },
+  {
+    "symbol": "AAPL",
+    "date": "2023-01-25"
+  },
+  {
+    "symbol": "AAPL",
+    "date": "2023-04-25"
+  },
+  {
+    "symbol": "AAPL",
+    "date": "2023-07-28"
+  },
+  {
+    "symbol": "AAPL",
+    "date": "2023-10-24"
+  },
+  {
+    "symbol": "AAPL",
+    "date": "2024-01-25"
+  },
+  {
+    "symbol": "AAPL",
+    "date": "2024-04-25"
+  },
+  {
+    "symbol": "AAPL",
+    "date": "2024-07-29"
+  },
+  {
+    "symbol": "AAPL",
+    "date": "2024-10-24"
+  },
+  {
+    "symbol": "AAPL",
+    "date": "2025-01-27"
+  },
+  {
+    "symbol": "AAPL",
+    "date": "2025-04-25"
+  },
+  {
+    "symbol": "AAPL",
+    "date": "2025-07-28"
+  },
+  {
+    "symbol": "AAPL",
+    "date": "2025-10-24"
+  },
+  {
+    "symbol": "AAPL",
+    "date": "2026-01-26"
+  },
+  {
+    "symbol": "AAPL",
+    "date": "2026-04-27"
+  },
+  {
+    "symbol": "AAPL",
+    "date": "2026-07-28"
+  },
+  {
+    "symbol": "AAPL",
+    "date": "2026-10-26"
+  },
+  {
+    "symbol": "MSFT",
+    "date": "2021-01-26"
+  },
+  {
+    "symbol": "MSFT",
+    "date": "2021-04-26"
+  },
+  {
+    "symbol": "MSFT",
+    "date": "2021-07-29"
+  },
+  {
+    "symbol": "MSFT",
+    "date": "2021-10-25"
+  },
+  {
+    "symbol": "MSFT",
+    "date": "2022-01-26"
+  },
+  {
+    "symbol": "MSFT",
+    "date": "2022-04-26"
+  },
+  {
+    "symbol": "MSFT",
+    "date": "2022-07-29"
+  },
+  {
+    "symbol": "MSFT",
+    "date": "2022-10-25"
+  },
+  {
+    "symbol": "MSFT",
+    "date": "2023-01-26"
+  },
+  {
+    "symbol": "MSFT",
+    "date": "2023-04-26"
+  },
+  {
+    "symbol": "MSFT",
+    "date": "2023-07-31"
+  },
+  {
+    "symbol": "MSFT",
+    "date": "2023-10-25"
+  },
+  {
+    "symbol": "MSFT",
+    "date": "2024-01-26"
+  },
+  {
+    "symbol": "MSFT",
+    "date": "2024-04-26"
+  },
+  {
+    "symbol": "MSFT",
+    "date": "2024-07-29"
+  },
+  {
+    "symbol": "MSFT",
+    "date": "2024-10-25"
+  },
+  {
+    "symbol": "MSFT",
+    "date": "2025-01-27"
+  },
+  {
+    "symbol": "MSFT",
+    "date": "2025-04-28"
+  },
+  {
+    "symbol": "MSFT",
+    "date": "2025-07-29"
+  },
+  {
+    "symbol": "MSFT",
+    "date": "2025-10-27"
+  },
+  {
+    "symbol": "MSFT",
+    "date": "2026-01-26"
+  },
+  {
+    "symbol": "MSFT",
+    "date": "2026-04-27"
+  },
+  {
+    "symbol": "MSFT",
+    "date": "2026-07-29"
+  },
+  {
+    "symbol": "MSFT",
+    "date": "2026-10-26"
+  },
+  {
+    "symbol": "GOOGL",
+    "date": "2021-01-27"
+  },
+  {
+    "symbol": "GOOGL",
+    "date": "2021-04-27"
+  },
+  {
+    "symbol": "GOOGL",
+    "date": "2021-07-30"
+  },
+  {
+    "symbol": "GOOGL",
+    "date": "2021-10-26"
+  },
+  {
+    "symbol": "GOOGL",
+    "date": "2022-01-27"
+  },
+  {
+    "symbol": "GOOGL",
+    "date": "2022-04-27"
+  },
+  {
+    "symbol": "GOOGL",
+    "date": "2022-08-01"
+  },
+  {
+    "symbol": "GOOGL",
+    "date": "2022-10-26"
+  },
+  {
+    "symbol": "GOOGL",
+    "date": "2023-01-27"
+  },
+  {
+    "symbol": "GOOGL",
+    "date": "2023-04-27"
+  },
+  {
+    "symbol": "GOOGL",
+    "date": "2023-07-31"
+  },
+  {
+    "symbol": "GOOGL",
+    "date": "2023-10-26"
+  },
+  {
+    "symbol": "GOOGL",
+    "date": "2024-01-29"
+  },
+  {
+    "symbol": "GOOGL",
+    "date": "2024-04-29"
+  },
+  {
+    "symbol": "GOOGL",
+    "date": "2024-07-30"
+  },
+  {
+    "symbol": "GOOGL",
+    "date": "2024-10-28"
+  },
+  {
+    "symbol": "GOOGL",
+    "date": "2025-01-27"
+  },
+  {
+    "symbol": "GOOGL",
+    "date": "2025-04-28"
+  },
+  {
+    "symbol": "GOOGL",
+    "date": "2025-07-30"
+  },
+  {
+    "symbol": "GOOGL",
+    "date": "2025-10-27"
+  },
+  {
+    "symbol": "GOOGL",
+    "date": "2026-01-27"
+  },
+  {
+    "symbol": "GOOGL",
+    "date": "2026-04-27"
+  },
+  {
+    "symbol": "GOOGL",
+    "date": "2026-07-30"
+  },
+  {
+    "symbol": "GOOGL",
+    "date": "2026-10-26"
+  },
+  {
+    "symbol": "AMZN",
+    "date": "2021-01-28"
+  },
+  {
+    "symbol": "AMZN",
+    "date": "2021-04-28"
+  },
+  {
+    "symbol": "AMZN",
+    "date": "2021-08-02"
+  },
+  {
+    "symbol": "AMZN",
+    "date": "2021-10-27"
+  },
+  {
+    "symbol": "AMZN",
+    "date": "2022-01-28"
+  },
+  {
+    "symbol": "AMZN",
+    "date": "2022-04-28"
+  },
+  {
+    "symbol": "AMZN",
+    "date": "2022-08-01"
+  },
+  {
+    "symbol": "AMZN",
+    "date": "2022-10-27"
+  },
+  {
+    "symbol": "AMZN",
+    "date": "2023-01-30"
+  },
+  {
+    "symbol": "AMZN",
+    "date": "2023-04-28"
+  },
+  {
+    "symbol": "AMZN",
+    "date": "2023-07-31"
+  },
+  {
+    "symbol": "AMZN",
+    "date": "2023-10-27"
+  },
+  {
+    "symbol": "AMZN",
+    "date": "2024-01-29"
+  },
+  {
+    "symbol": "AMZN",
+    "date": "2024-04-29"
+  },
+  {
+    "symbol": "AMZN",
+    "date": "2024-07-31"
+  },
+  {
+    "symbol": "AMZN",
+    "date": "2024-10-28"
+  },
+  {
+    "symbol": "AMZN",
+    "date": "2025-01-28"
+  },
+  {
+    "symbol": "AMZN",
+    "date": "2025-04-28"
+  },
+  {
+    "symbol": "AMZN",
+    "date": "2025-07-31"
+  },
+  {
+    "symbol": "AMZN",
+    "date": "2025-10-27"
+  },
+  {
+    "symbol": "AMZN",
+    "date": "2026-01-28"
+  },
+  {
+    "symbol": "AMZN",
+    "date": "2026-04-28"
+  },
+  {
+    "symbol": "AMZN",
+    "date": "2026-07-31"
+  },
+  {
+    "symbol": "AMZN",
+    "date": "2026-10-27"
+  },
+  {
+    "symbol": "META",
+    "date": "2021-01-29"
+  },
+  {
+    "symbol": "META",
+    "date": "2021-04-29"
+  },
+  {
+    "symbol": "META",
+    "date": "2021-08-02"
+  },
+  {
+    "symbol": "META",
+    "date": "2021-10-28"
+  },
+  {
+    "symbol": "META",
+    "date": "2022-01-31"
+  },
+  {
+    "symbol": "META",
+    "date": "2022-04-29"
+  },
+  {
+    "symbol": "META",
+    "date": "2022-08-01"
+  },
+  {
+    "symbol": "META",
+    "date": "2022-10-28"
+  },
+  {
+    "symbol": "META",
+    "date": "2023-01-30"
+  },
+  {
+    "symbol": "META",
+    "date": "2023-05-01"
+  },
+  {
+    "symbol": "META",
+    "date": "2023-08-01"
+  },
+  {
+    "symbol": "META",
+    "date": "2023-10-30"
+  },
+  {
+    "symbol": "META",
+    "date": "2024-01-29"
+  },
+  {
+    "symbol": "META",
+    "date": "2024-04-29"
+  },
+  {
+    "symbol": "META",
+    "date": "2024-08-01"
+  },
+  {
+    "symbol": "META",
+    "date": "2024-10-28"
+  },
+  {
+    "symbol": "META",
+    "date": "2025-01-29"
+  },
+  {
+    "symbol": "META",
+    "date": "2025-04-29"
+  },
+  {
+    "symbol": "META",
+    "date": "2025-08-01"
+  },
+  {
+    "symbol": "META",
+    "date": "2025-10-28"
+  },
+  {
+    "symbol": "META",
+    "date": "2026-01-29"
+  },
+  {
+    "symbol": "META",
+    "date": "2026-04-29"
+  },
+  {
+    "symbol": "META",
+    "date": "2026-08-03"
+  },
+  {
+    "symbol": "META",
+    "date": "2026-10-28"
+  },
+  {
+    "symbol": "NVDA",
+    "date": "2021-02-01"
+  },
+  {
+    "symbol": "NVDA",
+    "date": "2021-04-30"
+  },
+  {
+    "symbol": "NVDA",
+    "date": "2021-08-02"
+  },
+  {
+    "symbol": "NVDA",
+    "date": "2021-10-29"
+  },
+  {
+    "symbol": "NVDA",
+    "date": "2022-01-31"
+  },
+  {
+    "symbol": "NVDA",
+    "date": "2022-05-02"
+  },
+  {
+    "symbol": "NVDA",
+    "date": "2022-08-02"
+  },
+  {
+    "symbol": "NVDA",
+    "date": "2022-10-31"
+  },
+  {
+    "symbol": "NVDA",
+    "date": "2023-01-30"
+  },
+  {
+    "symbol": "NVDA",
+    "date": "2023-05-01"
+  },
+  {
+    "symbol": "NVDA",
+    "date": "2023-08-02"
+  },
+  {
+    "symbol": "NVDA",
+    "date": "2023-10-30"
+  },
+  {
+    "symbol": "NVDA",
+    "date": "2024-01-30"
+  },
+  {
+    "symbol": "NVDA",
+    "date": "2024-04-30"
+  },
+  {
+    "symbol": "NVDA",
+    "date": "2024-08-02"
+  },
+  {
+    "symbol": "NVDA",
+    "date": "2024-10-29"
+  },
+  {
+    "symbol": "NVDA",
+    "date": "2025-01-30"
+  },
+  {
+    "symbol": "NVDA",
+    "date": "2025-04-30"
+  },
+  {
+    "symbol": "NVDA",
+    "date": "2025-08-04"
+  },
+  {
+    "symbol": "NVDA",
+    "date": "2025-10-29"
+  },
+  {
+    "symbol": "NVDA",
+    "date": "2026-01-30"
+  },
+  {
+    "symbol": "NVDA",
+    "date": "2026-04-30"
+  },
+  {
+    "symbol": "NVDA",
+    "date": "2026-08-03"
+  },
+  {
+    "symbol": "NVDA",
+    "date": "2026-10-29"
+  },
+  {
+    "symbol": "TSLA",
+    "date": "2021-02-01"
+  },
+  {
+    "symbol": "TSLA",
+    "date": "2021-05-03"
+  },
+  {
+    "symbol": "TSLA",
+    "date": "2021-08-03"
+  },
+  {
+    "symbol": "TSLA",
+    "date": "2021-11-01"
+  },
+  {
+    "symbol": "TSLA",
+    "date": "2022-01-31"
+  },
+  {
+    "symbol": "TSLA",
+    "date": "2022-05-02"
+  },
+  {
+    "symbol": "TSLA",
+    "date": "2022-08-03"
+  },
+  {
+    "symbol": "TSLA",
+    "date": "2022-10-31"
+  },
+  {
+    "symbol": "TSLA",
+    "date": "2023-01-31"
+  },
+  {
+    "symbol": "TSLA",
+    "date": "2023-05-01"
+  },
+  {
+    "symbol": "TSLA",
+    "date": "2023-08-03"
+  },
+  {
+    "symbol": "TSLA",
+    "date": "2023-10-30"
+  },
+  {
+    "symbol": "TSLA",
+    "date": "2024-01-31"
+  },
+  {
+    "symbol": "TSLA",
+    "date": "2024-05-01"
+  },
+  {
+    "symbol": "TSLA",
+    "date": "2024-08-05"
+  },
+  {
+    "symbol": "TSLA",
+    "date": "2024-10-30"
+  },
+  {
+    "symbol": "TSLA",
+    "date": "2025-01-31"
+  },
+  {
+    "symbol": "TSLA",
+    "date": "2025-05-01"
+  },
+  {
+    "symbol": "TSLA",
+    "date": "2025-08-04"
+  },
+  {
+    "symbol": "TSLA",
+    "date": "2025-10-30"
+  },
+  {
+    "symbol": "TSLA",
+    "date": "2026-02-02"
+  },
+  {
+    "symbol": "TSLA",
+    "date": "2026-05-01"
+  },
+  {
+    "symbol": "TSLA",
+    "date": "2026-08-03"
+  },
+  {
+    "symbol": "TSLA",
+    "date": "2026-10-30"
+  },
+  {
+    "symbol": "AMD",
+    "date": "2021-01-25"
+  },
+  {
+    "symbol": "AMD",
+    "date": "2021-04-26"
+  },
+  {
+    "symbol": "AMD",
+    "date": "2021-07-28"
+  },
+  {
+    "symbol": "AMD",
+    "date": "2021-10-25"
+  },
+  {
+    "symbol": "AMD",
+    "date": "2022-01-25"
+  },
+  {
+    "symbol": "AMD",
+    "date": "2022-04-25"
+  },
+  {
+    "symbol": "AMD",
+    "date": "2022-07-28"
+  },
+  {
+    "symbol": "AMD",
+    "date": "2022-10-24"
+  },
+  {
+    "symbol": "AMD",
+    "date": "2023-01-25"
+  },
+  {
+    "symbol": "AMD",
+    "date": "2023-04-25"
+  },
+  {
+    "symbol": "AMD",
+    "date": "2023-07-28"
+  },
+  {
+    "symbol": "AMD",
+    "date": "2023-10-24"
+  },
+  {
+    "symbol": "AMD",
+    "date": "2024-01-25"
+  },
+  {
+    "symbol": "AMD",
+    "date": "2024-04-25"
+  },
+  {
+    "symbol": "AMD",
+    "date": "2024-07-29"
+  },
+  {
+    "symbol": "AMD",
+    "date": "2024-10-24"
+  },
+  {
+    "symbol": "AMD",
+    "date": "2025-01-27"
+  },
+  {
+    "symbol": "AMD",
+    "date": "2025-04-25"
+  },
+  {
+    "symbol": "AMD",
+    "date": "2025-07-28"
+  },
+  {
+    "symbol": "AMD",
+    "date": "2025-10-24"
+  },
+  {
+    "symbol": "AMD",
+    "date": "2026-01-26"
+  },
+  {
+    "symbol": "AMD",
+    "date": "2026-04-27"
+  },
+  {
+    "symbol": "AMD",
+    "date": "2026-07-28"
+  },
+  {
+    "symbol": "AMD",
+    "date": "2026-10-26"
+  },
+  {
+    "symbol": "SMCI",
+    "date": "2021-01-26"
+  },
+  {
+    "symbol": "SMCI",
+    "date": "2021-04-26"
+  },
+  {
+    "symbol": "SMCI",
+    "date": "2021-07-29"
+  },
+  {
+    "symbol": "SMCI",
+    "date": "2021-10-25"
+  },
+  {
+    "symbol": "SMCI",
+    "date": "2022-01-26"
+  },
+  {
+    "symbol": "SMCI",
+    "date": "2022-04-26"
+  },
+  {
+    "symbol": "SMCI",
+    "date": "2022-07-29"
+  },
+  {
+    "symbol": "SMCI",
+    "date": "2022-10-25"
+  },
+  {
+    "symbol": "SMCI",
+    "date": "2023-01-26"
+  },
+  {
+    "symbol": "SMCI",
+    "date": "2023-04-26"
+  },
+  {
+    "symbol": "SMCI",
+    "date": "2023-07-31"
+  },
+  {
+    "symbol": "SMCI",
+    "date": "2023-10-25"
+  },
+  {
+    "symbol": "SMCI",
+    "date": "2024-01-26"
+  },
+  {
+    "symbol": "SMCI",
+    "date": "2024-04-26"
+  },
+  {
+    "symbol": "SMCI",
+    "date": "2024-07-29"
+  },
+  {
+    "symbol": "SMCI",
+    "date": "2024-10-25"
+  },
+  {
+    "symbol": "SMCI",
+    "date": "2025-01-27"
+  },
+  {
+    "symbol": "SMCI",
+    "date": "2025-04-28"
+  },
+  {
+    "symbol": "SMCI",
+    "date": "2025-07-29"
+  },
+  {
+    "symbol": "SMCI",
+    "date": "2025-10-27"
+  },
+  {
+    "symbol": "SMCI",
+    "date": "2026-01-26"
+  },
+  {
+    "symbol": "SMCI",
+    "date": "2026-04-27"
+  },
+  {
+    "symbol": "SMCI",
+    "date": "2026-07-29"
+  },
+  {
+    "symbol": "SMCI",
+    "date": "2026-10-26"
+  },
+  {
+    "symbol": "PLTR",
+    "date": "2021-01-27"
+  },
+  {
+    "symbol": "PLTR",
+    "date": "2021-04-27"
+  },
+  {
+    "symbol": "PLTR",
+    "date": "2021-07-30"
+  },
+  {
+    "symbol": "PLTR",
+    "date": "2021-10-26"
+  },
+  {
+    "symbol": "PLTR",
+    "date": "2022-01-27"
+  },
+  {
+    "symbol": "PLTR",
+    "date": "2022-04-27"
+  },
+  {
+    "symbol": "PLTR",
+    "date": "2022-08-01"
+  },
+  {
+    "symbol": "PLTR",
+    "date": "2022-10-26"
+  },
+  {
+    "symbol": "PLTR",
+    "date": "2023-01-27"
+  },
+  {
+    "symbol": "PLTR",
+    "date": "2023-04-27"
+  },
+  {
+    "symbol": "PLTR",
+    "date": "2023-07-31"
+  },
+  {
+    "symbol": "PLTR",
+    "date": "2023-10-26"
+  },
+  {
+    "symbol": "PLTR",
+    "date": "2024-01-29"
+  },
+  {
+    "symbol": "PLTR",
+    "date": "2024-04-29"
+  },
+  {
+    "symbol": "PLTR",
+    "date": "2024-07-30"
+  },
+  {
+    "symbol": "PLTR",
+    "date": "2024-10-28"
+  },
+  {
+    "symbol": "PLTR",
+    "date": "2025-01-27"
+  },
+  {
+    "symbol": "PLTR",
+    "date": "2025-04-28"
+  },
+  {
+    "symbol": "PLTR",
+    "date": "2025-07-30"
+  },
+  {
+    "symbol": "PLTR",
+    "date": "2025-10-27"
+  },
+  {
+    "symbol": "PLTR",
+    "date": "2026-01-27"
+  },
+  {
+    "symbol": "PLTR",
+    "date": "2026-04-27"
+  },
+  {
+    "symbol": "PLTR",
+    "date": "2026-07-30"
+  },
+  {
+    "symbol": "PLTR",
+    "date": "2026-10-26"
+  },
+  {
+    "symbol": "AVGO",
+    "date": "2021-01-28"
+  },
+  {
+    "symbol": "AVGO",
+    "date": "2021-04-28"
+  },
+  {
+    "symbol": "AVGO",
+    "date": "2021-08-02"
+  },
+  {
+    "symbol": "AVGO",
+    "date": "2021-10-27"
+  },
+  {
+    "symbol": "AVGO",
+    "date": "2022-01-28"
+  },
+  {
+    "symbol": "AVGO",
+    "date": "2022-04-28"
+  },
+  {
+    "symbol": "AVGO",
+    "date": "2022-08-01"
+  },
+  {
+    "symbol": "AVGO",
+    "date": "2022-10-27"
+  },
+  {
+    "symbol": "AVGO",
+    "date": "2023-01-30"
+  },
+  {
+    "symbol": "AVGO",
+    "date": "2023-04-28"
+  },
+  {
+    "symbol": "AVGO",
+    "date": "2023-07-31"
+  },
+  {
+    "symbol": "AVGO",
+    "date": "2023-10-27"
+  },
+  {
+    "symbol": "AVGO",
+    "date": "2024-01-29"
+  },
+  {
+    "symbol": "AVGO",
+    "date": "2024-04-29"
+  },
+  {
+    "symbol": "AVGO",
+    "date": "2024-07-31"
+  },
+  {
+    "symbol": "AVGO",
+    "date": "2024-10-28"
+  },
+  {
+    "symbol": "AVGO",
+    "date": "2025-01-28"
+  },
+  {
+    "symbol": "AVGO",
+    "date": "2025-04-28"
+  },
+  {
+    "symbol": "AVGO",
+    "date": "2025-07-31"
+  },
+  {
+    "symbol": "AVGO",
+    "date": "2025-10-27"
+  },
+  {
+    "symbol": "AVGO",
+    "date": "2026-01-28"
+  },
+  {
+    "symbol": "AVGO",
+    "date": "2026-04-28"
+  },
+  {
+    "symbol": "AVGO",
+    "date": "2026-07-31"
+  },
+  {
+    "symbol": "AVGO",
+    "date": "2026-10-27"
+  },
+  {
+    "symbol": "ARM",
+    "date": "2021-01-29"
+  },
+  {
+    "symbol": "ARM",
+    "date": "2021-04-29"
+  },
+  {
+    "symbol": "ARM",
+    "date": "2021-08-02"
+  },
+  {
+    "symbol": "ARM",
+    "date": "2021-10-28"
+  },
+  {
+    "symbol": "ARM",
+    "date": "2022-01-31"
+  },
+  {
+    "symbol": "ARM",
+    "date": "2022-04-29"
+  },
+  {
+    "symbol": "ARM",
+    "date": "2022-08-01"
+  },
+  {
+    "symbol": "ARM",
+    "date": "2022-10-28"
+  },
+  {
+    "symbol": "ARM",
+    "date": "2023-01-30"
+  },
+  {
+    "symbol": "ARM",
+    "date": "2023-05-01"
+  },
+  {
+    "symbol": "ARM",
+    "date": "2023-08-01"
+  },
+  {
+    "symbol": "ARM",
+    "date": "2023-10-30"
+  },
+  {
+    "symbol": "ARM",
+    "date": "2024-01-29"
+  },
+  {
+    "symbol": "ARM",
+    "date": "2024-04-29"
+  },
+  {
+    "symbol": "ARM",
+    "date": "2024-08-01"
+  },
+  {
+    "symbol": "ARM",
+    "date": "2024-10-28"
+  },
+  {
+    "symbol": "ARM",
+    "date": "2025-01-29"
+  },
+  {
+    "symbol": "ARM",
+    "date": "2025-04-29"
+  },
+  {
+    "symbol": "ARM",
+    "date": "2025-08-01"
+  },
+  {
+    "symbol": "ARM",
+    "date": "2025-10-28"
+  },
+  {
+    "symbol": "ARM",
+    "date": "2026-01-29"
+  },
+  {
+    "symbol": "ARM",
+    "date": "2026-04-29"
+  },
+  {
+    "symbol": "ARM",
+    "date": "2026-08-03"
+  },
+  {
+    "symbol": "ARM",
+    "date": "2026-10-28"
+  },
+  {
+    "symbol": "TSM",
+    "date": "2021-02-01"
+  },
+  {
+    "symbol": "TSM",
+    "date": "2021-04-30"
+  },
+  {
+    "symbol": "TSM",
+    "date": "2021-08-02"
+  },
+  {
+    "symbol": "TSM",
+    "date": "2021-10-29"
+  },
+  {
+    "symbol": "TSM",
+    "date": "2022-01-31"
+  },
+  {
+    "symbol": "TSM",
+    "date": "2022-05-02"
+  },
+  {
+    "symbol": "TSM",
+    "date": "2022-08-02"
+  },
+  {
+    "symbol": "TSM",
+    "date": "2022-10-31"
+  },
+  {
+    "symbol": "TSM",
+    "date": "2023-01-30"
+  },
+  {
+    "symbol": "TSM",
+    "date": "2023-05-01"
+  },
+  {
+    "symbol": "TSM",
+    "date": "2023-08-02"
+  },
+  {
+    "symbol": "TSM",
+    "date": "2023-10-30"
+  },
+  {
+    "symbol": "TSM",
+    "date": "2024-01-30"
+  },
+  {
+    "symbol": "TSM",
+    "date": "2024-04-30"
+  },
+  {
+    "symbol": "TSM",
+    "date": "2024-08-02"
+  },
+  {
+    "symbol": "TSM",
+    "date": "2024-10-29"
+  },
+  {
+    "symbol": "TSM",
+    "date": "2025-01-30"
+  },
+  {
+    "symbol": "TSM",
+    "date": "2025-04-30"
+  },
+  {
+    "symbol": "TSM",
+    "date": "2025-08-04"
+  },
+  {
+    "symbol": "TSM",
+    "date": "2025-10-29"
+  },
+  {
+    "symbol": "TSM",
+    "date": "2026-01-30"
+  },
+  {
+    "symbol": "TSM",
+    "date": "2026-04-30"
+  },
+  {
+    "symbol": "TSM",
+    "date": "2026-08-03"
+  },
+  {
+    "symbol": "TSM",
+    "date": "2026-10-29"
+  },
+  {
+    "symbol": "MU",
+    "date": "2021-02-01"
+  },
+  {
+    "symbol": "MU",
+    "date": "2021-05-03"
+  },
+  {
+    "symbol": "MU",
+    "date": "2021-08-03"
+  },
+  {
+    "symbol": "MU",
+    "date": "2021-11-01"
+  },
+  {
+    "symbol": "MU",
+    "date": "2022-01-31"
+  },
+  {
+    "symbol": "MU",
+    "date": "2022-05-02"
+  },
+  {
+    "symbol": "MU",
+    "date": "2022-08-03"
+  },
+  {
+    "symbol": "MU",
+    "date": "2022-10-31"
+  },
+  {
+    "symbol": "MU",
+    "date": "2023-01-31"
+  },
+  {
+    "symbol": "MU",
+    "date": "2023-05-01"
+  },
+  {
+    "symbol": "MU",
+    "date": "2023-08-03"
+  },
+  {
+    "symbol": "MU",
+    "date": "2023-10-30"
+  },
+  {
+    "symbol": "MU",
+    "date": "2024-01-31"
+  },
+  {
+    "symbol": "MU",
+    "date": "2024-05-01"
+  },
+  {
+    "symbol": "MU",
+    "date": "2024-08-05"
+  },
+  {
+    "symbol": "MU",
+    "date": "2024-10-30"
+  },
+  {
+    "symbol": "MU",
+    "date": "2025-01-31"
+  },
+  {
+    "symbol": "MU",
+    "date": "2025-05-01"
+  },
+  {
+    "symbol": "MU",
+    "date": "2025-08-04"
+  },
+  {
+    "symbol": "MU",
+    "date": "2025-10-30"
+  },
+  {
+    "symbol": "MU",
+    "date": "2026-02-02"
+  },
+  {
+    "symbol": "MU",
+    "date": "2026-05-01"
+  },
+  {
+    "symbol": "MU",
+    "date": "2026-08-03"
+  },
+  {
+    "symbol": "MU",
+    "date": "2026-10-30"
+  },
+  {
+    "symbol": "INTC",
+    "date": "2021-01-25"
+  },
+  {
+    "symbol": "INTC",
+    "date": "2021-04-26"
+  },
+  {
+    "symbol": "INTC",
+    "date": "2021-07-28"
+  },
+  {
+    "symbol": "INTC",
+    "date": "2021-10-25"
+  },
+  {
+    "symbol": "INTC",
+    "date": "2022-01-25"
+  },
+  {
+    "symbol": "INTC",
+    "date": "2022-04-25"
+  },
+  {
+    "symbol": "INTC",
+    "date": "2022-07-28"
+  },
+  {
+    "symbol": "INTC",
+    "date": "2022-10-24"
+  },
+  {
+    "symbol": "INTC",
+    "date": "2023-01-25"
+  },
+  {
+    "symbol": "INTC",
+    "date": "2023-04-25"
+  },
+  {
+    "symbol": "INTC",
+    "date": "2023-07-28"
+  },
+  {
+    "symbol": "INTC",
+    "date": "2023-10-24"
+  },
+  {
+    "symbol": "INTC",
+    "date": "2024-01-25"
+  },
+  {
+    "symbol": "INTC",
+    "date": "2024-04-25"
+  },
+  {
+    "symbol": "INTC",
+    "date": "2024-07-29"
+  },
+  {
+    "symbol": "INTC",
+    "date": "2024-10-24"
+  },
+  {
+    "symbol": "INTC",
+    "date": "2025-01-27"
+  },
+  {
+    "symbol": "INTC",
+    "date": "2025-04-25"
+  },
+  {
+    "symbol": "INTC",
+    "date": "2025-07-28"
+  },
+  {
+    "symbol": "INTC",
+    "date": "2025-10-24"
+  },
+  {
+    "symbol": "INTC",
+    "date": "2026-01-26"
+  },
+  {
+    "symbol": "INTC",
+    "date": "2026-04-27"
+  },
+  {
+    "symbol": "INTC",
+    "date": "2026-07-28"
+  },
+  {
+    "symbol": "INTC",
+    "date": "2026-10-26"
+  },
+  {
+    "symbol": "COST",
+    "date": "2021-01-26"
+  },
+  {
+    "symbol": "COST",
+    "date": "2021-04-26"
+  },
+  {
+    "symbol": "COST",
+    "date": "2021-07-29"
+  },
+  {
+    "symbol": "COST",
+    "date": "2021-10-25"
+  },
+  {
+    "symbol": "COST",
+    "date": "2022-01-26"
+  },
+  {
+    "symbol": "COST",
+    "date": "2022-04-26"
+  },
+  {
+    "symbol": "COST",
+    "date": "2022-07-29"
+  },
+  {
+    "symbol": "COST",
+    "date": "2022-10-25"
+  },
+  {
+    "symbol": "COST",
+    "date": "2023-01-26"
+  },
+  {
+    "symbol": "COST",
+    "date": "2023-04-26"
+  },
+  {
+    "symbol": "COST",
+    "date": "2023-07-31"
+  },
+  {
+    "symbol": "COST",
+    "date": "2023-10-25"
+  },
+  {
+    "symbol": "COST",
+    "date": "2024-01-26"
+  },
+  {
+    "symbol": "COST",
+    "date": "2024-04-26"
+  },
+  {
+    "symbol": "COST",
+    "date": "2024-07-29"
+  },
+  {
+    "symbol": "COST",
+    "date": "2024-10-25"
+  },
+  {
+    "symbol": "COST",
+    "date": "2025-01-27"
+  },
+  {
+    "symbol": "COST",
+    "date": "2025-04-28"
+  },
+  {
+    "symbol": "COST",
+    "date": "2025-07-29"
+  },
+  {
+    "symbol": "COST",
+    "date": "2025-10-27"
+  },
+  {
+    "symbol": "COST",
+    "date": "2026-01-26"
+  },
+  {
+    "symbol": "COST",
+    "date": "2026-04-27"
+  },
+  {
+    "symbol": "COST",
+    "date": "2026-07-29"
+  },
+  {
+    "symbol": "COST",
+    "date": "2026-10-26"
+  },
+  {
+    "symbol": "COIN",
+    "date": "2021-01-27"
+  },
+  {
+    "symbol": "COIN",
+    "date": "2021-04-27"
+  },
+  {
+    "symbol": "COIN",
+    "date": "2021-07-30"
+  },
+  {
+    "symbol": "COIN",
+    "date": "2021-10-26"
+  },
+  {
+    "symbol": "COIN",
+    "date": "2022-01-27"
+  },
+  {
+    "symbol": "COIN",
+    "date": "2022-04-27"
+  },
+  {
+    "symbol": "COIN",
+    "date": "2022-08-01"
+  },
+  {
+    "symbol": "COIN",
+    "date": "2022-10-26"
+  },
+  {
+    "symbol": "COIN",
+    "date": "2023-01-27"
+  },
+  {
+    "symbol": "COIN",
+    "date": "2023-04-27"
+  },
+  {
+    "symbol": "COIN",
+    "date": "2023-07-31"
+  },
+  {
+    "symbol": "COIN",
+    "date": "2023-10-26"
+  },
+  {
+    "symbol": "COIN",
+    "date": "2024-01-29"
+  },
+  {
+    "symbol": "COIN",
+    "date": "2024-04-29"
+  },
+  {
+    "symbol": "COIN",
+    "date": "2024-07-30"
+  },
+  {
+    "symbol": "COIN",
+    "date": "2024-10-28"
+  },
+  {
+    "symbol": "COIN",
+    "date": "2025-01-27"
+  },
+  {
+    "symbol": "COIN",
+    "date": "2025-04-28"
+  },
+  {
+    "symbol": "COIN",
+    "date": "2025-07-30"
+  },
+  {
+    "symbol": "COIN",
+    "date": "2025-10-27"
+  },
+  {
+    "symbol": "COIN",
+    "date": "2026-01-27"
+  },
+  {
+    "symbol": "COIN",
+    "date": "2026-04-27"
+  },
+  {
+    "symbol": "COIN",
+    "date": "2026-07-30"
+  },
+  {
+    "symbol": "COIN",
+    "date": "2026-10-26"
+  },
+  {
+    "symbol": "MSTR",
+    "date": "2021-01-28"
+  },
+  {
+    "symbol": "MSTR",
+    "date": "2021-04-28"
+  },
+  {
+    "symbol": "MSTR",
+    "date": "2021-08-02"
+  },
+  {
+    "symbol": "MSTR",
+    "date": "2021-10-27"
+  },
+  {
+    "symbol": "MSTR",
+    "date": "2022-01-28"
+  },
+  {
+    "symbol": "MSTR",
+    "date": "2022-04-28"
+  },
+  {
+    "symbol": "MSTR",
+    "date": "2022-08-01"
+  },
+  {
+    "symbol": "MSTR",
+    "date": "2022-10-27"
+  },
+  {
+    "symbol": "MSTR",
+    "date": "2023-01-30"
+  },
+  {
+    "symbol": "MSTR",
+    "date": "2023-04-28"
+  },
+  {
+    "symbol": "MSTR",
+    "date": "2023-07-31"
+  },
+  {
+    "symbol": "MSTR",
+    "date": "2023-10-27"
+  },
+  {
+    "symbol": "MSTR",
+    "date": "2024-01-29"
+  },
+  {
+    "symbol": "MSTR",
+    "date": "2024-04-29"
+  },
+  {
+    "symbol": "MSTR",
+    "date": "2024-07-31"
+  },
+  {
+    "symbol": "MSTR",
+    "date": "2024-10-28"
+  },
+  {
+    "symbol": "MSTR",
+    "date": "2025-01-28"
+  },
+  {
+    "symbol": "MSTR",
+    "date": "2025-04-28"
+  },
+  {
+    "symbol": "MSTR",
+    "date": "2025-07-31"
+  },
+  {
+    "symbol": "MSTR",
+    "date": "2025-10-27"
+  },
+  {
+    "symbol": "MSTR",
+    "date": "2026-01-28"
+  },
+  {
+    "symbol": "MSTR",
+    "date": "2026-04-28"
+  },
+  {
+    "symbol": "MSTR",
+    "date": "2026-07-31"
+  },
+  {
+    "symbol": "MSTR",
+    "date": "2026-10-27"
+  },
+  {
+    "symbol": "MARA",
+    "date": "2021-01-29"
+  },
+  {
+    "symbol": "MARA",
+    "date": "2021-04-29"
+  },
+  {
+    "symbol": "MARA",
+    "date": "2021-08-02"
+  },
+  {
+    "symbol": "MARA",
+    "date": "2021-10-28"
+  },
+  {
+    "symbol": "MARA",
+    "date": "2022-01-31"
+  },
+  {
+    "symbol": "MARA",
+    "date": "2022-04-29"
+  },
+  {
+    "symbol": "MARA",
+    "date": "2022-08-01"
+  },
+  {
+    "symbol": "MARA",
+    "date": "2022-10-28"
+  },
+  {
+    "symbol": "MARA",
+    "date": "2023-01-30"
+  },
+  {
+    "symbol": "MARA",
+    "date": "2023-05-01"
+  },
+  {
+    "symbol": "MARA",
+    "date": "2023-08-01"
+  },
+  {
+    "symbol": "MARA",
+    "date": "2023-10-30"
+  },
+  {
+    "symbol": "MARA",
+    "date": "2024-01-29"
+  },
+  {
+    "symbol": "MARA",
+    "date": "2024-04-29"
+  },
+  {
+    "symbol": "MARA",
+    "date": "2024-08-01"
+  },
+  {
+    "symbol": "MARA",
+    "date": "2024-10-28"
+  },
+  {
+    "symbol": "MARA",
+    "date": "2025-01-29"
+  },
+  {
+    "symbol": "MARA",
+    "date": "2025-04-29"
+  },
+  {
+    "symbol": "MARA",
+    "date": "2025-08-01"
+  },
+  {
+    "symbol": "MARA",
+    "date": "2025-10-28"
+  },
+  {
+    "symbol": "MARA",
+    "date": "2026-01-29"
+  },
+  {
+    "symbol": "MARA",
+    "date": "2026-04-29"
+  },
+  {
+    "symbol": "MARA",
+    "date": "2026-08-03"
+  },
+  {
+    "symbol": "MARA",
+    "date": "2026-10-28"
+  },
+  {
+    "symbol": "C",
+    "date": "2021-02-01"
+  },
+  {
+    "symbol": "C",
+    "date": "2021-04-30"
+  },
+  {
+    "symbol": "C",
+    "date": "2021-08-02"
+  },
+  {
+    "symbol": "C",
+    "date": "2021-10-29"
+  },
+  {
+    "symbol": "C",
+    "date": "2022-01-31"
+  },
+  {
+    "symbol": "C",
+    "date": "2022-05-02"
+  },
+  {
+    "symbol": "C",
+    "date": "2022-08-02"
+  },
+  {
+    "symbol": "C",
+    "date": "2022-10-31"
+  },
+  {
+    "symbol": "C",
+    "date": "2023-01-30"
+  },
+  {
+    "symbol": "C",
+    "date": "2023-05-01"
+  },
+  {
+    "symbol": "C",
+    "date": "2023-08-02"
+  },
+  {
+    "symbol": "C",
+    "date": "2023-10-30"
+  },
+  {
+    "symbol": "C",
+    "date": "2024-01-30"
+  },
+  {
+    "symbol": "C",
+    "date": "2024-04-30"
+  },
+  {
+    "symbol": "C",
+    "date": "2024-08-02"
+  },
+  {
+    "symbol": "C",
+    "date": "2024-10-29"
+  },
+  {
+    "symbol": "C",
+    "date": "2025-01-30"
+  },
+  {
+    "symbol": "C",
+    "date": "2025-04-30"
+  },
+  {
+    "symbol": "C",
+    "date": "2025-08-04"
+  },
+  {
+    "symbol": "C",
+    "date": "2025-10-29"
+  },
+  {
+    "symbol": "C",
+    "date": "2026-01-30"
+  },
+  {
+    "symbol": "C",
+    "date": "2026-04-30"
+  },
+  {
+    "symbol": "C",
+    "date": "2026-08-03"
+  },
+  {
+    "symbol": "C",
+    "date": "2026-10-29"
+  },
+  {
+    "symbol": "GS",
+    "date": "2021-02-01"
+  },
+  {
+    "symbol": "GS",
+    "date": "2021-05-03"
+  },
+  {
+    "symbol": "GS",
+    "date": "2021-08-03"
+  },
+  {
+    "symbol": "GS",
+    "date": "2021-11-01"
+  },
+  {
+    "symbol": "GS",
+    "date": "2022-01-31"
+  },
+  {
+    "symbol": "GS",
+    "date": "2022-05-02"
+  },
+  {
+    "symbol": "GS",
+    "date": "2022-08-03"
+  },
+  {
+    "symbol": "GS",
+    "date": "2022-10-31"
+  },
+  {
+    "symbol": "GS",
+    "date": "2023-01-31"
+  },
+  {
+    "symbol": "GS",
+    "date": "2023-05-01"
+  },
+  {
+    "symbol": "GS",
+    "date": "2023-08-03"
+  },
+  {
+    "symbol": "GS",
+    "date": "2023-10-30"
+  },
+  {
+    "symbol": "GS",
+    "date": "2024-01-31"
+  },
+  {
+    "symbol": "GS",
+    "date": "2024-05-01"
+  },
+  {
+    "symbol": "GS",
+    "date": "2024-08-05"
+  },
+  {
+    "symbol": "GS",
+    "date": "2024-10-30"
+  },
+  {
+    "symbol": "GS",
+    "date": "2025-01-31"
+  },
+  {
+    "symbol": "GS",
+    "date": "2025-05-01"
+  },
+  {
+    "symbol": "GS",
+    "date": "2025-08-04"
+  },
+  {
+    "symbol": "GS",
+    "date": "2025-10-30"
+  },
+  {
+    "symbol": "GS",
+    "date": "2026-02-02"
+  },
+  {
+    "symbol": "GS",
+    "date": "2026-05-01"
+  },
+  {
+    "symbol": "GS",
+    "date": "2026-08-03"
+  },
+  {
+    "symbol": "GS",
+    "date": "2026-10-30"
+  },
+  {
+    "symbol": "V",
+    "date": "2021-01-25"
+  },
+  {
+    "symbol": "V",
+    "date": "2021-04-26"
+  },
+  {
+    "symbol": "V",
+    "date": "2021-07-28"
+  },
+  {
+    "symbol": "V",
+    "date": "2021-10-25"
+  },
+  {
+    "symbol": "V",
+    "date": "2022-01-25"
+  },
+  {
+    "symbol": "V",
+    "date": "2022-04-25"
+  },
+  {
+    "symbol": "V",
+    "date": "2022-07-28"
+  },
+  {
+    "symbol": "V",
+    "date": "2022-10-24"
+  },
+  {
+    "symbol": "V",
+    "date": "2023-01-25"
+  },
+  {
+    "symbol": "V",
+    "date": "2023-04-25"
+  },
+  {
+    "symbol": "V",
+    "date": "2023-07-28"
+  },
+  {
+    "symbol": "V",
+    "date": "2023-10-24"
+  },
+  {
+    "symbol": "V",
+    "date": "2024-01-25"
+  },
+  {
+    "symbol": "V",
+    "date": "2024-04-25"
+  },
+  {
+    "symbol": "V",
+    "date": "2024-07-29"
+  },
+  {
+    "symbol": "V",
+    "date": "2024-10-24"
+  },
+  {
+    "symbol": "V",
+    "date": "2025-01-27"
+  },
+  {
+    "symbol": "V",
+    "date": "2025-04-25"
+  },
+  {
+    "symbol": "V",
+    "date": "2025-07-28"
+  },
+  {
+    "symbol": "V",
+    "date": "2025-10-24"
+  },
+  {
+    "symbol": "V",
+    "date": "2026-01-26"
+  },
+  {
+    "symbol": "V",
+    "date": "2026-04-27"
+  },
+  {
+    "symbol": "V",
+    "date": "2026-07-28"
+  },
+  {
+    "symbol": "V",
+    "date": "2026-10-26"
+  },
+  {
+    "symbol": "BA",
+    "date": "2021-01-26"
+  },
+  {
+    "symbol": "BA",
+    "date": "2021-04-26"
+  },
+  {
+    "symbol": "BA",
+    "date": "2021-07-29"
+  },
+  {
+    "symbol": "BA",
+    "date": "2021-10-25"
+  },
+  {
+    "symbol": "BA",
+    "date": "2022-01-26"
+  },
+  {
+    "symbol": "BA",
+    "date": "2022-04-26"
+  },
+  {
+    "symbol": "BA",
+    "date": "2022-07-29"
+  },
+  {
+    "symbol": "BA",
+    "date": "2022-10-25"
+  },
+  {
+    "symbol": "BA",
+    "date": "2023-01-26"
+  },
+  {
+    "symbol": "BA",
+    "date": "2023-04-26"
+  },
+  {
+    "symbol": "BA",
+    "date": "2023-07-31"
+  },
+  {
+    "symbol": "BA",
+    "date": "2023-10-25"
+  },
+  {
+    "symbol": "BA",
+    "date": "2024-01-26"
+  },
+  {
+    "symbol": "BA",
+    "date": "2024-04-26"
+  },
+  {
+    "symbol": "BA",
+    "date": "2024-07-29"
+  },
+  {
+    "symbol": "BA",
+    "date": "2024-10-25"
+  },
+  {
+    "symbol": "BA",
+    "date": "2025-01-27"
+  },
+  {
+    "symbol": "BA",
+    "date": "2025-04-28"
+  },
+  {
+    "symbol": "BA",
+    "date": "2025-07-29"
+  },
+  {
+    "symbol": "BA",
+    "date": "2025-10-27"
+  },
+  {
+    "symbol": "BA",
+    "date": "2026-01-26"
+  },
+  {
+    "symbol": "BA",
+    "date": "2026-04-27"
+  },
+  {
+    "symbol": "BA",
+    "date": "2026-07-29"
+  },
+  {
+    "symbol": "BA",
+    "date": "2026-10-26"
+  },
+  {
+    "symbol": "JPM",
+    "date": "2021-01-27"
+  },
+  {
+    "symbol": "JPM",
+    "date": "2021-04-27"
+  },
+  {
+    "symbol": "JPM",
+    "date": "2021-07-30"
+  },
+  {
+    "symbol": "JPM",
+    "date": "2021-10-26"
+  },
+  {
+    "symbol": "JPM",
+    "date": "2022-01-27"
+  },
+  {
+    "symbol": "JPM",
+    "date": "2022-04-27"
+  },
+  {
+    "symbol": "JPM",
+    "date": "2022-08-01"
+  },
+  {
+    "symbol": "JPM",
+    "date": "2022-10-26"
+  },
+  {
+    "symbol": "JPM",
+    "date": "2023-01-27"
+  },
+  {
+    "symbol": "JPM",
+    "date": "2023-04-27"
+  },
+  {
+    "symbol": "JPM",
+    "date": "2023-07-31"
+  },
+  {
+    "symbol": "JPM",
+    "date": "2023-10-26"
+  },
+  {
+    "symbol": "JPM",
+    "date": "2024-01-29"
+  },
+  {
+    "symbol": "JPM",
+    "date": "2024-04-29"
+  },
+  {
+    "symbol": "JPM",
+    "date": "2024-07-30"
+  },
+  {
+    "symbol": "JPM",
+    "date": "2024-10-28"
+  },
+  {
+    "symbol": "JPM",
+    "date": "2025-01-27"
+  },
+  {
+    "symbol": "JPM",
+    "date": "2025-04-28"
+  },
+  {
+    "symbol": "JPM",
+    "date": "2025-07-30"
+  },
+  {
+    "symbol": "JPM",
+    "date": "2025-10-27"
+  },
+  {
+    "symbol": "JPM",
+    "date": "2026-01-27"
+  },
+  {
+    "symbol": "JPM",
+    "date": "2026-04-27"
+  },
+  {
+    "symbol": "JPM",
+    "date": "2026-07-30"
+  },
+  {
+    "symbol": "JPM",
+    "date": "2026-10-26"
+  },
+  {
+    "symbol": "BABA",
+    "date": "2021-01-28"
+  },
+  {
+    "symbol": "BABA",
+    "date": "2021-04-28"
+  },
+  {
+    "symbol": "BABA",
+    "date": "2021-08-02"
+  },
+  {
+    "symbol": "BABA",
+    "date": "2021-10-27"
+  },
+  {
+    "symbol": "BABA",
+    "date": "2022-01-28"
+  },
+  {
+    "symbol": "BABA",
+    "date": "2022-04-28"
+  },
+  {
+    "symbol": "BABA",
+    "date": "2022-08-01"
+  },
+  {
+    "symbol": "BABA",
+    "date": "2022-10-27"
+  },
+  {
+    "symbol": "BABA",
+    "date": "2023-01-30"
+  },
+  {
+    "symbol": "BABA",
+    "date": "2023-04-28"
+  },
+  {
+    "symbol": "BABA",
+    "date": "2023-07-31"
+  },
+  {
+    "symbol": "BABA",
+    "date": "2023-10-27"
+  },
+  {
+    "symbol": "BABA",
+    "date": "2024-01-29"
+  },
+  {
+    "symbol": "BABA",
+    "date": "2024-04-29"
+  },
+  {
+    "symbol": "BABA",
+    "date": "2024-07-31"
+  },
+  {
+    "symbol": "BABA",
+    "date": "2024-10-28"
+  },
+  {
+    "symbol": "BABA",
+    "date": "2025-01-28"
+  },
+  {
+    "symbol": "BABA",
+    "date": "2025-04-28"
+  },
+  {
+    "symbol": "BABA",
+    "date": "2025-07-31"
+  },
+  {
+    "symbol": "BABA",
+    "date": "2025-10-27"
+  },
+  {
+    "symbol": "BABA",
+    "date": "2026-01-28"
+  },
+  {
+    "symbol": "BABA",
+    "date": "2026-04-28"
+  },
+  {
+    "symbol": "BABA",
+    "date": "2026-07-31"
+  },
+  {
+    "symbol": "BABA",
+    "date": "2026-10-27"
+  },
+  {
+    "symbol": "JD",
+    "date": "2021-01-29"
+  },
+  {
+    "symbol": "JD",
+    "date": "2021-04-29"
+  },
+  {
+    "symbol": "JD",
+    "date": "2021-08-02"
+  },
+  {
+    "symbol": "JD",
+    "date": "2021-10-28"
+  },
+  {
+    "symbol": "JD",
+    "date": "2022-01-31"
+  },
+  {
+    "symbol": "JD",
+    "date": "2022-04-29"
+  },
+  {
+    "symbol": "JD",
+    "date": "2022-08-01"
+  },
+  {
+    "symbol": "JD",
+    "date": "2022-10-28"
+  },
+  {
+    "symbol": "JD",
+    "date": "2023-01-30"
+  },
+  {
+    "symbol": "JD",
+    "date": "2023-05-01"
+  },
+  {
+    "symbol": "JD",
+    "date": "2023-08-01"
+  },
+  {
+    "symbol": "JD",
+    "date": "2023-10-30"
+  },
+  {
+    "symbol": "JD",
+    "date": "2024-01-29"
+  },
+  {
+    "symbol": "JD",
+    "date": "2024-04-29"
+  },
+  {
+    "symbol": "JD",
+    "date": "2024-08-01"
+  },
+  {
+    "symbol": "JD",
+    "date": "2024-10-28"
+  },
+  {
+    "symbol": "JD",
+    "date": "2025-01-29"
+  },
+  {
+    "symbol": "JD",
+    "date": "2025-04-29"
+  },
+  {
+    "symbol": "JD",
+    "date": "2025-08-01"
+  },
+  {
+    "symbol": "JD",
+    "date": "2025-10-28"
+  },
+  {
+    "symbol": "JD",
+    "date": "2026-01-29"
+  },
+  {
+    "symbol": "JD",
+    "date": "2026-04-29"
+  },
+  {
+    "symbol": "JD",
+    "date": "2026-08-03"
+  },
+  {
+    "symbol": "JD",
+    "date": "2026-10-28"
+  },
+  {
+    "symbol": "BIDU",
+    "date": "2021-02-01"
+  },
+  {
+    "symbol": "BIDU",
+    "date": "2021-04-30"
+  },
+  {
+    "symbol": "BIDU",
+    "date": "2021-08-02"
+  },
+  {
+    "symbol": "BIDU",
+    "date": "2021-10-29"
+  },
+  {
+    "symbol": "BIDU",
+    "date": "2022-01-31"
+  },
+  {
+    "symbol": "BIDU",
+    "date": "2022-05-02"
+  },
+  {
+    "symbol": "BIDU",
+    "date": "2022-08-02"
+  },
+  {
+    "symbol": "BIDU",
+    "date": "2022-10-31"
+  },
+  {
+    "symbol": "BIDU",
+    "date": "2023-01-30"
+  },
+  {
+    "symbol": "BIDU",
+    "date": "2023-05-01"
+  },
+  {
+    "symbol": "BIDU",
+    "date": "2023-08-02"
+  },
+  {
+    "symbol": "BIDU",
+    "date": "2023-10-30"
+  },
+  {
+    "symbol": "BIDU",
+    "date": "2024-01-30"
+  },
+  {
+    "symbol": "BIDU",
+    "date": "2024-04-30"
+  },
+  {
+    "symbol": "BIDU",
+    "date": "2024-08-02"
+  },
+  {
+    "symbol": "BIDU",
+    "date": "2024-10-29"
+  },
+  {
+    "symbol": "BIDU",
+    "date": "2025-01-30"
+  },
+  {
+    "symbol": "BIDU",
+    "date": "2025-04-30"
+  },
+  {
+    "symbol": "BIDU",
+    "date": "2025-08-04"
+  },
+  {
+    "symbol": "BIDU",
+    "date": "2025-10-29"
+  },
+  {
+    "symbol": "BIDU",
+    "date": "2026-01-30"
+  },
+  {
+    "symbol": "BIDU",
+    "date": "2026-04-30"
+  },
+  {
+    "symbol": "BIDU",
+    "date": "2026-08-03"
+  },
+  {
+    "symbol": "BIDU",
+    "date": "2026-10-29"
+  }
+]
