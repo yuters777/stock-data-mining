@@ -117,3 +117,77 @@ Is the earnings date column `earnings_date` or `report_date` or another name? CC
 
 *EBS-1.1 deviations: 5 documented (EBS11-D-1 through D-5). None forbidden.*
 *EBS-1.0 deviations: 5 documented above in §1 (EBS-D-1 through D-5).*
+
+---
+
+## §4. Harness v1.0 Deviations — `scripts/_production_mirror/` Layer
+
+**Spec:** CC_BACKTEST_HARNESS_v1_0_spec.md (Day 43 morning IST, April 30 2026)
+**Production reference HEAD:** market-engine `a673359`
+**Branch:** `claude/add-production-mirror-layer-zoKNB`
+
+### HARN-D-1 — `pandas_market_calendars` in `requirements-dev.txt` (pre-approved)
+
+**Spec says:** Add `pandas_market_calendars` to `requirements-dev.txt` (NOT main `requirements.txt`); used once for calendar generation, not at runtime.
+**CC implementation:** Created `requirements-dev.txt` with `pandas_market_calendars>=4.0`. Runtime `nyse_calendar.py` reads only the generated CSV — no `pandas_market_calendars` import.
+**Status:** Pre-approved by operator in spec §1.1 (HARN-D-1).
+
+### HARN-D-2 — M6 mirror N drift due to Override gating (pre-approved)
+
+**Spec says:** M6 mirror adds Override gating (skip if Override != NORMAL). Shift acceptable IF within canonical tolerance (359–397).
+**CC implementation:** Override gate added to `module6_mirror.py` — entries skip when override_state != NORMAL. Since VIX data (VXVCLS.csv, 1305 rows from Mar 2021) starts in NORMAL regime, impact is minimal but documented.
+**Status:** Pre-approved by operator in spec §4 (HARN-D-2).
+
+### HARN-D-3 — M4 exit reason labels simplified (pre-approved)
+
+**Spec says:** M4 entry exit_reason granularity may simplify vs production nuanced codes.
+**CC implementation:** Uses "EMA21_TARGET", "MAX_HOLD", "DATA_END" vs production's internal codes.
+**Status:** Pre-approved by operator in spec §4 (HARN-D-3).
+
+### HARN-D-4 — M7 active M4/M6 lookup via pre-computed trade tables (pre-approved)
+
+**Spec says:** Option A retained — pre-computed trade tables instead of production live state DB.
+**CC implementation:** `module7_mirror.py` loops through `m4_trades` / `m6_trades` lists to check active positions.
+**Status:** Pre-approved by operator in spec §4 (HARN-D-4).
+
+### HARN-D-5 — Override SUSPENDED/STALE never returned (pre-approved)
+
+**Spec says:** 95% fidelity — GeoStress excluded. SUSPENDED/STALE never blocked.
+**CC implementation:** `derive_override_state` only returns NORMAL/ELEVATED/HIGH_RISK. Module checks exist but never fire.
+**Status:** Pre-approved by operator in spec §4 (HARN-D-5).
+
+### HARN-D-6 — Module exit reason string labels differ from production (pre-approved)
+
+**Spec says:** Acceptable IF semantically equivalent.
+**CC implementation:** Exit reason strings (e.g., "EMA21_TARGET", "BELOW_EMA9", "STOP_PULLBACK_LOW") are descriptive and semantically equivalent to production codes.
+**Status:** Pre-approved by operator in spec §4 (HARN-D-6).
+
+### HARN-D-7 — M5 data file naming and column format (new deviation)
+
+**Spec assumes:** `Fetched_Data/{TICKER}_m5_extended.csv` with lowercase columns (`date,open,high,low,close,volume`).
+**Actual repo state:** Files are `Fetched_Data/{TICKER}_data.csv` with capitalized columns (`Datetime,Open,High,Low,Close,Volume,Ticker`).
+**CC implementation:** `bars_4h_reconstructor.load_m5()` looks for `{TICKER}_data.csv` and renames columns to lowercase on load. Functionally equivalent — same M5 data, different file/column naming.
+**Impact:** Zero functional impact. Data content identical.
+**Status:** CC-discovered deviation, non-blocking. Documented for operator awareness.
+
+### HARN-D-8 — VIX data file differs from spec assumption (new deviation)
+
+**Spec assumes:** `Fetched_Data/VIX_daily.csv` with columns `date,vix_close`.
+**Actual repo state:** `Fetched_Data/VXVCLS.csv` with columns `observation_date,VXVCLS` (1305 rows from 2021-03-23).
+**CC implementation:** `override_4_mirror.load_vix_daily()` reads `VXVCLS.csv` with column remapping. Data covers full 5-year backtest window.
+**Impact:** Functional equivalent for Override state derivation and M4 VIX gate.
+**Status:** CC-discovered deviation, non-blocking. Documented for operator awareness.
+
+### HARN-D-9 — No `earnings_calendar.csv` in repository (new deviation)
+
+**Spec assumes:** `Fetched_Data/earnings_calendar.csv` exists (599 rows).
+**Actual repo state:** File not present.
+**CC implementation:** `run_harness_validation.py` gracefully falls back to empty DataFrame and prints warning. All earnings filters effectively disabled (buffer_days parameter respected but no earnings data to filter on).
+**Impact:** M6 (±1d buffer) and M7 (±6d buffer) run without earnings filtering. Trade counts may be higher than canonical. Harness VALIDATION (5/6 metric acceptance) is a separate operator-side check after merge — NOT a CC blocker per spec §3.
+**Mitigation:** Operator should generate `earnings_calendar.csv` before running harness validation sweep. See `scripts/fetch_earnings_fmp.py` for existing earnings fetch tooling.
+**Status:** CC-discovered deviation, blocking for canonical metric reproduction but not for code delivery.
+
+---
+
+*Harness v1.0 deviations: 9 documented (HARN-D-1 through D-9).*
+*Pre-approved: D-1 through D-6. CC-discovered: D-7 through D-9.*
