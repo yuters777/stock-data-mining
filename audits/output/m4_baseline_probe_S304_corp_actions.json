@@ -1,0 +1,16 @@
+{
+  "trades_file": "backtest_results/m4_5yr_trades.csv",
+  "n": 28,
+  "n_clean": 28,
+  "n_flagged": 0,
+  "flagged_events": [],
+  "adjustment_concerns": [],
+  "known_corp_actions_checked": [
+    "GOOGL",
+    "AMZN",
+    "TSLA",
+    "NVDA"
+  ],
+  "canonical_n": 47,
+  "note": "Corporate action audit: checks known splits/dividends for canonical tickers. FMP data is assumed split-adjusted (FMP default). Flagged events require manual verification that returns are not inflated. Audit is NOT exhaustive \u2014 dividend/special distribution checks require live FMP API."
+}

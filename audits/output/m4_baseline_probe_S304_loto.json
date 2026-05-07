@@ -1,0 +1,218 @@
+{
+  "trades_file": "backtest_results/m4_5yr_trades.csv",
+  "full_sample": {
+    "n": 28,
+    "pf": 4.9527,
+    "wr": 0.7143
+  },
+  "canonical_pf": 21.38,
+  "canonical_n": 47,
+  "per_ticker": [
+    {
+      "excluded_ticker": "AMD",
+      "n": 27,
+      "n_excluded": 1,
+      "pf": 4.6485,
+      "wr": 0.7037,
+      "pf_delta": -0.3042,
+      "pass_min_pf_5": false
+    },
+    {
+      "excluded_ticker": "AMZN",
+      "n": 26,
+      "n_excluded": 2,
+      "pf": 5.138,
+      "wr": 0.7308,
+      "pf_delta": 0.1852,
+      "pass_min_pf_5": true
+    },
+    {
+      "excluded_ticker": "AVGO",
+      "n": 27,
+      "n_excluded": 1,
+      "pf": 4.4105,
+      "wr": 0.7037,
+      "pf_delta": -0.5422,
+      "pass_min_pf_5": false
+    },
+    {
+      "excluded_ticker": "BA",
+      "n": 26,
+      "n_excluded": 2,
+      "pf": 5.4205,
+      "wr": 0.7308,
+      "pf_delta": 0.4678,
+      "pass_min_pf_5": true
+    },
+    {
+      "excluded_ticker": "BABA",
+      "n": 27,
+      "n_excluded": 1,
+      "pf": 6.5545,
+      "wr": 0.7407,
+      "pf_delta": 1.6018,
+      "pass_min_pf_5": true
+    },
+    {
+      "excluded_ticker": "BIDU",
+      "n": 27,
+      "n_excluded": 1,
+      "pf": 4.9444,
+      "wr": 0.7037,
+      "pf_delta": -0.0083,
+      "pass_min_pf_5": false
+    },
+    {
+      "excluded_ticker": "C",
+      "n": 26,
+      "n_excluded": 2,
+      "pf": 4.6535,
+      "wr": 0.6923,
+      "pf_delta": -0.2992,
+      "pass_min_pf_5": false
+    },
+    {
+      "excluded_ticker": "COIN",
+      "n": 25,
+      "n_excluded": 3,
+      "pf": 4.3014,
+      "wr": 0.72,
+      "pf_delta": -0.6513,
+      "pass_min_pf_5": false
+    },
+    {
+      "excluded_ticker": "COST",
+      "n": 27,
+      "n_excluded": 1,
+      "pf": 5.3519,
+      "wr": 0.7407,
+      "pf_delta": 0.3992,
+      "pass_min_pf_5": true
+    },
+    {
+      "excluded_ticker": "GOOGL",
+      "n": 27,
+      "n_excluded": 1,
+      "pf": 5.6632,
+      "wr": 0.7407,
+      "pf_delta": 0.7105,
+      "pass_min_pf_5": true
+    },
+    {
+      "excluded_ticker": "GS",
+      "n": 27,
+      "n_excluded": 1,
+      "pf": 4.8108,
+      "wr": 0.7037,
+      "pf_delta": -0.142,
+      "pass_min_pf_5": false
+    },
+    {
+      "excluded_ticker": "MARA",
+      "n": 27,
+      "n_excluded": 1,
+      "pf": 4.4656,
+      "wr": 0.7037,
+      "pf_delta": -0.4871,
+      "pass_min_pf_5": false
+    },
+    {
+      "excluded_ticker": "META",
+      "n": 26,
+      "n_excluded": 2,
+      "pf": 7.2473,
+      "wr": 0.7692,
+      "pf_delta": 2.2945,
+      "pass_min_pf_5": true
+    },
+    {
+      "excluded_ticker": "MU",
+      "n": 26,
+      "n_excluded": 2,
+      "pf": 4.3739,
+      "wr": 0.6923,
+      "pf_delta": -0.5788,
+      "pass_min_pf_5": false
+    },
+    {
+      "excluded_ticker": "NVDA",
+      "n": 26,
+      "n_excluded": 2,
+      "pf": 4.1706,
+      "wr": 0.6923,
+      "pf_delta": -0.7821,
+      "pass_min_pf_5": false
+    },
+    {
+      "excluded_ticker": "PLTR",
+      "n": 27,
+      "n_excluded": 1,
+      "pf": 4.5813,
+      "wr": 0.7037,
+      "pf_delta": -0.3714,
+      "pass_min_pf_5": false
+    },
+    {
+      "excluded_ticker": "TSLA",
+      "n": 27,
+      "n_excluded": 1,
+      "pf": 4.9195,
+      "wr": 0.7037,
+      "pf_delta": -0.0332,
+      "pass_min_pf_5": false
+    },
+    {
+      "excluded_ticker": "TSM",
+      "n": 26,
+      "n_excluded": 2,
+      "pf": 4.7799,
+      "wr": 0.6923,
+      "pf_delta": -0.1729,
+      "pass_min_pf_5": false
+    },
+    {
+      "excluded_ticker": "V",
+      "n": 27,
+      "n_excluded": 1,
+      "pf": 4.9354,
+      "wr": 0.7037,
+      "pf_delta": -0.0173,
+      "pass_min_pf_5": false
+    }
+  ],
+  "tickers_in_data": [
+    "AMD",
+    "AMZN",
+    "AVGO",
+    "BA",
+    "BABA",
+    "BIDU",
+    "C",
+    "COIN",
+    "COST",
+    "GOOGL",
+    "GS",
+    "MARA",
+    "META",
+    "MU",
+    "NVDA",
+    "PLTR",
+    "TSLA",
+    "TSM",
+    "V"
+  ],
+  "missing_from_data": [
+    "AAPL",
+    "ARM",
+    "INTC",
+    "JD",
+    "JPM",
+    "MSFT",
+    "MSTR",
+    "SMCI"
+  ],
+  "any_fail": true,
+  "abort_triggered": true,
+  "min_pf_threshold": 5.0,
+  "harn_1_1_caveat": "Local N=28 vs canonical N=47 (HARN-1.1)"
+}

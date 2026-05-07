@@ -1,0 +1,82 @@
+{
+  "sweep_data_found": true,
+  "n_at_vix25": 7,
+  "harn_consistent": true,
+  "reconciliation": {
+    "sweep_script": "scripts/m4_vix_threshold_sweep.py",
+    "sweep_results_file": "scripts/m4_vix_threshold_sweep_results.json",
+    "n_at_vix25": 7,
+    "expected_from_harn_ratio": 7.0,
+    "harn_ratio": 6.7,
+    "harn_consistent": true,
+    "all_thresholds": {
+      "20.0": {
+        "threshold": 20.0,
+        "N": 8,
+        "PF": 18.712216179803615,
+        "WR": 0.875,
+        "mean_return": 0.061284723646911156
+      },
+      "22.0": {
+        "threshold": 22.0,
+        "N": 7,
+        "PF": 11.441393736134799,
+        "WR": 0.8571428571428571,
+        "mean_return": 0.041288561077152744
+      },
+      "23.0": {
+        "threshold": 23.0,
+        "N": 7,
+        "PF": 11.441393736134799,
+        "WR": 0.8571428571428571,
+        "mean_return": 0.041288561077152744
+      },
+      "24.0": {
+        "threshold": 24.0,
+        "N": 7,
+        "PF": 11.441393736134799,
+        "WR": 0.8571428571428571,
+        "mean_return": 0.041288561077152744
+      },
+      "25.0": {
+        "threshold": 25.0,
+        "N": 7,
+        "PF": 11.441393736134799,
+        "WR": 0.8571428571428571,
+        "mean_return": 0.041288561077152744
+      },
+      "26.0": {
+        "threshold": 26.0,
+        "N": 7,
+        "PF": 11.441393736134799,
+        "WR": 0.8571428571428571,
+        "mean_return": 0.041288561077152744
+      },
+      "28.0": {
+        "threshold": 28.0,
+        "N": 7,
+        "PF": 11.441393736134799,
+        "WR": 0.8571428571428571,
+        "mean_return": 0.041288561077152744
+      },
+      "30.0": {
+        "threshold": 30.0,
+        "N": 4,
+        "PF": null,
+        "WR": 1.0,
+        "mean_return": 0.06431042953941264
+      }
+    },
+    "methodology": {
+      "what_was_swept": "VIX_GATE from 20 to 30 in 8 steps",
+      "harness_used": "scripts/_production_mirror/module4_mirror.py (standalone)",
+      "data_source": "local Fetched_Data/*_m5_extended.csv",
+      "key_finding": "At VIX_GATE=25 standalone harness fires N=7 over 5yr. Canonical production fires N=47. Ratio: 47/7 \u2248 6.714285714285714. Expected from HARN-1.1 ratio of 6.7: 7.0. Consistent: True."
+    },
+    "delta_from_canonical": {
+      "n47_source": "production system (canonical)",
+      "n4_8_source": "standalone harness VIX sweep at various thresholds",
+      "relationship": "N=4-8 figures are HARN-1.1 artifacts. The standalone harness fires ~7 triggers per 5yr run vs 47 in production. This is a structural difference (not a bug), documented as Principle #57 candidate."
+    }
+  }
+}

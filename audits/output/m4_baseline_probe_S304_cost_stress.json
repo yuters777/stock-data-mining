@@ -1,0 +1,54 @@
+{
+  "trades_file": "backtest_results/m4_5yr_trades.csv",
+  "n": 28,
+  "results": [
+    {
+      "slippage_bps": 0,
+      "pf": 4.9527,
+      "wr": 0.7143,
+      "n": 28,
+      "pass_10x_threshold": false
+    },
+    {
+      "slippage_bps": 5,
+      "pf": 4.863,
+      "wr": 0.7143,
+      "n": 28,
+      "pass_10x_threshold": false
+    },
+    {
+      "slippage_bps": 10,
+      "pf": 4.7754,
+      "wr": 0.7143,
+      "n": 28,
+      "pass_10x_threshold": false
+    },
+    {
+      "slippage_bps": 15,
+      "pf": 4.6899,
+      "wr": 0.7143,
+      "n": 28,
+      "pass_10x_threshold": false
+    },
+    {
+      "slippage_bps": 25,
+      "pf": 4.5247,
+      "wr": 0.7143,
+      "n": 28,
+      "pass_10x_threshold": false
+    },
+    {
+      "slippage_bps": 50,
+      "pf": 4.1239,
+      "wr": 0.6786,
+      "n": 28,
+      "pass_10x_threshold": false
+    }
+  ],
+  "pf_at_15bps": 4.6899,
+  "breakeven_bps": 5,
+  "pass_at_15bps": false,
+  "harn_1_1_caveat": "HARN-1.1 NOTE: Local trades N=28 (vs canonical N=47). Results are indicative; canonical PF=21.38. Cost stress at 0bps should approximate canonical PF if HARN-1.1 ratio holds.",
+  "canonical_pf": 21.38,
+  "canonical_n": 47
+}

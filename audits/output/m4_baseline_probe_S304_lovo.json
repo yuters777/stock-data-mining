@@ -1,0 +1,39 @@
+{
+  "trades_file": "backtest_results/m4_5yr_trades.csv",
+  "vix_data_available": true,
+  "clusters_found": 2,
+  "full_sample": {
+    "n": 28,
+    "pf": 4.9527
+  },
+  "canonical_pf": 21.38,
+  "canonical_n": 47,
+  "per_cluster": [
+    {
+      "cluster_id": 1,
+      "start": "2025-04-03",
+      "end": "2025-04-24",
+      "days": 22,
+      "trades_in_cluster": 9,
+      "n": 19,
+      "pf": 3.6807,
+      "pf_delta": -1.272,
+      "pass_min_pf_5": false
+    },
+    {
+      "cluster_id": 2,
+      "start": "2026-03-06",
+      "end": "2026-03-09",
+      "days": 4,
+      "trades_in_cluster": 0,
+      "n": 28,
+      "pf": 4.9527,
+      "pf_delta": 0.0,
+      "pass_min_pf_5": false
+    }
+  ],
+  "any_fail": true,
+  "abort_triggered": true,
+  "min_pf_threshold": 5.0,
+  "note": ""
+}

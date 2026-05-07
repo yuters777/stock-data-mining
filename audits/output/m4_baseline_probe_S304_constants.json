@@ -1,0 +1,31 @@
+{
+  "source": "scripts/_production_mirror/module4_mirror.py (fallback)",
+  "constants": {
+    "STREAK_LENGTH": {
+      "actual": 3,
+      "claimed": 3,
+      "match": true
+    },
+    "VIX_GATE": {
+      "actual": 25.0,
+      "claimed": 25.0,
+      "match": true
+    },
+    "RSI_THRESHOLD": {
+      "actual": 35.0,
+      "claimed": 35,
+      "match": true
+    },
+    "D6_VIX_ROC_THRESHOLD": {
+      "actual": 30.0,
+      "claimed": 30.0,
+      "match": true
+    },
+    "MAX_BARS_HOLD": {
+      "actual": 10,
+      "claimed": 10,
+      "match": true
+    }
+  },
+  "all_match": true
+}

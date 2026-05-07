@@ -1,0 +1,6 @@
+{
+  "snapshot_found": false,
+  "error": "No market_db_snapshot_*.db found in data/snapshots/. Operator must SCP snapshot before Step 2.1 can execute. See spec \u00a75 Step 0.1.",
+  "row": null,
+  "all_match": false
+}
