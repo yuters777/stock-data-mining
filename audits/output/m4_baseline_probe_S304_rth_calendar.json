@@ -1,0 +1,12 @@
+{
+  "trades_file": "backtest_results/m4_5yr_trades.csv",
+  "n": 28,
+  "n_clean": 28,
+  "n_violations": 0,
+  "violations": [],
+  "pass": true,
+  "abort_triggered": false,
+  "canonical_n": 47,
+  "nyse_calendar_available": false,
+  "note": "RTH calendar audit on local N=28 trades. NYSE calendar: unavailable \u2014 holiday checks skipped. Entry/exit timestamp hours not available in trade CSV (date-only); RTH hour check requires raw M5 data."
+}

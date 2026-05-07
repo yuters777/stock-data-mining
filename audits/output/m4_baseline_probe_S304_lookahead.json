@@ -1,0 +1,125 @@
+{
+  "trades_file": "backtest_results/m4_5yr_trades.csv",
+  "n": 28,
+  "n_clean": 28,
+  "n_violations": 0,
+  "violations": [],
+  "per_trade_summary": [
+    {
+      "trade_id": "AMD@2025-11-21",
+      "clean": true
+    },
+    {
+      "trade_id": "AMZN@2025-03-11",
+      "clean": true
+    },
+    {
+      "trade_id": "AMZN@2025-11-21",
+      "clean": true
+    },
+    {
+      "trade_id": "AVGO@2025-04-04",
+      "clean": true
+    },
+    {
+      "trade_id": "BA@2025-11-21",
+      "clean": true
+    },
+    {
+      "trade_id": "BA@2026-03-11",
+      "clean": true
+    },
+    {
+      "trade_id": "BABA@2025-04-04",
+      "clean": true
+    },
+    {
+      "trade_id": "BIDU@2025-04-04",
+      "clean": true
+    },
+    {
+      "trade_id": "C@2025-03-11",
+      "clean": true
+    },
+    {
+      "trade_id": "C@2025-04-04",
+      "clean": true
+    },
+    {
+      "trade_id": "COIN@2025-03-11",
+      "clean": true
+    },
+    {
+      "trade_id": "COIN@2025-04-04",
+      "clean": true
+    },
+    {
+      "trade_id": "COIN@2025-11-21",
+      "clean": true
+    },
+    {
+      "trade_id": "COST@2025-03-11",
+      "clean": true
+    },
+    {
+      "trade_id": "GOOGL@2025-03-11",
+      "clean": true
+    },
+    {
+      "trade_id": "GS@2025-03-11",
+      "clean": true
+    },
+    {
+      "trade_id": "MARA@2025-04-04",
+      "clean": true
+    },
+    {
+      "trade_id": "META@2025-03-11",
+      "clean": true
+    },
+    {
+      "trade_id": "META@2026-03-13",
+      "clean": true
+    },
+    {
+      "trade_id": "MU@2025-04-04",
+      "clean": true
+    },
+    {
+      "trade_id": "MU@2025-11-21",
+      "clean": true
+    },
+    {
+      "trade_id": "NVDA@2025-03-11",
+      "clean": true
+    },
+    {
+      "trade_id": "NVDA@2025-04-04",
+      "clean": true
+    },
+    {
+      "trade_id": "PLTR@2025-03-11",
+      "clean": true
+    },
+    {
+      "trade_id": "TSLA@2025-03-11",
+      "clean": true
+    },
+    {
+      "trade_id": "TSM@2025-03-11",
+      "clean": true
+    },
+    {
+      "trade_id": "TSM@2025-04-04",
+      "clean": true
+    },
+    {
+      "trade_id": "V@2025-03-11",
+      "clean": true
+    }
+  ],
+  "pass": true,
+  "abort_triggered": false,
+  "canonical_n": 47,
+  "note": "Audit checks entry gate compliance (VIX>=25, RSI<35) on local N=28 trades. Full look-ahead audit (4H bar completion, EMA cross timing) requires raw M5 data per trade \u2014 partial coverage from trade CSV metadata."
+}
