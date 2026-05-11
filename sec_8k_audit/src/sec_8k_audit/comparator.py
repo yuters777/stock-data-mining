@@ -21,7 +21,10 @@ SELECT
     sf.filing_date,
     sf.primary_doc_url,
     ni.classification_status   AS prod_category,
-    ne.hard_veto_status        AS prod_hard_veto,
+
+CASE WHEN ne.category IN ('regulatory_formal_action','cybersecurity_incident','earnings_miss','earnings_guide_cut','merger_acquisition') THEN 1 ELSE 0 END AS prod_hard_veto,
+
+
     ne.category                AS prod_event_category
 FROM sec_filings sf
 LEFT JOIN news_items  ni ON ni.id         = sf.news_item_id
