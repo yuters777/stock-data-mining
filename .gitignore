@@ -10,3 +10,20 @@ venv/
 *.gslides
 level_detection/cache/
 Fetched_Data/*.csv
+# Production DB snapshots (large, sensitive)
+data/snapshots/*.db
+data/snapshots/market_db_snapshot_*
+
+# Production code snapshots (mirror from market-engine private repo)
+data/snapshots/*.py
+data/snapshots/*_py_*.txt
+
+# Helper scripts (local dev only)
+fetch_m4.ps1
+find_m4.ps1
+m4_search.ps1
+fetch_module4.py
+make_vix_json.py
+decode_b64.py
+verify_baseline.py
+check_setup.ps1
