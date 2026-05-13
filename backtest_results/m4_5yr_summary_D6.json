@@ -1,0 +1,71 @@
+{
+  "overall": {
+    "n": 44,
+    "mean": 6.8716,
+    "wr": 86.36,
+    "pf": 8.4075,
+    "sharpe": 5.7282,
+    "avg_hold": 7.32,
+    "ema21_exit_pct": 63.64,
+    "hardmax_pct": 36.36
+  },
+  "by_year": {
+    "2021": {
+      "n": 7,
+      "mean": 1.774,
+      "wr": 85.71
+    },
+    "2022": {
+      "n": 6,
+      "mean": -4.9354,
+      "wr": 16.67
+    },
+    "2024": {
+      "n": 3,
+      "mean": 6.6183,
+      "wr": 100.0
+    },
+    "2025": {
+      "n": 28,
+      "mean": 10.7032,
+      "wr": 100.0
+    }
+  },
+  "config": {
+    "d6_filter_enabled": true,
+    "d6_threshold": 30.0,
+    "streak_threshold": 3,
+    "vix_gate": 25.0,
+    "rsi_gate": 35.0,
+    "max_bars": 10,
+    "tickers": [
+      "AAPL",
+      "AMD",
+      "AMZN",
+      "ARM",
+      "AVGO",
+      "BA",
+      "BABA",
+      "BIDU",
+      "C",
+      "COIN",
+      "COST",
+      "GOOGL",
+      "GS",
+      "INTC",
+      "JD",
+      "JPM",
+      "MARA",
+      "META",
+      "MSFT",
+      "MSTR",
+      "MU",
+      "NVDA",
+      "PLTR",
+      "SMCI",
+      "TSLA",
+      "TSM",
+      "V"
+    ]
+  }
+}
