@@ -180,7 +180,7 @@ def _write_md(rows: list, break_str: str) -> None:
             "where the execution-cost cliff actually lies, not just the headline PF."
         ),
     ]
-    OUT_MD.write_text("\n".join(lines) + "\n")
+    OUT_MD.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 def write_outputs(rows: list) -> None:
