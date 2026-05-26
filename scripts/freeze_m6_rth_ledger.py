@@ -1,8 +1,18 @@
 #!/usr/bin/env python3
-"""Freeze canonical M6 RTH trade ledger — spec_2026_05_26_002 Step 0.
+"""Freeze canonical M6 RTH trade ledger — spec_2026_05_26_002 v2 Step 0.
 
 Imports run_m6_backtest / _compute_stats from m6_backtest_extended and
 load_earnings from backtest_utils_extended without modifying those files.
+
+VALIDATION-EPOCH FILTER (C8 / §5 step 0c):
+  run_m6_backtest has NO date filter and runs all dates in the loaded CSVs
+  (2021-04-19..2026-04-10, N=~569). After the backtest, trades are filtered
+  to entry_date within 2021-01-01..2025-12-31 before _compute_stats.
+
+RE-VALIDATED BASELINE (C3):
+  v2 baseline — 27-ticker scope, 2021-2025 epoch: N=544, PF=1.41,
+  WR=63.42, Mean=1.0022. This SUPERSEDES the stale N=378 / PF=1.68
+  module_baselines row (22-ticker scope, never re-validated after expansion).
 
 DATA REQUIREMENT (C6):
   Requires Fetched_Data/{TICKER}_m5_extended.csv for all 27 M6 tickers.
@@ -11,7 +21,7 @@ DATA REQUIREMENT (C6):
   The repo's Fetched_Data/_data.csv files are INCOMPATIBLE — they start
   at 11:00 ET, shifting bar '1' open to 11:00 and producing wrong gaps.
   If _m5_extended.csv files are absent, run_m6_backtest silently skips
-  those tickers; the Step-0d self-check catches the resulting N != 378
+  those tickers; the Step-0d self-check catches the resulting N != 544
   and aborts. Obtain the correct extended CSVs on the operator's local
   machine before running this script (see C6 abort_if).
 """
@@ -30,9 +40,14 @@ FETCHED_DATA = REPO_ROOT / "Fetched_Data"
 OUT_CSV = REPO_ROOT / "backtest_results" / "m6_rth_trades_frozen.csv"
 OUT_JSON = REPO_ROOT / "backtest_results" / "m6_rth_baseline.json"
 
-# Server-locked baseline: module_baselines(module_number=6), engine v95,
-# locked 2026-04-16, is_active=true. RTH canonical mode.
-M6_SERVER_BASELINE = {'N': 378, 'PF': 1.68, 'WR': 69.3, 'Mean': 1.75}
+# Re-validated baseline (v2, operator 2026-05-26): 27-ticker scope, validation
+# epoch 2021-01-01..2025-12-31. SUPERSEDES stale module_baselines row
+# (M6 v1.4: N=378, PF=1.68, WR=69.3, Mean=1.75 — 22-ticker scope).
+M6_SERVER_BASELINE = {'N': 544, 'PF': 1.41, 'WR': 63.42, 'Mean': 1.0022}
+
+# Validation epoch bounds (C8 / §5 step 0c).
+EPOCH_START = '2021-01-01'
+EPOCH_END   = '2025-12-31'
 
 TRADE_COLUMNS = [
     'ticker', 'entry_date', 'entry_bar', 'entry_price',
@@ -98,7 +113,7 @@ def _load_earnings_strict() -> dict:
 
 
 def _freeze_self_check(stats: dict) -> None:
-    """Step 0d: assert stats match server-locked baseline. Raises on mismatch."""
+    """Step 0d: assert in-epoch stats match re-validated v2 baseline. Raises on mismatch."""
     b = M6_SERVER_BASELINE
     errors = []
     if stats['N'] != b['N']:
@@ -124,10 +139,16 @@ def main() -> None:
     earnings = _load_earnings_strict()
     print(f"  loaded {len(earnings)} ticker earnings calendars")
 
-    print("Step 0c: running M6 RTH backtest...")
-    trades, _ = run_m6_backtest('rth', earnings_dict=earnings)
+    print("Step 0c: running M6 RTH backtest (all dates) and applying validation-epoch filter...")
+    trades_all, _ = run_m6_backtest('rth', earnings_dict=earnings)
+    print(f"  unfiltered trade count (all dates): {len(trades_all)}")
+    trades = [
+        t for t in trades_all
+        if EPOCH_START <= t['entry_date'] <= EPOCH_END
+    ]
+    print(f"  in-epoch trade count ({EPOCH_START}..{EPOCH_END}): {len(trades)}")
     stats = _compute_stats(trades)
-    print(f"  raw stats: N={stats['N']}, PF={stats['PF']}, WR={stats['WR']}, Mean={stats['Mean']}")
+    print(f"  in-epoch stats: N={stats['N']}, PF={stats['PF']}, WR={stats['WR']}, Mean={stats['Mean']}")
 
     print("Step 0d: freeze self-check vs server baseline...")
     _freeze_self_check(stats)
@@ -146,15 +167,20 @@ def main() -> None:
         'wr': stats['WR'],
         'mean': stats['Mean'],
         'source': (
-            'Step-0d freeze self-check vs module_baselines(module_number=6) '
-            'server baseline, engine v95, locked 2026-04-16'
+            'M6 RTH canonical baseline v2, re-validated 2026-05-26: '
+            f'27-ticker scope, validation epoch {EPOCH_START}..{EPOCH_END}. '
+            'Supersedes stale server module_baselines row (N=378, 22-ticker scope). '
+            'Operator decision: Variant 2 — 27-ticker canonical.'
         ),
     }
     OUT_JSON.write_text(json.dumps(baseline, indent=2) + '\n')
 
     print(f"  written: {OUT_CSV}")
     print(f"  written: {OUT_JSON}")
-    print(f"Freeze complete: N={stats['N']}, PF={stats['PF']}, WR={stats['WR']}%, Mean={stats['Mean']}")
+    print(
+        f"Freeze complete (v2): N={stats['N']}, PF={stats['PF']}, "
+        f"WR={stats['WR']}%, Mean={stats['Mean']}"
+    )
 
 
 if __name__ == '__main__':

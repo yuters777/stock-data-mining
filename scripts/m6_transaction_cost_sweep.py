@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
-"""M6 Transaction-Cost Survival Sweep — spec_2026_05_26_002.
+"""M6 Transaction-Cost Survival Sweep — spec_2026_05_26_002 v2.
 
 Loss convention (C4): losses = net <= 0 (INCLUSIVE of zero).
 This differs from M4's strict < 0 — using < 0 here would make the 0-bps
 anchor fail to reproduce the baseline.
 
 Viability threshold (§5 step 6): M6_VIABILITY_PF = 1.0 (break-even).
-M6 baseline PF is 1.68 (thin edge vs M4's 8.41), so 2.0 would mark M6
-broken at 0 bps and be meaningless.
+Re-validated M6 baseline PF is 1.41 (thin edge; 2.0 would be meaningless).
 """
 import csv
 import hashlib
@@ -22,7 +21,7 @@ OUT_CSV = REPO_ROOT / "backtest_results" / "m6_transaction_cost_sweep.csv"
 OUT_MD = REPO_ROOT / "backtest_results" / "m6_transaction_cost_sweep.md"
 
 COST_BPS = [0, 1, 3, 5, 10, 20]
-M6_VIABILITY_PF = 1.0  # break-even; baseline PF 1.68 is a thin edge
+M6_VIABILITY_PF = 1.0  # break-even; re-validated baseline PF 1.41 is a thin edge
 
 
 def ledger_digest(path: Path = LEDGER_PATH) -> str:
@@ -145,7 +144,7 @@ def _write_md(rows: list, break_str: str) -> None:
         "# M6 Transaction-Cost Survival Sweep",
         "",
         "spec_id: spec_2026_05_26_002  ",
-        "input: `backtest_results/m6_rth_trades_frozen.csv` (N=378, frozen read-only)  ",
+        "input: `backtest_results/m6_rth_trades_frozen.csv` (N=544, frozen read-only)  ",
         "",
         "| cost_bps | n | profit_factor | pf_undefined | expectancy | win_rate | flipped_to_loss |",
         "|---:|---:|---:|:---:|---:|---:|---:|",
@@ -164,8 +163,8 @@ def _write_md(rows: list, break_str: str) -> None:
         "## Reading",
         "",
         (
-            "M6 is a THIN-EDGE module (baseline PF 1.68 vs M4’s 8.41): cost erosion is "
-            "materially more consequential here than for M4. "
+            "M6 is a THIN-EDGE module (re-validated baseline PF 1.41, 27-ticker scope, "
+            "2021-2025 epoch): cost erosion is materially more consequential here than for M4. "
             "Expectancy and flipped_to_loss are the load-bearing metrics — "
             "PF approaching 1.0 is the real cliff, not an abstract 2× threshold. "
             f"Break-point (PF ≤ 1.0 or expectancy ≤ 0) first reached at **{break_str}**."
@@ -174,7 +173,7 @@ def _write_md(rows: list, break_str: str) -> None:
         "## Note on thin-edge framing",
         "",
         (
-            "At baseline PF 1.68, the M6 edge has limited cost headroom. "
+            "At re-validated baseline PF 1.41 (27-ticker, 2021-2025), the M6 edge has limited cost headroom. "
             "Even a few basis points of round-trip cost compress expectancy "
             "significantly. Track flipped_to_loss (previously profitable trades "
             "turned losing by cost) and expectancy approaching zero to understand "

@@ -79,11 +79,11 @@ def test_unit_conversion():
 
 
 def test_n_constant_across_grid():
-    """N == 378 at every cost level — cost changes trade sign, never trade count."""
+    """N == 544 at every cost level — cost changes trade sign, never trade count."""
     rows = run_sweep()
     assert [r["cost_bps"] for r in rows] == COST_BPS
     for row in rows:
-        assert row["n"] == 378, f"N changed at {row['cost_bps']} bps: {row['n']}"
+        assert row["n"] == 544, f"N changed at {row['cost_bps']} bps: {row['n']}"
 
 
 def test_loss_convention_includes_zero():
