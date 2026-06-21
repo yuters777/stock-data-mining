@@ -1,0 +1,274 @@
+{
+  "strategy": "GN-1 Neutral-Regime Stretch Reversion",
+  "frozen_contract": {
+    "regime_gate": "VIX < 20 AND ADX(4H) < 20",
+    "trigger": "4H close <= EMA21 - 2*sigma; sigma=stdev(close-EMA21) over 50x4H",
+    "direction": "LONG",
+    "entry": "trigger 4H bar close",
+    "exit": "first 4H close >= EMA21, else hard-max 10 4H bars",
+    "constants": {
+      "ema_span": 21,
+      "sigma_window": 50,
+      "sigma_mult": 2.0,
+      "vix_max": 20.0,
+      "adx_max": 20.0,
+      "max_bars": 10
+    },
+    "period": "2021-04-19 .. 2025-12-31 (cap 2025-12-31 23:55 UTC)",
+    "universe_n": 27,
+    "costs": "none (consistency with M4 baseline family)"
+  },
+  "full": {
+    "n": 58,
+    "mean": 1.1449,
+    "wr": 53.45,
+    "pf": 1.646,
+    "sharpe": 1.453,
+    "sum": 66.406
+  },
+  "is": {
+    "n": 26,
+    "mean": 3.0903,
+    "wr": 65.38,
+    "pf": 3.8694,
+    "sharpe": 2.5057,
+    "sum": 80.3489
+  },
+  "oos": {
+    "n": 32,
+    "mean": -0.4357,
+    "wr": 43.75,
+    "pf": 0.8136,
+    "sharpe": -0.4611,
+    "sum": -13.9429
+  },
+  "label": "GOOD",
+  "label_criterion": "GOOD=N>=40 & PF>=1.5 & mean>0; marginal=1.0<PF<1.5 or N<40; BAD=PF<=1.0",
+  "sanity_counters_total": {
+    "bars": 34283,
+    "vix_pass": 24151,
+    "vix_adx_pass": 5980,
+    "trig_eligible": 120,
+    "trades": 58
+  },
+  "trades_per_ticker": {
+    "AAPL": 0,
+    "AMD": 2,
+    "AMZN": 1,
+    "ARM": 2,
+    "AVGO": 3,
+    "BA": 4,
+    "BABA": 2,
+    "BIDU": 4,
+    "C": 1,
+    "COIN": 2,
+    "COST": 1,
+    "GOOGL": 1,
+    "GS": 0,
+    "INTC": 9,
+    "JD": 5,
+    "JPM": 0,
+    "MARA": 1,
+    "META": 0,
+    "MSFT": 2,
+    "MSTR": 1,
+    "MU": 1,
+    "NVDA": 1,
+    "PLTR": 1,
+    "SMCI": 7,
+    "TSLA": 3,
+    "TSM": 2,
+    "V": 2
+  },
+  "per_ticker_counters": {
+    "AAPL": {
+      "bars": 780,
+      "vix_pass": 550,
+      "vix_adx_pass": 9,
+      "trig_eligible": 0,
+      "trades": 0
+    },
+    "AMD": {
+      "bars": 1090,
+      "vix_pass": 768,
+      "vix_adx_pass": 171,
+      "trig_eligible": 2,
+      "trades": 2
+    },
+    "AMZN": {
+      "bars": 1090,
+      "vix_pass": 768,
+      "vix_adx_pass": 154,
+      "trig_eligible": 1,
+      "trades": 1
+    },
+    "ARM": {
+      "bars": 1154,
+      "vix_pass": 1014,
+      "vix_adx_pass": 236,
+      "trig_eligible": 5,
+      "trades": 2
+    },
+    "AVGO": {
+      "bars": 1090,
+      "vix_pass": 768,
+      "vix_adx_pass": 148,
+      "trig_eligible": 5,
+      "trades": 3
+    },
+    "BA": {
+      "bars": 1090,
+      "vix_pass": 768,
+      "vix_adx_pass": 289,
+      "trig_eligible": 11,
+      "trades": 4
+    },
+    "BABA": {
+      "bars": 1090,
+      "vix_pass": 768,
+      "vix_adx_pass": 188,
+      "trig_eligible": 11,
+      "trades": 2
+    },
+    "BIDU": {
+      "bars": 1090,
+      "vix_pass": 768,
+      "vix_adx_pass": 285,
+      "trig_eligible": 5,
+      "trades": 4
+    },
+    "C": {
+      "bars": 1090,
+      "vix_pass": 768,
+      "vix_adx_pass": 186,
+      "trig_eligible": 1,
+      "trades": 1
+    },
+    "COIN": {
+      "bars": 1090,
+      "vix_pass": 768,
+      "vix_adx_pass": 181,
+      "trig_eligible": 6,
+      "trades": 2
+    },
+    "COST": {
+      "bars": 1090,
+      "vix_pass": 768,
+      "vix_adx_pass": 133,
+      "trig_eligible": 3,
+      "trades": 1
+    },
+    "GOOGL": {
+      "bars": 1090,
+      "vix_pass": 768,
+      "vix_adx_pass": 102,
+      "trig_eligible": 1,
+      "trades": 1
+    },
+    "GS": {
+      "bars": 1090,
+      "vix_pass": 768,
+      "vix_adx_pass": 95,
+      "trig_eligible": 0,
+      "trades": 0
+    },
+    "INTC": {
+      "bars": 2365,
+      "vix_pass": 1615,
+      "vix_adx_pass": 493,
+      "trig_eligible": 18,
+      "trades": 9
+    },
+    "JD": {
+      "bars": 2365,
+      "vix_pass": 1615,
+      "vix_adx_pass": 553,
+      "trig_eligible": 11,
+      "trades": 5
+    },
+    "JPM": {
+      "bars": 1090,
+      "vix_pass": 768,
+      "vix_adx_pass": 101,
+      "trig_eligible": 0,
+      "trades": 0
+    },
+    "MARA": {
+      "bars": 1090,
+      "vix_pass": 768,
+      "vix_adx_pass": 280,
+      "trig_eligible": 2,
+      "trades": 1
+    },
+    "META": {
+      "bars": 1090,
+      "vix_pass": 768,
+      "vix_adx_pass": 115,
+      "trig_eligible": 0,
+      "trades": 0
+    },
+    "MSFT": {
+      "bars": 1090,
+      "vix_pass": 768,
+      "vix_adx_pass": 205,
+      "trig_eligible": 5,
+      "trades": 2
+    },
+    "MSTR": {
+      "bars": 2365,
+      "vix_pass": 1615,
+      "vix_adx_pass": 485,
+      "trig_eligible": 2,
+      "trades": 1
+    },
+    "MU": {
+      "bars": 1090,
+      "vix_pass": 768,
+      "vix_adx_pass": 216,
+      "trig_eligible": 1,
+      "trades": 1
+    },
+    "NVDA": {
+      "bars": 1090,
+      "vix_pass": 768,
+      "vix_adx_pass": 160,
+      "trig_eligible": 2,
+      "trades": 1
+    },
+    "PLTR": {
+      "bars": 1089,
+      "vix_pass": 767,
+      "vix_adx_pass": 145,
+      "trig_eligible": 1,
+      "trades": 1
+    },
+    "SMCI": {
+      "bars": 2365,
+      "vix_pass": 1615,
+      "vix_adx_pass": 475,
+      "trig_eligible": 12,
+      "trades": 7
+    },
+    "TSLA": {
+      "bars": 1090,
+      "vix_pass": 768,
+      "vix_adx_pass": 123,
+      "trig_eligible": 9,
+      "trades": 3
+    },
+    "TSM": {
+      "bars": 1090,
+      "vix_pass": 768,
+      "vix_adx_pass": 320,
+      "trig_eligible": 4,
+      "trades": 2
+    },
+    "V": {
+      "bars": 1090,
+      "vix_pass": 768,
+      "vix_adx_pass": 132,
+      "trig_eligible": 2,
+      "trades": 2
+    }
+  }
+}
