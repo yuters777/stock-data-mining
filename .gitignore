@@ -27,3 +27,4 @@ make_vix_json.py
 decode_b64.py
 verify_baseline.py
 check_setup.ps1
+.venv/
