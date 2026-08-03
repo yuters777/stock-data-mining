@@ -13,12 +13,16 @@ NOT loaded into research.db (uncertified yfinance data; certification + seal dis
 there). NOT related to /opt/autobacktest-agent.
 
 ## Data provenance (uncertified, yfinance daily, downloaded 2026-08-02/03; DGS2 = FRED)
-| file | sha256 |
-|---|---|
-| data/QQQ_daily_1999_2026.csv | a646876b32cf3f794f689effa0de8e6402f90653e70a53f7bbcb4a6c02811a5c |
-| data/tickers27_daily_2012_2026.csv | 5c512e2f1218f9523052cee2f2100a51080f8bf23664bc02c3878fe29eae3038 |
-| data/indices_daily_full.csv | ac82485a32fe8cfcfcf92dc1aac7c2796806591e55a5625ea031126bf030d477 |
-| data/DGS2.csv | ea8b91463644518bc542999584dfb0cdcfe82b08fe16a5c5303139f5adde7c5b |
+Canonical pins = bytes at rest in the git repo (LF line endings; git autocrlf normalized
+the three Windows-written CSVs CRLF->LF at commit; verified byte-equal to originals modulo
+line endings, 2026-08-03). Verify with `sha256sum` on the VPS clone.
+
+| file | sha256 (canonical, repo/LF) | sha256 (original download, CRLF) |
+|---|---|---|
+| data/QQQ_daily_1999_2026.csv | 50140915e07ccf7b9544872358ac46cff60e150b1fd007b7b3694c294996b3ac | a646876b32cf3f794f689effa0de8e6402f90653e70a53f7bbcb4a6c02811a5c |
+| data/tickers27_daily_2012_2026.csv | 5a010fea6df488673eb771e3ebde1c16c8d7b390231776629a4d4af60cb60ae7 | 5c512e2f1218f9523052cee2f2100a51080f8bf23664bc02c3878fe29eae3038 |
+| data/indices_daily_full.csv | dbb5579f61a0d4bf2cedcbe1233f9bd4ce2391f33a54aba451898be6205fbfaa | ac82485a32fe8cfcfcf92dc1aac7c2796806591e55a5625ea031126bf030d477 |
+| data/DGS2.csv | ea8b91463644518bc542999584dfb0cdcfe82b08fe16a5c5303139f5adde7c5b | ea8b91463644518bc542999584dfb0cdcfe82b08fe16a5c5303139f5adde7c5b |
 
 Downloaders (reproducible):
 - `yf.download('QQQ', start='1999-03-10', auto_adjust=False)`
