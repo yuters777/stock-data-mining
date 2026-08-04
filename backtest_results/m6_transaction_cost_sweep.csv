@@ -1,0 +1,7 @@
+cost_bps,n,profit_factor,pf_undefined,expectancy,win_rate,flipped_to_loss
+0,544,1.4083,False,1.0022,63.42,0
+1,544,1.4036,False,0.9922,63.42,0
+3,544,1.3943,False,0.9722,63.24,1
+5,544,1.3850,False,0.9522,62.87,3
+10,544,1.3621,False,0.9022,62.50,5
+20,544,1.3171,False,0.8022,62.32,6
